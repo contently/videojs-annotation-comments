@@ -18,7 +18,7 @@ const FILENAME = "videojs-annotation-comments.js",
       PACKAGE = require('./package.json');
 
 //TODO - update this
-const ATTIBUTION = "/* Version "+PACKAGE.version+" videojs-annotation-comments (TODO add git repo), Authored by Evan Carothers & Jack Pope */"+"\n\n";
+const ATTIBUTION = "/* Version "+PACKAGE.version+" videojs-annotation-comments (https://github.com/contently/videojs-annotation-comments.git), Authored by Evan Carothers & Jack Pope */"+"\n\n";
 
 //compilation function for browserify/bundler/transpilation
 function compile(watch, cb){
@@ -83,5 +83,6 @@ gulp.task('build', ['lint','transpile'], () => {
 });
 
 gulp.task('transpile', (cb) => compile(false, cb) );
-gulp.task('watch', (cb) => compile(true, cb) );
-gulp.task('default', ['watch','dev_webserver']);
+gulp.task('bundle_watch', (cb) => compile(true, cb) );
+gulp.task('watch', ['bundle_watch', 'dev_webserver']);
+gulp.task('default', ['watch']);

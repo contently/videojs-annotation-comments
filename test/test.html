@@ -2,9 +2,22 @@
 <HTML>
 	<HEAD>
 		<title>VideoJS Annotated Comments Test Page</title>
-		<script src="/videojs-annotation-comments.js"></script>
+		<link href="http://vjs.zencdn.net/5.18.4/video-js.css" rel="stylesheet">
+
 	</HEAD>
 	<BODY>
-		Insert HTML here to test while developing
+		<video id="my-video" class="video-js" controls preload="auto" width="640" height="264"
+  poster="MY_VIDEO_POSTER.jpg" data-setup="{}">
+		    <source src="sample.mp4" type='video/mp4'>
+		    <source src="sample.webm" type='video/webm'>
+		    <p class="vjs-no-js">
+		      To view this video please enable JavaScript, and consider upgrading to a web browser that
+		      <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+		    </p>
+		  </video>
+
+
+		<script src="http://vjs.zencdn.net/5.18.4/video.js"></script>
+		<script src="/videojs-annotation-comments.js"></script>
 	</BODY>
 </HTML>
