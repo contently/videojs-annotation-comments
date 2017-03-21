@@ -44,7 +44,7 @@ class Annotation extends PlayerComponent {
     // create tooltip
     var $tooltip = $("<span/>").addClass('vac-tooltip');
     if(left > 50) $tooltip.addClass('right-side');
-    
+
     $tooltip.append($('<b/>').text(this.humanTime())).append(" - "+this.comments[0].body);
     $markerInner.append($tooltip);
 
@@ -57,7 +57,11 @@ class Annotation extends PlayerComponent {
       $marker.removeClass('hovering');
     });
 
-    //TODO - create second half of marker if annotation has range.end
+    if(!!this.range.end){
+      $marker.addClass("ranged-marker");
+      var right = ((this.range.end / duration) * 100) - left;
+      $marker.css({"width": right + "%"});
+    }
 
     $markerWrap.append($marker);
   }

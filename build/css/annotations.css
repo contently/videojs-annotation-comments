@@ -58,8 +58,14 @@
         .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.hovering > div {
           display: block;
           opacity: 1; }
+        .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.hovering.ranged-marker {
+          box-shadow: 7px 0 0 0 #eed428 inset;
+          background-color: rgba(238, 221, 40, 0.65); }
+      .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.ranged-marker {
+        box-shadow: 7px 0 0 0 #00A6C2 inset;
+        background-color: rgba(0, 166, 194, 0.65); }
       .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker > div {
-        width: 7px;
+        width: 100%;
         position: relative;
         display: none;
         opacity: 0;
