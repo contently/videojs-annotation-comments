@@ -10024,7 +10024,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 	videojs.registerPlugin('annotationComments', Main);
 })(jQuery, window.videojs);
 
-},{"./modules/annotation":48,"./modules/controls":50,"underscore":46}],48:[function(require,module,exports){
+},{"./modules/annotation":48,"./modules/controls":51,"underscore":46}],48:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -10036,10 +10036,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var PlayerComponent = require("./player_component").class;
-var Comment = require("./comment").class;
+var CommentList = require("./comment_list").class;
 var Marker = require("./marker").class;
-var Templates = require("./../templates/annotation");
-var CommentsTemplate = Templates.commentsTemplate;
 
 var Annotation = function (_PlayerComponent) {
   _inherits(Annotation, _PlayerComponent);
@@ -10052,13 +10050,9 @@ var Annotation = function (_PlayerComponent) {
     _this.id = data.id;
     _this.range = data.range;
     _this.shape = data.shape;
-    _this.comments = data.comments.map(function (c) {
-      return new Comment(c, playerId);
-    });
 
-    _this.commentsTemplate = CommentsTemplate;
-
-    _this.marker = new Marker(_this.range, _this.comments[0], playerId);
+    _this.commentList = new CommentList({ "comments": data.comments, "annotation": _this }, playerId);
+    _this.marker = new Marker(_this.range, _this.commentList.comments[0], playerId);
     _this.marker.draw();
     _this.bindMarkerEvents();
     return _this;
@@ -10070,19 +10064,8 @@ var Annotation = function (_PlayerComponent) {
       var _this2 = this;
 
       this.marker.$el.click(function () {
-        return _this2.renderComments();
+        return _this2.commentList.render();
       });
-    }
-  }, {
-    key: "renderComments",
-    value: function renderComments() {
-      $(".vac-comments-container").remove();
-
-      var $commentsContainer = $(this.renderTemplate(this.commentsTemplate, { comments: this.comments, height: $(".vjs-text-track-display").height() + 'px' }));
-      this.$player.append($commentsContainer);
-
-      this.player.pause();
-      this.player.currentTime(this.range.start);
     }
   }]);
 
@@ -10093,7 +10076,7 @@ module.exports = {
   class: Annotation
 };
 
-},{"./../templates/annotation":54,"./comment":49,"./marker":52,"./player_component":53}],49:[function(require,module,exports){
+},{"./comment_list":50,"./marker":53,"./player_component":54}],49:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -10163,7 +10146,58 @@ module.exports = {
     class: Comment
 };
 
-},{"./player_component":53}],50:[function(require,module,exports){
+},{"./player_component":54}],50:[function(require,module,exports){
+"use strict";
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var PlayerComponent = require("./player_component").class;
+var Comment = require("./comment").class;
+var CommentListTemplate = require("./../templates/comment_list").commentListTemplate;
+
+var CommentList = function (_PlayerComponent) {
+  _inherits(CommentList, _PlayerComponent);
+
+  function CommentList(data, playerId) {
+    _classCallCheck(this, CommentList);
+
+    var _this = _possibleConstructorReturn(this, (CommentList.__proto__ || Object.getPrototypeOf(CommentList)).call(this, playerId));
+
+    _this.annotation = data.annotation;
+    _this.comments = data.comments.map(function (c) {
+      return new Comment(c, playerId);
+    });
+    _this.commentsTemplate = CommentListTemplate;
+    return _this;
+  }
+
+  _createClass(CommentList, [{
+    key: "render",
+    value: function render() {
+      this.$player.find(".vac-comments-container").remove();
+
+      var $commentsContainer = $(this.renderTemplate(this.commentsTemplate, { comments: this.comments, height: $(".vjs-text-track-display").height() + 'px' }));
+      this.$player.append($commentsContainer);
+
+      this.player.pause();
+      this.player.currentTime(this.annotation.range.start);
+    }
+  }]);
+
+  return CommentList;
+}(PlayerComponent);
+
+module.exports = {
+  class: CommentList
+};
+
+},{"./../templates/comment_list":55,"./comment":49,"./player_component":54}],51:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -10274,7 +10308,7 @@ module.exports = {
   class: Controls
 };
 
-},{"./../templates/controls":55,"./draggable_marker.js":51,"./player_component":53,"underscore":46}],51:[function(require,module,exports){
+},{"./../templates/controls":56,"./draggable_marker.js":52,"./player_component":54,"underscore":46}],52:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -10350,7 +10384,7 @@ module.exports = {
   class: draggableMarker
 };
 
-},{"./../templates/marker":56,"./marker":52,"underscore":46}],52:[function(require,module,exports){
+},{"./../templates/marker":57,"./marker":53,"underscore":46}],53:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -10459,7 +10493,7 @@ module.exports = {
   class: Marker
 };
 
-},{"./../templates/marker":56,"./player_component":53}],53:[function(require,module,exports){
+},{"./../templates/marker":57,"./player_component":54}],54:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -10507,17 +10541,17 @@ module.exports = {
   class: PlayerComponent
 };
 
-},{"handlebars":32}],54:[function(require,module,exports){
-var commentsTemplate = "\n  <div class=\"vac-comments-container\" style=\"height: {{height}};\">\n    {{#each comments as |comment|}}\n      <div class=\"comment\">\n        <div class=\"comment-header\">\n          <div class=\"author-name\">{{comment.meta.user_id}}</div>\n          <div class=\"timestamp\">{{comment.timeSince}} ago</div>\n        </div>\n        <div class=\"comment-body\">\n          {{comment.body}}\n        </div>\n      </div>\n    {{/each}}\n    <div class=\"reply-btn\">Create reply</div>\n  </div>\n";
+},{"handlebars":32}],55:[function(require,module,exports){
+var commentListTemplate = "\n  <div class=\"vac-comments-container\" style=\"height: {{height}};\">\n    {{#each comments as |comment|}}\n      <div class=\"comment\">\n        <div class=\"comment-header\">\n          <div class=\"author-name\">{{comment.meta.user_id}}</div>\n          <div class=\"timestamp\">{{comment.timeSince}} ago</div>\n        </div>\n        <div class=\"comment-body\">\n          {{comment.body}}\n        </div>\n      </div>\n    {{/each}}\n    <div class=\"reply-btn\">Create reply</div>\n  </div>\n";
 
-module.exports = { commentsTemplate: commentsTemplate };
+module.exports = { commentListTemplate: commentListTemplate };
 
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 var ControlsTemplate = "\n\t{{#unless adding}}\n\t  \t<div class=\"vac-controls vac-control\">\n\t\t  \tAnnotations\n\t\t\t<button>+ NEW</button>\n\t\t\t<div class=\"nav\">\n\t\t\t\t<div class=\"prev\">Prev</div>\n\t\t\t\t<div class=\"next\">Next</div>\n\t\t\t</div>\n\t\t</div>\n\t{{/unless}}\n\n\t{{#if adding}}\n\t\t<div class=\"vac-video-cover vac-control\">\n\t\t</div>\n\n\t\t<div class=\"vac-add-controls vac-control\">\n\t\t  \tNew Annotation\n\t\t\t<i>Select shape + range</i>\n\t\t\t<button>CONTINUE</button>\n\t\t\t<a>cancel</a>\n\t\t</div>\n\n\n\n\t{{/if}}\n";
 
 module.exports = { ControlsTemplate: ControlsTemplate };
 
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 var markerTemplate = "\n  <div class=\"vac-marker {{#if rangeShow}}ranged-marker{{/if}}\" style=\"left: {{left}}; {{#if rangeShow}}width:{{width}};{{/if}}\">\n    {{#if tooltipBody}}\n    \t<div>\n\t     \t<span class=\"vac-tooltip {{#if tooltipRight}}right-side{{/if}}\">\n\t        \t<b>{{tooltipTime}}</b> - {{tooltipBody}}\n\t      \t</span>\n    \t</div>\n    {{/if}}\n  </div>\n";
 
 var draggableMarkerTemplate = "\n\t<div class=\"vac-marker-draggable ranged-marker\" style=\"left: {{left}}; width:{{width}};\">\n  \t</div>\n";

@@ -1,4 +1,4 @@
-var commentsTemplate = `
+var commentListTemplate = `
   <div class="vac-comments-container" style="height: {{height}};">
     {{#each comments as |comment|}}
       <div class="comment">
@@ -15,4 +15,4 @@ var commentsTemplate = `
   </div>
 `;
 
-module.exports = {commentsTemplate};
+module.exports = {commentListTemplate};
