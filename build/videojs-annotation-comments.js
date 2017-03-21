@@ -9895,269 +9895,380 @@ process.umask = function() { return 0; };
 },{}],47:[function(require,module,exports){
 "use strict";
 
-(($, videojs) => {
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	const _ = require("underscore");
-	const Plugin = videojs.getPlugin('plugin');
-	const Annotation = require("./modules/annotation").class;
-	const Controls = require("./modules/controls").class;
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
-	const BASE_STATE = Object.freeze({
-		active: false,					// Is annotation mode active?
-		viewing_annotation_index: null,	// Index of currently expanded/visible annotation (null if none)
-		annotations: []					// Array of Annotaiton instances
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+(function ($, videojs) {
+
+	var _ = require("underscore");
+	var Plugin = videojs.getPlugin('plugin');
+	var Annotation = require("./modules/annotation").class;
+	var Controls = require("./modules/controls").class;
+
+	var BASE_STATE = Object.freeze({
+		active: false, // Is annotation mode active?
+		viewing_annotation_index: null, // Index of currently expanded/visible annotation (null if none)
+		annotations: [] // Array of Annotaiton instances
 	});
 
-	class Main extends Plugin {
+	var Main = function (_Plugin) {
+		_inherits(Main, _Plugin);
 
-		constructor(player, options) {
-	    	super(player, options);
+		function Main(player, options) {
+			_classCallCheck(this, Main);
 
-	    	this.playerId = $(player.el()).attr('id');
-	    	this.player = player;
-	    	this.uiReady = false;
+			var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, player, options));
 
-	    	this.on('statechanged', this.stateChanged);
+			_this.playerId = $(player.el()).attr('id');
+			_this.player = player;
+			_this.uiReady = false;
 
+			_this.on('statechanged', _this.stateChanged);
 
-	    	// setup initial state after video is loaded
-	    	// TODO - use plugin.defaultState? Or is this better as we freeze it and must wait for meta load anyway
-	    	player.on("loadedmetadata", () => {
-	    		console.log("THIS", this);
-		    	let state = _.clone(BASE_STATE);
-		    	state.annotations = annotations.map((a) => new Annotation(a, this.playerId));
-		    	this.setState(state);
-		    	this.drawUI(player);
+			// setup initial state after video is loaded
+			// TODO - use plugin.defaultState? Or is this better as we freeze it and must wait for meta load anyway
+			player.on("loadedmetadata", function () {
+				console.log("THIS", _this);
+				var state = _.clone(BASE_STATE);
+				state.annotations = annotations.map(function (a) {
+					return new Annotation(a, _this.playerId);
+				});
+				_this.setState(state);
+				_this.drawUI(player);
 
-		    	//TODO - for dev, remove
-		    	this.toggleAnnotations();
-		    	//mute the player and start playing
+				//TODO - for dev, remove
+				_this.toggleAnnotations();
+				//mute the player and start playing
 				player.muted(true);
 				player.play();
-		    });
-	  	}
+			});
+			return _this;
+		}
 
-	  	drawUI() {
-	  		this.components = {}; // Component references - TODO is this needed? creates memory-leaking closures
+		_createClass(Main, [{
+			key: "drawUI",
+			value: function drawUI() {
+				this.components = {}; // Component references - TODO is this needed? creates memory-leaking closures
 
-	  		var self = this;
-	  		var Component = videojs.getComponent('Component');
+				var self = this;
+				var Component = videojs.getComponent('Component');
 
-	  		// Add button to player
-	  		// TODO - clean this shit up - move this & bubble to seperate component module file??
-	  		this.components.playerBtn = player.getChild('controlBar').addChild('button', {});
-	  		this.components.playerBtn.addClass('vac-player-btn');
-		  	this.components.playerBtn.on('click', () => {
-	  			self.components.playerBtn.toggleClass('vac-active');
-	  			self.toggleAnnotations();
-	  		});
-	  		this.components.playerBtn.controlText("Toggle Animations");
+				// Add button to player
+				// TODO - clean this shit up - move this & bubble to seperate component module file??
+				this.components.playerBtn = player.getChild('controlBar').addChild('button', {});
+				this.components.playerBtn.addClass('vac-player-btn');
+				this.components.playerBtn.on('click', function () {
+					self.components.playerBtn.toggleClass('vac-active');
+					self.toggleAnnotations();
+				});
+				this.components.playerBtn.controlText("Toggle Animations");
 
-	  		// Add controls box
-	  		this.components.controls = new Controls(this.playerId);
+				// Add controls box
+				this.components.controls = new Controls(this.playerId);
 
-	  		this.uiReady = true;
-	  		this.updateAnnotationBubble();
-	  	}
+				this.uiReady = true;
+				this.updateAnnotationBubble();
+			}
+		}, {
+			key: "toggleAnnotations",
+			value: function toggleAnnotations() {
+				var active = !this.state.active;
+				this.setState({ active: active });
+				this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
+				if (!active) {
+					this.components.controls.clear(true);
+				} else {
+					this.components.controls.draw();
+				}
+			}
+		}, {
+			key: "dispose",
+			value: function dispose() {
+				_get(Main.prototype.__proto__ || Object.getPrototypeOf(Main.prototype), "dispose", this).call(this);
+				videojs.log('the advanced plugin is being disposed');
+			}
+		}, {
+			key: "updateAnnotationBubble",
+			value: function updateAnnotationBubble() {
+				if (!this.uiReady) return;
 
-	  	toggleAnnotations() {
-	  		var active = !this.state.active;
-	  		this.setState({active});
-	  		this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
-	  		if(!active){
-	  			this.components.controls.clear(true);
-	  		}else{
-	  			this.components.controls.draw();
-	  		}
-	  	}
+				var $el = $(this.components.playerBtn.el()),
+				    $bubble = $el.find(".vac-bubble");
 
-	  	dispose() {
-	    	super.dispose();
-	    	videojs.log('the advanced plugin is being disposed');
-	  	}
+				if (!$bubble.length) {
+					$bubble = $("<b/>");
+					$el.append($bubble);
+				}
 
-	  	updateAnnotationBubble () {
-	  		if(!this.uiReady) return;
+				var num = this.state.annotations.length;
+				$bubble.text(num);
+				num > 0 ? $el.addClass('show') : $el.addClass('hide');
+			}
+		}, {
+			key: "stateChanged",
+			value: function stateChanged() {
+				console.log('State updated', this.state);
+				this.updateAnnotationBubble(); // TODO - only fire if needed
+			}
+		}]);
 
-	  		var $el = $(this.components.playerBtn.el()),
-	  			$bubble = $el.find(".vac-bubble");
-
-	  		if(!$bubble.length){
-	  			$bubble = $("<b/>");
-	  			$el.append($bubble);
-	  		}
-
-	  		var num = this.state.annotations.length;
-	  		$bubble.text(num);
-	  		num > 0 ? $el.addClass('show') : $el.addClass('hide');
-	  	}
-
-	  	stateChanged() {
-	    	console.log('State updated', this.state);
-	    	this.updateAnnotationBubble(); // TODO - only fire if needed
-	  	}
-	}
+		return Main;
+	}(Plugin);
 
 	videojs.registerPlugin('annotationComments', Main);
-
 })(jQuery, window.videojs);
 
 },{"./modules/annotation":48,"./modules/controls":50,"underscore":46}],48:[function(require,module,exports){
 "use strict";
 
-const PlayerComponent = require("./player_component").class;
-const Comment = require("./comment").class;
-const AnnotationMarkerTemplate = require("./../templates/annotation-marker").annotationMarkerTemplate;
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-class Annotation extends PlayerComponent {
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-  constructor(data, playerId) {
-    super(playerId);
-    this.id = data.id;
-    this.range = data.range;
-    this.shape = data.shape;
-    this.comments = data.comments.map( (c) => new Comment(c, playerId) );
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-    this.template = AnnotationMarkerTemplate
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-    this.drawMarker();
-  }
+var PlayerComponent = require("./player_component").class;
+var Comment = require("./comment").class;
+var Templates = require("./../templates/annotation");
+var MarkerTemplate = Templates.markerTemplate;
+var CommentsTemplate = Templates.commentsTemplate;
 
-  drawMarker () {
-    // Draw marker on timeline for this.range;
-    var $timeline = this.$player.find('.vjs-progress-control')
-    var $markerWrap = $timeline.find(".vac-marker-wrap");
+var Annotation = function (_PlayerComponent) {
+  _inherits(Annotation, _PlayerComponent);
 
-    if(!$markerWrap.length){
-      var $outerWrap = $("<div/>").addClass("vac-marker-owrap"),
-          $markerWrap = $("<div/>").addClass("vac-marker-wrap");
+  function Annotation(data, playerId) {
+    _classCallCheck(this, Annotation);
 
-      $timeline.append($outerWrap.append($markerWrap));
-    }
+    var _this = _possibleConstructorReturn(this, (Annotation.__proto__ || Object.getPrototypeOf(Annotation)).call(this, playerId));
 
-    var $marker = $(this.renderTemplate(this.template, this.buildMarkerData()));
-
-    // handle dimming other markers + highlighting this one
-    $marker.mouseenter(() => {
-      $markerWrap.addClass('dim-all');
-      $marker.addClass('hovering');
-    }).mouseleave(() => {
-      $markerWrap.removeClass('dim-all');
-      $marker.removeClass('hovering');
+    _this.id = data.id;
+    _this.range = data.range;
+    _this.shape = data.shape;
+    _this.comments = data.comments.map(function (c) {
+      return new Comment(c, playerId);
     });
 
-    $markerWrap.append($marker);
+    _this.markerTemplate = MarkerTemplate;
+    _this.commentsTemplate = CommentsTemplate;
+
+    _this.drawMarker();
+    return _this;
   }
 
-  // Convert num seconds to human readable format (M:SS)
-  humanTime () {
-    var mins = Math.floor(this.range.start/60),
-        secs = String(this.range.start % 60);
-    return mins + ":" + (secs.length==1 ? "0" : "") + secs;
-  }
+  _createClass(Annotation, [{
+    key: "drawMarker",
+    value: function drawMarker() {
+      var _this2 = this;
 
-  // Build object for template
-  buildMarkerData () {
-    var left = (this.range.start / this.duration) * 100;
-    var width = ((this.range.end / this.duration) * 100) - left;
-    return {
-      "left"        : left + "%",
-      "width"       : width + "%",
-      "tooltipRight": left > 50,
-      "tooltipTime" : this.humanTime(),
-      "tooltipBody" : this.comments[0].body,
-      "rangeShow"  : !!this.range.end
+      // Draw marker on timeline for this.range;
+      var $timeline = this.$player.find('.vjs-progress-control');
+      var $markerWrap = $timeline.find(".vac-marker-wrap");
+
+      if (!$markerWrap.length) {
+        var $outerWrap = $("<div/>").addClass("vac-marker-owrap"),
+            $markerWrap = $("<div/>").addClass("vac-marker-wrap");
+
+        $timeline.append($outerWrap.append($markerWrap));
+      }
+
+      var $marker = $(this.renderTemplate(this.markerTemplate, this.buildMarkerData()));
+
+      // handle dimming other markers + highlighting this one
+      $marker.mouseenter(function () {
+        $markerWrap.addClass('dim-all');
+        $marker.addClass('hovering');
+      }).mouseleave(function () {
+        $markerWrap.removeClass('dim-all');
+        $marker.removeClass('hovering');
+      });
+
+      $marker.click(function () {
+        return _this2.renderComments();
+      });
+
+      $markerWrap.append($marker);
     }
-  }
-}
+  }, {
+    key: "renderComments",
+    value: function renderComments() {
+      this.$player.find(".comments-container").remove();
+
+      var $commentsContainer = $(this.renderTemplate(this.commentsTemplate, {
+        comments: this.comments
+
+      }));
+      this.$player.append($commentsContainer);
+    }
+
+    // Convert num seconds to human readable format (M:SS)
+
+  }, {
+    key: "humanTime",
+    value: function humanTime() {
+      var mins = Math.floor(this.range.start / 60),
+          secs = String(this.range.start % 60);
+      return mins + ":" + (secs.length == 1 ? "0" : "") + secs;
+    }
+
+    // Build object for template
+
+  }, {
+    key: "buildMarkerData",
+    value: function buildMarkerData() {
+      var left = this.range.start / this.duration * 100;
+      var width = this.range.end / this.duration * 100 - left;
+      return {
+        "left": left + "%",
+        "width": width + "%",
+        "tooltipRight": left > 50,
+        "tooltipTime": this.humanTime(),
+        "tooltipBody": this.comments[0].body,
+        "rangeShow": !!this.range.end
+      };
+    }
+  }]);
+
+  return Annotation;
+}(PlayerComponent);
 
 module.exports = {
   class: Annotation
 };
 
-},{"./../templates/annotation-marker":52,"./comment":49,"./player_component":51}],49:[function(require,module,exports){
+},{"./../templates/annotation":52,"./comment":49,"./player_component":51}],49:[function(require,module,exports){
 "use strict";
 
-const PlayerComponent = require("./player_component").class;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-class Comment extends PlayerComponent {
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-  constructor(data, playerId) {
-  	super(playerId);
-    this.meta = data.meta;
-    this.body = data.body;
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var PlayerComponent = require("./player_component").class;
+
+var Comment = function (_PlayerComponent) {
+  _inherits(Comment, _PlayerComponent);
+
+  function Comment(data, playerId) {
+    _classCallCheck(this, Comment);
+
+    var _this = _possibleConstructorReturn(this, (Comment.__proto__ || Object.getPrototypeOf(Comment)).call(this, playerId));
+
+    _this.meta = data.meta;
+    _this.body = data.body;
+    return _this;
   }
-  
-}
+
+  return Comment;
+}(PlayerComponent);
 
 module.exports = {
-	class: Comment
+  class: Comment
 };
+
 },{"./player_component":51}],50:[function(require,module,exports){
 "use strict";
 
-const _ = require("underscore");
-const PlayerComponent = require("./player_component").class;
-const ControlsTemplate = require("./../templates/controls").ControlsTemplate;
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-const BASE_UI_STATE = Object.freeze({
-  adding: false,          // are we currently adding a new annotaiton?
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _ = require("underscore");
+var PlayerComponent = require("./player_component").class;
+var ControlsTemplate = require("./../templates/controls").ControlsTemplate;
+
+var BASE_UI_STATE = Object.freeze({
+  adding: false, // are we currently adding a new annotaiton?
   writingComment: false
 });
 
-class Controls extends PlayerComponent {
+var Controls = function (_PlayerComponent) {
+  _inherits(Controls, _PlayerComponent);
 
-  constructor(playerId) {
-    super(playerId);
-    this.template = ControlsTemplate;
-    this.uiState = _.clone(BASE_UI_STATE);
-    this.bindEvents();
-    this.draw();
+  function Controls(playerId) {
+    _classCallCheck(this, Controls);
+
+    var _this = _possibleConstructorReturn(this, (Controls.__proto__ || Object.getPrototypeOf(Controls)).call(this, playerId));
+
+    _this.template = ControlsTemplate;
+    _this.uiState = _.clone(BASE_UI_STATE);
+    _this.bindEvents();
+    _this.draw();
+    return _this;
   }
 
-  bindEvents () {
-    // Bind all the events we need
-    this.$player.on("click", ".vac-controls button", this.startAddNew.bind(this));
-    this.$player.on("click", ".vac-add-controls a", this.cancelAddNew.bind(this));
-  }
-
-  clear(reset=false) {
-    if(reset){
-      if(this.uiState.adding) this.restoreNormalUI();
-      this.uiState = _.clone(BASE_UI_STATE);
+  _createClass(Controls, [{
+    key: "bindEvents",
+    value: function bindEvents() {
+      // Bind all the events we need
+      this.$player.on("click", ".vac-controls button", this.startAddNew.bind(this));
+      this.$player.on("click", ".vac-add-controls a", this.cancelAddNew.bind(this));
     }
-    this.$player.find(".vac-control").remove();
-  }
+  }, {
+    key: "clear",
+    value: function clear() {
+      var reset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
-  draw (reset=false) {
-    this.clear(reset);
-    console.log("STATE", this.uiState);
-    var $ctrls = this.renderTemplate(this.template, this.uiState);
-    this.$player.append($ctrls);
-  }
+      if (reset) {
+        if (this.uiState.adding) this.restoreNormalUI();
+        this.uiState = _.clone(BASE_UI_STATE);
+      }
+      this.$player.find(".vac-control").remove();
+    }
+  }, {
+    key: "draw",
+    value: function draw() {
+      var reset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
-  cancelAddNew () {
-    this.draw(true);
-  }
+      this.clear(reset);
+      console.log("STATE", this.uiState);
+      var $ctrls = this.renderTemplate(this.template, this.uiState);
+      this.$player.append($ctrls);
+    }
+  }, {
+    key: "cancelAddNew",
+    value: function cancelAddNew() {
+      this.draw(true);
+    }
+  }, {
+    key: "startAddNew",
+    value: function startAddNew() {
+      this.player.pause();
+      //TODO - prevent play
+      this.setAddingUI();
+      this.uiState.adding = true;
+      this.draw();
+    }
+  }, {
+    key: "setAddingUI",
+    value: function setAddingUI() {
+      //change normal UI (hide markers, hide playback, etc)
+      this.$player.addClass('vac-adding');
+    }
+  }, {
+    key: "restoreNormalUI",
+    value: function restoreNormalUI() {
+      this.$player.removeClass('vac-adding');
+    }
+  }]);
 
-  startAddNew () {
-    this.player.pause();
-    //TODO - prevent play
-    this.setAddingUI();
-    this.uiState.adding = true;
-    this.draw();
-  }
+  return Controls;
+}(PlayerComponent);
 
-  setAddingUI () {
-    //change normal UI (hide markers, hide playback, etc)
-    this.$player.addClass('vac-adding');
-  }
-
-  restoreNormalUI () {
-    this.$player.removeClass('vac-adding');
-  }
-
-};
+;
 
 module.exports = {
   class: Controls
@@ -10166,75 +10277,62 @@ module.exports = {
 },{"./../templates/controls":53,"./player_component":51,"underscore":46}],51:[function(require,module,exports){
 "use strict";
 
-const Handlebars = require("handlebars");
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-class PlayerComponent {
-  constructor(playerId) {
-  	this.playerId = playerId;
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Handlebars = require("handlebars");
+
+var PlayerComponent = function () {
+  function PlayerComponent(playerId) {
+    _classCallCheck(this, PlayerComponent);
+
+    this.playerId = playerId;
   }
 
-  get player () {
-  	return videojs(this.playerId);
-  }
+  _createClass(PlayerComponent, [{
+    key: "renderTemplate",
+    value: function renderTemplate(htmlString) {
+      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-  get $player () {
-  	return $(this.player.el());
-  }
+      var template = Handlebars.compile(htmlString);
+      return template(options);
+    }
+  }, {
+    key: "player",
+    get: function get() {
+      return videojs(this.playerId);
+    }
+  }, {
+    key: "$player",
+    get: function get() {
+      return $(this.player.el());
+    }
+  }, {
+    key: "duration",
+    get: function get() {
+      return this.player.duration();
+    }
+  }]);
 
-  get duration () {
-    return this.player.duration();
-  }
-
-  renderTemplate(htmlString, options = {}) {
-    var template = Handlebars.compile(htmlString);
-    return template(options);
-  }
-}
+  return PlayerComponent;
+}();
 
 module.exports = {
   class: PlayerComponent
 };
 
 },{"handlebars":32}],52:[function(require,module,exports){
-var annotationMarkerTemplate = `
-  <div class="vac-marker {{#if rangeShow}}ranged-marker{{/if}}" style="left: {{left}}; {{#if rangeShow}}width:{{width}};{{/if}}">
-    <div>
-      <span class="vac-tooltip {{#if tooltipRight}}right-side{{/if}}">
-        <b>{{tooltipTime}}</b> - {{tooltipBody}}
-      </span>
-    </div>
-  </div>
-`;
+var markerTemplate = "\n  <div class=\"vac-marker {{#if rangeShow}}ranged-marker{{/if}}\" style=\"left: {{left}}; {{#if rangeShow}}width:{{width}};{{/if}}\">\n    <div>\n      <span class=\"vac-tooltip {{#if tooltipRight}}right-side{{/if}}\">\n        <b>{{tooltipTime}}</b> - {{tooltipBody}}\n      </span>\n    </div>\n  </div>\n";
 
-module.exports = {annotationMarkerTemplate};
+var commentsTemplate = "\n  <div class=\"comments-container\">\n    Some text {{id}}\n    {{#each comments as |comment|}}\n      <div class=\"comment\">\n        <div class=\"comment-header\">\n          <span class=\"author-name\">{{comment.meta.user_id}}</span>\n          <span class=\"timestamp\">{{comment.meta.datetime}}</span>\n        </div>\n        <div class=\"comment-body\">\n          {{comment.body}}\n        </div>\n      </div>\n    {{/each}}\n  </div>\n";
+
+module.exports = { markerTemplate: markerTemplate, commentsTemplate: commentsTemplate };
 
 },{}],53:[function(require,module,exports){
-var ControlsTemplate = `
-	{{#unless adding}}
-	  	<div class="vac-controls vac-control">
-		  	Annotations
-			<button>+ NEW</button>
-			<div class="nav">
-				<div class="prev">Prev</div>
-				<div class="next">Next</div>
-			</div>
-		</div>
-	{{/unless}}
+var ControlsTemplate = "\n\t{{#unless adding}}\n\t  \t<div class=\"vac-controls vac-control\">\n\t\t  \tAnnotations\n\t\t\t<button>+ NEW</button>\n\t\t\t<div class=\"nav\">\n\t\t\t\t<div class=\"prev\">Prev</div>\n\t\t\t\t<div class=\"next\">Next</div>\n\t\t\t</div>\n\t\t</div>\n\t{{/unless}}\n\n\t{{#if adding}}\n\t\t<div class=\"vac-add-controls vac-control\">\n\t\t  \tNew Annotation\n\t\t\t<i>Select shape + range</i>\n\t\t\t<button>CONTINUE</button>\n\t\t\t<a>cancel</a>\n\t\t</div>\n\n\n\n\t{{/if}}\n";
 
-	{{#if adding}}
-		<div class="vac-add-controls vac-control">
-		  	New Annotation
-			<i>Select shape + range</i>
-			<button>CONTINUE</button>
-			<a>cancel</a>
-		</div>
-
-
-
-	{{/if}}
-`;
-
-module.exports = {ControlsTemplate};
+module.exports = { ControlsTemplate: ControlsTemplate };
 
 },{}]},{},[47])
 

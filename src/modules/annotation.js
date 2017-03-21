@@ -2,7 +2,9 @@
 
 const PlayerComponent = require("./player_component").class;
 const Comment = require("./comment").class;
-const AnnotationMarkerTemplate = require("./../templates/annotation-marker").annotationMarkerTemplate;
+const Templates = require("./../templates/annotation")
+const MarkerTemplate = Templates.markerTemplate;
+const CommentsTemplate = Templates.commentsTemplate;
 
 class Annotation extends PlayerComponent {
 
@@ -13,7 +15,8 @@ class Annotation extends PlayerComponent {
     this.shape = data.shape;
     this.comments = data.comments.map( (c) => new Comment(c, playerId) );
 
-    this.template = AnnotationMarkerTemplate
+    this.markerTemplate = MarkerTemplate;
+    this.commentsTemplate = CommentsTemplate;
 
     this.drawMarker();
   }
@@ -30,7 +33,7 @@ class Annotation extends PlayerComponent {
       $timeline.append($outerWrap.append($markerWrap));
     }
 
-    var $marker = $(this.renderTemplate(this.template, this.buildMarkerData()));
+    var $marker = $(this.renderTemplate(this.markerTemplate, this.buildMarkerData()));
 
     // handle dimming other markers + highlighting this one
     $marker.mouseenter(() => {
@@ -41,7 +44,22 @@ class Annotation extends PlayerComponent {
       $marker.removeClass('hovering');
     });
 
+    $marker.click(() => this.renderComments())
+
     $markerWrap.append($marker);
+  }
+
+  renderComments () {
+    this.$player.find(".comments-container").remove()
+
+    var $commentsContainer = $(this.renderTemplate(
+      this.commentsTemplate,
+      {
+        comments: this.comments,
+
+      }
+    ));
+    this.$player.append($commentsContainer);
   }
 
   // Convert num seconds to human readable format (M:SS)
