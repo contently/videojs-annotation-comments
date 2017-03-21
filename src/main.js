@@ -19,18 +19,22 @@
 
 	    	this.playerId = $(player.el()).attr('id');
 	    	this.player = player;
+	    	this.uiReady = false;
 	    	
 	    	this.on('statechanged', this.stateChanged);
 
-	    	this.drawUI(player);
 
 	    	// setup initial state after video is loaded
 	    	// TODO - use plugin.defaultState? Or is this better as we freeze it and must wait for meta load anyway
-	    	var self = this;
 	    	player.on("loadedmetadata", () => {
+	    		console.log("THIS", this);
 		    	let state = _.clone(BASE_STATE);
 		    	state.annotations = annotations.map((a) => new Annotation(a, this.playerId));
-		    	self.setState(state);
+		    	this.setState(state);
+		    	this.drawUI(player);
+
+		    	//TODO - for dev, remove
+		    	this.toggleAnnotations();
 		    });
 	  	}
 
@@ -49,6 +53,15 @@
 	  			self.toggleAnnotations();
 	  		});
 	  		this.components.playerBtn.controlText("Toggle Animations");
+
+	  		// TODO move to template
+	  		var t = `<div class="vac-controls"><b>${this.state.annotations.length}</b> Annotations`;
+	  		t += '<button>+ NEW</button><div class="nav"><div class="prev">Prev</div><div class="next">Next</div></div></div>';
+	  		$(this.player.el()).append(t);
+
+
+	  		this.uiReady = true;
+	  		this.updateAnnotationBubble();
 	  	}
 
 	  	toggleAnnotations() {
@@ -63,6 +76,8 @@
 	  	}
 
 	  	updateAnnotationBubble () {
+	  		if(!this.uiReady) return;
+
 	  		var $el = $(this.components.playerBtn.el()),
 	  			$bubble = $el.find(".vac-bubble");
 	  		

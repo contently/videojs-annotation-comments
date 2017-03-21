@@ -1,6 +1,9 @@
 .video-js{
 
 	&.vac-active{
+		.vac-controls{
+			display: block;
+		}
 		.vjs-mouse-display{
 			display: none !important;
 		}
@@ -9,7 +12,60 @@
 		}
 	}
 
+	.vac-controls, .vac-add-controls{
+		display:none;
+		position: absolute;
+		border-radius: 2px;
+		overflow: hidden;
+		background-color: rgba(0,0,0,.2);
+		top: 4px;
+		left: 4px;
+		padding: 10px 0 0 0;
+		font-size: 14px;
+		color: white;
+		width: 150px;
+		button{
+			margin:10px;
+			line-height: 27px;
+			font-size: 13px;
+			padding:0;
+			width: calc(100% - 20px);
+			text-align: center;
+			border-radius: 2px;
+			background: #00a6c2;
+			color: white;
+			display: block;
+		}
+		.nav{
+			margin-top: 8px;
+			width: 100%;
+			display:flex;
+			flex-direction: row;
+			div{
+				flex: 1;
+				background-color: rgba(0,0,0,.8);
+				text-align: center;
+				line-height: 22px;
+				color: #eed428;
+				transition: all .2s ease-in-out;
+				cursor: pointer;
+				font-size: 12px;
+				&.hide{
+					visibility: hidden;
+				}
+				&:hover{
+					background-color: #eed428;
+					color: black;
+				}
+				&.prev{
+					margin-right: 1px;
+				}
+			}
+		}
+	}
+
 	.vac-player-btn{
+		margin-right:8px;
 		span.vjs-icon-placeholder{
 			width: 100%;
 			height: 100%;

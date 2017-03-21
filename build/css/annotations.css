@@ -1,10 +1,59 @@
+.video-js.vac-active .vac-controls {
+  display: block; }
+
 .video-js.vac-active .vjs-mouse-display {
   display: none !important; }
 
 .video-js.vac-active .vac-marker-owrap {
   display: block; }
 
+.video-js .vac-controls, .video-js .vac-add-controls {
+  display: none;
+  position: absolute;
+  border-radius: 2px;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.2);
+  top: 4px;
+  left: 4px;
+  padding: 10px 0 0 0;
+  font-size: 14px;
+  color: white;
+  width: 150px; }
+  .video-js .vac-controls button, .video-js .vac-add-controls button {
+    margin: 10px;
+    line-height: 27px;
+    font-size: 13px;
+    padding: 0;
+    width: calc(100% - 20px);
+    text-align: center;
+    border-radius: 2px;
+    background: #00a6c2;
+    color: white;
+    display: block; }
+  .video-js .vac-controls .nav, .video-js .vac-add-controls .nav {
+    margin-top: 8px;
+    width: 100%;
+    display: flex;
+    flex-direction: row; }
+    .video-js .vac-controls .nav div, .video-js .vac-add-controls .nav div {
+      flex: 1;
+      background-color: rgba(0, 0, 0, 0.8);
+      text-align: center;
+      line-height: 22px;
+      color: #eed428;
+      transition: all .2s ease-in-out;
+      cursor: pointer;
+      font-size: 12px; }
+      .video-js .vac-controls .nav div.hide, .video-js .vac-add-controls .nav div.hide {
+        visibility: hidden; }
+      .video-js .vac-controls .nav div:hover, .video-js .vac-add-controls .nav div:hover {
+        background-color: #eed428;
+        color: black; }
+      .video-js .vac-controls .nav div.prev, .video-js .vac-add-controls .nav div.prev {
+        margin-right: 1px; }
+
 .video-js .vac-player-btn {
+  margin-right: 8px;
   cursor: pointer; }
   .video-js .vac-player-btn span.vjs-icon-placeholder {
     width: 100%;
