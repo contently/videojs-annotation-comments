@@ -27,16 +27,16 @@ class Annotation extends PlayerComponent {
   }
 
   renderComments () {
-    this.$player.find(".comments-container").remove()
+    $(".vac-comments-container").remove()
 
     var $commentsContainer = $(this.renderTemplate(
       this.commentsTemplate,
-      {
-        comments: this.comments,
-
-      }
+      {comments: this.comments, height: $(".vjs-text-track-display").height() + 'px'}
     ));
     this.$player.append($commentsContainer);
+
+    this.player.pause();
+    this.player.currentTime(this.range.start);
   }
 }
 

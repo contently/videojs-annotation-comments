@@ -244,32 +244,64 @@
 		position: absolute;
     right: 0;
     top: 0;
-    height: 100%;
-    width: 30%;
+    width: 40%;
 		background-color: rgba(255, 255, 255, 0.30);
-		padding-top: 10%;
+		overflow-x: hidden;
+		overflow-y: auto;
+
 
 		.comment {
-			width: 80%;
-			margin-left: 10%;
+			width: 90%;
+			margin-left: 5%;
+			margin-top: 15px;
+			border-radius: 10px;
 
 			.comment-header {
 				width: 100%;
-				height: 10px;
-				background-color: white;
+				height: 28px;
+				padding: 2%;
+				font-size: 1.4em;
+				color: #000;
+				background-color: gray;
+				font-weight: bold;
+
+				.author-name, .timestamp {
+					display: inline-block;
+					width: 45%;
+				}
+
+				.author-name {
+					float: left;
+					text-align: left;
+				}
+
+				.timestamp {
+					float: right;
+					text-align: right;
+				}
 			}
 
 			.comment-body {
 				width: 100%;
-				background-color: gray;
+				padding: 4%;
+				background-color: #fff;
+				color: #000;
+				font-size: 1.2em;
+				text-align: left;
 			}
 		}
 
 		.reply-btn {
-			width: 100%;
-			height: 20px;
+			width: 90%;
+			margin-left: 5%;
+			height: 25px;
+			padding-top: 3px;
+			margin-top: 20px;
 			color: #fff;
+			font-size: 1.6em;
 			background-color: #00A6C2;
+			border-radius: 2px;
+			margin-bottom: 20px;
 		}
 	}
 }

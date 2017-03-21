@@ -10076,13 +10076,13 @@ var Annotation = function (_PlayerComponent) {
   }, {
     key: "renderComments",
     value: function renderComments() {
-      this.$player.find(".comments-container").remove();
+      $(".vac-comments-container").remove();
 
-      var $commentsContainer = $(this.renderTemplate(this.commentsTemplate, {
-        comments: this.comments
-
-      }));
+      var $commentsContainer = $(this.renderTemplate(this.commentsTemplate, { comments: this.comments, height: $(".vjs-text-track-display").height() + 'px' }));
       this.$player.append($commentsContainer);
+
+      this.player.pause();
+      this.player.currentTime(this.range.start);
     }
   }]);
 
@@ -10096,6 +10096,8 @@ module.exports = {
 },{"./../templates/annotation":54,"./comment":49,"./marker":52,"./player_component":53}],49:[function(require,module,exports){
 "use strict";
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -10105,23 +10107,60 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var PlayerComponent = require("./player_component").class;
 
 var Comment = function (_PlayerComponent) {
-  _inherits(Comment, _PlayerComponent);
+    _inherits(Comment, _PlayerComponent);
 
-  function Comment(data, playerId) {
-    _classCallCheck(this, Comment);
+    function Comment(data, playerId) {
+        _classCallCheck(this, Comment);
 
-    var _this = _possibleConstructorReturn(this, (Comment.__proto__ || Object.getPrototypeOf(Comment)).call(this, playerId));
+        var _this = _possibleConstructorReturn(this, (Comment.__proto__ || Object.getPrototypeOf(Comment)).call(this, playerId));
 
-    _this.meta = data.meta;
-    _this.body = data.body;
-    return _this;
-  }
+        _this.meta = data.meta;
+        _this.body = data.body;
+        _this.timeSince = _this.timeSince();
+        return _this;
+    }
 
-  return Comment;
+    _createClass(Comment, [{
+        key: "timeSince",
+        value: function timeSince() {
+            var date = new Date(this.meta.datetime);
+
+            var seconds = Math.floor((new Date() - date) / 1000);
+            var interval = Math.floor(seconds / 31536000);
+
+            if (interval > 1) {
+                return interval + " years";
+            }
+
+            interval = Math.floor(seconds / 2592000);
+            if (interval > 1) {
+                return interval + " months";
+            }
+
+            interval = Math.floor(seconds / 86400);
+            if (interval > 1) {
+                return interval + " days";
+            }
+
+            interval = Math.floor(seconds / 3600);
+            if (interval > 1) {
+                return interval + " hours";
+            }
+
+            interval = Math.floor(seconds / 60);
+            if (interval > 1) {
+                return interval + " minutes";
+            }
+
+            return Math.floor(seconds) + " seconds";
+        }
+    }]);
+
+    return Comment;
 }(PlayerComponent);
 
 module.exports = {
-  class: Comment
+    class: Comment
 };
 
 },{"./player_component":53}],50:[function(require,module,exports){
@@ -10469,9 +10508,11 @@ module.exports = {
 };
 
 },{"handlebars":32}],54:[function(require,module,exports){
-var commentsTemplate = "\n  <div class=\"comments-container\">\n    Some text {{id}}\n    {{#each comments as |comment|}}\n      <div class=\"comment\">\n        <div class=\"comment-header\">\n          <span class=\"author-name\">{{comment.meta.user_id}}</span>\n          <span class=\"timestamp\">{{comment.meta.datetime}}</span>\n        </div>\n        <div class=\"comment-body\">\n          {{comment.body}}\n        </div>\n      </div>\n    {{/each}}\n  </div>\n";
+var markerTemplate = "\n  <div class=\"vac-marker {{#if rangeShow}}ranged-marker{{/if}}\" style=\"left: {{left}}; {{#if rangeShow}}width:{{width}};{{/if}}\">\n    <div>\n      <span class=\"vac-tooltip {{#if tooltipRight}}right-side{{/if}}\">\n        <b>{{tooltipTime}}</b> - {{tooltipBody}}\n      </span>\n    </div>\n  </div>\n";
 
-module.exports = { commentsTemplate: commentsTemplate };
+var commentsTemplate = "\n  <div class=\"vac-comments-container\" style=\"height: {{height}};\">\n    {{#each comments as |comment|}}\n      <div class=\"comment\">\n        <div class=\"comment-header\">\n          <div class=\"author-name\">{{comment.meta.user_id}}</div>\n          <div class=\"timestamp\">{{comment.timeSince}} ago</div>\n        </div>\n        <div class=\"comment-body\">\n          {{comment.body}}\n        </div>\n      </div>\n    {{/each}}\n    <div class=\"reply-btn\">Create reply</div>\n  </div>\n";
+
+module.exports = { markerTemplate: markerTemplate, commentsTemplate: commentsTemplate };
 
 },{}],55:[function(require,module,exports){
 var ControlsTemplate = "\n\t{{#unless adding}}\n\t  \t<div class=\"vac-controls vac-control\">\n\t\t  \tAnnotations\n\t\t\t<button>+ NEW</button>\n\t\t\t<div class=\"nav\">\n\t\t\t\t<div class=\"prev\">Prev</div>\n\t\t\t\t<div class=\"next\">Next</div>\n\t\t\t</div>\n\t\t</div>\n\t{{/unless}}\n\n\t{{#if adding}}\n\t\t<div class=\"vac-video-cover vac-control\">\n\t\t</div>\n\n\t\t<div class=\"vac-add-controls vac-control\">\n\t\t  \tNew Annotation\n\t\t\t<i>Select shape + range</i>\n\t\t\t<button>CONTINUE</button>\n\t\t\t<a>cancel</a>\n\t\t</div>\n\n\n\n\t{{/if}}\n";
