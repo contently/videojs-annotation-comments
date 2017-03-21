@@ -192,10 +192,26 @@
     .video-js .vac-marker-owrap .vac-marker-wrap.dim-all .vac-marker {
       opacity: .4; }
 
-.video-js .comments-container {
+.video-js .vac-comments-container {
   position: absolute;
   right: 0;
   top: 0;
   height: 100%;
   width: 30%;
-  background-color: rgba(255, 255, 255, 0.3); }
+  background-color: rgba(255, 255, 255, 0.3);
+  padding-top: 10%; }
+  .video-js .vac-comments-container .comment {
+    width: 80%;
+    margin-left: 10%; }
+    .video-js .vac-comments-container .comment .comment-header {
+      width: 100%;
+      height: 10px;
+      background-color: white; }
+    .video-js .vac-comments-container .comment .comment-body {
+      width: 100%;
+      background-color: gray; }
+  .video-js .vac-comments-container .reply-btn {
+    width: 100%;
+    height: 20px;
+    color: #fff;
+    background-color: #00A6C2; }
