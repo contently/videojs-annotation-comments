@@ -3,6 +3,7 @@
 const PlayerComponent = require("./player_component").class;
 const CommentList = require("./comment_list").class;
 const Marker = require("./marker").class;
+const AnnotationShape = require("./annotation_shape").class;
 
 class Annotation extends PlayerComponent {
 
@@ -15,11 +16,15 @@ class Annotation extends PlayerComponent {
     this.commentList = new CommentList({"comments": data.comments, "annotation": this}, playerId)
     this.marker = new Marker(this.range, this.commentList.comments[0], playerId);
     this.marker.draw();
+    this.annotationShape = new AnnotationShape(this.shape, playerId);
     this.bindMarkerEvents();
   }
 
   bindMarkerEvents() {
-    this.marker.$el.click(() => this.commentList.render());
+    this.marker.$el.click(() => {
+      this.commentList.render();
+      this.annotationShape.draw();
+    });
   }
 }
 

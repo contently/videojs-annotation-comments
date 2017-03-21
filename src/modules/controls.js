@@ -53,7 +53,6 @@ class Controls extends PlayerComponent {
 
   startAddNew () {
     this.player.pause();
-    //TODO - prevent play
     this.setAddingUI();
     this.uiState.adding = true;
     this.draw();

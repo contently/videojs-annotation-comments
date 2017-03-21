@@ -10007,6 +10007,7 @@ process.umask = function() { return 0; };
 const PlayerComponent = require("./player_component").class;
 const CommentList = require("./comment_list").class;
 const Marker = require("./marker").class;
+const AnnotationShape = require("./annotation_shape").class;
 
 class Annotation extends PlayerComponent {
 
@@ -10019,11 +10020,15 @@ class Annotation extends PlayerComponent {
     this.commentList = new CommentList({"comments": data.comments, "annotation": this}, playerId)
     this.marker = new Marker(this.range, this.commentList.comments[0], playerId);
     this.marker.draw();
+    this.annotationShape = new AnnotationShape(this.shape, playerId);
     this.bindMarkerEvents();
   }
 
   bindMarkerEvents() {
-    this.marker.$el.click(() => this.commentList.render());
+    this.marker.$el.click(() => {
+      this.commentList.render();
+      this.annotationShape.draw();
+    });
   }
 }
 
@@ -10031,7 +10036,7 @@ module.exports = {
   class: Annotation
 };
 
-},{"./comment_list":51,"./marker":54,"./player_component":55}],49:[function(require,module,exports){
+},{"./annotation_shape":49,"./comment_list":51,"./marker":54,"./player_component":55}],49:[function(require,module,exports){
 "use strict";
 
 const PlayerComponent = require("./player_component").class;
@@ -10073,6 +10078,7 @@ class AnnotationShape extends PlayerComponent {
 module.exports = {
 	class: AnnotationShape
 };
+
 },{"./player_component":55}],50:[function(require,module,exports){
 "use strict";
 
@@ -10217,7 +10223,6 @@ class Controls extends PlayerComponent {
 
   startAddNew () {
     this.player.pause();
-    //TODO - prevent play
     this.setAddingUI();
     this.uiState.adding = true;
     this.draw();

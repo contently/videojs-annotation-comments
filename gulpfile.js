@@ -84,7 +84,7 @@ gulp.task('sass:watch', () => {
   gulp.watch('./src/css/**/*.scss', ['sass']);
 });
 
-gulp.task('build', ['lint','transpile'], () => {
+gulp.task('build', ['transpile'], () => {
   return gulp.src('build/videojs-annotation-comments.js')
     .pipe(rename(FILENAME.replace(".js",".min.js")))
     .pipe( stripComments() )
