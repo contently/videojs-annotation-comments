@@ -7,12 +7,11 @@ class AnnotationShape extends PlayerComponent {
   constructor(shape, playerId) {
   	super(playerId);
     this.shape = shape;
-    this.draw();
   }
 
   draw () {
     if(!this.shape) return;
-    
+
     this.$el = $("<div/>").addClass("vac-shape").css({
       top: this.shape.x1 + "%",
       left: this.shape.y1 + "%",
