@@ -7,10 +7,10 @@
 .video-js.vac-active .vjs-control-bar {
   z-index: 2; }
 
-.video-js.vac-adding .vac-marker, .video-js.vac-adding .vjs-big-play-button {
+.video-js.vac-disable-play .vac-marker, .video-js.vac-disable-play .vjs-big-play-button {
   display: none !important; }
 
-.video-js.vac-adding .vjs-play-control, .video-js.vac-adding .vjs-play-progress {
+.video-js.vac-disable-play .vjs-play-control, .video-js.vac-disable-play .vjs-play-progress {
   visibility: hidden !important; }
 
 .video-js .vac-video-cover {

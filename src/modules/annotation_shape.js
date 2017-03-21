@@ -8,7 +8,6 @@ class AnnotationShape extends PlayerComponent {
   	super(playerId);
     this.shape = shape;
     this.$parent = this.$player;
-    this.draw();
   }
 
   draw () {

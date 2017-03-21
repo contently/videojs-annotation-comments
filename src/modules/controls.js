@@ -68,11 +68,11 @@ class Controls extends PlayerComponent {
 
   setAddingUI () {
     //change normal UI (hide markers, hide playback, etc)
-    this.$player.addClass('vac-adding');
+    this.$player.addClass('vac-disable-play');
   }
 
   restoreNormalUI () {
-    this.$player.removeClass('vac-adding');
+    this.$player.removeClass('vac-disable-play');
   }
 
 };
