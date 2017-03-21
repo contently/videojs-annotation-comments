@@ -1,19 +1,25 @@
 "use strict";
 
+const PlayerComponent = require("./player_component").class;
 const Comment = require("./comment").class;
 
-class Annotation {
-  constructor($timeline, data, duration) {
+class Annotation extends PlayerComponent {
+  
+  constructor(data, playerId) {
+    super(playerId);
     this.id = data.id;
     this.range = data.range;
     this.shape = data.shape;
-    this.comments = data.comments.map( (c) => new Comment(c) );
+    this.comments = data.comments.map( (c) => new Comment(c, playerId) );
 
-    this.drawMarker($timeline, duration);
+    this.drawMarker();
   }
 
-  drawMarker ($timeline, duration) {
+  drawMarker () {
     // Draw marker on timeline for this.range;
+
+    var $timeline = this.$player.find('.vjs-progress-control'),
+        duration = this.player.duration();
 
     //TODO - move this shit to a template file/engine
 

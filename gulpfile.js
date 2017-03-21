@@ -23,8 +23,8 @@ const ATTIBUTION = "/* Version "+PACKAGE.version+" videojs-annotation-comments (
 
 //compilation function for browserify/bundler/transpilation
 function compile(watch, cb){
-  var bundler = watchify(browserify('./src/main.js', { debug: true }))
-                  .transform(babelify, {presets: ["es2015-script"]} );
+  var bundler = watchify(browserify('./src/main.js', { debug: true }));
+                  //.transform(babelify, {presets: ["es2015-script"]} );
 
   function rebundle() {
     bundler.bundle()

@@ -1551,219 +1551,206 @@
 },{}],2:[function(require,module,exports){
 "use strict";
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+(($, videojs) => {
 
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-(function ($, videojs) {
-
-	var _ = require("underscore");
-	var Plugin = videojs.getPlugin('plugin');
-	var Annotation = require("./modules/annotation").class;
-
-	var BASE_STATE = Object.freeze({
-		active: false, // Is annotation mode active?
-		viewing_annotation_index: null, // Index of currently expanded/visible annotation (null if none)
-		annotations: [] // Array of Annotaiton instances
+	const _ = require("underscore");
+	const Plugin = videojs.getPlugin('plugin');
+	const Annotation = require("./modules/annotation").class;
+	
+	const BASE_STATE = Object.freeze({
+		active: false,					// Is annotation mode active?
+		viewing_annotation_index: null,	// Index of currently expanded/visible annotation (null if none)
+		annotations: []					// Array of Annotaiton instances
 	});
 
-	var Main = function (_Plugin) {
-		_inherits(Main, _Plugin);
+	class Main extends Plugin {
 
-		function Main(player, options) {
-			_classCallCheck(this, Main);
+		constructor(player, options) {
+	    	super(player, options);
 
-			var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, player, options));
+	    	this.playerId = $(player.el()).attr('id');
+	    	this.player = player;
+	    	
+	    	this.on('statechanged', this.stateChanged);
 
-			_this.player = player;
-			_this.on('statechanged', _this.stateChanged);
+	    	this.drawUI(player);
 
-			_this.drawUI(player);
+	    	// setup initial state after video is loaded
+	    	// TODO - use plugin.defaultState? Or is this better as we freeze it and must wait for meta load anyway
+	    	var self = this;
+	    	player.on("loadedmetadata", () => {
+		    	let state = _.clone(BASE_STATE);
+		    	state.annotations = annotations.map((a) => new Annotation(a, this.playerId));
+		    	self.setState(state);
+		    });
+	  	}
 
-			// setup initial state after video is loaded
-			// TODO - use plugin.defaultState? Or is this better as we freeze it and must wait for meta load anyway
-			var self = _this;
-			player.on("loadedmetadata", function () {
-				var state = _.clone(BASE_STATE),
-				    duration = player.duration(),
-				    $timeline = $(player.el()).find('.vjs-progress-control');
-				state.annotations = annotations.map(function (a) {
-					return new Annotation($timeline, a, duration);
-				});
-				self.setState(state);
-			});
-			return _this;
-		}
+	  	drawUI() {
+	  		this.components = {}; // Component references - TODO is this needed? creates memory-leaking closures
 
-		_createClass(Main, [{
-			key: "drawUI",
-			value: function drawUI() {
-				this.components = {}; // Component references - TODO is this needed? creates memory-leaking closures
+	  		var self = this;
+	  		var Component = videojs.getComponent('Component');
 
-				var self = this;
-				var Component = videojs.getComponent('Component');
+	  		// Add button to player
+	  		// TODO - clean this shit up - move this & bubble to seperate component module file??
+	  		this.components.playerBtn = player.getChild('controlBar').addChild('button', {});
+	  		this.components.playerBtn.addClass('vac-player-btn');
+		  	this.components.playerBtn.on('click', () => {
+	  			self.components.playerBtn.toggleClass('vac-active');
+	  			self.toggleAnnotations();
+	  		});
+	  		this.components.playerBtn.controlText("Toggle Animations");
+	  	}
 
-				// Add button to player
-				// TODO - clean this shit up - move this & bubble to seperate component module file??
-				this.components.playerBtn = player.getChild('controlBar').addChild('button', {});
-				this.components.playerBtn.addClass('vac-player-btn');
-				this.components.playerBtn.on('click', function () {
-					self.components.playerBtn.toggleClass('vac-active');
-					self.toggleAnnotations();
-				});
-				this.components.playerBtn.controlText("Toggle Animations");
-			}
-		}, {
-			key: "toggleAnnotations",
-			value: function toggleAnnotations() {
-				var active = !this.state.active;
-				this.setState({ active: active });
-				this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
-			}
-		}, {
-			key: "dispose",
-			value: function dispose() {
-				_get(Main.prototype.__proto__ || Object.getPrototypeOf(Main.prototype), "dispose", this).call(this);
-				videojs.log('the advanced plugin is being disposed');
-			}
-		}, {
-			key: "updateAnnotationBubble",
-			value: function updateAnnotationBubble() {
-				var $el = $(this.components.playerBtn.el()),
-				    $bubble = $el.find(".vac-bubble");
+	  	toggleAnnotations() {
+	  		var active = !this.state.active;
+	  		this.setState({active});
+	  		this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
+	  	}
 
-				if (!$bubble.length) {
-					$bubble = $("<b/>");
-					$el.append($bubble);
-				}
+	  	dispose() {
+	    	super.dispose();
+	    	videojs.log('the advanced plugin is being disposed');
+	  	}
 
-				var num = this.state.annotations.length;
-				$bubble.text(num);
-				num > 0 ? $el.addClass('show') : $el.addClass('hide');
-			}
-		}, {
-			key: "stateChanged",
-			value: function stateChanged() {
-				console.log('State updated', this.state);
-				this.updateAnnotationBubble(); // TODO - only fire if needed
-			}
-		}]);
+	  	updateAnnotationBubble () {
+	  		var $el = $(this.components.playerBtn.el()),
+	  			$bubble = $el.find(".vac-bubble");
+	  		
+	  		if(!$bubble.length){
+	  			$bubble = $("<b/>");
+	  			$el.append($bubble);
+	  		}
 
-		return Main;
-	}(Plugin);
+	  		var num = this.state.annotations.length;
+	  		$bubble.text(num);
+	  		num > 0 ? $el.addClass('show') : $el.addClass('hide');
+	  	}
+
+	  	stateChanged() {
+	    	console.log('State updated', this.state);
+	    	this.updateAnnotationBubble(); // TODO - only fire if needed
+	  	}
+	}
 
 	videojs.registerPlugin('annotationComments', Main);
+
 })(jQuery, window.videojs);
 
 },{"./modules/annotation":3,"underscore":1}],3:[function(require,module,exports){
 "use strict";
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+const PlayerComponent = require("./player_component").class;
+const Comment = require("./comment").class;
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Comment = require("./comment").class;
-
-var Annotation = function () {
-  function Annotation($timeline, data, duration) {
-    _classCallCheck(this, Annotation);
-
+class Annotation extends PlayerComponent {
+  
+  constructor(data, playerId) {
+    super(playerId);
     this.id = data.id;
     this.range = data.range;
     this.shape = data.shape;
-    this.comments = data.comments.map(function (c) {
-      return new Comment(c);
-    });
+    this.comments = data.comments.map( (c) => new Comment(c, playerId) );
 
-    this.drawMarker($timeline, duration);
+    this.drawMarker();
   }
 
-  _createClass(Annotation, [{
-    key: "drawMarker",
-    value: function drawMarker($timeline, duration) {
-      // Draw marker on timeline for this.range;
+  drawMarker () {
+    // Draw marker on timeline for this.range;
 
-      //TODO - move this shit to a template file/engine
+    var $timeline = this.$player.find('.vjs-progress-control'),
+        duration = this.player.duration();
 
-      var $markerWrap = $timeline.find(".vac-marker-wrap");
-      if (!$markerWrap.length) {
-        var $outerWrap = $("<div/>").addClass("vac-marker-owrap"),
-            $markerWrap = $("<div/>").addClass("vac-marker-wrap");
+    //TODO - move this shit to a template file/engine
 
-        $timeline.append($outerWrap.append($markerWrap));
-      }
+    var $markerWrap = $timeline.find(".vac-marker-wrap");
+    if(!$markerWrap.length){
+      var $outerWrap = $("<div/>").addClass("vac-marker-owrap"),
+          $markerWrap = $("<div/>").addClass("vac-marker-wrap");
 
-      var $marker = $("<div/>").addClass("vac-marker"),
-          left = this.range.start / duration * 100;
-
-      $marker.css({
-        "margin-left": -parseFloat($marker.css("width")) / 2 + 'px',
-        "left": left + '%'
-      });
-      var $markerInner = $("<div/>");
-      $marker.append($markerInner);
-
-      // create tooltip
-      var $tooltip = $("<span/>").addClass('vac-tooltip');
-      if (left > 50) $tooltip.addClass('right-side');
-
-      $tooltip.append($('<b/>').text(this.humanTime())).append(" - " + this.comments[0].body);
-      $markerInner.append($tooltip);
-
-      // handle dimming other markers + highlighting this one
-      $marker.mouseenter(function () {
-        $markerWrap.addClass('dim-all');
-        $marker.addClass('hovering');
-      }).mouseleave(function () {
-        $markerWrap.removeClass('dim-all');
-        $marker.removeClass('hovering');
-      });
-
-      //TODO - create second half of marker if annotation has range.end
-
-      $markerWrap.append($marker);
+      $timeline.append($outerWrap.append($markerWrap));
     }
 
-    // Convert num seconds to human readable format (M:SS)
+    var $marker = $("<div/>").addClass("vac-marker"),
+        left = (this.range.start / duration) * 100;
 
-  }, {
-    key: "humanTime",
-    value: function humanTime() {
-      var mins = Math.floor(this.range.start / 60),
-          secs = String(this.range.start % 60);
-      return mins + ":" + (secs.length == 1 ? "0" : "") + secs;
-    }
-  }]);
+    $marker.css({
+      "margin-left" : -parseFloat($marker.css("width"))/2 + 'px',
+      "left" : left + '%',
+    });
+    var $markerInner = $("<div/>");
+    $marker.append( $markerInner );
 
-  return Annotation;
-}();
+    // create tooltip
+    var $tooltip = $("<span/>").addClass('vac-tooltip');
+    if(left > 50) $tooltip.addClass('right-side');
+    
+    $tooltip.append($('<b/>').text(this.humanTime())).append(" - "+this.comments[0].body);
+    $markerInner.append($tooltip);
+
+    // handle dimming other markers + highlighting this one
+    $marker.mouseenter(() => {
+      $markerWrap.addClass('dim-all');
+      $marker.addClass('hovering');
+    }).mouseleave(() => {
+      $markerWrap.removeClass('dim-all');
+      $marker.removeClass('hovering');
+    });
+
+    //TODO - create second half of marker if annotation has range.end
+
+    $markerWrap.append($marker);
+  }
+
+  // Convert num seconds to human readable format (M:SS)
+  humanTime () {
+    var mins = Math.floor(this.range.start/60),
+        secs = String(this.range.start % 60);
+    return mins + ":" + (secs.length==1 ? "0" : "") + secs;
+  }
+}
 
 module.exports = {
   class: Annotation
 };
-
-},{"./comment":4}],4:[function(require,module,exports){
+},{"./comment":4,"./player_component":5}],4:[function(require,module,exports){
 "use strict";
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+const PlayerComponent = require("./player_component").class;
 
-var Comment = function Comment(data) {
-  _classCallCheck(this, Comment);
+class Comment extends PlayerComponent {
 
-  this.meta = data.meta;
-  this.body = data.body;
-};
+  constructor(data, playerId) {
+  	super(playerId);
+    this.meta = data.meta;
+    this.body = data.body;
+  }
+  
+}
 
 module.exports = {
-  class: Comment
+	class: Comment
 };
+},{"./player_component":5}],5:[function(require,module,exports){
+"use strict";
 
+class PlayerComponent {
+  constructor(playerId) {
+  	this.playerId = playerId;
+  }
+
+  get player () {
+  	return videojs(this.playerId);
+  }
+
+  get $player () {
+  	return $(this.player.el());
+  }
+}
+
+module.exports = {
+  class: PlayerComponent
+};
 },{}]},{},[2])
 
 //# sourceMappingURL=videojs-annotation-comments.js.map

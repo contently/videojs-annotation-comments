@@ -17,7 +17,9 @@
 		constructor(player, options) {
 	    	super(player, options);
 
+	    	this.playerId = $(player.el()).attr('id');
 	    	this.player = player;
+	    	
 	    	this.on('statechanged', this.stateChanged);
 
 	    	this.drawUI(player);
@@ -26,10 +28,8 @@
 	    	// TODO - use plugin.defaultState? Or is this better as we freeze it and must wait for meta load anyway
 	    	var self = this;
 	    	player.on("loadedmetadata", () => {
-		    	let state = _.clone(BASE_STATE),
-		    		duration = player.duration(),
-		    		$timeline = $(player.el()).find('.vjs-progress-control');
-		    	state.annotations = annotations.map((a) => new Annotation($timeline, a, duration));
+		    	let state = _.clone(BASE_STATE);
+		    	state.annotations = annotations.map((a) => new Annotation(a, this.playerId));
 		    	self.setState(state);
 		    });
 	  	}
