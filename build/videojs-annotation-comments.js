@@ -1725,7 +1725,11 @@ var Annotation = function () {
         $marker.removeClass('hovering');
       });
 
-      //TODO - create second half of marker if annotation has range.end
+      if (!!this.range.end) {
+        $marker.addClass("ranged-marker");
+        var right = this.range.end / duration * 100 - left;
+        $marker.css({ "width": right + "%" });
+      }
 
       $markerWrap.append($marker);
     }
