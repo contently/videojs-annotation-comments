@@ -2,8 +2,7 @@
 
 const _ = require("underscore");
 const DraggableMarker = require("./draggable_marker.js").class;
-//const SelectableShape = require("/selectable_shape.js").class;
-
+const SelectableShape = require("./selectable_shape.js").class;
 const PlayerComponent = require("./player_component").class;
 const ControlsTemplate = require("./../templates/controls").ControlsTemplate;
 

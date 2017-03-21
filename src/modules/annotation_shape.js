@@ -7,22 +7,26 @@ class AnnotationShape extends PlayerComponent {
   constructor(shape, playerId) {
   	super(playerId);
     this.shape = shape;
+    this.$parent = this.$player;
     this.draw();
   }
 
   draw () {
     if(!this.shape) return;
     
-    this.$el = $("<div/>").addClass("vac-shape").css({
-      top: this.shape.x1 + "%",
-      left: this.shape.y1 + "%",
+    this.$el = $("<div/>").addClass("vac-shape");
+    this.setDimsFromShape();
+    this.$parent.append(this.$el);
+  }
+
+  setDimsFromShape () {
+    this.$el.css({
+      left: this.shape.x1 + "%",
+      top: this.shape.y1 + "%",
       width: (this.shape.x2-this.shape.x1) + "%",
       height: (this.shape.y2-this.shape.y1) + "%"
     });
-
-    this.$player.append(this.$el);
   }
-
 
   teardown () {
     if(this.shape){

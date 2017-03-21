@@ -12,6 +12,7 @@ var ControlsTemplate = `
 
 	{{#if adding}}
 		<div class="vac-video-cover vac-control">
+			<div class="vac-video-cover-canvas"></div>
 		</div>
 
 		<div class="vac-add-controls vac-control">
