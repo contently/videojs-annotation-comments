@@ -1,0 +1,11 @@
+var annotationMarkerTemplate = `
+  <div class="vac-marker {{#if rangeShow}}ranged-marker{{/if}}" style="left: {{left}}; {{#if rangeShow}}width:{{width}};{{/if}}">
+    <div>
+      <span class="vac-tooltip">
+        <b>{{tooltipTime}}</b> - {{tooltipBody}}
+      </span>
+    </div>
+  </div>
+`;
+
+module.exports = {annotationMarkerTemplate};

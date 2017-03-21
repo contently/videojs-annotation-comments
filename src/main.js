@@ -5,7 +5,7 @@
 	const _ = require("underscore");
 	const Plugin = videojs.getPlugin('plugin');
 	const Annotation = require("./modules/annotation").class;
-	
+
 	const BASE_STATE = Object.freeze({
 		active: false,					// Is annotation mode active?
 		viewing_annotation_index: null,	// Index of currently expanded/visible annotation (null if none)
@@ -19,7 +19,7 @@
 
 	    	this.playerId = $(player.el()).attr('id');
 	    	this.player = player;
-	    	
+
 	    	this.on('statechanged', this.stateChanged);
 
 	    	this.drawUI(player);
@@ -65,7 +65,7 @@
 	  	updateAnnotationBubble () {
 	  		var $el = $(this.components.playerBtn.el()),
 	  			$bubble = $el.find(".vac-bubble");
-	  		
+
 	  		if(!$bubble.length){
 	  			$bubble = $("<b/>");
 	  			$el.append($bubble);
