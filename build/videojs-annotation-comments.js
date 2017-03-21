@@ -10007,8 +10007,8 @@ process.umask = function() { return 0; };
 
 const PlayerComponent = require("./player_component").class;
 const Comment = require("./comment").class;
+const Marker = require("./marker").class;
 const Templates = require("./../templates/annotation")
-const MarkerTemplate = Templates.markerTemplate;
 const CommentsTemplate = Templates.commentsTemplate;
 
 class Annotation extends PlayerComponent {
@@ -10020,38 +10020,14 @@ class Annotation extends PlayerComponent {
     this.shape = data.shape;
     this.comments = data.comments.map( (c) => new Comment(c, playerId) );
 
-    this.markerTemplate = MarkerTemplate;
     this.commentsTemplate = CommentsTemplate;
 
-    this.drawMarker();
+    this.marker = new Marker(this.range, this.comments[0], playerId);
+    this.bindMarkerEvents();
   }
 
-  drawMarker () {
-    // Draw marker on timeline for this.range;
-    var $timeline = this.$player.find('.vjs-progress-control')
-    var $markerWrap = $timeline.find(".vac-marker-wrap");
-
-    if(!$markerWrap.length){
-      var $outerWrap = $("<div/>").addClass("vac-marker-owrap"),
-          $markerWrap = $("<div/>").addClass("vac-marker-wrap");
-
-      $timeline.append($outerWrap.append($markerWrap));
-    }
-
-    var $marker = $(this.renderTemplate(this.markerTemplate, this.buildMarkerData()));
-
-    // handle dimming other markers + highlighting this one
-    $marker.mouseenter(() => {
-      $markerWrap.addClass('dim-all');
-      $marker.addClass('hovering');
-    }).mouseleave(() => {
-      $markerWrap.removeClass('dim-all');
-      $marker.removeClass('hovering');
-    });
-
-    $marker.click(() => this.renderComments())
-
-    $markerWrap.append($marker);
+  bindMarkerEvents() {
+    this.marker.$el.click(() => this.renderComments())
   }
 
   renderComments () {
@@ -10066,34 +10042,13 @@ class Annotation extends PlayerComponent {
     ));
     this.$player.append($commentsContainer);
   }
-
-  // Convert num seconds to human readable format (M:SS)
-  humanTime () {
-    var mins = Math.floor(this.range.start/60),
-        secs = String(this.range.start % 60);
-    return mins + ":" + (secs.length==1 ? "0" : "") + secs;
-  }
-
-  // Build object for template
-  buildMarkerData () {
-    var left = (this.range.start / this.duration) * 100;
-    var width = ((this.range.end / this.duration) * 100) - left;
-    return {
-      "left"        : left + "%",
-      "width"       : width + "%",
-      "tooltipRight": left > 50,
-      "tooltipTime" : this.humanTime(),
-      "tooltipBody" : this.comments[0].body,
-      "rangeShow"  : !!this.range.end
-    }
-  }
 }
 
 module.exports = {
   class: Annotation
 };
 
-},{"./../templates/annotation":52,"./comment":49,"./player_component":51}],49:[function(require,module,exports){
+},{"./../templates/annotation":53,"./comment":49,"./marker":51,"./player_component":52}],49:[function(require,module,exports){
 "use strict";
 
 const PlayerComponent = require("./player_component").class;
@@ -10111,7 +10066,7 @@ class Comment extends PlayerComponent {
 module.exports = {
 	class: Comment
 };
-},{"./player_component":51}],50:[function(require,module,exports){
+},{"./player_component":52}],50:[function(require,module,exports){
 "use strict";
 
 const _ = require("underscore");
@@ -10181,7 +10136,81 @@ module.exports = {
   class: Controls
 };
 
-},{"./../templates/controls":53,"./player_component":51,"underscore":46}],51:[function(require,module,exports){
+},{"./../templates/controls":54,"./player_component":52,"underscore":46}],51:[function(require,module,exports){
+"use strict";
+
+const MarkerTemplate = require("./../templates/marker").markerTemplate;
+const PlayerComponent = require("./player_component").class;
+
+class Marker extends PlayerComponent {
+
+  constructor(range, comment, playerId) {
+  	super(playerId);
+    this.range = range;
+    this.comment = comment;
+
+    this.template = MarkerTemplate;
+    this.draw();
+  }
+
+  get $el () {
+  	return this.$marker;
+  }
+  
+  draw () {
+  	// Draw marker on timeline for this.range;
+    var $timeline = this.$player.find('.vjs-progress-control')
+    var $markerWrap = $timeline.find(".vac-marker-wrap");
+
+    if(!$markerWrap.length){
+      var $outerWrap = $("<div/>").addClass("vac-marker-owrap"),
+          $markerWrap = $("<div/>").addClass("vac-marker-wrap");
+
+      $timeline.append($outerWrap.append($markerWrap));
+    }
+
+    var $marker = $(this.renderTemplate(this.template, this.buildMarkerData()));
+
+    // handle dimming other markers + highlighting this one
+    $marker.mouseenter(() => {
+      $markerWrap.addClass('dim-all');
+      $marker.addClass('hovering');
+    }).mouseleave(() => {
+      $markerWrap.removeClass('dim-all');
+      $marker.removeClass('hovering');
+    });
+
+    $markerWrap.append($marker);
+    this.$marker = $marker;
+  }
+
+  // Build object for template
+  buildMarkerData () {
+    var left = (this.range.start / this.duration) * 100;
+    var width = ((this.range.end / this.duration) * 100) - left;
+    return {
+      "left"        : left + "%",
+      "width"       : width + "%",
+      "tooltipRight": left > 50,
+      "tooltipTime" : this.humanTime(),
+      "tooltipBody" : this.comment.body,
+      "rangeShow"  : !!this.range.end
+    }
+  }
+
+  // Convert num seconds to human readable format (M:SS)
+  humanTime () {
+    var mins = Math.floor(this.range.start/60),
+        secs = String(this.range.start % 60);
+    return mins + ":" + (secs.length==1 ? "0" : "") + secs;
+  }
+
+}
+
+module.exports = {
+	class: Marker
+};
+},{"./../templates/marker":55,"./player_component":52}],52:[function(require,module,exports){
 "use strict";
 
 const Handlebars = require("handlebars");
@@ -10213,17 +10242,7 @@ module.exports = {
   class: PlayerComponent
 };
 
-},{"handlebars":32}],52:[function(require,module,exports){
-var markerTemplate = `
-  <div class="vac-marker {{#if rangeShow}}ranged-marker{{/if}}" style="left: {{left}}; {{#if rangeShow}}width:{{width}};{{/if}}">
-    <div>
-      <span class="vac-tooltip {{#if tooltipRight}}right-side{{/if}}">
-        <b>{{tooltipTime}}</b> - {{tooltipBody}}
-      </span>
-    </div>
-  </div>
-`;
-
+},{"handlebars":32}],53:[function(require,module,exports){
 var commentsTemplate = `
   <div class="comments-container">
     Some text {{id}}
@@ -10241,9 +10260,9 @@ var commentsTemplate = `
   </div>
 `;
 
-module.exports = {markerTemplate, commentsTemplate};
+module.exports = {commentsTemplate};
 
-},{}],53:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
 var ControlsTemplate = `
 	{{#unless adding}}
 	  	<div class="vac-controls vac-control">
@@ -10274,6 +10293,18 @@ var ControlsTemplate = `
 
 module.exports = {ControlsTemplate};
 
+},{}],55:[function(require,module,exports){
+var markerTemplate = `
+  <div class="vac-marker {{#if rangeShow}}ranged-marker{{/if}}" style="left: {{left}}; {{#if rangeShow}}width:{{width}};{{/if}}">
+    <div>
+      <span class="vac-tooltip {{#if tooltipRight}}right-side{{/if}}">
+        <b>{{tooltipTime}}</b> - {{tooltipBody}}
+      </span>
+    </div>
+  </div>
+`;
+
+module.exports = {markerTemplate};
 },{}]},{},[47])
 
 //# sourceMappingURL=videojs-annotation-comments.js.map
