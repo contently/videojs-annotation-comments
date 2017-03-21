@@ -1,0 +1,9 @@
+body{
+	text-align:center;
+}
+body *{
+	outline: none;
+}
+.video-js{
+	margin: 30px auto;
+}

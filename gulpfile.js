@@ -12,6 +12,7 @@ const gulp = require('gulp'),
       webserver = require('gulp-webserver'),
       uglify = require('gulp-uglify'),
       gutil = require('gulp-util'),
+      sass = require('gulp-sass'),
       debug = require('gulp-debug');
 
 const FILENAME = "videojs-annotation-comments.js",
@@ -68,9 +69,19 @@ gulp.task('lint', () => {
 
 gulp.task('dev_webserver', () => {
   console.log(":::: > Test page at http://localhost:3004/test.html");
-  return gulp.src(['build','test'])
+  return gulp.src(['build','test','node_modules'])
       .pipe(webserver({ port: 3004 })
     );
+});
+
+gulp.task('sass', () => {
+  return gulp.src('src/css/*.scss')
+    .pipe(sass().on('error', sass.logError))
+    .pipe(gulp.dest('./build/css'));
+});
+ 
+gulp.task('sass:watch', () => {
+  gulp.watch('./src/css/**/*.scss', ['sass']);
 });
 
 gulp.task('build', ['lint','transpile'], () => {
@@ -84,5 +95,5 @@ gulp.task('build', ['lint','transpile'], () => {
 
 gulp.task('transpile', (cb) => compile(false, cb) );
 gulp.task('bundle_watch', (cb) => compile(true, cb) );
-gulp.task('watch', ['bundle_watch', 'dev_webserver']);
+gulp.task('watch', ['bundle_watch', 'dev_webserver', 'sass:watch']);
 gulp.task('default', ['watch']);

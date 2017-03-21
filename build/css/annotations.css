@@ -1,0 +1,94 @@
+.video-js.vac-active .vjs-mouse-display {
+  display: none !important; }
+
+.video-js.vac-active .vac-marker-owrap {
+  display: block; }
+
+.video-js .vac-player-btn {
+  cursor: pointer; }
+  .video-js .vac-player-btn span.vjs-icon-placeholder {
+    width: 100%;
+    height: 100%;
+    display: block;
+    -webkit-mask: url("data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0yMS45OSA0YzAtMS4xLS44OS0yLTEuOTktMkg0Yy0xLjEgMC0yIC45LTIgMnYxMmMwIDEuMS45IDIgMiAyaDE0bDQgNC0uMDEtMTh6TTE4IDE0SDZ2LTJoMTJ2MnptMC0zSDZWOWgxMnYyem0wLTNINlY2aDEydjJ6Ii8+CiAgICA8cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+Cjwvc3ZnPg==") center center no-repeat;
+    background-color: white; }
+  .video-js .vac-player-btn.vac-active span.vjs-icon-placeholder {
+    background-color: #00A6C2; }
+  .video-js .vac-player-btn b {
+    position: absolute;
+    display: inline-block;
+    top: 3px;
+    right: 3px;
+    color: white;
+    height: 14px;
+    line-height: 14px;
+    min-width: 14px;
+    text-align: center;
+    border-radius: 9px;
+    font-size: 10px;
+    font-weight: normal;
+    background-color: red; }
+
+.video-js .vac-marker-owrap {
+  display: none;
+  z-index: 10;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%; }
+  .video-js .vac-marker-owrap .vac-marker-wrap {
+    margin: 0 10px;
+    height: 100%;
+    position: relative;
+    flex: auto; }
+    .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker {
+      position: absolute;
+      width: 7px;
+      height: 30px;
+      bottom: 6px;
+      background: #00A6C2;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: all .2s ease-in-out; }
+      .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.hovering {
+        opacity: 1 !important;
+        background: #eed428;
+        height: 35px; }
+        .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.hovering > div {
+          display: block;
+          opacity: 1; }
+      .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker > div {
+        width: 7px;
+        position: relative;
+        display: none;
+        opacity: 0;
+        transition: opacity .2s ease-in-out; }
+        .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker > div span {
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          border-bottom: 1px solid #eed428;
+          display: block;
+          position: absolute;
+          max-width: 200px;
+          bottom: -1px;
+          line-height: 28px;
+          height: 28px;
+          overflow: hidden;
+          padding: 0 5px;
+          box-sizing: border-box;
+          border-radius: 1px;
+          background: rgba(0, 0, 0, 0.8);
+          color: white;
+          font-family: Arial;
+          left: 0px; }
+          .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker > div span b {
+            color: #eed428;
+            display: inline-block;
+            margin-right: 5px;
+            font-weight: normal; }
+          .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker > div span.right-side {
+            left: auto;
+            right: 0px; }
+    .video-js .vac-marker-owrap .vac-marker-wrap.dim-all .vac-marker {
+      opacity: .4; }

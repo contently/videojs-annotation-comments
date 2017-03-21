@@ -2,22 +2,86 @@
 <HTML>
 	<HEAD>
 		<title>VideoJS Annotated Comments Test Page</title>
-		<link href="http://vjs.zencdn.net/5.18.4/video-js.css" rel="stylesheet">
+		<link href="/video.js/dist/video-js.css" rel="stylesheet">
+		<link href="assets/videojs_skin.css" rel="stylesheet">
+		<link href="assets/page.css" rel="stylesheet">
+		<link href="css/annotations.css" rel="stylesheet">
+		<script>
+			var annotations = [
+				{
+					id: 1234,
+					range: {
+						start: 25
+					},
+					shape: null,
+					comments: [
+						{
+							meta: {
+								user_id: 1,
+								datetime: "2017-03-19T02:05:55+00:00"
+							},
+							body: "This is a test - hopefully it's super awesome!"
+						}
+					]
+				},
+				{
+					id: 1235,
+					range: {
+						start: 31,
+						end: 38
+					},
+					shape: null,
+					comments: [
+						{
+							meta: {
+								user_id: 1,
+								datetime: "2017-03-19T02:05:55+00:00"
+							},
+							body: "Man how much fun can we have on hack week!!!"
+						}
+					]
+				},
+				{
+					id: 1236,
+					range: {
+						start: 75,
+						end: 85
+					},
+					shape: null,
+					comments: [
+						{
+							meta: {
+								user_id: 1,
+								datetime: "2017-03-19T02:05:55+00:00"
+							},
+							body: "I should be in bed right now. Oh well!"
+						}
+					]
+				}
+			]
+		</script>
 
 	</HEAD>
 	<BODY>
-		<video id="my-video" class="video-js" controls preload="auto" width="640" height="264"
-  poster="MY_VIDEO_POSTER.jpg" data-setup="{}">
-		    <source src="sample.mp4" type='video/mp4'>
-		    <source src="sample.webm" type='video/webm'>
+		<video id="the_video" class="video-js" controls preload="auto" width="640" height="410" poster="MY_VIDEO_POSTER.jpg" data-setup="{}">
+		    <source src="Docal_announmt_final.mp4" type='video/mp4'>
 		    <p class="vjs-no-js">
-		      To view this video please enable JavaScript, and consider upgrading to a web browser that
-		      <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+		     	To view this video please enable JavaScript, and consider upgrading to a web browser that
+		     	<a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
 		    </p>
-		  </video>
+		</video>
 
 
-		<script src="http://vjs.zencdn.net/5.18.4/video.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script src="/video.js/dist/video.min.js"></script>
 		<script src="/videojs-annotation-comments.js"></script>
+		<script>
+			var player = videojs('the_video');
+			player.annotationComments({annotations});
+
+			//mute the player and start playing
+			player.muted(true);
+			player.play();
+		</script>
 	</BODY>
 </HTML>
