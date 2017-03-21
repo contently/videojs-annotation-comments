@@ -15,7 +15,7 @@ class Marker extends PlayerComponent {
   get $el () {
   	return this.$marker;
   }
-  
+
   draw () {
   	// Draw marker on timeline for this.range;
     var $timeline = this.$player.find('.vjs-progress-control')

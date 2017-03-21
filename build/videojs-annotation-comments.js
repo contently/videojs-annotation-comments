@@ -9983,6 +9983,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 				this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
 				if (!active) {
 					this.components.controls.clear(true);
+					this.player.activeAnnotation.close();
 				} else {
 					this.components.controls.draw();
 				}
@@ -10066,9 +10067,24 @@ var Annotation = function (_PlayerComponent) {
       var _this2 = this;
 
       this.marker.$el.click(function () {
-        _this2.commentList.render();
-        _this2.annotationShape.draw();
+        return _this2.open();
       });
+    }
+  }, {
+    key: "open",
+    value: function open() {
+      this.activeAnnotation.close();
+
+      this.commentList.render();
+      this.annotationShape.draw();
+
+      this.player.activeAnnotation = this;
+    }
+  }, {
+    key: "close",
+    value: function close() {
+      this.commentList.teardown();
+      this.annotationShape.teardown();
     }
   }]);
 
@@ -10238,13 +10254,20 @@ var CommentList = function (_PlayerComponent) {
   _createClass(CommentList, [{
     key: "render",
     value: function render() {
-      this.$player.find(".vac-comments-container").remove();
+      // this.$player.find(".vac-comments-container").remove();
 
-      var $commentsContainer = $(this.renderTemplate(this.commentsTemplate, { comments: this.comments, height: $(".vjs-text-track-display").height() + 'px' }));
-      this.$player.append($commentsContainer);
+      this.$el = $(this.renderTemplate(this.commentsTemplate, { comments: this.comments, height: $(".vjs-text-track-display").height() + 'px' }));
+      this.$player.append(this.$el);
 
       this.player.pause();
       this.player.currentTime(this.annotation.range.start);
+    }
+  }, {
+    key: "teardown",
+    value: function teardown() {
+      if (!!this.$el) {
+        this.$el.remove();
+      }
     }
   }]);
 
@@ -10596,6 +10619,16 @@ var PlayerComponent = function () {
     key: "duration",
     get: function get() {
       return this.player.duration();
+    }
+  }, {
+    key: "activeAnnotation",
+    get: function get() {
+      return this.player.activeAnnotation || { "close": function close() {
+          return null;
+        } };
+    },
+    set: function set(aa) {
+      this.player.activeAnnotation = aa;
     }
   }]);
 
