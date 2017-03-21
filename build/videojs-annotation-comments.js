@@ -9900,6 +9900,7 @@ process.umask = function() { return 0; };
 	const _ = require("underscore");
 	const Plugin = videojs.getPlugin('plugin');
 	const Annotation = require("./modules/annotation").class;
+	const Controls = require("./modules/controls").class;
 
 	const BASE_STATE = Object.freeze({
 		active: false,					// Is annotation mode active?
@@ -9930,6 +9931,9 @@ process.umask = function() { return 0; };
 
 		    	//TODO - for dev, remove
 		    	this.toggleAnnotations();
+		    	//mute the player and start playing
+				player.muted(true);
+				player.play();
 		    });
 	  	}
 
@@ -9949,11 +9953,8 @@ process.umask = function() { return 0; };
 	  		});
 	  		this.components.playerBtn.controlText("Toggle Animations");
 
-	  		// TODO move to template
-	  		var t = `<div class="vac-controls"><b>${this.state.annotations.length}</b> Annotations`;
-	  		t += '<button>+ NEW</button><div class="nav"><div class="prev">Prev</div><div class="next">Next</div></div></div>';
-	  		$(this.player.el()).append(t);
-
+	  		// Add controls box
+	  		this.components.controls = new Controls(this.playerId);
 
 	  		this.uiReady = true;
 	  		this.updateAnnotationBubble();
@@ -9963,6 +9964,11 @@ process.umask = function() { return 0; };
 	  		var active = !this.state.active;
 	  		this.setState({active});
 	  		this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
+	  		if(!active){
+	  			this.components.controls.clear(true);
+	  		}else{
+	  			this.components.controls.draw();
+	  		}
 	  	}
 
 	  	dispose() {
@@ -9996,7 +10002,7 @@ process.umask = function() { return 0; };
 
 })(jQuery, window.videojs);
 
-},{"./modules/annotation":48,"underscore":46}],48:[function(require,module,exports){
+},{"./modules/annotation":48,"./modules/controls":50,"underscore":46}],48:[function(require,module,exports){
 "use strict";
 
 const PlayerComponent = require("./player_component").class;
@@ -10069,7 +10075,7 @@ module.exports = {
   class: Annotation
 };
 
-},{"./../templates/annotation-marker":51,"./comment":49,"./player_component":50}],49:[function(require,module,exports){
+},{"./../templates/annotation-marker":52,"./comment":49,"./player_component":51}],49:[function(require,module,exports){
 "use strict";
 
 const PlayerComponent = require("./player_component").class;
@@ -10087,7 +10093,77 @@ class Comment extends PlayerComponent {
 module.exports = {
 	class: Comment
 };
-},{"./player_component":50}],50:[function(require,module,exports){
+},{"./player_component":51}],50:[function(require,module,exports){
+"use strict";
+
+const _ = require("underscore");
+const PlayerComponent = require("./player_component").class;
+const ControlsTemplate = require("./../templates/controls").ControlsTemplate;
+
+const BASE_UI_STATE = Object.freeze({
+  adding: false,          // are we currently adding a new annotaiton?
+  writingComment: false
+});
+
+class Controls extends PlayerComponent {
+
+  constructor(playerId) {
+    super(playerId);
+    this.template = ControlsTemplate;
+    this.uiState = _.clone(BASE_UI_STATE);
+    this.bindEvents();
+    this.draw();
+  }
+
+  bindEvents () {
+    // Bind all the events we need
+    this.$player.on("click", ".vac-controls button", this.startAddNew.bind(this));
+    this.$player.on("click", ".vac-add-controls a", this.cancelAddNew.bind(this));
+  }
+
+  clear(reset=false) {
+    if(reset){
+      if(this.uiState.adding) this.restoreNormalUI();
+      this.uiState = _.clone(BASE_UI_STATE);
+    }
+    this.$player.find(".vac-control").remove();
+  }
+
+  draw (reset=false) {
+    this.clear(reset);
+    console.log("STATE", this.uiState);
+    var $ctrls = this.renderTemplate(this.template, this.uiState);
+    this.$player.append($ctrls);
+  }
+
+  cancelAddNew () {
+    this.draw(true);
+  }
+
+  startAddNew () {
+    this.player.pause();
+    //TODO - prevent play
+    this.setAddingUI();
+    this.uiState.adding = true;
+    this.draw();
+  }
+
+  setAddingUI () {
+    //change normal UI (hide markers, hide playback, etc)
+    this.$player.addClass('vac-adding');
+  }
+
+  restoreNormalUI () {
+    this.$player.removeClass('vac-adding');
+  }
+
+};
+
+module.exports = {
+  class: Controls
+};
+
+},{"./../templates/controls":53,"./player_component":51,"underscore":46}],51:[function(require,module,exports){
 "use strict";
 
 const Handlebars = require("handlebars");
@@ -10119,7 +10195,7 @@ module.exports = {
   class: PlayerComponent
 };
 
-},{"handlebars":32}],51:[function(require,module,exports){
+},{"handlebars":32}],52:[function(require,module,exports){
 var annotationMarkerTemplate = `
   <div class="vac-marker {{#if rangeShow}}ranged-marker{{/if}}" style="left: {{left}}; {{#if rangeShow}}width:{{width}};{{/if}}">
     <div>
@@ -10131,6 +10207,34 @@ var annotationMarkerTemplate = `
 `;
 
 module.exports = {annotationMarkerTemplate};
+
+},{}],53:[function(require,module,exports){
+var ControlsTemplate = `
+	{{#unless adding}}
+	  	<div class="vac-controls vac-control">
+		  	Annotations
+			<button>+ NEW</button>
+			<div class="nav">
+				<div class="prev">Prev</div>
+				<div class="next">Next</div>
+			</div>
+		</div>
+	{{/unless}}
+
+	{{#if adding}}
+		<div class="vac-add-controls vac-control">
+		  	New Annotation
+			<i>Select shape + range</i>
+			<button>CONTINUE</button>
+			<a>cancel</a>
+		</div>
+
+
+
+	{{/if}}
+`;
+
+module.exports = {ControlsTemplate};
 
 },{}]},{},[47])
 

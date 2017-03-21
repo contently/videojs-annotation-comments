@@ -5,6 +5,7 @@
 	const _ = require("underscore");
 	const Plugin = videojs.getPlugin('plugin');
 	const Annotation = require("./modules/annotation").class;
+	const Controls = require("./modules/controls").class;
 
 	const BASE_STATE = Object.freeze({
 		active: false,					// Is annotation mode active?
@@ -35,6 +36,9 @@
 
 		    	//TODO - for dev, remove
 		    	this.toggleAnnotations();
+		    	//mute the player and start playing
+				player.muted(true);
+				player.play();
 		    });
 	  	}
 
@@ -54,11 +58,8 @@
 	  		});
 	  		this.components.playerBtn.controlText("Toggle Animations");
 
-	  		// TODO move to template
-	  		var t = `<div class="vac-controls"><b>${this.state.annotations.length}</b> Annotations`;
-	  		t += '<button>+ NEW</button><div class="nav"><div class="prev">Prev</div><div class="next">Next</div></div></div>';
-	  		$(this.player.el()).append(t);
-
+	  		// Add controls box
+	  		this.components.controls = new Controls(this.playerId);
 
 	  		this.uiReady = true;
 	  		this.updateAnnotationBubble();
@@ -68,6 +69,11 @@
 	  		var active = !this.state.active;
 	  		this.setState({active});
 	  		this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
+	  		if(!active){
+	  			this.components.controls.clear(true);
+	  		}else{
+	  			this.components.controls.draw();
+	  		}
 	  	}
 
 	  	dispose() {
