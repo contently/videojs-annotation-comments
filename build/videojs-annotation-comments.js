@@ -10184,7 +10184,7 @@ module.exports = {
 };
 
 },{"handlebars":32}],51:[function(require,module,exports){
-var annotationMarkerTemplate = "\n  <div class=\"vac-marker {{#if rangeShow}}ranged-marker{{/if}}\" style=\"left: {{left}}; {{#if rangeShow}}width:{{width}};{{/if}}\">\n    <div>\n      <span class=\"vac-tooltip\">\n        <b>{{tooltipTime}}</b> - {{tooltipBody}}\n      </span>\n    </div>\n  </div>\n";
+var annotationMarkerTemplate = "\n  <div class=\"vac-marker {{#if rangeShow}}ranged-marker{{/if}}\" style=\"left: {{left}}; {{#if rangeShow}}width:{{width}};{{/if}}\">\n    <div>\n      <span class=\"vac-tooltip {{#if tooltipRight}}right-side{{/if}}\">\n        <b>{{tooltipTime}}</b> - {{tooltipBody}}\n      </span>\n    </div>\n  </div>\n";
 
 module.exports = { annotationMarkerTemplate: annotationMarkerTemplate };
 
