@@ -9,9 +9,7 @@ class Marker extends PlayerComponent {
   	super(playerId);
     this.range = range;
     this.comment = comment;
-
     this.template = MarkerTemplate;
-    this.draw();
   }
 
   get $el () {
@@ -30,19 +28,18 @@ class Marker extends PlayerComponent {
       $timeline.append($outerWrap.append($markerWrap));
     }
 
-    var $marker = $(this.renderTemplate(this.template, this.buildMarkerData()));
+    this.$marker = $(this.renderTemplate(this.template, this.buildMarkerData()));
+    $markerWrap.append(this.$marker);
+    this.bindMarkerEvents();
+  }
 
-    // handle dimming other markers + highlighting this one
-    $marker.mouseenter(() => {
-      $markerWrap.addClass('dim-all');
-      $marker.addClass('hovering');
+  bindMarkerEvents () {
+  	// handle dimming other markers + highlighting this one
+    this.$marker.mouseenter(() => {
+      this.$marker.addClass('hovering').closest(".vac-marker-wrap").addClass('dim-all')
     }).mouseleave(() => {
-      $markerWrap.removeClass('dim-all');
-      $marker.removeClass('hovering');
+      this.$marker.removeClass('hovering').closest(".vac-marker-wrap").removeClass('dim-all');
     });
-
-    $markerWrap.append($marker);
-    this.$marker = $marker;
   }
 
   // Build object for template
@@ -54,16 +51,25 @@ class Marker extends PlayerComponent {
       "width"       : width + "%",
       "tooltipRight": left > 50,
       "tooltipTime" : this.humanTime(),
-      "tooltipBody" : this.comment.body,
+      "tooltipBody" : !this.comment ? null : this.comment.body,
       "rangeShow"  : !!this.range.end
     }
   }
 
   // Convert num seconds to human readable format (M:SS)
   humanTime () {
-    var mins = Math.floor(this.range.start/60),
-        secs = String(this.range.start % 60);
-    return mins + ":" + (secs.length==1 ? "0" : "") + secs;
+  	function readable(sec){
+	    var mins = Math.floor(sec/60),
+	        secs = String(sec % 60);
+	    return mins + ":" + (secs.length==1 ? "0" : "") + secs;
+	}
+	var time = [readable(this.range.start)];
+	if(this.range.end) time.push(readable(this.range.end));
+	return time.join("-");
+  }
+
+  teardown () {
+  	this.$marker.remove();
   }
 
 }

@@ -157,7 +157,7 @@
 		    position: relative;
 		    flex: auto;
 
-			.vac-marker{
+			.vac-marker, .vac-marker-draggable{
 				position: absolute;
 				width: 7px;
 				margin-left: -3.5px;
@@ -186,6 +186,13 @@
 					background-color: rgba(0, 166, 194, 0.65);
 				}
 
+				&.vac-marker-draggable{
+					box-shadow: 7px 0 0 0 #ee9828 inset;
+					background-color: rgba(238, 152, 40, 0.65);
+					cursor: ew-resize;
+					min-width: 7px !important;
+				}
+
 				& > div {
 					width: 100%;
 					position: relative;
@@ -204,9 +211,9 @@
 						border-bottom: 1px solid #eed428;
 						display: block;
 						position: absolute;
-						max-width: 200px;
+						max-width: 250px;
 						bottom: -1px;
-						line-height: 28px;
+						line-height: 26px;
 						height: 28px;
 						overflow: hidden;
 						padding: 0 5px;
@@ -215,6 +222,7 @@
 						background: rgba(0,0,0, .8);
 						color: white;
 						font-family: Arial;
+						font-size: 12px;
 						left:0px;
 						&.right-side{
 							left: auto;

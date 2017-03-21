@@ -18,6 +18,7 @@ class Annotation extends PlayerComponent {
     this.commentsTemplate = CommentsTemplate;
 
     this.marker = new Marker(this.range, this.comments[0], playerId);
+    this.marker.draw();
     this.bindMarkerEvents();
   }
 

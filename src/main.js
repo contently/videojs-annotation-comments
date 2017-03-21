@@ -28,7 +28,6 @@
 	    	// setup initial state after video is loaded
 	    	// TODO - use plugin.defaultState? Or is this better as we freeze it and must wait for meta load anyway
 	    	player.on("loadedmetadata", () => {
-	    		console.log("THIS", this);
 		    	let state = _.clone(BASE_STATE);
 		    	state.annotations = annotations.map((a) => new Annotation(a, this.playerId));
 		    	this.setState(state);
@@ -98,7 +97,7 @@
 	  	}
 
 	  	stateChanged() {
-	    	console.log('State updated', this.state);
+	    	//console.log('State updated', this.state);
 	    	this.updateAnnotationBubble(); // TODO - only fire if needed
 	  	}
 	}

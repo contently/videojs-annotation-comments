@@ -1,6 +1,7 @@
 "use strict";
 
 const _ = require("underscore");
+const DraggableMarker = require("./draggable_marker.js").class;
 const PlayerComponent = require("./player_component").class;
 const ControlsTemplate = require("./../templates/controls").ControlsTemplate;
 
@@ -27,7 +28,10 @@ class Controls extends PlayerComponent {
 
   clear(reset=false) {
     if(reset){
-      if(this.uiState.adding) this.restoreNormalUI();
+      if(this.uiState.adding){
+        this.restoreNormalUI();
+        this.marker.teardown();
+      }
       this.uiState = _.clone(BASE_UI_STATE);
     }
     this.$player.find(".vac-control").remove();
@@ -35,13 +39,14 @@ class Controls extends PlayerComponent {
 
   draw (reset=false) {
     this.clear(reset);
-    console.log("STATE", this.uiState);
     var $ctrls = this.renderTemplate(this.template, this.uiState);
     this.$player.append($ctrls);
   }
 
   cancelAddNew () {
     this.draw(true);
+    this.marker.teardown();
+    this.marker = null;
   }
 
   startAddNew () {
@@ -50,6 +55,13 @@ class Controls extends PlayerComponent {
     this.setAddingUI();
     this.uiState.adding = true;
     this.draw();
+
+    // construct new range and create marker
+    let range = {
+      start: this.player.currentTime(),
+      stop: this.player.currentTime()
+    };
+    this.marker = new DraggableMarker(range, this.playerId);
   }
 
   setAddingUI () {

@@ -9923,7 +9923,6 @@ process.umask = function() { return 0; };
 	    	// setup initial state after video is loaded
 	    	// TODO - use plugin.defaultState? Or is this better as we freeze it and must wait for meta load anyway
 	    	player.on("loadedmetadata", () => {
-	    		console.log("THIS", this);
 		    	let state = _.clone(BASE_STATE);
 		    	state.annotations = annotations.map((a) => new Annotation(a, this.playerId));
 		    	this.setState(state);
@@ -9993,7 +9992,7 @@ process.umask = function() { return 0; };
 	  	}
 
 	  	stateChanged() {
-	    	console.log('State updated', this.state);
+	    	//console.log('State updated', this.state);
 	    	this.updateAnnotationBubble(); // TODO - only fire if needed
 	  	}
 	}
@@ -10023,6 +10022,7 @@ class Annotation extends PlayerComponent {
     this.commentsTemplate = CommentsTemplate;
 
     this.marker = new Marker(this.range, this.comments[0], playerId);
+    this.marker.draw();
     this.bindMarkerEvents();
   }
 
@@ -10048,7 +10048,7 @@ module.exports = {
   class: Annotation
 };
 
-},{"./../templates/annotation":53,"./comment":49,"./marker":51,"./player_component":52}],49:[function(require,module,exports){
+},{"./../templates/annotation":54,"./comment":49,"./marker":52,"./player_component":53}],49:[function(require,module,exports){
 "use strict";
 
 const PlayerComponent = require("./player_component").class;
@@ -10066,10 +10066,11 @@ class Comment extends PlayerComponent {
 module.exports = {
 	class: Comment
 };
-},{"./player_component":52}],50:[function(require,module,exports){
+},{"./player_component":53}],50:[function(require,module,exports){
 "use strict";
 
 const _ = require("underscore");
+const DraggableMarker = require("./draggable_marker.js").class;
 const PlayerComponent = require("./player_component").class;
 const ControlsTemplate = require("./../templates/controls").ControlsTemplate;
 
@@ -10096,7 +10097,10 @@ class Controls extends PlayerComponent {
 
   clear(reset=false) {
     if(reset){
-      if(this.uiState.adding) this.restoreNormalUI();
+      if(this.uiState.adding){
+        this.restoreNormalUI();
+        this.marker.teardown();
+      }
       this.uiState = _.clone(BASE_UI_STATE);
     }
     this.$player.find(".vac-control").remove();
@@ -10104,13 +10108,14 @@ class Controls extends PlayerComponent {
 
   draw (reset=false) {
     this.clear(reset);
-    console.log("STATE", this.uiState);
     var $ctrls = this.renderTemplate(this.template, this.uiState);
     this.$player.append($ctrls);
   }
 
   cancelAddNew () {
     this.draw(true);
+    this.marker.teardown();
+    this.marker = null;
   }
 
   startAddNew () {
@@ -10119,6 +10124,13 @@ class Controls extends PlayerComponent {
     this.setAddingUI();
     this.uiState.adding = true;
     this.draw();
+
+    // construct new range and create marker
+    let range = {
+      start: this.player.currentTime(),
+      stop: this.player.currentTime()
+    };
+    this.marker = new DraggableMarker(range, this.playerId);
   }
 
   setAddingUI () {
@@ -10136,7 +10148,60 @@ module.exports = {
   class: Controls
 };
 
-},{"./../templates/controls":54,"./player_component":52,"underscore":46}],51:[function(require,module,exports){
+},{"./../templates/controls":55,"./draggable_marker.js":51,"./player_component":53,"underscore":46}],51:[function(require,module,exports){
+"use strict";
+
+const _ = require("underscore");
+const Marker = require("./marker").class;
+const DraggableMarkerTemplate = require("./../templates/marker").draggableMarkerTemplate;
+
+class draggableMarker extends Marker {
+
+  constructor(range, playerId) {
+    super(range, null, playerId);
+    this.template = DraggableMarkerTemplate;
+    this.draw();
+    this.dragging = false;
+  }
+
+  onDrag (e) {
+    var len = Math.max(0, e.pageX - this.$marker.offset().left);
+    //translate len in px to percentage
+    var max = this.$marker.closest(".vac-marker-wrap").innerWidth(),
+        lenPercent = (len / max) * 100;
+
+    this.$marker.css('width', lenPercent + "%");
+    this.range.end = this.player.currentTime();
+
+  }
+
+  bindMarkerEvents () {
+
+    this.$marker.mousedown((e) => {
+      e.preventDefault();
+      this.dragging = true;
+      $(document).on("mousemove.draggableMarker", _.throttle(this.onDrag.bind(this), 250) );
+    });
+
+    $(document).on("mouseup.draggableMarker", (e) => {
+       if(!this.dragging) return;
+       $(document).off("mousemove.draggableMarker");
+       //TODO - set value!
+       this.dragging = false;
+    });
+  }
+
+  teardown () {
+    super.teardown();
+    $(document).off("mousemove.draggableMarker");
+    $(document).off("mouseup.draggableMarker");
+  }
+}
+
+module.exports = {
+	class: draggableMarker
+};
+},{"./../templates/marker":56,"./marker":52,"underscore":46}],52:[function(require,module,exports){
 "use strict";
 
 const MarkerTemplate = require("./../templates/marker").markerTemplate;
@@ -10148,9 +10213,7 @@ class Marker extends PlayerComponent {
   	super(playerId);
     this.range = range;
     this.comment = comment;
-
     this.template = MarkerTemplate;
-    this.draw();
   }
 
   get $el () {
@@ -10169,19 +10232,18 @@ class Marker extends PlayerComponent {
       $timeline.append($outerWrap.append($markerWrap));
     }
 
-    var $marker = $(this.renderTemplate(this.template, this.buildMarkerData()));
+    this.$marker = $(this.renderTemplate(this.template, this.buildMarkerData()));
+    $markerWrap.append(this.$marker);
+    this.bindMarkerEvents();
+  }
 
-    // handle dimming other markers + highlighting this one
-    $marker.mouseenter(() => {
-      $markerWrap.addClass('dim-all');
-      $marker.addClass('hovering');
+  bindMarkerEvents () {
+  	// handle dimming other markers + highlighting this one
+    this.$marker.mouseenter(() => {
+      this.$marker.addClass('hovering').closest(".vac-marker-wrap").addClass('dim-all')
     }).mouseleave(() => {
-      $markerWrap.removeClass('dim-all');
-      $marker.removeClass('hovering');
+      this.$marker.removeClass('hovering').closest(".vac-marker-wrap").removeClass('dim-all');
     });
-
-    $markerWrap.append($marker);
-    this.$marker = $marker;
   }
 
   // Build object for template
@@ -10193,16 +10255,25 @@ class Marker extends PlayerComponent {
       "width"       : width + "%",
       "tooltipRight": left > 50,
       "tooltipTime" : this.humanTime(),
-      "tooltipBody" : this.comment.body,
+      "tooltipBody" : !this.comment ? null : this.comment.body,
       "rangeShow"  : !!this.range.end
     }
   }
 
   // Convert num seconds to human readable format (M:SS)
   humanTime () {
-    var mins = Math.floor(this.range.start/60),
-        secs = String(this.range.start % 60);
-    return mins + ":" + (secs.length==1 ? "0" : "") + secs;
+  	function readable(sec){
+	    var mins = Math.floor(sec/60),
+	        secs = String(sec % 60);
+	    return mins + ":" + (secs.length==1 ? "0" : "") + secs;
+	}
+	var time = [readable(this.range.start)];
+	if(this.range.end) time.push(readable(this.range.end));
+	return time.join("-");
+  }
+
+  teardown () {
+  	this.$marker.remove();
   }
 
 }
@@ -10210,7 +10281,7 @@ class Marker extends PlayerComponent {
 module.exports = {
 	class: Marker
 };
-},{"./../templates/marker":55,"./player_component":52}],52:[function(require,module,exports){
+},{"./../templates/marker":56,"./player_component":53}],53:[function(require,module,exports){
 "use strict";
 
 const Handlebars = require("handlebars");
@@ -10242,7 +10313,7 @@ module.exports = {
   class: PlayerComponent
 };
 
-},{"handlebars":32}],53:[function(require,module,exports){
+},{"handlebars":32}],54:[function(require,module,exports){
 var commentsTemplate = `
   <div class="comments-container">
     Some text {{id}}
@@ -10262,7 +10333,7 @@ var commentsTemplate = `
 
 module.exports = {commentsTemplate};
 
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 var ControlsTemplate = `
 	{{#unless adding}}
 	  	<div class="vac-controls vac-control">
@@ -10293,18 +10364,25 @@ var ControlsTemplate = `
 
 module.exports = {ControlsTemplate};
 
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 var markerTemplate = `
   <div class="vac-marker {{#if rangeShow}}ranged-marker{{/if}}" style="left: {{left}}; {{#if rangeShow}}width:{{width}};{{/if}}">
-    <div>
-      <span class="vac-tooltip {{#if tooltipRight}}right-side{{/if}}">
-        <b>{{tooltipTime}}</b> - {{tooltipBody}}
-      </span>
-    </div>
+    {{#if tooltipBody}}
+    	<div>
+	     	<span class="vac-tooltip {{#if tooltipRight}}right-side{{/if}}">
+	        	<b>{{tooltipTime}}</b> - {{tooltipBody}}
+	      	</span>
+    	</div>
+    {{/if}}
   </div>
 `;
 
-module.exports = {markerTemplate};
+var draggableMarkerTemplate = `
+	<div class="vac-marker-draggable ranged-marker" style="left: {{left}}; width:{{width}};">
+  	</div>
+`;
+
+module.exports = {markerTemplate, draggableMarkerTemplate};
 },{}]},{},[47])
 
 //# sourceMappingURL=videojs-annotation-comments.js.map
