@@ -10,6 +10,12 @@
 	}
 
 	&.vac-adding{
+		.vjs-control-bar{
+			z-index: 2;
+		}
+		.video-js.vjs-playing .vjs-tech {
+		  pointer-events: none;
+		}
 		.vac-marker{
 			display: none;
 		}
@@ -18,7 +24,19 @@
 		}
 	}
 
+	.vac-video-cover {
+		z-index: 1;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: red;
+		opacity: .2;
+	}
+
 	.vac-controls, .vac-add-controls{
+		z-index: 3;
 		position: absolute;
 		border-radius: 2px;
 		overflow: hidden;

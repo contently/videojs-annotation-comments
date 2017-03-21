@@ -10222,6 +10222,9 @@ var ControlsTemplate = `
 	{{/unless}}
 
 	{{#if adding}}
+		<div class="vac-video-cover vac-control">
+		</div>
+
 		<div class="vac-add-controls vac-control">
 		  	New Annotation
 			<i>Select shape + range</i>
