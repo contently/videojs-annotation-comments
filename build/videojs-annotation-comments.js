@@ -10001,14 +10001,12 @@ process.umask = function() { return 0; };
 
 })(jQuery, window.videojs);
 
-},{"./modules/annotation":48,"./modules/controls":50,"underscore":46}],48:[function(require,module,exports){
+},{"./modules/annotation":48,"./modules/controls":51,"underscore":46}],48:[function(require,module,exports){
 "use strict";
 
 const PlayerComponent = require("./player_component").class;
-const Comment = require("./comment").class;
+const CommentList = require("./comment_list").class;
 const Marker = require("./marker").class;
-const Templates = require("./../templates/annotation")
-const CommentsTemplate = Templates.commentsTemplate;
 
 class Annotation extends PlayerComponent {
 
@@ -10017,30 +10015,15 @@ class Annotation extends PlayerComponent {
     this.id = data.id;
     this.range = data.range;
     this.shape = data.shape;
-    this.comments = data.comments.map( (c) => new Comment(c, playerId) );
 
-    this.commentsTemplate = CommentsTemplate;
-
-    this.marker = new Marker(this.range, this.comments[0], playerId);
+    this.commentList = new CommentList({"comments": data.comments, "annotation": this}, playerId)
+    this.marker = new Marker(this.range, this.commentList.comments[0], playerId);
     this.marker.draw();
     this.bindMarkerEvents();
   }
 
   bindMarkerEvents() {
-    this.marker.$el.click(() => this.renderComments())
-  }
-
-  renderComments () {
-    $(".vac-comments-container").remove()
-
-    var $commentsContainer = $(this.renderTemplate(
-      this.commentsTemplate,
-      {comments: this.comments, height: $(".vjs-text-track-display").height() + 'px'}
-    ));
-    this.$player.append($commentsContainer);
-
-    this.player.pause();
-    this.player.currentTime(this.range.start);
+    this.marker.$el.click(() => this.commentList.render());
   }
 }
 
@@ -10048,7 +10031,7 @@ module.exports = {
   class: Annotation
 };
 
-},{"./../templates/annotation":54,"./comment":49,"./marker":52,"./player_component":53}],49:[function(require,module,exports){
+},{"./comment_list":50,"./marker":53,"./player_component":54}],49:[function(require,module,exports){
 "use strict";
 
 const PlayerComponent = require("./player_component").class;
@@ -10101,13 +10084,46 @@ module.exports = {
 	class: Comment
 };
 
-},{"./player_component":53}],50:[function(require,module,exports){
+},{"./player_component":54}],50:[function(require,module,exports){
+"use strict";
+
+const PlayerComponent = require("./player_component").class;
+const Comment = require("./comment").class;
+const CommentListTemplate = require("./../templates/comment_list").commentListTemplate
+
+class CommentList extends PlayerComponent {
+
+  constructor(data, playerId) {
+    super(playerId);
+
+    this.annotation = data.annotation;
+    this.comments = data.comments.map((c) => new Comment(c, playerId));
+    this.commentsTemplate = CommentListTemplate;
+  }
+
+  render() {
+    this.$player.find(".vac-comments-container").remove();
+
+    var $commentsContainer = $(this.renderTemplate(
+      this.commentsTemplate,
+      {comments: this.comments, height: $(".vjs-text-track-display").height() + 'px'}
+    ));
+    this.$player.append($commentsContainer);
+
+    this.player.pause();
+    this.player.currentTime(this.annotation.range.start);
+  }
+}
+
+module.exports = {
+  class: CommentList
+};
+
+},{"./../templates/comment_list":55,"./comment":49,"./player_component":54}],51:[function(require,module,exports){
 "use strict";
 
 const _ = require("underscore");
 const DraggableMarker = require("./draggable_marker.js").class;
-//const SelectableShape = require("/selectable_shape.js").class;
-
 const PlayerComponent = require("./player_component").class;
 const ControlsTemplate = require("./../templates/controls").ControlsTemplate;
 
@@ -10137,7 +10153,6 @@ class Controls extends PlayerComponent {
       if(this.uiState.adding){
         this.restoreNormalUI();
         this.marker.teardown();
-        this.selectableShape.teardown();
       }
       this.uiState = _.clone(BASE_UI_STATE);
     }
@@ -10169,7 +10184,6 @@ class Controls extends PlayerComponent {
       stop: this.player.currentTime()
     };
     this.marker = new DraggableMarker(range, this.playerId);
-    this.selectableShape = new SelectableShape(this.playerId);
   }
 
   setAddingUI () {
@@ -10187,7 +10201,7 @@ module.exports = {
   class: Controls
 };
 
-},{"./../templates/controls":55,"./draggable_marker.js":51,"./player_component":53,"underscore":46}],51:[function(require,module,exports){
+},{"./../templates/controls":56,"./draggable_marker.js":52,"./player_component":54,"underscore":46}],52:[function(require,module,exports){
 "use strict";
 
 const _ = require("underscore");
@@ -10242,7 +10256,7 @@ class draggableMarker extends Marker {
 module.exports = {
 	class: draggableMarker
 };
-},{"./../templates/marker":56,"./marker":52,"underscore":46}],52:[function(require,module,exports){
+},{"./../templates/marker":57,"./marker":53,"underscore":46}],53:[function(require,module,exports){
 "use strict";
 
 const MarkerTemplate = require("./../templates/marker").markerTemplate;
@@ -10322,7 +10336,7 @@ class Marker extends PlayerComponent {
 module.exports = {
 	class: Marker
 };
-},{"./../templates/marker":56,"./player_component":53}],53:[function(require,module,exports){
+},{"./../templates/marker":57,"./player_component":54}],54:[function(require,module,exports){
 "use strict";
 
 const Handlebars = require("handlebars");
@@ -10354,18 +10368,8 @@ module.exports = {
   class: PlayerComponent
 };
 
-},{"handlebars":32}],54:[function(require,module,exports){
-var markerTemplate = `
-  <div class="vac-marker {{#if rangeShow}}ranged-marker{{/if}}" style="left: {{left}}; {{#if rangeShow}}width:{{width}};{{/if}}">
-    <div>
-      <span class="vac-tooltip {{#if tooltipRight}}right-side{{/if}}">
-        <b>{{tooltipTime}}</b> - {{tooltipBody}}
-      </span>
-    </div>
-  </div>
-`;
-
-var commentsTemplate = `
+},{"handlebars":32}],55:[function(require,module,exports){
+var commentListTemplate = `
   <div class="vac-comments-container" style="height: {{height}};">
     {{#each comments as |comment|}}
       <div class="comment">
@@ -10382,9 +10386,9 @@ var commentsTemplate = `
   </div>
 `;
 
-module.exports = {markerTemplate, commentsTemplate};
+module.exports = {commentListTemplate};
 
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 var ControlsTemplate = `
 	{{#unless adding}}
 	  	<div class="vac-controls vac-control">
@@ -10415,7 +10419,7 @@ var ControlsTemplate = `
 
 module.exports = {ControlsTemplate};
 
-},{}],56:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 var markerTemplate = `
   <div class="vac-marker {{#if rangeShow}}ranged-marker{{/if}}" style="left: {{left}}; {{#if rangeShow}}width:{{width}};{{/if}}">
     {{#if tooltipBody}}
