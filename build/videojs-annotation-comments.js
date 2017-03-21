@@ -10007,7 +10007,9 @@ process.umask = function() { return 0; };
 
 const PlayerComponent = require("./player_component").class;
 const Comment = require("./comment").class;
-const AnnotationMarkerTemplate = require("./../templates/annotation-marker").annotationMarkerTemplate;
+const Templates = require("./../templates/annotation")
+const MarkerTemplate = Templates.markerTemplate;
+const CommentsTemplate = Templates.commentsTemplate;
 
 class Annotation extends PlayerComponent {
 
@@ -10018,7 +10020,8 @@ class Annotation extends PlayerComponent {
     this.shape = data.shape;
     this.comments = data.comments.map( (c) => new Comment(c, playerId) );
 
-    this.template = AnnotationMarkerTemplate
+    this.markerTemplate = MarkerTemplate;
+    this.commentsTemplate = CommentsTemplate;
 
     this.drawMarker();
   }
@@ -10035,7 +10038,7 @@ class Annotation extends PlayerComponent {
       $timeline.append($outerWrap.append($markerWrap));
     }
 
-    var $marker = $(this.renderTemplate(this.template, this.buildMarkerData()));
+    var $marker = $(this.renderTemplate(this.markerTemplate, this.buildMarkerData()));
 
     // handle dimming other markers + highlighting this one
     $marker.mouseenter(() => {
@@ -10046,7 +10049,22 @@ class Annotation extends PlayerComponent {
       $marker.removeClass('hovering');
     });
 
+    $marker.click(() => this.renderComments())
+
     $markerWrap.append($marker);
+  }
+
+  renderComments () {
+    this.$player.find(".comments-container").remove()
+
+    var $commentsContainer = $(this.renderTemplate(
+      this.commentsTemplate,
+      {
+        comments: this.comments,
+
+      }
+    ));
+    this.$player.append($commentsContainer);
   }
 
   // Convert num seconds to human readable format (M:SS)
@@ -10075,7 +10093,7 @@ module.exports = {
   class: Annotation
 };
 
-},{"./../templates/annotation-marker":52,"./comment":49,"./player_component":51}],49:[function(require,module,exports){
+},{"./../templates/annotation":52,"./comment":49,"./player_component":51}],49:[function(require,module,exports){
 "use strict";
 
 const PlayerComponent = require("./player_component").class;
@@ -10196,7 +10214,7 @@ module.exports = {
 };
 
 },{"handlebars":32}],52:[function(require,module,exports){
-var annotationMarkerTemplate = `
+var markerTemplate = `
   <div class="vac-marker {{#if rangeShow}}ranged-marker{{/if}}" style="left: {{left}}; {{#if rangeShow}}width:{{width}};{{/if}}">
     <div>
       <span class="vac-tooltip {{#if tooltipRight}}right-side{{/if}}">
@@ -10206,7 +10224,24 @@ var annotationMarkerTemplate = `
   </div>
 `;
 
-module.exports = {annotationMarkerTemplate};
+var commentsTemplate = `
+  <div class="comments-container">
+    Some text {{id}}
+    {{#each comments as |comment|}}
+      <div class="comment">
+        <div class="comment-header">
+          <span class="author-name">{{comment.meta.user_id}}</span>
+          <span class="timestamp">{{comment.meta.datetime}}</span>
+        </div>
+        <div class="comment-body">
+          {{comment.body}}
+        </div>
+      </div>
+    {{/each}}
+  </div>
+`;
+
+module.exports = {markerTemplate, commentsTemplate};
 
 },{}],53:[function(require,module,exports){
 var ControlsTemplate = `
