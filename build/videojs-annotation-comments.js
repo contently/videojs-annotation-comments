@@ -10243,6 +10243,7 @@ class Controls extends PlayerComponent {
     this.setAddingUI();
     this.uiState.adding = true;
     this.draw();
+    this.activeAnnotation.close();
 
     // construct new range and create marker
     let range = {
@@ -10255,11 +10256,11 @@ class Controls extends PlayerComponent {
 
   setAddingUI () {
     //change normal UI (hide markers, hide playback, etc)
-    this.$player.addClass('vac-disable-play');
+    this.disablePlayingAndControl();
   }
 
   restoreNormalUI () {
-    this.$player.removeClass('vac-disable-play');
+    this.enablePlayingAndControl();
   }
 
 };
@@ -10432,6 +10433,16 @@ class PlayerComponent {
 
   set activeAnnotation(aa) {
     this.player.activeAnnotation = aa;
+  }
+
+  disablePlayingAndControl () {
+    this.$player.addClass('vac-disable-play');
+    //TODO - catch spacebar being hit
+    //TODO - prevent scrubbing and timeline click to seek
+  }
+
+  enablePlayingAndControl () {
+    this.$player.removeClass('vac-disable-play');
   }
 
   renderTemplate(htmlString, options = {}) {

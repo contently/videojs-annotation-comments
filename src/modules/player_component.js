@@ -27,6 +27,16 @@ class PlayerComponent {
     this.player.activeAnnotation = aa;
   }
 
+  disablePlayingAndControl () {
+    this.$player.addClass('vac-disable-play');
+    //TODO - catch spacebar being hit
+    //TODO - prevent scrubbing and timeline click to seek
+  }
+
+  enablePlayingAndControl () {
+    this.$player.removeClass('vac-disable-play');
+  }
+
   renderTemplate(htmlString, options = {}) {
     var template = Handlebars.compile(htmlString);
     return template(options);
