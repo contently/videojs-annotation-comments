@@ -2,6 +2,8 @@
 
 const _ = require("underscore");
 const DraggableMarker = require("./draggable_marker.js").class;
+//const SelectableShape = require("/selectable_shape.js").class;
+
 const PlayerComponent = require("./player_component").class;
 const ControlsTemplate = require("./../templates/controls").ControlsTemplate;
 
@@ -31,6 +33,7 @@ class Controls extends PlayerComponent {
       if(this.uiState.adding){
         this.restoreNormalUI();
         this.marker.teardown();
+        this.selectableShape.teardown();
       }
       this.uiState = _.clone(BASE_UI_STATE);
     }
@@ -62,6 +65,7 @@ class Controls extends PlayerComponent {
       stop: this.player.currentTime()
     };
     this.marker = new DraggableMarker(range, this.playerId);
+    this.selectableShape = new SelectableShape(this.playerId);
   }
 
   setAddingUI () {

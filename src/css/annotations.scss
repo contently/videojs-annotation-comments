@@ -7,20 +7,17 @@
 		.vac-marker-owrap{
 			display: block;
 		}
-	}
-
-	&.vac-adding{
 		.vjs-control-bar{
 			z-index: 2;
 		}
-		.video-js.vjs-playing .vjs-tech {
-		  pointer-events: none;
-		}
-		.vac-marker{
-			display: none;
-		}
-		.vjs-big-play-button, .vjs-play-control, .vjs-play-progress{
+	}
+
+	&.vac-adding{
+		.vac-marker, .vjs-big-play-button{
 			display: none !important;
+		}
+		.vjs-play-control, .vjs-play-progress{
+			visibility: hidden !important;
 		}
 	}
 
@@ -32,7 +29,14 @@
 		width: 100%;
 		height: 100%;
 		background: red;
-		opacity: .2;
+		opacity: .1;
+	}
+
+	.vac-shape{
+		position: absolute;
+		z-index: 1;
+		background-color: rgba(238, 152, 40, 0.65);
+		border: 2px dotted #ee9828;
 	}
 
 	.vac-controls, .vac-add-controls{

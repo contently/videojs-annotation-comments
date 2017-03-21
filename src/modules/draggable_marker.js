@@ -21,7 +21,10 @@ class draggableMarker extends Marker {
 
     this.$marker.css('width', lenPercent + "%");
     this.range.end = this.player.currentTime();
-
+    if(len === 0){
+      // scrubbed earlier than marker
+      this.player.currentTime(this.range.start);
+    }
   }
 
   bindMarkerEvents () {
@@ -35,7 +38,6 @@ class draggableMarker extends Marker {
     $(document).on("mouseup.draggableMarker", (e) => {
        if(!this.dragging) return;
        $(document).off("mousemove.draggableMarker");
-       //TODO - set value!
        this.dragging = false;
     });
   }
