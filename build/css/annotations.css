@@ -154,6 +154,11 @@
         .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.hovering.ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.hovering.ranged-marker {
           box-shadow: 7px 0 0 0 #eed428 inset;
           background-color: rgba(238, 221, 40, 0.65); }
+      .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.active, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.active {
+        background-color: #eed428; }
+        .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.active.ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.active.ranged-marker {
+          box-shadow: 7px 0 0 0 #eed428 inset;
+          background-color: rgba(238, 221, 40, 0.65); }
       .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.ranged-marker {
         box-shadow: 7px 0 0 0 #00A6C2 inset;
         background-color: rgba(0, 166, 194, 0.65); }

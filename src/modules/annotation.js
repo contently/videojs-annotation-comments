@@ -30,10 +30,12 @@ class Annotation extends PlayerComponent {
     this.commentList.render();
     this.annotationShape.draw();
 
+    this.marker.$el.addClass("active");
     this.player.activeAnnotation = this;
   }
 
   close() {
+    this.marker.$el.removeClass("active");
     this.commentList.teardown();
     this.annotationShape.teardown();
   }
