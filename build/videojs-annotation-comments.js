@@ -9965,6 +9965,7 @@ process.umask = function() { return 0; };
 	  		this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
 	  		if(!active){
 	  			this.components.controls.clear(true);
+          this.player.activeAnnotation.close();
 	  		}else{
 	  			this.components.controls.draw();
 	  		}
@@ -10025,10 +10026,21 @@ class Annotation extends PlayerComponent {
   }
 
   bindMarkerEvents() {
-    this.marker.$el.click(() => {
-      this.commentList.render();
-      this.annotationShape.draw();
-    });
+    this.marker.$el.click(() => this.open());
+  }
+
+  open() {
+    this.activeAnnotation.close()
+
+    this.commentList.render();
+    this.annotationShape.draw();
+
+    this.player.activeAnnotation = this;
+  }
+
+  close() {
+    this.commentList.teardown();
+    this.annotationShape.teardown();
   }
 }
 
@@ -10150,16 +10162,22 @@ class CommentList extends PlayerComponent {
   }
 
   render() {
-    this.$player.find(".vac-comments-container").remove();
+    // this.$player.find(".vac-comments-container").remove();
 
-    var $commentsContainer = $(this.renderTemplate(
+    this.$el = $(this.renderTemplate(
       this.commentsTemplate,
       {comments: this.comments, height: $(".vjs-text-track-display").height() + 'px'}
     ));
-    this.$player.append($commentsContainer);
+    this.$player.append(this.$el);
 
     this.player.pause();
     this.player.currentTime(this.annotation.range.start);
+  }
+
+  teardown() {
+    if(!!this.$el){
+      this.$el.remove();
+    }
   }
 }
 
@@ -10324,7 +10342,7 @@ class Marker extends PlayerComponent {
   get $el () {
   	return this.$marker;
   }
-  
+
   draw () {
   	// Draw marker on timeline for this.range;
     var $timeline = this.$player.find('.vjs-progress-control')
@@ -10386,6 +10404,7 @@ class Marker extends PlayerComponent {
 module.exports = {
 	class: Marker
 };
+
 },{"./../templates/marker":59,"./player_component":55}],55:[function(require,module,exports){
 "use strict";
 
@@ -10406,6 +10425,14 @@ class PlayerComponent {
 
   get duration () {
     return this.player.duration();
+  }
+
+  get activeAnnotation () {
+    return this.player.activeAnnotation || {"close": (function (){return null})};
+  }
+
+  set activeAnnotation(aa) {
+    this.player.activeAnnotation = aa;
   }
 
   renderTemplate(htmlString, options = {}) {

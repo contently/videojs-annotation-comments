@@ -70,6 +70,7 @@
 	  		this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
 	  		if(!active){
 	  			this.components.controls.clear(true);
+          this.player.activeAnnotation.close();
 	  		}else{
 	  			this.components.controls.draw();
 	  		}

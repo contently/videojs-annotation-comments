@@ -21,10 +21,21 @@ class Annotation extends PlayerComponent {
   }
 
   bindMarkerEvents() {
-    this.marker.$el.click(() => {
-      this.commentList.render();
-      this.annotationShape.draw();
-    });
+    this.marker.$el.click(() => this.open());
+  }
+
+  open() {
+    this.activeAnnotation.close()
+
+    this.commentList.render();
+    this.annotationShape.draw();
+
+    this.player.activeAnnotation = this;
+  }
+
+  close() {
+    this.commentList.teardown();
+    this.annotationShape.teardown();
   }
 }
 
