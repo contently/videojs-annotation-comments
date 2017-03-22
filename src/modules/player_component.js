@@ -8,6 +8,10 @@ class PlayerComponent {
     this.generateComponentId();
   }
 
+  get plugin () {
+    return this.player.annotationComments();
+  }
+
   // attribute to get player javascript instance
   get player () {
   	return videojs(this.playerId);
