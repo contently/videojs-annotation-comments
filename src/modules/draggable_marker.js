@@ -1,4 +1,8 @@
 "use strict";
+/*
+  Component for a timeline marker that is draggable when user clicks/drags on it, and rebuilds underlying range
+  as drag occurs
+*/
 
 const _ = require("underscore");
 const Marker = require("./marker").class;
@@ -8,9 +12,9 @@ class draggableMarker extends Marker {
 
   constructor(range, playerId) {
     super(range, null, playerId);
-    this.template = DraggableMarkerTemplate;
-    this.dragging = false;
-    this.rangePin = range.start;
+    this.template = DraggableMarkerTemplate;  // Change template from base Marker template
+    this.dragging = false;                    // Is a drag action currently occring?
+    this.rangePin = range.start;              // What's the original pinned timeline point when marker was added
     this.draw();
     this.$parent = this.$marker.closest(".vac-marker-wrap"); // Set parent as marker wrap
   }

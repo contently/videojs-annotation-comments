@@ -9902,12 +9902,6 @@ process.umask = function() { return 0; };
 	const Annotation = require("./modules/annotation").class;
 	const Controls = require("./modules/controls").class;
 
-	const BASE_STATE = Object.freeze({
-		active: false,					// Is annotation mode active?
-		viewing_annotation_index: null,	// Index of currently expanded/visible annotation (null if none)
-		annotations: []					// Array of Annotaiton instances
-	});
-
 	class Main extends Plugin {
 
 		constructor(player, options) {
@@ -9915,57 +9909,46 @@ process.umask = function() { return 0; };
 
 	    	this.playerId = $(player.el()).attr('id');
 	    	this.player = player;
-	    	this.uiReady = false;
 
-	    	this.on('statechanged', this.stateChanged);
+	    	//assign reference to this class to player for access later by components where needed
+	    	this.player.annotationComments = this;
 
-
-	    	// setup initial state after video is loaded
-	    	// TODO - use plugin.defaultState? Or is this better as we freeze it and must wait for meta load anyway
+	    	// setup initial state and draw UI after video is loaded
 	    	player.on("loadedmetadata", () => {
-		    	let state = _.clone(BASE_STATE);
-		    	state.annotations = annotations.map((a) => new Annotation(a, this.playerId));
-		    	this.setState(state);
+		    	this.annotations = annotations.map((a) => new Annotation(a, this.playerId));
 		    	this.drawUI(player);
 
-		    	//TODO - for dev, remove
-		    	this.toggleAnnotations();
-		    	//mute the player and start playing
-				player.muted(true);
-				player.play();
+		    	this.toggleAnnotations(); 	//TODO - for dev, remove
+		    	player.muted(true);			//TODO - for dev, remove
+				player.play();				//TODO - for dev, remove
 		    });
 	  	}
 
 	  	drawUI() {
-	  		this.components = {}; // Component references - TODO is this needed? creates memory-leaking closures
-
-	  		var self = this;
-	  		var Component = videojs.getComponent('Component');
+	  		this.components = {};
 
 	  		// Add button to player
 	  		// TODO - clean this shit up - move this & bubble to seperate component module file??
 	  		this.components.playerBtn = player.getChild('controlBar').addChild('button', {});
 	  		this.components.playerBtn.addClass('vac-player-btn');
 		  	this.components.playerBtn.on('click', () => {
-	  			self.components.playerBtn.toggleClass('vac-active');
-	  			self.toggleAnnotations();
+	  			this.components.playerBtn.toggleClass('vac-active');
+	  			this.toggleAnnotations();
 	  		});
 	  		this.components.playerBtn.controlText("Toggle Animations");
 
 	  		// Add controls box
 	  		this.components.controls = new Controls(this.playerId);
 
-	  		this.uiReady = true;
 	  		this.updateAnnotationBubble();
 	  	}
 
 	  	toggleAnnotations() {
-	  		var active = !this.state.active;
-	  		this.setState({active});
+	  		this.active = !this.active;
 	  		this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
-	  		if(!active){
+	  		if(!this.active){
 	  			this.components.controls.clear(true);
-          this.player.activeAnnotation.close();
+          		this.player.activeAnnotation.close();
 	  		}else{
 	  			this.components.controls.draw();
 	  		}
@@ -9977,8 +9960,6 @@ process.umask = function() { return 0; };
 	  	}
 
 	  	updateAnnotationBubble () {
-	  		if(!this.uiReady) return;
-
 	  		var $el = $(this.components.playerBtn.el()),
 	  			$bubble = $el.find("b");
 
@@ -9987,14 +9968,9 @@ process.umask = function() { return 0; };
 	  			$el.append($bubble);
 	  		}
 
-	  		var num = this.state.annotations.length;
+	  		var num = this.annotations.length;
 	  		$bubble.text(num);
 	  		num > 0 ? $el.addClass('show') : $el.addClass('hide');
-	  	}
-
-	  	stateChanged() {
-	    	//console.log('State updated', this.state);
-	    	this.updateAnnotationBubble(); // TODO - only fire if needed
 	  	}
 	}
 
@@ -10196,6 +10172,10 @@ module.exports = {
 
 },{"./../templates/comment_list":57,"./comment":50,"./player_component":55}],52:[function(require,module,exports){
 "use strict";
+/*
+  Component for managing annotation "control box" in upper left of video when in annotation mode, including all
+  functionality to add new annotations
+*/
 
 const _ = require("underscore");
 const DraggableMarker = require("./draggable_marker.js").class;
@@ -10204,9 +10184,9 @@ const PlayerComponent = require("./player_component").class;
 const ControlsTemplate = require("./../templates/controls").ControlsTemplate;
 
 const BASE_UI_STATE = Object.freeze({
-  adding: false,          // are we currently adding a new annotaiton?
-  writingComment: false,
-  rangeStr: null
+  adding: false,          // Are we currently adding a new annotaiton? (step 1 of flow)
+  writingComment: false,  // Are we currently writing the comment for annotation (step 2 of flow)
+  rangeStr: null          // Range string for displaying what range we are adding annotation to
 });
 
 class Controls extends PlayerComponent {
@@ -10221,10 +10201,10 @@ class Controls extends PlayerComponent {
 
   // Bind all the events we need for UI interaction
   bindEvents () {
-    this.$player.on("click", ".vac-controls button", this.startAddNew.bind(this))
-      .on("click", ".vac-add-controls a, .vac-video-write-new a", this.cancelAddNew.bind(this))
-      .on("click", ".vac-add-controls button", this.writeComment.bind(this))
-      .on("click", ".vac-video-write-new button", this.saveNew.bind(this));
+    this.$player.on("click", ".vac-controls button", this.startAddNew.bind(this)) // Add new button click
+      .on("click", ".vac-add-controls a, .vac-video-write-new a", this.cancelAddNew.bind(this)) // Cancel link click
+      .on("click", ".vac-add-controls button", this.writeComment.bind(this)) // 'Next' button click while adding
+      .on("click", ".vac-video-write-new button", this.saveNew.bind(this)); // 'Save' button click while adding
   }
 
   // Clear existing UI (resetting components if need be)
@@ -10305,6 +10285,10 @@ module.exports = {
 
 },{"./../templates/controls":58,"./draggable_marker.js":53,"./player_component":55,"./selectable_shape.js":56,"underscore":46}],53:[function(require,module,exports){
 "use strict";
+/*
+  Component for a timeline marker that is draggable when user clicks/drags on it, and rebuilds underlying range
+  as drag occurs
+*/
 
 const _ = require("underscore");
 const Marker = require("./marker").class;
@@ -10314,9 +10298,9 @@ class draggableMarker extends Marker {
 
   constructor(range, playerId) {
     super(range, null, playerId);
-    this.template = DraggableMarkerTemplate;
-    this.dragging = false;
-    this.rangePin = range.start;
+    this.template = DraggableMarkerTemplate;  // Change template from base Marker template
+    this.dragging = false;                    // Is a drag action currently occring?
+    this.rangePin = range.start;              // What's the original pinned timeline point when marker was added
     this.draw();
     this.$parent = this.$marker.closest(".vac-marker-wrap"); // Set parent as marker wrap
   }
@@ -10381,6 +10365,9 @@ module.exports = {
 };
 },{"./../templates/marker":59,"./marker":54,"underscore":46}],54:[function(require,module,exports){
 "use strict";
+/*
+  Component for a timeline marker with capabilities to draw on timeline, including tooltip for comment
+*/
 
 const MarkerTemplate = require("./../templates/marker").markerTemplate;
 const PlayerComponent = require("./player_component").class;
@@ -10394,44 +10381,49 @@ class Marker extends PlayerComponent {
     this.template = MarkerTemplate;
   }
 
+  // attribute to get the DOM id for this marker node
   get markerId () {
   	return "vacmarker_"+this.componentId;
   }
 
+  // attribute to get the jQuery elem for this marker
   get $el () {
   	return this.$marker;
   }
 
+  // Draw marker on timeline for this.range;
   draw () {
-  	// Draw marker on timeline for this.range;
     var $timeline = this.$player.find('.vjs-progress-control'),
     	$markerWrap = $timeline.find(".vac-marker-wrap");
 
+    // If markerWrap does NOT exist yet, draw it on the timeline and grab it's jquery ref
     if(!$markerWrap.length){
       var $outerWrap = $("<div/>").addClass("vac-marker-owrap");
       $markerWrap = $("<div/>").addClass("vac-marker-wrap");
       $timeline.append($outerWrap.append($markerWrap));
     }
 
-    // clear existing marker if this one exists
+    // clear existing marker if this one was already drawn
     $timeline.find("#"+this.markerId).remove();
 
-    this.$marker = $(this.renderTemplate(this.template, this.buildMarkerData()));
+    // Bind to local instance var, add to DOM, and setup events
+    this.$marker = $(this.renderTemplate(this.template, this.markerTemplateData));
     $markerWrap.append(this.$marker);
     this.bindMarkerEvents();
   }
 
+  // Bind needed events for this marker
   bindMarkerEvents () {
-  	// handle dimming other markers + highlighting this one
-    this.$marker.mouseenter(() => {
+  	// handle dimming other markers + highlighting this one on mouseenter/leave
+    this.$marker.on("mouseenter.marker", () => {
       this.$marker.addClass('hovering').closest(".vac-marker-wrap").addClass('dim-all')
-    }).mouseleave(() => {
+    }).on("mouseleave.marker", () => {
       this.$marker.removeClass('hovering').closest(".vac-marker-wrap").removeClass('dim-all');
     });
   }
 
   // Build object for template
-  buildMarkerData () {
+  get markerTemplateData () {
     var left = (this.range.start / this.duration) * 100;
     var width = ((this.range.end / this.duration) * 100) - left;
     return {
@@ -10445,8 +10437,9 @@ class Marker extends PlayerComponent {
     }
   }
 
+  // Unbind event listeners on teardown and remove DOM nodes
   teardown () {
-  	this.$marker.remove();
+  	this.$marker.off("mouseenter.marker mousleave.marker").remove();
   }
 }
 

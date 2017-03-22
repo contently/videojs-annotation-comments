@@ -1,4 +1,8 @@
 "use strict";
+/*
+  Component for managing annotation "control box" in upper left of video when in annotation mode, including all
+  functionality to add new annotations
+*/
 
 const _ = require("underscore");
 const DraggableMarker = require("./draggable_marker.js").class;
@@ -7,9 +11,9 @@ const PlayerComponent = require("./player_component").class;
 const ControlsTemplate = require("./../templates/controls").ControlsTemplate;
 
 const BASE_UI_STATE = Object.freeze({
-  adding: false,          // are we currently adding a new annotaiton?
-  writingComment: false,
-  rangeStr: null
+  adding: false,          // Are we currently adding a new annotaiton? (step 1 of flow)
+  writingComment: false,  // Are we currently writing the comment for annotation (step 2 of flow)
+  rangeStr: null          // Range string for displaying what range we are adding annotation to
 });
 
 class Controls extends PlayerComponent {
@@ -24,10 +28,10 @@ class Controls extends PlayerComponent {
 
   // Bind all the events we need for UI interaction
   bindEvents () {
-    this.$player.on("click", ".vac-controls button", this.startAddNew.bind(this))
-      .on("click", ".vac-add-controls a, .vac-video-write-new a", this.cancelAddNew.bind(this))
-      .on("click", ".vac-add-controls button", this.writeComment.bind(this))
-      .on("click", ".vac-video-write-new button", this.saveNew.bind(this));
+    this.$player.on("click", ".vac-controls button", this.startAddNew.bind(this)) // Add new button click
+      .on("click", ".vac-add-controls a, .vac-video-write-new a", this.cancelAddNew.bind(this)) // Cancel link click
+      .on("click", ".vac-add-controls button", this.writeComment.bind(this)) // 'Next' button click while adding
+      .on("click", ".vac-video-write-new button", this.saveNew.bind(this)); // 'Save' button click while adding
   }
 
   // Clear existing UI (resetting components if need be)
