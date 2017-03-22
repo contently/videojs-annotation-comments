@@ -118,7 +118,10 @@
 		<script src="/videojs-annotation-comments.js"></script>
 		<script>
 			var player = videojs('the_video');
-			player.annotationComments({annotationsObjects: annotations});
+			player.annotationComments({
+				annotationsObjects: annotations, 
+				meta: {user_id:999}
+			});
 		</script>
 	</BODY>
 </HTML>

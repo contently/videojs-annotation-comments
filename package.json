@@ -36,6 +36,7 @@
     "handlebars": "^4.0.6",
     "jshint": "^2.9.2",
     "jshint-stylish": "~2.0.1",
+    "moment": "^2.18.1",
     "underscore": "^1.8.3",
     "video.js": "^6.0.0-RC.5",
     "vinyl-buffer": "^1.0.0",

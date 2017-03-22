@@ -15,6 +15,7 @@
 
 	    	this.playerId = $(player.el()).attr('id');
 	    	this.player = player;
+	    	this.meta = options.meta;
 
 	    	//assign reference to this class to player for access later by components where needed
 	    	var self = this;

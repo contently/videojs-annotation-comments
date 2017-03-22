@@ -33,9 +33,7 @@ class CommentList extends PlayerComponent {
   }
 
   teardown() {
-    if(!!this.$el){
-      this.$el.remove();
-    }
+    if(this.$el) this.$el.remove();
   }
 }
 

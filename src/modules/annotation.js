@@ -1,5 +1,7 @@
 "use strict";
 
+const _ = require("underscore");
+const moment = require("moment");
 const PlayerComponent = require("./player_component").class;
 const CommentList = require("./comment_list").class;
 const Marker = require("./marker").class;
@@ -56,6 +58,21 @@ class Annotation extends PlayerComponent {
       if(start < this.duration) seconds.push(start+1);
     }
     return seconds;
+  }
+
+  static newFromData (range, shape, commentStr, plugin) {
+    let comment = {
+      body: commentStr,
+      meta: _.extend({
+          datetime: moment().toISOString()
+        }, plugin.meta)
+    };
+    let data = {
+      range,
+      shape,
+      comments: [comment]
+    }
+    return new Annotation(data, plugin.playerId);
   }
 }
 

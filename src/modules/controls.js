@@ -8,6 +8,7 @@ const _ = require("underscore");
 const DraggableMarker = require("./draggable_marker.js").class;
 const SelectableShape = require("./selectable_shape.js").class;
 const PlayerComponent = require("./player_component").class;
+const Annotation = require("./annotation").class;
 const ControlsTemplate = require("./../templates/controls").ControlsTemplate;
 
 const BASE_UI_STATE = Object.freeze({
@@ -69,7 +70,7 @@ class Controls extends PlayerComponent {
     this.setAddingUI();
     this.uiState.adding = true;
     this.draw();
-    this.player.annotationState.activeAnnotation.close();
+    this.plugin.annotationState.activeAnnotation.close();
 
     // construct new range and create marker
     let range = {
@@ -91,8 +92,10 @@ class Controls extends PlayerComponent {
   saveNew () {
     var comment = this.$player.find(".vac-video-write-new textarea").val();
     if(!comment) return; // empty comment - TODO add validation / err message in future
-    console.log("NEW ANNOTATION", {range: this.marker.range, shape: this.selectableShape.shape, comment});
-    // TODO - save annotation
+
+    var a = Annotation.newFromData(this.marker.range, this.marker.shape, comment, this.plugin);
+    this.plugin.annotationState.addNewAnnotation(a);
+
     this.cancelAddNew();
   }
 

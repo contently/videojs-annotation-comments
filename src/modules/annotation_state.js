@@ -29,11 +29,8 @@ class AnnotationState extends PlayerComponent {
   // set annottions w/ input of annotations objects - sets internal variable to array of annotations instances
   // NOTE stord internally as this._annotations
   set annotations (annotationsData) {
-    // Sort annotations by range.start
-    annotationsData.sort((a,b) => {
-      return a.range.start < b.range.start ? -1 : (a.range.start > b.range.start ? 1 : 0);
-    });
     this._annotations = annotationsData.map((a) => new Annotation(a, this.playerId));
+    this.sortAnnotations();
     this.rebuildAnnotationTimeMap()
   }
 
@@ -55,6 +52,21 @@ class AnnotationState extends PlayerComponent {
     this.player.on("timeupdate", _.throttle(this.setLiveAnnotation.bind(this), 750));
   }
 
+  // Sort annotations by range.start
+  sortAnnotations () {
+    // Sort annotations by range.start
+    this._annotations.sort((a,b) => {
+      return a.range.start < b.range.start ? -1 : (a.range.start > b.range.start ? 1 : 0);
+    });
+  }
+
+  // Add a new annotation
+  addNewAnnotation (annotation) {
+    this._annotations.push(annotation);
+    this.sortAnnotations();
+    this.rebuildAnnotationTimeMap()
+  }
+
   // Set the live annotation based on current video time
   setLiveAnnotation() {
     if(!this.enabled) return;
@@ -64,8 +76,7 @@ class AnnotationState extends PlayerComponent {
     if(!matches.length) return this.activeAnnotation.close();
 
     var liveAnnotation = this.annotations[matches[matches.length-1]];
-    liveAnnotation.open(false);
-    this.activeAnnotation = liveAnnotation;
+    this.openAnnotation(liveAnnotation,false);
   }
 
   // Get all active annotations for a time (in seconds)
@@ -91,9 +102,9 @@ class AnnotationState extends PlayerComponent {
     this.activeAnnotation = null;
   }
 
-  openAnnotation (annotation) {
+  openAnnotation (annotation, pause=true) {
     this.activeAnnotation.close();
-    annotation.open();
+    annotation.open(pause);
     this.activeAnnotation = annotation;
   }
 
