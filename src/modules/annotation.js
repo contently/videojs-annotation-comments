@@ -17,6 +17,7 @@ class Annotation extends PlayerComponent {
     this.marker = new Marker(this.range, this.commentList.comments[0], playerId);
     this.marker.draw();
     this.annotationShape = new AnnotationShape(this.shape, playerId);
+    this.secondsActive = this.secondsActive();
     this.bindMarkerEvents();
   }
 
@@ -24,20 +25,38 @@ class Annotation extends PlayerComponent {
     this.marker.$el.click(() => this.open());
   }
 
-  open() {
-    this.activeAnnotation.close()
+  open(withPause = true) {
+    this.player.annotationState.activeAnnotation.close()
 
     this.commentList.render();
     this.annotationShape.draw();
 
     this.marker.$el.addClass("active");
-    this.player.activeAnnotation = this;
+    this.player.annotationState.activeAnnotation = this;
+
+    if(withPause) {
+      this.player.pause();
+      this.player.currentTime(this.range.start);
+    }
   }
 
   close() {
     this.marker.$el.removeClass("active");
     this.commentList.teardown();
     this.annotationShape.teardown();
+  }
+
+  secondsActive() {
+    if(!!this.range.end) {
+      var seconds = [];
+      for (var i = this.range.start; i <= this.range.end; i++) {
+        seconds.push(i);
+      }
+    } else {
+      var start = this.range.start;
+      var seconds = [start - 1, start, start + 1];
+    }
+    return seconds;
   }
 }
 

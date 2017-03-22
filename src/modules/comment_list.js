@@ -30,9 +30,6 @@ class CommentList extends PlayerComponent {
 
     this.$player.append(this.$el);
     this.bindListEvents();
-
-    this.player.pause();
-    this.player.currentTime(this.annotation.range.start);
   }
 
   teardown() {

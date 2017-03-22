@@ -23,14 +23,6 @@ class PlayerComponent {
     return this.player.duration();
   }
 
-  get activeAnnotation () {
-    return this.player.activeAnnotation || {"close": (function (){return null})};
-  }
-
-  set activeAnnotation(aa) {
-    this.player.activeAnnotation = aa;
-  }
-
   // Disable play/control actions on the current player
   disablePlayingAndControl () {
     this.$player.addClass('vac-disable-play');
