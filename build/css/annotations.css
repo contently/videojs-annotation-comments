@@ -345,7 +345,8 @@
     font-size: 1.6em;
     background-color: #00A6C2;
     border-radius: 2px;
-    margin-bottom: 20px; }
+    margin-bottom: 20px;
+    cursor: pointer; }
 
 .video-js .vac-comments-control-bar {
   height: 40px;

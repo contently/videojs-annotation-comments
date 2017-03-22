@@ -16,6 +16,18 @@ class Comment extends PlayerComponent {
     return moment(this.meta.datetime).fromNow();
   }
 
+  static newFromData(user_id, body, plugin) {
+    let data = {
+      meta: {
+        user_id,
+        datetime: moment().toISOString()
+      },
+      body
+    };
+
+    return new Comment(data, plugin.playerId);
+  }
+
 }
 
 module.exports = {

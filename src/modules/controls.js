@@ -29,9 +29,9 @@ class Controls extends PlayerComponent {
   // Bind all the events we need for UI interaction
   bindEvents () {
     this.$player.on("click", ".vac-controls button", this.startAddNew.bind(this)) // Add new button click
-      .on("click", ".vac-add-controls a, .vac-video-write-new a", this.cancelAddNew.bind(this)) // Cancel link click
+      .on("click", ".vac-add-controls a, .vac-video-write-new.annotation a", this.cancelAddNew.bind(this)) // Cancel link click
       .on("click", ".vac-add-controls button", this.writeComment.bind(this)) // 'Next' button click while adding
-      .on("click", ".vac-video-write-new button", this.saveNew.bind(this)) // 'Save' button click while adding
+      .on("click", ".vac-video-write-new.annotation button", this.saveNew.bind(this)) // 'Save' button click while adding
       .on("click", ".vac-controls .next", () => this.plugin.annotationState.nextAnnotation() ) // Click 'next'
       .on("click", ".vac-controls .prev", () => this.plugin.annotationState.prevAnnotation() ); // Click 'prev'
   }

@@ -26,7 +26,7 @@ var ControlsTemplate = `
 
 		{{#if writingComment}}
 			<div class="vac-video-write-new-wrap vac-control">
-				<div class="vac-video-write-new">
+				<div class="vac-video-write-new annotation">
 					<div>
 						<h5><b>New Annotation</b> @ {{rangeStr}}</h5>
 						<div>

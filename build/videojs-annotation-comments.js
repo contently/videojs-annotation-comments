@@ -14565,12 +14565,12 @@ module.exports = {
 const _ = require("underscore");
 const PlayerComponent = require("./player_component").class;
 const Annotation = require("./annotation").class;
-  
+
 class AnnotationState extends PlayerComponent {
 
   constructor(playerId) {
     super(playerId);
-    
+
     this.annotations = [];
     this.annotationTimeMap = {};
     this.activeAnnotation = null;
@@ -14739,6 +14739,18 @@ class Comment extends PlayerComponent {
     return moment(this.meta.datetime).fromNow();
   }
 
+  static newFromData(user_id, body, plugin) {
+    let data = {
+      meta: {
+        user_id,
+        datetime: moment().toISOString()
+      },
+      body
+    };
+
+    return new Comment(data, plugin.playerId);
+  }
+
 }
 
 module.exports = {
@@ -14750,7 +14762,9 @@ module.exports = {
 
 const PlayerComponent = require("./player_component").class;
 const Comment = require("./comment").class;
-const CommentListTemplate = require("./../templates/comment_list").commentListTemplate
+const Templates = require("./../templates/comment_list");
+const CommentListTemplate = Templates.commentListTemplate;
+const NewCommentTemplate = Templates.newCommentTemplate;
 
 class CommentList extends PlayerComponent {
 
@@ -14760,10 +14774,18 @@ class CommentList extends PlayerComponent {
     this.annotation = data.annotation;
     this.comments = data.comments.map((c) => new Comment(c, playerId));
     this.commentsTemplate = CommentListTemplate;
+    this.newCommentTemplate = NewCommentTemplate;
   }
 
   bindListEvents() {
     this.$el.find(".vac-close-comment-list").click(() => this.annotation.close());
+    this.$el.find(".reply-btn").click(() => this.addNewComment());
+  }
+
+  bindCommentFormEvents() {
+    this.$newCommentForm
+      .on("click", ".vac-add-controls a, .vac-video-write-new.comment a", this.closeNewComment.bind(this))
+      .on("click", ".vac-video-write-new.comment button", this.saveNewComment.bind(this));
   }
 
   render() {
@@ -14778,6 +14800,30 @@ class CommentList extends PlayerComponent {
 
     this.$player.append(this.$el);
     this.bindListEvents();
+  }
+
+  reRender() {
+    this.teardown();
+    this.render();
+  }
+
+  addNewComment() {
+    this.$newCommentForm = $(this.renderTemplate(this.newCommentTemplate));
+    this.bindCommentFormEvents();
+    this.$player.append(this.$newCommentForm);
+  }
+
+  saveNewComment() {
+    var user_id = 1,
+      body = this.$player.find(".vac-video-write-new textarea").val();
+    var comment = Comment.newFromData(user_id, body, this.plugin);
+    this.comments.push(comment);
+    this.closeNewComment();
+    this.reRender();
+  }
+
+  closeNewComment() {
+    if(this.$newCommentForm) this.$newCommentForm.remove();
   }
 
   teardown() {
@@ -14821,9 +14867,9 @@ class Controls extends PlayerComponent {
   // Bind all the events we need for UI interaction
   bindEvents () {
     this.$player.on("click", ".vac-controls button", this.startAddNew.bind(this)) // Add new button click
-      .on("click", ".vac-add-controls a, .vac-video-write-new a", this.cancelAddNew.bind(this)) // Cancel link click
+      .on("click", ".vac-add-controls a, .vac-video-write-new.annotation a", this.cancelAddNew.bind(this)) // Cancel link click
       .on("click", ".vac-add-controls button", this.writeComment.bind(this)) // 'Next' button click while adding
-      .on("click", ".vac-video-write-new button", this.saveNew.bind(this)) // 'Save' button click while adding
+      .on("click", ".vac-video-write-new.annotation button", this.saveNew.bind(this)) // 'Save' button click while adding
       .on("click", ".vac-controls .next", () => this.plugin.annotationState.nextAnnotation() ) // Click 'next'
       .on("click", ".vac-controls .prev", () => this.plugin.annotationState.prevAnnotation() ); // Click 'prev'
   }
@@ -15341,7 +15387,24 @@ var commentListTemplate = `
   </div>
 `;
 
-module.exports = {commentListTemplate};
+var newCommentTemplate = `
+  <div class="vac-video-write-new-wrap vac-control">
+    <div class="vac-video-write-new comment">
+      <div>
+        <h5><b>New Comment</b></h5>
+        <div>
+          <textarea placeholder="Enter comment..."></textarea>
+          <div>
+            <button class="vac-button">SAVE</button>
+            <a>Cancel</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+`
+
+module.exports = {commentListTemplate, newCommentTemplate};
 
 },{}],61:[function(require,module,exports){
 var ControlsTemplate = `
@@ -15372,7 +15435,7 @@ var ControlsTemplate = `
 
 		{{#if writingComment}}
 			<div class="vac-video-write-new-wrap vac-control">
-				<div class="vac-video-write-new">
+				<div class="vac-video-write-new annotation">
 					<div>
 						<h5><b>New Annotation</b> @ {{rangeStr}}</h5>
 						<div>

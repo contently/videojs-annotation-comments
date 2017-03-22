@@ -3,12 +3,12 @@
 const _ = require("underscore");
 const PlayerComponent = require("./player_component").class;
 const Annotation = require("./annotation").class;
-  
+
 class AnnotationState extends PlayerComponent {
 
   constructor(playerId) {
     super(playerId);
-    
+
     this.annotations = [];
     this.annotationTimeMap = {};
     this.activeAnnotation = null;
