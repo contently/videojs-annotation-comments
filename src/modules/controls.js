@@ -13,8 +13,7 @@ const ControlsTemplate = require("./../templates/controls").ControlsTemplate;
 
 const BASE_UI_STATE = Object.freeze({
   adding: false,          // Are we currently adding a new annotaiton? (step 1 of flow)
-  writingComment: false,  // Are we currently writing the comment for annotation (step 2 of flow)
-  rangeStr: null          // Range string for displaying what range we are adding annotation to
+  writingComment: false  // Are we currently writing the comment for annotation (step 2 of flow)
 });
 
 class Controls extends PlayerComponent {
@@ -53,7 +52,12 @@ class Controls extends PlayerComponent {
   // Draw the UI elements (based on uiState)
   draw (reset=false) {
     this.clear(reset);
-    var $ctrls = this.renderTemplate(this.template, this.uiState);
+    var data = _.extend({
+                  rangeStr: this.marker ? this.humanTime(this.marker.range) : null,
+                  showNav: this.plugin.annotationState.annotations.length > 1
+                }, this.uiState);
+
+    var $ctrls = this.renderTemplate(this.template, data);
     this.$player.append($ctrls);
   }
 
@@ -70,7 +74,6 @@ class Controls extends PlayerComponent {
     this.setAddingUI();
     this.uiState.adding = true;
     this.draw();
-    this.plugin.annotationState.clearActive();
 
     // construct new range and create marker
     let range = {
@@ -83,7 +86,6 @@ class Controls extends PlayerComponent {
 
   // User clicked 'next' action - show UI to write comment
   writeComment () {
-    this.uiState.rangeStr = this.humanTime(this.marker.range);
     this.uiState.writingComment = true;
     this.draw();
   }
@@ -101,11 +103,13 @@ class Controls extends PlayerComponent {
 
   // Change normal UI (hide markers, hide playback, etc) on init add state
   setAddingUI () {
+    this.plugin.annotationState.enabled = false;
     this.disablePlayingAndControl();
   }
 
   // Restore normal UI after add state
   restoreNormalUI () {
+    this.plugin.annotationState.enabled = true;
     this.enablePlayingAndControl();
   }
 

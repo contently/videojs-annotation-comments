@@ -14,13 +14,19 @@ class AnnotationState extends PlayerComponent {
     this.activeAnnotation = null;
     this.enabled = false;
     this.skipNextTimeCheck = false;
+    
+    this.lastVideoTime = 0;
 
     this.bindEvents()
   }
 
-  set enabled (val){
-    if(!val) this.activeAnnotation.close();
-    this._enabled = val;
+  set enabled (shouldBeEnabled){
+    this._enabled = shouldBeEnabled;
+    if(!shouldBeEnabled) this.activeAnnotation.close();
+    if(shouldBeEnabled){
+      this.skipLiveCheck = false;
+      this.setLiveAnnotation();
+    }
   }
 
   get enabled () {
@@ -50,7 +56,7 @@ class AnnotationState extends PlayerComponent {
 
   // Bind events for setting liveAnnotation on video time change
   bindEvents() {
-    this.player.on("timeupdate", _.throttle(this.setLiveAnnotation.bind(this), 500));
+    this.player.on("timeupdate", _.throttle(this.setLiveAnnotation.bind(this), 1000));
   }
 
   // Sort annotations by range.start
@@ -71,15 +77,21 @@ class AnnotationState extends PlayerComponent {
   // Set the live annotation based on current video time
   setLiveAnnotation() {
     if(!this.enabled) return;
-    if(this.skipLiveCheck) return (this.skipLiveCheck = false);
 
-    var time = Math.floor(this.player.currentTime()),
-        matches = this.activeAnnotationsForTime(time);
+    var time = Math.floor(this.player.currentTime());
 
+    if(this.skipLiveCheck){
+      if(time !== this.lastVideoTime) this.skipLiveCheck = false;
+      return;
+    }
+
+    var matches = this.activeAnnotationsForTime(time);
     if(!matches.length) return this.activeAnnotation.close();
 
     var liveAnnotation = this.annotations[matches[matches.length-1]];
-    this.openAnnotation(liveAnnotation, false, false);
+    if(liveAnnotation === this.activeAnnotation) return;
+    
+    this.openAnnotation(liveAnnotation, false, false, true);
   }
 
   // Get all active annotations for a time (in seconds)
@@ -106,11 +118,12 @@ class AnnotationState extends PlayerComponent {
     this._activeAnnotation = null;
   }
 
-  openAnnotation (annotation, skipLiveCheck=false, pause=true) {
+  openAnnotation (annotation, skipLiveCheck=false, pause=true, previewOnly=false) {
     this.skipLiveCheck = skipLiveCheck;
     this.clearActive();
-    annotation.open(pause);
+    annotation.open(pause, previewOnly);
     this.activeAnnotation = annotation;
+    this.lastVideoTime = this.activeAnnotation.range.start;
   }
 
   nextAnnotation () {

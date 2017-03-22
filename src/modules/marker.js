@@ -25,6 +25,17 @@ class Marker extends PlayerComponent {
   	return this.$marker;
   }
 
+  setActive (showTooltip=false) {
+    this.$el.addClass("active");
+    if(showTooltip){
+      this.$el.addClass('force-tooltip');
+    }
+  }
+
+  deactivate () {
+    this.$el.removeClass("active force-tooltip");
+  }
+
   // Draw marker on timeline for this.range;
   draw () {
     var $timeline = this.$player.find('.vjs-progress-control'),

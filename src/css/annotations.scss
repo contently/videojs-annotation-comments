@@ -11,7 +11,7 @@ $dark_gray: #383838;
 .video-js{
 
 	&.vac-active{
-		.vjs-mouse-display{
+		.vjs-mouse-display, .vjs-big-play-button{
 			display: none !important;
 		}
 		.vac-marker-owrap{
@@ -28,7 +28,7 @@ $dark_gray: #383838;
 	}
 
 	&.vac-disable-play{
-		.vac-marker, .vjs-big-play-button{
+		.vac-marker{
 			display: none !important;
 		}
 		.vjs-play-control, .vjs-play-progress{
@@ -294,13 +294,18 @@ $dark_gray: #383838;
 				border-radius: 2px;
 				cursor: pointer;
 				transition: all .2s ease-in-out;
-				&.hovering{
+				&.hovering, &.force-tooltip{
 					opacity: 1 !important;
 					background: $yellow;
 					height: 35px;
 					& > div{
-						display:block;
+						display:block ;
 						opacity: 1;
+					}
+					&.fhovering{
+						& > div{
+							display:block !important;
+						}
 					}
 					&.ranged-marker{
 						box-shadow: 7px 0 0 0 $yellow inset;
@@ -370,7 +375,13 @@ $dark_gray: #383838;
 
 			&.dim-all{
 				.vac-marker{
-					opacity: .4
+					height: 30px;
+					opacity: .4;
+					&.force-tooltip{
+						& > div{
+							display: none;
+						}
+					}
 				}
 			}
 		}

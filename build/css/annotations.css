@@ -1,4 +1,4 @@
-.video-js.vac-active .vjs-mouse-display {
+.video-js.vac-active .vjs-mouse-display, .video-js.vac-active .vjs-big-play-button {
   display: none !important; }
 
 .video-js.vac-active .vac-marker-owrap {
@@ -10,7 +10,7 @@
 .video-js.vac-active .vac-player-btn span.vjs-icon-placeholder {
   background-color: #00A6C2 !important; }
 
-.video-js.vac-disable-play .vac-marker, .video-js.vac-disable-play .vjs-big-play-button {
+.video-js.vac-disable-play .vac-marker {
   display: none !important; }
 
 .video-js.vac-disable-play .vjs-play-control, .video-js.vac-disable-play .vjs-play-progress {
@@ -234,14 +234,16 @@
       border-radius: 2px;
       cursor: pointer;
       transition: all .2s ease-in-out; }
-      .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.hovering, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.hovering {
+      .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.hovering, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.force-tooltip, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.hovering, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.force-tooltip {
         opacity: 1 !important;
         background: #eed428;
         height: 35px; }
-        .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.hovering > div, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.hovering > div {
+        .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.hovering > div, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.force-tooltip > div, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.hovering > div, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.force-tooltip > div {
           display: block;
           opacity: 1; }
-        .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.hovering.ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.hovering.ranged-marker {
+        .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.hovering.fhovering > div, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.force-tooltip.fhovering > div, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.hovering.fhovering > div, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.force-tooltip.fhovering > div {
+          display: block !important; }
+        .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.hovering.ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.force-tooltip.ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.hovering.ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.force-tooltip.ranged-marker {
           box-shadow: 7px 0 0 0 #eed428 inset;
           background-color: rgba(238, 212, 40, 0.65); }
       .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.active, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.active {
@@ -291,7 +293,10 @@
             left: auto;
             right: 0px; }
     .video-js .vac-marker-owrap .vac-marker-wrap.dim-all .vac-marker {
+      height: 30px;
       opacity: .4; }
+      .video-js .vac-marker-owrap .vac-marker-wrap.dim-all .vac-marker.force-tooltip > div {
+        display: none; }
 
 .video-js .vac-comments-container {
   position: absolute;

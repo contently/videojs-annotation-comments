@@ -3,10 +3,12 @@ var ControlsTemplate = `
 	  	<div class="vac-controls vac-control">
 		  	Annotations
 			<button class="vac-button">+ NEW</button>
-			<div class="nav">
-				<div class="prev">Prev</div>
-				<div class="next">Next</div>
-			</div>
+			{{#if showNav}}
+				<div class="nav">
+					<div class="prev">Prev</div>
+					<div class="next">Next</div>
+				</div>
+			{{/if}}
 		</div>
 	{{/unless}}
 

@@ -14459,10 +14459,15 @@ class Annotation extends PlayerComponent {
     this.marker.$el.click(() => { this.plugin.annotationState.openAnnotation(this) });
   }
 
-  open(withPause = true) {
-    this.commentList.render();
+  open(withPause=true, previewOnly=false) {
+    if(previewOnly){
+      this.marker.setActive(true);
+    }else{
+      this.commentList.render();
+      this.marker.setActive(false);
+    }
+
     this.annotationShape.draw();
-    this.marker.$el.addClass("active");
 
     if(withPause) {
       this.player.pause();
@@ -14471,7 +14476,7 @@ class Annotation extends PlayerComponent {
   }
 
   close(clearActive=true) {
-    this.marker.$el.removeClass("active");
+    this.marker.deactivate();
     this.commentList.teardown();
     this.annotationShape.teardown();
     if(clearActive) this.plugin.annotationState.clearActive();
@@ -14571,13 +14576,19 @@ class AnnotationState extends PlayerComponent {
     this.activeAnnotation = null;
     this.enabled = false;
     this.skipNextTimeCheck = false;
+    
+    this.lastVideoTime = 0;
 
     this.bindEvents()
   }
 
-  set enabled (val){
-    if(!val) this.activeAnnotation.close();
-    this._enabled = val;
+  set enabled (shouldBeEnabled){
+    this._enabled = shouldBeEnabled;
+    if(!shouldBeEnabled) this.activeAnnotation.close();
+    if(shouldBeEnabled){
+      this.skipLiveCheck = false;
+      this.setLiveAnnotation();
+    }
   }
 
   get enabled () {
@@ -14607,7 +14618,7 @@ class AnnotationState extends PlayerComponent {
 
   // Bind events for setting liveAnnotation on video time change
   bindEvents() {
-    this.player.on("timeupdate", _.throttle(this.setLiveAnnotation.bind(this), 500));
+    this.player.on("timeupdate", _.throttle(this.setLiveAnnotation.bind(this), 1000));
   }
 
   // Sort annotations by range.start
@@ -14628,15 +14639,21 @@ class AnnotationState extends PlayerComponent {
   // Set the live annotation based on current video time
   setLiveAnnotation() {
     if(!this.enabled) return;
-    if(this.skipLiveCheck) return (this.skipLiveCheck = false);
 
-    var time = Math.floor(this.player.currentTime()),
-        matches = this.activeAnnotationsForTime(time);
+    var time = Math.floor(this.player.currentTime());
 
+    if(this.skipLiveCheck){
+      if(time !== this.lastVideoTime) this.skipLiveCheck = false;
+      return;
+    }
+
+    var matches = this.activeAnnotationsForTime(time);
     if(!matches.length) return this.activeAnnotation.close();
 
     var liveAnnotation = this.annotations[matches[matches.length-1]];
-    this.openAnnotation(liveAnnotation, false, false);
+    if(liveAnnotation === this.activeAnnotation) return;
+    
+    this.openAnnotation(liveAnnotation, false, false, true);
   }
 
   // Get all active annotations for a time (in seconds)
@@ -14663,11 +14680,12 @@ class AnnotationState extends PlayerComponent {
     this._activeAnnotation = null;
   }
 
-  openAnnotation (annotation, skipLiveCheck=false, pause=true) {
+  openAnnotation (annotation, skipLiveCheck=false, pause=true, previewOnly=false) {
     this.skipLiveCheck = skipLiveCheck;
     this.clearActive();
-    annotation.open(pause);
+    annotation.open(pause, previewOnly);
     this.activeAnnotation = annotation;
+    this.lastVideoTime = this.activeAnnotation.range.start;
   }
 
   nextAnnotation () {
@@ -14786,8 +14804,7 @@ const ControlsTemplate = require("./../templates/controls").ControlsTemplate;
 
 const BASE_UI_STATE = Object.freeze({
   adding: false,          // Are we currently adding a new annotaiton? (step 1 of flow)
-  writingComment: false,  // Are we currently writing the comment for annotation (step 2 of flow)
-  rangeStr: null          // Range string for displaying what range we are adding annotation to
+  writingComment: false  // Are we currently writing the comment for annotation (step 2 of flow)
 });
 
 class Controls extends PlayerComponent {
@@ -14826,7 +14843,12 @@ class Controls extends PlayerComponent {
   // Draw the UI elements (based on uiState)
   draw (reset=false) {
     this.clear(reset);
-    var $ctrls = this.renderTemplate(this.template, this.uiState);
+    var data = _.extend({
+                  rangeStr: this.marker ? this.humanTime(this.marker.range) : null,
+                  showNav: this.plugin.annotationState.annotations.length > 1
+                }, this.uiState);
+
+    var $ctrls = this.renderTemplate(this.template, data);
     this.$player.append($ctrls);
   }
 
@@ -14843,7 +14865,6 @@ class Controls extends PlayerComponent {
     this.setAddingUI();
     this.uiState.adding = true;
     this.draw();
-    this.plugin.annotationState.clearActive();
 
     // construct new range and create marker
     let range = {
@@ -14856,7 +14877,6 @@ class Controls extends PlayerComponent {
 
   // User clicked 'next' action - show UI to write comment
   writeComment () {
-    this.uiState.rangeStr = this.humanTime(this.marker.range);
     this.uiState.writingComment = true;
     this.draw();
   }
@@ -14874,11 +14894,13 @@ class Controls extends PlayerComponent {
 
   // Change normal UI (hide markers, hide playback, etc) on init add state
   setAddingUI () {
+    this.plugin.annotationState.enabled = false;
     this.disablePlayingAndControl();
   }
 
   // Restore normal UI after add state
   restoreNormalUI () {
+    this.plugin.annotationState.enabled = true;
     this.enablePlayingAndControl();
   }
 
@@ -14994,6 +15016,17 @@ class Marker extends PlayerComponent {
   // attribute to get the jQuery elem for this marker
   get $el () {
   	return this.$marker;
+  }
+
+  setActive (showTooltip=false) {
+    this.$el.addClass("active");
+    if(showTooltip){
+      this.$el.addClass('force-tooltip');
+    }
+  }
+
+  deactivate () {
+    this.$el.removeClass("active force-tooltip");
   }
 
   // Draw marker on timeline for this.range;
@@ -15315,10 +15348,12 @@ var ControlsTemplate = `
 	  	<div class="vac-controls vac-control">
 		  	Annotations
 			<button class="vac-button">+ NEW</button>
-			<div class="nav">
-				<div class="prev">Prev</div>
-				<div class="next">Next</div>
-			</div>
+			{{#if showNav}}
+				<div class="nav">
+					<div class="prev">Prev</div>
+					<div class="next">Next</div>
+				</div>
+			{{/if}}
 		</div>
 	{{/unless}}
 

@@ -27,10 +27,15 @@ class Annotation extends PlayerComponent {
     this.marker.$el.click(() => { this.plugin.annotationState.openAnnotation(this) });
   }
 
-  open(withPause = true) {
-    this.commentList.render();
+  open(withPause=true, previewOnly=false) {
+    if(previewOnly){
+      this.marker.setActive(true);
+    }else{
+      this.commentList.render();
+      this.marker.setActive(false);
+    }
+
     this.annotationShape.draw();
-    this.marker.$el.addClass("active");
 
     if(withPause) {
       this.player.pause();
@@ -39,7 +44,7 @@ class Annotation extends PlayerComponent {
   }
 
   close(clearActive=true) {
-    this.marker.$el.removeClass("active");
+    this.marker.deactivate();
     this.commentList.teardown();
     this.annotationShape.teardown();
     if(clearActive) this.plugin.annotationState.clearActive();
