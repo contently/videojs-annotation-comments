@@ -1,9 +1,11 @@
 body{
 	text-align:center;
+	background: url("https://www.toptal.com/designers/subtlepatterns/patterns/topography.png");
 }
 body *{
 	outline: none;
 }
 .video-js{
 	margin: 30px auto;
+	box-shadow: 0px 0px 109px 35px rgba(255,255,255,.9);
 }

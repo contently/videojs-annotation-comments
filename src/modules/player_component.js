@@ -5,6 +5,7 @@ const Handlebars = require("handlebars");
 class PlayerComponent {
   constructor(playerId) {
   	this.playerId = playerId;
+    this.generateComponentId();
   }
 
   get player () {
@@ -40,6 +41,19 @@ class PlayerComponent {
   renderTemplate(htmlString, options = {}) {
     var template = Handlebars.compile(htmlString);
     return template(options);
+  }
+
+  generateComponentId () {
+    function guid() {
+      function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+          .toString(16)
+          .substring(1);
+      }
+      return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
+    }
+    this.componentId = guid();
   }
 }
 

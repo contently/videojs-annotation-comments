@@ -12,21 +12,27 @@ class Marker extends PlayerComponent {
     this.template = MarkerTemplate;
   }
 
+  get markerId () {
+  	return "vacmarker_"+this.componentId;
+  }
+
   get $el () {
   	return this.$marker;
   }
 
   draw () {
   	// Draw marker on timeline for this.range;
-    var $timeline = this.$player.find('.vjs-progress-control')
-    var $markerWrap = $timeline.find(".vac-marker-wrap");
+    var $timeline = this.$player.find('.vjs-progress-control'),
+    	$markerWrap = $timeline.find(".vac-marker-wrap");
 
     if(!$markerWrap.length){
-      var $outerWrap = $("<div/>").addClass("vac-marker-owrap"),
-          $markerWrap = $("<div/>").addClass("vac-marker-wrap");
-
+      var $outerWrap = $("<div/>").addClass("vac-marker-owrap");
+      $markerWrap = $("<div/>").addClass("vac-marker-wrap");
       $timeline.append($outerWrap.append($markerWrap));
     }
+
+    // clear existing marker if this one exists
+    $timeline.find("#"+this.markerId).remove();
 
     this.$marker = $(this.renderTemplate(this.template, this.buildMarkerData()));
     $markerWrap.append(this.$marker);
@@ -52,7 +58,8 @@ class Marker extends PlayerComponent {
       "tooltipRight": left > 50,
       "tooltipTime" : this.humanTime(),
       "tooltipBody" : !this.comment ? null : this.comment.body,
-      "rangeShow"  : !!this.range.end
+      "rangeShow"   : !!this.range.end,
+      "id"			: this.markerId
     }
   }
 
@@ -71,7 +78,6 @@ class Marker extends PlayerComponent {
   teardown () {
   	this.$marker.remove();
   }
-
 }
 
 module.exports = {

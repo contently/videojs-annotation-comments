@@ -9,22 +9,28 @@ class draggableMarker extends Marker {
   constructor(range, playerId) {
     super(range, null, playerId);
     this.template = DraggableMarkerTemplate;
-    this.draw();
     this.dragging = false;
+    this.rangePin = range.start;
+    this.draw();
+    this.$parent = this.$marker.closest(".vac-marker-wrap");
   }
 
   onDrag (e) {
-    var len = Math.max(0, e.pageX - this.$marker.offset().left);
-    //translate len in px to percentage
-    var max = this.$marker.closest(".vac-marker-wrap").innerWidth(),
-        lenPercent = (len / max) * 100;
+    var dragPercent = this.percentValFromXpos(e.pageX),
+        secVal = this.duration * dragPercent;
 
-    this.$marker.css('width', lenPercent + "%");
-    this.range.end = this.player.currentTime();
-    if(len === 0){
-      // scrubbed earlier than marker
-      this.player.currentTime(this.range.start);
+    if(secVal > this.rangePin){
+      this.range = {
+        start: this.rangePin,
+        end: secVal
+      };
+    }else{
+      this.range = {
+        start: secVal,
+        end: this.rangePin
+      };
     }
+    this.draw();
   }
 
   bindMarkerEvents () {
@@ -42,6 +48,14 @@ class draggableMarker extends Marker {
     });
   }
 
+  percentValFromXpos (xpos) {
+    var x = Math.max(0, xpos - this.$parent.offset().left), // px val
+        max = this.$parent.innerWidth(),
+        per = (x / max);
+    if(per > 1) per = 1;
+    if(per < 0) per = 0;
+    return per;
+  }
   teardown () {
     super.teardown();
     $(document).off("mousemove.draggableMarker");
