@@ -14633,7 +14633,8 @@ class AnnotationState extends PlayerComponent {
   addNewAnnotation (annotation) {
     this._annotations.push(annotation);
     this.sortAnnotations();
-    this.rebuildAnnotationTimeMap()
+    this.rebuildAnnotationTimeMap();
+    this.openAnnotation(annotation, true);
   }
 
   // Set the live annotation based on current video time
@@ -14652,7 +14653,7 @@ class AnnotationState extends PlayerComponent {
 
     var liveAnnotation = this.annotations[matches[matches.length-1]];
     if(liveAnnotation === this.activeAnnotation) return;
-    
+
     this.openAnnotation(liveAnnotation, false, false, true);
   }
 
