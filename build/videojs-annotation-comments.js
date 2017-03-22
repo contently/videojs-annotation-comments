@@ -10260,12 +10260,25 @@ var CommentList = function (_PlayerComponent) {
   }
 
   _createClass(CommentList, [{
+    key: "bindListEvents",
+    value: function bindListEvents() {
+      var _this2 = this;
+
+      this.$el.find(".vac-close-comment-list").click(function () {
+        return _this2.annotation.close();
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
-      // this.$player.find(".vac-comments-container").remove();
+      this.$el = $(this.renderTemplate(this.commentsTemplate, {
+        comments: this.comments,
+        height: $(".vjs-text-track-display").height() - 40 + 'px',
+        timeSince: this.comments[0].timeSince
+      }));
 
-      this.$el = $(this.renderTemplate(this.commentsTemplate, { comments: this.comments, height: $(".vjs-text-track-display").height() + 'px' }));
       this.$player.append(this.$el);
+      this.bindListEvents();
 
       this.player.pause();
       this.player.currentTime(this.annotation.range.start);
@@ -10784,7 +10797,7 @@ module.exports = {
 };
 
 },{"./annotation_shape":49,"underscore":46}],57:[function(require,module,exports){
-var commentListTemplate = "\n  <div class=\"vac-comments-container\" style=\"height: {{height}};\">\n    {{#each comments as |comment|}}\n      <div class=\"comment\">\n        <div class=\"comment-header\">\n          <div class=\"author-name\">{{comment.meta.user_id}}</div>\n          <div class=\"timestamp\">{{comment.timeSince}} ago</div>\n        </div>\n        <div class=\"comment-body\">\n          {{comment.body}}\n        </div>\n      </div>\n    {{/each}}\n    <div class=\"reply-btn\">Create reply</div>\n  </div>\n";
+var commentListTemplate = "\n  <div class=\"vac-comments-container\" style=\"height: {{height}};\">\n    {{#each comments as |comment|}}\n      <div class=\"comment\">\n        <div class=\"comment-header\">\n          <div class=\"author-name\">{{comment.meta.user_id}}</div>\n          <div class=\"timestamp\">{{comment.timeSince}} ago</div>\n        </div>\n        <div class=\"comment-body\">\n          {{comment.body}}\n        </div>\n      </div>\n    {{/each}}\n    <div class=\"reply-btn\">CREATE REPLY</div>\n  </div>\n  <div class=\"vac-comments-control-bar\">\n    <div class=\"timestamp\">{{timeSince}} ago</div>\n    <div class=\"control-buttons\">\n      <a>DELETE</a> | <a class=\"vac-close-comment-list\">CLOSE</a>\n    </div>\n  </div>\n";
 
 module.exports = { commentListTemplate: commentListTemplate };
 

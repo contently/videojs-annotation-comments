@@ -320,4 +320,34 @@
 			margin-bottom: 20px;
 		}
 	}
+
+	.vac-comments-control-bar {
+		height: 40px;
+		width: 40%;
+		background: #000;
+		position: absolute;
+		bottom: 42px;
+		right: 0;
+		padding: 14px;
+		font-size: 1.2em;
+
+		.timestamp, .control-buttons {
+			display: inline-block;
+			width: 45%;
+		}
+
+		.timestamp {
+			float: left;
+			text-align: left;
+		}
+
+		.control-buttons {
+			float: right;
+			text-align: right;
+
+			a {
+				cursor: pointer;
+			}
+		}
+	}
 }

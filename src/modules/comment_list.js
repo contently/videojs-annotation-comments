@@ -14,14 +14,22 @@ class CommentList extends PlayerComponent {
     this.commentsTemplate = CommentListTemplate;
   }
 
-  render() {
-    // this.$player.find(".vac-comments-container").remove();
+  bindListEvents() {
+    this.$el.find(".vac-close-comment-list").click(() => this.annotation.close());
+  }
 
+  render() {
     this.$el = $(this.renderTemplate(
       this.commentsTemplate,
-      {comments: this.comments, height: $(".vjs-text-track-display").height() + 'px'}
+      {
+        comments: this.comments,
+        height: $(".vjs-text-track-display").height() - 40 + 'px',
+        timeSince: this.comments[0].timeSince
+      }
     ));
+
     this.$player.append(this.$el);
+    this.bindListEvents();
 
     this.player.pause();
     this.player.currentTime(this.annotation.range.start);

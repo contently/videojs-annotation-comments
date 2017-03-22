@@ -11,7 +11,13 @@ var commentListTemplate = `
         </div>
       </div>
     {{/each}}
-    <div class="reply-btn">Create reply</div>
+    <div class="reply-btn">CREATE REPLY</div>
+  </div>
+  <div class="vac-comments-control-bar">
+    <div class="timestamp">{{timeSince}} ago</div>
+    <div class="control-buttons">
+      <a>DELETE</a> | <a class="vac-close-comment-list">CLOSE</a>
+    </div>
   </div>
 `;
 

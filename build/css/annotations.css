@@ -251,3 +251,24 @@
     background-color: #00A6C2;
     border-radius: 2px;
     margin-bottom: 20px; }
+
+.video-js .vac-comments-control-bar {
+  height: 40px;
+  width: 40%;
+  background: #000;
+  position: absolute;
+  bottom: 42px;
+  right: 0;
+  padding: 14px;
+  font-size: 1.2em; }
+  .video-js .vac-comments-control-bar .timestamp, .video-js .vac-comments-control-bar .control-buttons {
+    display: inline-block;
+    width: 45%; }
+  .video-js .vac-comments-control-bar .timestamp {
+    float: left;
+    text-align: left; }
+  .video-js .vac-comments-control-bar .control-buttons {
+    float: right;
+    text-align: right; }
+    .video-js .vac-comments-control-bar .control-buttons a {
+      cursor: pointer; }
