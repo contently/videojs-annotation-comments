@@ -9980,7 +9980,7 @@ process.umask = function() { return 0; };
 	  		if(!this.uiReady) return;
 
 	  		var $el = $(this.components.playerBtn.el()),
-	  			$bubble = $el.find(".vac-bubble");
+	  			$bubble = $el.find("b");
 
 	  		if(!$bubble.length){
 	  			$bubble = $("<b/>");
@@ -10205,7 +10205,8 @@ const ControlsTemplate = require("./../templates/controls").ControlsTemplate;
 
 const BASE_UI_STATE = Object.freeze({
   adding: false,          // are we currently adding a new annotaiton?
-  writingComment: false
+  writingComment: false,
+  rangeStr: null
 });
 
 class Controls extends PlayerComponent {
@@ -10218,12 +10219,15 @@ class Controls extends PlayerComponent {
     this.draw();
   }
 
+  // Bind all the events we need for UI interaction
   bindEvents () {
-    // Bind all the events we need
-    this.$player.on("click", ".vac-controls button", this.startAddNew.bind(this));
-    this.$player.on("click", ".vac-add-controls a", this.cancelAddNew.bind(this));
+    this.$player.on("click", ".vac-controls button", this.startAddNew.bind(this))
+      .on("click", ".vac-add-controls a, .vac-video-write-new a", this.cancelAddNew.bind(this))
+      .on("click", ".vac-add-controls button", this.writeComment.bind(this))
+      .on("click", ".vac-video-write-new button", this.saveNew.bind(this));
   }
 
+  // Clear existing UI (resetting components if need be)
   clear(reset=false) {
     if(reset){
       if(this.uiState.adding){
@@ -10236,18 +10240,21 @@ class Controls extends PlayerComponent {
     this.$player.find(".vac-control").remove();
   }
 
+  // Draw the UI elements (based on uiState)
   draw (reset=false) {
     this.clear(reset);
     var $ctrls = this.renderTemplate(this.template, this.uiState);
     this.$player.append($ctrls);
   }
 
+  // User clicked to cancel in-progress add - restore to normal state
   cancelAddNew () {
     this.draw(true);
     this.marker.teardown();
     this.marker = null;
   }
 
+  // User clicked 'add' button in the controls - setup UI and marker
   startAddNew () {
     this.player.pause();
     this.setAddingUI();
@@ -10257,18 +10264,35 @@ class Controls extends PlayerComponent {
 
     // construct new range and create marker
     let range = {
-      start: this.player.currentTime(),
-      stop: this.player.currentTime()
+      start: parseInt(this.player.currentTime(),10),
+      stop: parseInt(this.player.currentTime(),10)
     };
     this.marker = new DraggableMarker(range, this.playerId);
     this.selectableShape = new SelectableShape(this.playerId);
   }
 
+  // User clicked 'next' action - show UI to write comment
+  writeComment () {
+    this.uiState.rangeStr = this.humanTime(this.marker.range);
+    this.uiState.writingComment = true;
+    this.draw();
+  }
+
+  // User clicked to save a new annotation/comment during add new flow
+  saveNew () {
+    var comment = this.$player.find(".vac-video-write-new textarea").val();
+    if(!comment) return; // empty comment - TODO add validation / err message in future
+    console.log("NEW ANNOTATION", {range: this.marker.range, shape: this.selectableShape.shape, comment});
+    // TODO - save annotation
+    this.cancelAddNew();
+  }
+
+  // Change normal UI (hide markers, hide playback, etc) on init add state
   setAddingUI () {
-    //change normal UI (hide markers, hide playback, etc)
     this.disablePlayingAndControl();
   }
 
+  // Restore normal UI after add state
   restoreNormalUI () {
     this.enablePlayingAndControl();
   }
@@ -10294,12 +10318,31 @@ class draggableMarker extends Marker {
     this.dragging = false;
     this.rangePin = range.start;
     this.draw();
-    this.$parent = this.$marker.closest(".vac-marker-wrap");
+    this.$parent = this.$marker.closest(".vac-marker-wrap"); // Set parent as marker wrap
   }
 
+  // Bind needed evnets for UI interaction
+  bindMarkerEvents () {
+    // On mouse down init drag
+    this.$marker.mousedown((e) => {
+      e.preventDefault();
+      this.dragging = true;
+      // When mouse moves (with mouse down) call onDrag, throttling to once each 250 ms
+      $(document).on("mousemove.draggableMarker", _.throttle(this.onDrag.bind(this), 250) );
+    });
+
+    // On mouse up end drag action and unbind mousemove event
+    $(document).on("mouseup.draggableMarker", (e) => {
+       if(!this.dragging) return;
+       $(document).off("mousemove.draggableMarker");
+       this.dragging = false;
+    });
+  }
+
+  // On drag action, calculate new range and redraw marker
   onDrag (e) {
     var dragPercent = this.percentValFromXpos(e.pageX),
-        secVal = this.duration * dragPercent;
+        secVal = parseInt(this.duration * dragPercent);
 
     if(secVal > this.rangePin){
       this.range = {
@@ -10315,21 +10358,7 @@ class draggableMarker extends Marker {
     this.draw();
   }
 
-  bindMarkerEvents () {
-
-    this.$marker.mousedown((e) => {
-      e.preventDefault();
-      this.dragging = true;
-      $(document).on("mousemove.draggableMarker", _.throttle(this.onDrag.bind(this), 250) );
-    });
-
-    $(document).on("mouseup.draggableMarker", (e) => {
-       if(!this.dragging) return;
-       $(document).off("mousemove.draggableMarker");
-       this.dragging = false;
-    });
-  }
-
+  // Cal percentage (of video) position for a pixel-based X position on the document
   percentValFromXpos (xpos) {
     var x = Math.max(0, xpos - this.$parent.offset().left), // px val
         max = this.$parent.innerWidth(),
@@ -10338,6 +10367,8 @@ class draggableMarker extends Marker {
     if(per < 0) per = 0;
     return per;
   }
+
+  // Remove bound events on destructon
   teardown () {
     super.teardown();
     $(document).off("mousemove.draggableMarker");
@@ -10407,23 +10438,11 @@ class Marker extends PlayerComponent {
       "left"        : left + "%",
       "width"       : width + "%",
       "tooltipRight": left > 50,
-      "tooltipTime" : this.humanTime(),
+      "tooltipTime" : this.humanTime(this.range),
       "tooltipBody" : !this.comment ? null : this.comment.body,
       "rangeShow"   : !!this.range.end,
       "id"			: this.markerId
     }
-  }
-
-  // Convert num seconds to human readable format (M:SS)
-  humanTime () {
-  	function readable(sec){
-	    var mins = Math.floor(sec/60),
-	        secs = String(sec % 60);
-	    return mins + ":" + (secs.length==1 ? "0" : "") + secs;
-	}
-	var time = [readable(this.range.start)];
-	if(this.range.end) time.push(readable(this.range.end));
-	return time.join("-");
   }
 
   teardown () {
@@ -10446,14 +10465,17 @@ class PlayerComponent {
     this.generateComponentId();
   }
 
+  // attribute to get player javascript instance
   get player () {
   	return videojs(this.playerId);
   }
 
+  // attribute to get player jquery element
   get $player () {
   	return $(this.player.el());
   }
 
+  // attribute to get video duration (in seconds)
   get duration () {
     return this.player.duration();
   }
@@ -10466,21 +10488,37 @@ class PlayerComponent {
     this.player.activeAnnotation = aa;
   }
 
+  // Disable play/control actions on the current player
   disablePlayingAndControl () {
     this.$player.addClass('vac-disable-play');
     //TODO - catch spacebar being hit
     //TODO - prevent scrubbing and timeline click to seek
   }
 
+  // Enable play/control actions on the controller
   enablePlayingAndControl () {
     this.$player.removeClass('vac-disable-play');
   }
 
+  // Render a handlebars template with local data passed in via key/val in object
   renderTemplate(htmlString, options = {}) {
     var template = Handlebars.compile(htmlString);
     return template(options);
   }
 
+  // Convert a range to human readable format (M:SS) or (M:SS-M:SS)
+  humanTime (range) {
+    function readable(sec){
+      var mins = Math.floor(sec/60),
+          secs = String(sec % 60);
+      return mins + ":" + (secs.length==1 ? "0" : "") + secs;
+    }
+    var time = [readable(range.start)];
+    if(range.end) time.push(readable(range.end));
+    return time.join("-");
+  }
+
+  // Generate a pseudo-guid ID for this component, to use as an ID in the DOM
   generateComponentId () {
     function guid() {
       function s4() {
@@ -10514,44 +10552,56 @@ class SelectableShape extends AnnotationShape {
     this.dragging = false;
   }
 
+  // Bind all needed events for drag action
   bindEvents () {
+    // On mousedown initialize drag
     this.$parent.on("mousedown.selectableShape", (e) => {
+      // Check a few conditions to see if we should *not* start drag
       if( !($(e.target).hasClass('vac-video-cover-canvas')) ) return; //didn't click on overlay
       if( $(e.target).hasClass('vac-shape') ) return; //user clicked on annotation
 
-      // remove old shape if one existed
+      // Remove old shape if one existed
       if(this.$el) this.$el.remove();
 
-      // define defaul shape (just x/y coords of where user clicked no width/height yet)
+      // Define default starting shape (just x/y coords of where user clicked no width/height yet)
       let shape = {
         x1: this.xCoordToPercent(e.pageX),
         y1: this.YCoordToPercent(e.pageY)
-      }
-      this.originX = shape.x1;
-      this.originY = shape.y1;
+      };
       shape.x2 = shape.x1;
       shape.y2 = shape.y2;
       this.shape = shape;
 
+      // Save origin points for future use
+      this.originX = shape.x1;
+      this.originY = shape.y1;
+
+      // Draw shape and start drag state
       this.draw();
       this.dragging = true;
-      this.dragMoved = false;
+      this.dragMoved = false; // used to determine if user actually dragged or just clicked
 
-     $(document).on("mousemove.selectableShape", _.throttle(this.onDrag.bind(this), 250) );
+      // Bind event on doc mousemove to track drag, throttled to once each 250ms
+      $(document).on("mousemove.selectableShape", _.throttle(this.onDrag.bind(this), 250) );
     });
 
+    // On mouseup, if during drag cancel drag event listeners
     $(document).on("mouseup.selectableShape", (e) => {
       if(!this.dragging) return;
+
       $(document).off("mousemove.selectableShape");
+
       if(!this.dragMoved){
         //clear shape if it's just a click (and not a drag)
         this.shape = null;
         if(this.$el) this.$el.remove();
       }
+
       this.dragging = false;
     });
   }
 
+  // On each interation of drag action (mouse movement), recalc position and redraw shape
   onDrag (e) {
     this.dragMoved = true;
 
@@ -10578,13 +10628,13 @@ class SelectableShape extends AnnotationShape {
   xCoordToPercent (x) {
     x = x - this.$parent.offset().left; //pixel position
     var max = this.$parent.innerWidth();
-    return (x / max) * 100;
+    return Number(((x / max) * 100).toFixed(2)); //round to 2 decimal places
   }
 
   YCoordToPercent (y) {
     y = y - this.$parent.offset().top; //pixel position
     var max = this.$parent.innerHeight();
-    return (y / max) * 100;
+    return Number(((y / max) * 100).toFixed(2)); //round to 2 decimal places
   }
 
   teardown () {
@@ -10630,7 +10680,7 @@ var ControlsTemplate = `
 	{{#unless adding}}
 	  	<div class="vac-controls vac-control">
 		  	Annotations
-			<button>+ NEW</button>
+			<button class="vac-button">+ NEW</button>
 			<div class="nav">
 				<div class="prev">Prev</div>
 				<div class="next">Next</div>
@@ -10646,11 +10696,26 @@ var ControlsTemplate = `
 		<div class="vac-add-controls vac-control">
 		  	New Annotation
 			<i>Select shape + range</i>
-			<button>CONTINUE</button>
+			<button class="vac-button">CONTINUE</button>
 			<a>cancel</a>
 		</div>
 
-
+		{{#if writingComment}}
+			<div class="vac-video-write-new-wrap vac-control">
+				<div class="vac-video-write-new">
+					<div>
+						<h5><b>New Annotation</b> @ {{rangeStr}}</h5>
+						<div>
+							<textarea placeholder="Enter comment..."></textarea>
+							<div>
+								<button class="vac-button">SAVE</button>
+								<a>Cancel</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		{{/if}}
 
 	{{/if}}
 `;

@@ -12,44 +12,56 @@ class SelectableShape extends AnnotationShape {
     this.dragging = false;
   }
 
+  // Bind all needed events for drag action
   bindEvents () {
+    // On mousedown initialize drag
     this.$parent.on("mousedown.selectableShape", (e) => {
+      // Check a few conditions to see if we should *not* start drag
       if( !($(e.target).hasClass('vac-video-cover-canvas')) ) return; //didn't click on overlay
       if( $(e.target).hasClass('vac-shape') ) return; //user clicked on annotation
 
-      // remove old shape if one existed
+      // Remove old shape if one existed
       if(this.$el) this.$el.remove();
 
-      // define defaul shape (just x/y coords of where user clicked no width/height yet)
+      // Define default starting shape (just x/y coords of where user clicked no width/height yet)
       let shape = {
         x1: this.xCoordToPercent(e.pageX),
         y1: this.YCoordToPercent(e.pageY)
-      }
-      this.originX = shape.x1;
-      this.originY = shape.y1;
+      };
       shape.x2 = shape.x1;
       shape.y2 = shape.y2;
       this.shape = shape;
 
+      // Save origin points for future use
+      this.originX = shape.x1;
+      this.originY = shape.y1;
+
+      // Draw shape and start drag state
       this.draw();
       this.dragging = true;
-      this.dragMoved = false;
+      this.dragMoved = false; // used to determine if user actually dragged or just clicked
 
-     $(document).on("mousemove.selectableShape", _.throttle(this.onDrag.bind(this), 250) );
+      // Bind event on doc mousemove to track drag, throttled to once each 250ms
+      $(document).on("mousemove.selectableShape", _.throttle(this.onDrag.bind(this), 250) );
     });
 
+    // On mouseup, if during drag cancel drag event listeners
     $(document).on("mouseup.selectableShape", (e) => {
       if(!this.dragging) return;
+
       $(document).off("mousemove.selectableShape");
+
       if(!this.dragMoved){
         //clear shape if it's just a click (and not a drag)
         this.shape = null;
         if(this.$el) this.$el.remove();
       }
+
       this.dragging = false;
     });
   }
 
+  // On each interation of drag action (mouse movement), recalc position and redraw shape
   onDrag (e) {
     this.dragMoved = true;
 
@@ -76,13 +88,13 @@ class SelectableShape extends AnnotationShape {
   xCoordToPercent (x) {
     x = x - this.$parent.offset().left; //pixel position
     var max = this.$parent.innerWidth();
-    return (x / max) * 100;
+    return Number(((x / max) * 100).toFixed(2)); //round to 2 decimal places
   }
 
   YCoordToPercent (y) {
     y = y - this.$parent.offset().top; //pixel position
     var max = this.$parent.innerHeight();
-    return (y / max) * 100;
+    return Number(((y / max) * 100).toFixed(2)); //round to 2 decimal places
   }
 
   teardown () {

@@ -88,7 +88,7 @@
 	  			$bubble = $el.find("b");
 
 	  		if(!$bubble.length){
-	  			$bubble = $("<b/>").;
+	  			$bubble = $("<b/>");
 	  			$el.append($bubble);
 	  		}
 

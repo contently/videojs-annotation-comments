@@ -8,7 +8,8 @@ const ControlsTemplate = require("./../templates/controls").ControlsTemplate;
 
 const BASE_UI_STATE = Object.freeze({
   adding: false,          // are we currently adding a new annotaiton?
-  writingComment: false
+  writingComment: false,
+  rangeStr: null
 });
 
 class Controls extends PlayerComponent {
@@ -21,12 +22,15 @@ class Controls extends PlayerComponent {
     this.draw();
   }
 
+  // Bind all the events we need for UI interaction
   bindEvents () {
-    // Bind all the events we need
-    this.$player.on("click", ".vac-controls button", this.startAddNew.bind(this));
-    this.$player.on("click", ".vac-add-controls a", this.cancelAddNew.bind(this));
+    this.$player.on("click", ".vac-controls button", this.startAddNew.bind(this))
+      .on("click", ".vac-add-controls a, .vac-video-write-new a", this.cancelAddNew.bind(this))
+      .on("click", ".vac-add-controls button", this.writeComment.bind(this))
+      .on("click", ".vac-video-write-new button", this.saveNew.bind(this));
   }
 
+  // Clear existing UI (resetting components if need be)
   clear(reset=false) {
     if(reset){
       if(this.uiState.adding){
@@ -39,18 +43,21 @@ class Controls extends PlayerComponent {
     this.$player.find(".vac-control").remove();
   }
 
+  // Draw the UI elements (based on uiState)
   draw (reset=false) {
     this.clear(reset);
     var $ctrls = this.renderTemplate(this.template, this.uiState);
     this.$player.append($ctrls);
   }
 
+  // User clicked to cancel in-progress add - restore to normal state
   cancelAddNew () {
     this.draw(true);
     this.marker.teardown();
     this.marker = null;
   }
 
+  // User clicked 'add' button in the controls - setup UI and marker
   startAddNew () {
     this.player.pause();
     this.setAddingUI();
@@ -60,18 +67,35 @@ class Controls extends PlayerComponent {
 
     // construct new range and create marker
     let range = {
-      start: this.player.currentTime(),
-      stop: this.player.currentTime()
+      start: parseInt(this.player.currentTime(),10),
+      stop: parseInt(this.player.currentTime(),10)
     };
     this.marker = new DraggableMarker(range, this.playerId);
     this.selectableShape = new SelectableShape(this.playerId);
   }
 
+  // User clicked 'next' action - show UI to write comment
+  writeComment () {
+    this.uiState.rangeStr = this.humanTime(this.marker.range);
+    this.uiState.writingComment = true;
+    this.draw();
+  }
+
+  // User clicked to save a new annotation/comment during add new flow
+  saveNew () {
+    var comment = this.$player.find(".vac-video-write-new textarea").val();
+    if(!comment) return; // empty comment - TODO add validation / err message in future
+    console.log("NEW ANNOTATION", {range: this.marker.range, shape: this.selectableShape.shape, comment});
+    // TODO - save annotation
+    this.cancelAddNew();
+  }
+
+  // Change normal UI (hide markers, hide playback, etc) on init add state
   setAddingUI () {
-    //change normal UI (hide markers, hide playback, etc)
     this.disablePlayingAndControl();
   }
 
+  // Restore normal UI after add state
   restoreNormalUI () {
     this.enablePlayingAndControl();
   }

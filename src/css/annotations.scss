@@ -36,6 +36,25 @@ $dark_gray: #383838;
 		}
 	}
 
+	.vac-button {
+		transition: all .2s ease-in-out;
+		margin:10px;
+		line-height: 27px;
+		font-size: 13px;
+		padding:0;
+		width: calc(100% - 20px);
+		text-align: center;
+		border-radius: 2px;
+		background: $blue;
+		color: white;
+		display: block;
+		cursor: pointer;
+		&:hover{
+			background-color: lighten($blue, 15%);
+		}
+	}
+
+	// Add new annotation - red-tinted cover over vide
 	.vac-video-cover {
 		z-index: 1;
 		position: absolute;
@@ -48,6 +67,80 @@ $dark_gray: #383838;
 			width: 100%;
 			height: 100%;
 			position: relative;
+		}
+	}
+
+	// Add new annotation - wrap + box/text input for last step
+	.vac-video-write-new-wrap{
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 11;
+		background-color: rgba($black, .7);
+		.vac-video-write-new {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			align-items: center;
+  			justify-content: center;
+  			& > div{
+  				width: 80%;
+  				max-width: 400px;
+  				border-radius: 2px;
+  				background: rgba($white, .85);
+  				padding: 20px;
+  				h5{
+  					margin: 0;
+  					padding: 0;
+  					font-size: 15px;
+  					color: $black;
+  					font-weight: normal;
+  				}
+  				& > div{
+  					border-radius: 1px;
+  					background-color: white;
+  					margin-top: 20px;
+  					width: 100%;
+  					border-bottom: 2px solid $orange;
+  					textarea{
+  						border: none;
+  						font-size: 13px;
+  						color: $dark_gray;
+  						line-height: 16px;
+  						padding: 8px;
+  						box-sizing: border-box;
+  						min-height: 110px;
+  						width: 100%;
+  						resize: none;
+  					}
+  					& > div{
+  						padding: 10px;
+  						box-sizing: content-box;
+  						height: 27px;
+	  					button{
+	  						float: right;
+	  						width: auto;
+	  						padding: 0 40px;
+	  						margin: 0;
+	  					}
+	  					a{	
+	  						float:right;
+	  						font-size: 12px;
+	  						text-decoration: underline;
+	  						line-height: 27px;
+	  						display: inline-block;
+	  						color: $dark_gray;
+	  						cursor: pointer;
+	  						margin-right: 20px;
+	  						&:hover{
+	  							color: $red;
+	  						}
+	  					}
+	  				}
+  				}
+  			}
 		}
 	}
 

@@ -56,23 +56,11 @@ class Marker extends PlayerComponent {
       "left"        : left + "%",
       "width"       : width + "%",
       "tooltipRight": left > 50,
-      "tooltipTime" : this.humanTime(),
+      "tooltipTime" : this.humanTime(this.range),
       "tooltipBody" : !this.comment ? null : this.comment.body,
       "rangeShow"   : !!this.range.end,
       "id"			: this.markerId
     }
-  }
-
-  // Convert num seconds to human readable format (M:SS)
-  humanTime () {
-  	function readable(sec){
-	    var mins = Math.floor(sec/60),
-	        secs = String(sec % 60);
-	    return mins + ":" + (secs.length==1 ? "0" : "") + secs;
-	}
-	var time = [readable(this.range.start)];
-	if(this.range.end) time.push(readable(this.range.end));
-	return time.join("-");
   }
 
   teardown () {
