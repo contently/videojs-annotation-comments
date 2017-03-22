@@ -6,6 +6,7 @@
 	const Plugin = videojs.getPlugin('plugin');
 	const Annotation = require("./modules/annotation").class;
 	const Controls = require("./modules/controls").class;
+	const PlayerButton = require("./modules/player_button").class;
 
 	class Main extends Plugin {
 
@@ -21,7 +22,8 @@
 	    	// setup initial state and draw UI after video is loaded
 	    	player.on("loadedmetadata", () => {
 		    	this.annotations = annotations.map((a) => new Annotation(a, this.playerId));
-		    	this.drawUI(player);
+		    	this.drawUI();
+		    	this.bindEvents();
 
 		    	this.toggleAnnotations(); 	//TODO - for dev, remove
 		    	player.muted(true);			//TODO - for dev, remove
@@ -29,25 +31,24 @@
 		    });
 	  	}
 
-	  	drawUI() {
-	  		this.components = {};
+	  	// Draw UI components for interaction
+	  	drawUI () {
+	  		this.components = {
+	  			playerButton: new PlayerButton(this.playerId),
+	  			controls: new Controls(this.playerId)
+	  		};
 
-	  		// Add button to player
-	  		// TODO - clean this shit up - move this & bubble to seperate component module file??
-	  		this.components.playerBtn = player.getChild('controlBar').addChild('button', {});
-	  		this.components.playerBtn.addClass('vac-player-btn');
-		  	this.components.playerBtn.on('click', () => {
-	  			this.components.playerBtn.toggleClass('vac-active');
-	  			this.toggleAnnotations();
-	  		});
-	  		this.components.playerBtn.controlText("Toggle Animations");
-
-	  		// Add controls box
-	  		this.components.controls = new Controls(this.playerId);
-
-	  		this.updateAnnotationBubble();
+	  		this.components.playerButton.updateNumAnnotations(this.annotations.length);
 	  	}
 
+	  	// Bind needed events for interaction w/ components
+	  	bindEvents () {
+	  		this.components.playerButton.$el.on('click', () => {
+		        this.toggleAnnotations();
+		    });
+	  	}
+
+	  	// Toggle annotations mode on/off
 	  	toggleAnnotations() {
 	  		this.active = !this.active;
 	  		this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
@@ -57,25 +58,6 @@
 	  		}else{
 	  			this.components.controls.draw();
 	  		}
-	  	}
-
-	  	dispose() {
-	    	super.dispose();
-	    	videojs.log('the advanced plugin is being disposed');
-	  	}
-
-	  	updateAnnotationBubble () {
-	  		var $el = $(this.components.playerBtn.el()),
-	  			$bubble = $el.find("b");
-
-	  		if(!$bubble.length){
-	  			$bubble = $("<b/>");
-	  			$el.append($bubble);
-	  		}
-
-	  		var num = this.annotations.length;
-	  		$bubble.text(num);
-	  		num > 0 ? $el.addClass('show') : $el.addClass('hide');
 	  	}
 	}
 

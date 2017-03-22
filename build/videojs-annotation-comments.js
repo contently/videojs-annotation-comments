@@ -9901,6 +9901,7 @@ process.umask = function() { return 0; };
 	const Plugin = videojs.getPlugin('plugin');
 	const Annotation = require("./modules/annotation").class;
 	const Controls = require("./modules/controls").class;
+	const PlayerButton = require("./modules/player_button").class;
 
 	class Main extends Plugin {
 
@@ -9916,7 +9917,8 @@ process.umask = function() { return 0; };
 	    	// setup initial state and draw UI after video is loaded
 	    	player.on("loadedmetadata", () => {
 		    	this.annotations = annotations.map((a) => new Annotation(a, this.playerId));
-		    	this.drawUI(player);
+		    	this.drawUI();
+		    	this.bindEvents();
 
 		    	this.toggleAnnotations(); 	//TODO - for dev, remove
 		    	player.muted(true);			//TODO - for dev, remove
@@ -9924,25 +9926,24 @@ process.umask = function() { return 0; };
 		    });
 	  	}
 
-	  	drawUI() {
-	  		this.components = {};
+	  	// Draw UI components for interaction
+	  	drawUI () {
+	  		this.components = {
+	  			playerButton: new PlayerButton(this.playerId),
+	  			controls: new Controls(this.playerId)
+	  		};
 
-	  		// Add button to player
-	  		// TODO - clean this shit up - move this & bubble to seperate component module file??
-	  		this.components.playerBtn = player.getChild('controlBar').addChild('button', {});
-	  		this.components.playerBtn.addClass('vac-player-btn');
-		  	this.components.playerBtn.on('click', () => {
-	  			this.components.playerBtn.toggleClass('vac-active');
-	  			this.toggleAnnotations();
-	  		});
-	  		this.components.playerBtn.controlText("Toggle Animations");
-
-	  		// Add controls box
-	  		this.components.controls = new Controls(this.playerId);
-
-	  		this.updateAnnotationBubble();
+	  		this.components.playerButton.updateNumAnnotations(this.annotations.length);
 	  	}
 
+	  	// Bind needed events for interaction w/ components
+	  	bindEvents () {
+	  		this.components.playerButton.$el.on('click', () => {
+		        this.toggleAnnotations();
+		    });
+	  	}
+
+	  	// Toggle annotations mode on/off
 	  	toggleAnnotations() {
 	  		this.active = !this.active;
 	  		this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
@@ -9953,32 +9954,13 @@ process.umask = function() { return 0; };
 	  			this.components.controls.draw();
 	  		}
 	  	}
-
-	  	dispose() {
-	    	super.dispose();
-	    	videojs.log('the advanced plugin is being disposed');
-	  	}
-
-	  	updateAnnotationBubble () {
-	  		var $el = $(this.components.playerBtn.el()),
-	  			$bubble = $el.find("b");
-
-	  		if(!$bubble.length){
-	  			$bubble = $("<b/>");
-	  			$el.append($bubble);
-	  		}
-
-	  		var num = this.annotations.length;
-	  		$bubble.text(num);
-	  		num > 0 ? $el.addClass('show') : $el.addClass('hide');
-	  	}
 	}
 
 	videojs.registerPlugin('annotationComments', Main);
 
 })(jQuery, window.videojs);
 
-},{"./modules/annotation":48,"./modules/controls":52,"underscore":46}],48:[function(require,module,exports){
+},{"./modules/annotation":48,"./modules/controls":52,"./modules/player_button":55,"underscore":46}],48:[function(require,module,exports){
 "use strict";
 
 const PlayerComponent = require("./player_component").class;
@@ -10026,7 +10008,7 @@ module.exports = {
   class: Annotation
 };
 
-},{"./annotation_shape":49,"./comment_list":51,"./marker":54,"./player_component":55}],49:[function(require,module,exports){
+},{"./annotation_shape":49,"./comment_list":51,"./marker":54,"./player_component":56}],49:[function(require,module,exports){
 "use strict";
 
 const PlayerComponent = require("./player_component").class;
@@ -10068,7 +10050,7 @@ module.exports = {
 	class: AnnotationShape
 };
 
-},{"./player_component":55}],50:[function(require,module,exports){
+},{"./player_component":56}],50:[function(require,module,exports){
 "use strict";
 
 const PlayerComponent = require("./player_component").class;
@@ -10121,7 +10103,7 @@ module.exports = {
 	class: Comment
 };
 
-},{"./player_component":55}],51:[function(require,module,exports){
+},{"./player_component":56}],51:[function(require,module,exports){
 "use strict";
 
 const PlayerComponent = require("./player_component").class;
@@ -10170,7 +10152,7 @@ module.exports = {
   class: CommentList
 };
 
-},{"./../templates/comment_list":57,"./comment":50,"./player_component":55}],52:[function(require,module,exports){
+},{"./../templates/comment_list":58,"./comment":50,"./player_component":56}],52:[function(require,module,exports){
 "use strict";
 /*
   Component for managing annotation "control box" in upper left of video when in annotation mode, including all
@@ -10283,7 +10265,7 @@ module.exports = {
   class: Controls
 };
 
-},{"./../templates/controls":58,"./draggable_marker.js":53,"./player_component":55,"./selectable_shape.js":56,"underscore":46}],53:[function(require,module,exports){
+},{"./../templates/controls":59,"./draggable_marker.js":53,"./player_component":56,"./selectable_shape.js":57,"underscore":46}],53:[function(require,module,exports){
 "use strict";
 /*
   Component for a timeline marker that is draggable when user clicks/drags on it, and rebuilds underlying range
@@ -10363,7 +10345,7 @@ class draggableMarker extends Marker {
 module.exports = {
 	class: draggableMarker
 };
-},{"./../templates/marker":59,"./marker":54,"underscore":46}],54:[function(require,module,exports){
+},{"./../templates/marker":60,"./marker":54,"underscore":46}],54:[function(require,module,exports){
 "use strict";
 /*
   Component for a timeline marker with capabilities to draw on timeline, including tooltip for comment
@@ -10447,7 +10429,47 @@ module.exports = {
 	class: Marker
 };
 
-},{"./../templates/marker":59,"./player_component":55}],55:[function(require,module,exports){
+},{"./../templates/marker":60,"./player_component":56}],55:[function(require,module,exports){
+"use strict";
+
+const PlayerComponent = require("./player_component").class;
+
+class PlayerButton extends PlayerComponent {
+
+  constructor(playerId) {
+  	super(playerId);
+    this.draw();
+  }
+
+
+  draw () {
+    // Add button to player
+    var btn = player.getChild('controlBar').addChild('button', {});
+    btn.addClass('vac-player-btn');
+    btn.controlText("Toggle Animations");
+    this.$el = $(btn.el());
+  }
+
+  // Update the number of annotations displayed in the bubble
+  updateNumAnnotations (num) {
+    var $bubble = this.$el.find("b");
+
+    if(!$bubble.length){
+        $bubble = $("<b/>");
+        this.$el.append($bubble);
+    }
+
+    $bubble.text(num);
+    num > 0 ? this.$el.addClass('show') : this.$el.addClass('hide');
+  }
+
+}
+
+module.exports = {
+	class: PlayerButton
+};
+
+},{"./player_component":56}],56:[function(require,module,exports){
 "use strict";
 
 const Handlebars = require("handlebars");
@@ -10530,7 +10552,7 @@ module.exports = {
   class: PlayerComponent
 };
 
-},{"handlebars":32}],56:[function(require,module,exports){
+},{"handlebars":32}],57:[function(require,module,exports){
 "use strict";
 
 const _ = require("underscore");
@@ -10642,7 +10664,7 @@ class SelectableShape extends AnnotationShape {
 module.exports = {
 	class: SelectableShape
 };
-},{"./annotation_shape":49,"underscore":46}],57:[function(require,module,exports){
+},{"./annotation_shape":49,"underscore":46}],58:[function(require,module,exports){
 var commentListTemplate = `
   <div class="vac-comments-container" style="height: {{height}};">
     {{#each comments as |comment|}}
@@ -10668,7 +10690,7 @@ var commentListTemplate = `
 
 module.exports = {commentListTemplate};
 
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 var ControlsTemplate = `
 	{{#unless adding}}
 	  	<div class="vac-controls vac-control">
@@ -10715,7 +10737,7 @@ var ControlsTemplate = `
 
 module.exports = {ControlsTemplate};
 
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 var markerTemplate = `
   <div id="{{id}}" class="vac-marker {{#if rangeShow}}ranged-marker{{/if}}" style="left: {{left}}; {{#if rangeShow}}width:{{width}};{{/if}}">
     {{#if tooltipBody}}
