@@ -13,6 +13,7 @@ class AnnotationState extends PlayerComponent {
     this.annotationTimeMap = {};
     this.activeAnnotation = null;
     this.enabled = false;
+    this.skipNextTimeCheck = false;
 
     this.bindEvents()
   }
@@ -49,7 +50,7 @@ class AnnotationState extends PlayerComponent {
 
   // Bind events for setting liveAnnotation on video time change
   bindEvents() {
-    this.player.on("timeupdate", _.throttle(this.setLiveAnnotation.bind(this), 750));
+    this.player.on("timeupdate", _.throttle(this.setLiveAnnotation.bind(this), 500));
   }
 
   // Sort annotations by range.start
@@ -70,13 +71,15 @@ class AnnotationState extends PlayerComponent {
   // Set the live annotation based on current video time
   setLiveAnnotation() {
     if(!this.enabled) return;
+    if(this.skipLiveCheck) return (this.skipLiveCheck = false);
+
     var time = Math.floor(this.player.currentTime()),
         matches = this.activeAnnotationsForTime(time);
 
     if(!matches.length) return this.activeAnnotation.close();
 
     var liveAnnotation = this.annotations[matches[matches.length-1]];
-    this.openAnnotation(liveAnnotation,false);
+    this.openAnnotation(liveAnnotation, false, false);
   }
 
   // Get all active annotations for a time (in seconds)
@@ -99,11 +102,13 @@ class AnnotationState extends PlayerComponent {
   }
 
   clearActive () {
-    this.activeAnnotation = null;
+    this.activeAnnotation.close(false);
+    this._activeAnnotation = null;
   }
 
-  openAnnotation (annotation, pause=true) {
-    this.activeAnnotation.close();
+  openAnnotation (annotation, skipLiveCheck=false, pause=true) {
+    this.skipLiveCheck = skipLiveCheck;
+    this.clearActive();
     annotation.open(pause);
     this.activeAnnotation = annotation;
   }
@@ -112,26 +117,26 @@ class AnnotationState extends PlayerComponent {
     if(this._activeAnnotation){
       var ind = this.annotations.indexOf(this._activeAnnotation),
           nextInd = (ind === this.annotations.length-1 ? 0 : ind+1);
-      return this.openAnnotation(this.annotations[nextInd]);
+      return this.openAnnotation(this.annotations[nextInd], true);
     }
     var time = Math.floor(this.player.currentTime());
     for(let i=0; i<this.annotations.length; i++){
-      if(this.annotations[i].range.start > time) return this.openAnnotation(this.annotations[i]);
+      if(this.annotations[i].range.start > time) return this.openAnnotation(this.annotations[i], true);
     }
-    this.openAnnotation(this.annotations[0]);
+    this.openAnnotation(this.annotations[0], true);
   }
 
   prevAnnotation () {
     if(this._activeAnnotation){
       var ind = this.annotations.indexOf(this._activeAnnotation),
           nextInd = (ind === 0 ? this.annotations.length-1 : ind-1);
-      return this.openAnnotation(this.annotations[nextInd]);
+      return this.openAnnotation(this.annotations[nextInd], true);
     }
     var time = Math.floor(this.player.currentTime());
     for(let i=this.annotations.length-1; i>=0; i--){
-      if(this.annotations[i].range.start < time) return this.openAnnotation(this.annotations[i]);
+      if(this.annotations[i].range.start < time) return this.openAnnotation(this.annotations[i], true);
     }
-    this.openAnnotation(this.annotations[this.annotations.length-1]);
+    this.openAnnotation(this.annotations[this.annotations.length-1], true);
   }
 }
 

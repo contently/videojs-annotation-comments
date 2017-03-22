@@ -38,11 +38,11 @@ class Annotation extends PlayerComponent {
     }
   }
 
-  close() {
+  close(clearActive=true) {
     this.marker.$el.removeClass("active");
     this.commentList.teardown();
     this.annotationShape.teardown();
-    this.plugin.annotationState.clearActive();
+    if(clearActive) this.plugin.annotationState.clearActive();
   }
 
   buildSecondsActiveArray () {
