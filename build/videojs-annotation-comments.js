@@ -9982,9 +9982,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 				this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
 				if (!this.active) {
 					this.components.controls.clear(true);
-					this.player.activeAnnotation.close();
+					this.player.annotationState.activeAnnotation.close();
 				} else {
 					this.components.controls.draw();
+					this.liveAnnotation(this.player.currentTime());
 				}
 			}
 		}, {
