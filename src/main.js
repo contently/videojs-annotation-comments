@@ -85,10 +85,10 @@
 	  		if(!this.uiReady) return;
 
 	  		var $el = $(this.components.playerBtn.el()),
-	  			$bubble = $el.find(".vac-bubble");
+	  			$bubble = $el.find("b");
 
 	  		if(!$bubble.length){
-	  			$bubble = $("<b/>");
+	  			$bubble = $("<b/>").;
 	  			$el.append($bubble);
 	  		}
 

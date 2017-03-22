@@ -8,7 +8,7 @@
   z-index: 2; }
 
 .video-js.vac-active .vac-player-btn span.vjs-icon-placeholder {
-  background-color: #00A6C2; }
+  background-color: #00A6C2 !important; }
 
 .video-js.vac-disable-play .vac-marker, .video-js.vac-disable-play .vjs-big-play-button {
   display: none !important; }
@@ -113,13 +113,16 @@
     height: 100%;
     display: block;
     -webkit-mask: url("data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0yMS45OSA0YzAtMS4xLS44OS0yLTEuOTktMkg0Yy0xLjEgMC0yIC45LTIgMnYxMmMwIDEuMS45IDIgMiAyaDE0bDQgNC0uMDEtMTh6TTE4IDE0SDZ2LTJoMTJ2MnptMC0zSDZWOWgxMnYyem0wLTNINlY2aDEydjJ6Ii8+CiAgICA8cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+Cjwvc3ZnPg==") center center no-repeat;
-    background-color: white; }
+    background-color: #FFF;
+    transition: background-color .2s ease-in-out; }
+  .video-js .vac-player-btn:hover span.vjs-icon-placeholder {
+    background-color: #5ce7ff; }
   .video-js .vac-player-btn b {
     position: absolute;
     display: inline-block;
     top: 3px;
     right: 3px;
-    color: white;
+    color: #FFF;
     height: 14px;
     line-height: 14px;
     min-width: 14px;
@@ -127,7 +130,7 @@
     border-radius: 9px;
     font-size: 10px;
     font-weight: normal;
-    background-color: red; }
+    background-color: #FF0000; }
 
 .video-js .vac-marker-owrap {
   display: none;
@@ -195,7 +198,7 @@
           padding: 0 5px;
           box-sizing: border-box;
           border-radius: 1px;
-          background: rgba(255, 255, 255, 0.8);
+          background: rgba(0, 0, 0, 0.8);
           color: white;
           font-family: Arial;
           font-size: 12px;
