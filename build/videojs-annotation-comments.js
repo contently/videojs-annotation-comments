@@ -10477,7 +10477,7 @@ var Controls = function (_PlayerComponent) {
       this.setAddingUI();
       this.uiState.adding = true;
       this.draw();
-      this.activeAnnotation.close();
+      this.player.annotationState.activeAnnotation.close();
 
       // construct new range and create marker
       var range = {
