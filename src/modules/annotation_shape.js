@@ -12,6 +12,7 @@ class AnnotationShape extends PlayerComponent {
 
   draw () {
     if(!this.shape) return;
+    if(this.$el) this.$el.remove();
     
     this.$el = $("<div/>").addClass("vac-shape");
     this.setDimsFromShape();

@@ -14469,6 +14469,7 @@ class Annotation extends PlayerComponent {
     }
 
     this.annotationShape.draw();
+    this.annotationShape.$el.on("click.annotation", () => this.open());
 
     if(withPause) {
       this.player.pause();
@@ -14479,6 +14480,7 @@ class Annotation extends PlayerComponent {
   close(clearActive=true) {
     this.marker.deactivate();
     this.commentList.teardown();
+    this.annotationShape.$el.off("click.annotation")
     this.annotationShape.teardown();
     if(clearActive) this.plugin.annotationState.clearActive();
   }
@@ -14534,6 +14536,7 @@ class AnnotationShape extends PlayerComponent {
 
   draw () {
     if(!this.shape) return;
+    if(this.$el) this.$el.remove();
     
     this.$el = $("<div/>").addClass("vac-shape");
     this.setDimsFromShape();
