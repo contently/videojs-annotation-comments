@@ -1,5 +1,6 @@
 "use strict";
 
+const _ = require("underscore");
 const PlayerComponent = require("./player_component").class;
 const Comment = require("./comment").class;
 const Templates = require("./../templates/comment_list");
@@ -22,6 +23,7 @@ class CommentList extends PlayerComponent {
     this.$el.find(".reply-btn").click(() => this.addNewComment());
     this.$el.find(".vac-delete-annotation").click(() => this.annotation.destroy());
     this.$el.find(".vac-comments-wrap").on("mousewheel DOMMouseScroll", (e) => this.limitScroll(e));
+    this.$el.find(".delete-comment").click((e) => this.destroyComment(e));
   }
 
   bindCommentFormEvents() {
@@ -75,6 +77,21 @@ class CommentList extends PlayerComponent {
   closeNewComment() {
     this.$wrap.removeClass("active");
     if(this.$newCommentForm) this.$newCommentForm.remove();
+  }
+
+  destroyComment(event) {
+    if(this.comments.length == 1) {
+      this.annotation.destroy();
+    } else {
+      var $comment   = $(event.target).closest(".comment");
+      var commentId  = $comment.data('id');
+      var commentObj = _.find(this.comments, (c) => { return c.id == commentId });
+
+      var i = this.comments.indexOf(commentObj);
+      this.comments.splice(i, 1);
+
+      this.reRender();
+    }
   }
 
   teardown() {

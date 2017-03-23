@@ -349,6 +349,8 @@
         color: #FFF;
         background-color: #383838;
         text-align: left; }
+        .video-js .vac-comments-container .vac-comments-wrap .comment .comment-header:hover .delete-comment {
+          display: inline; }
         .video-js .vac-comments-container .vac-comments-wrap .comment .comment-header .author-name, .video-js .vac-comments-container .vac-comments-wrap .comment .comment-header .timestamp {
           display: inline-block;
           line-height: 16px; }
@@ -363,6 +365,10 @@
           float: right;
           text-align: right;
           font-size: 10px; }
+        .video-js .vac-comments-container .vac-comments-wrap .comment .comment-header .delete-comment {
+          display: none;
+          cursor: pointer;
+          color: #FF0000; }
       .video-js .vac-comments-container .vac-comments-wrap .comment .comment-body {
         width: 100%;
         padding: 8px;
