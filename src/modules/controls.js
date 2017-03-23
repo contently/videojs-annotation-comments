@@ -34,8 +34,6 @@ class Controls extends PlayerComponent {
       .on("click", ".vac-video-write-new.annotation button", this.saveNew.bind(this)) // 'Save' button click while adding
       .on("click", ".vac-controls .next", () => this.plugin.annotationState.nextAnnotation() ) // Click 'next'
       .on("click", ".vac-controls .prev", () => this.plugin.annotationState.prevAnnotation() ); // Click 'prev'
-
-    $(document).on("keyup", (e) => this.handleArrowKeys(e));
   }
 
   // Clear existing UI (resetting components if need be)
@@ -49,6 +47,8 @@ class Controls extends PlayerComponent {
       this.uiState = _.clone(BASE_UI_STATE);
     }
     this.$player.find(".vac-control").remove();
+
+    $(document).off("keyup");
   }
 
   // Draw the UI elements (based on uiState)
@@ -61,6 +61,7 @@ class Controls extends PlayerComponent {
 
     var $ctrls = this.renderTemplate(this.template, data);
     this.$player.append($ctrls);
+    $(document).on("keyup", (e) => this.handleArrowKeys(e));
   }
 
   // User clicked to cancel in-progress add - restore to normal state
