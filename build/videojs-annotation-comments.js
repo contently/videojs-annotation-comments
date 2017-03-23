@@ -14805,6 +14805,7 @@ module.exports = {
 },{"./player_component":58,"moment":44,"underscore":47}],53:[function(require,module,exports){
 "use strict";
 
+const _ = require("underscore");
 const PlayerComponent = require("./player_component").class;
 const Comment = require("./comment").class;
 const Templates = require("./../templates/comment_list");
@@ -14833,6 +14834,7 @@ class CommentList extends PlayerComponent {
     this.$el.find(".reply-btn").click(() => this.addNewComment());
     this.$el.find(".vac-delete-annotation").click(() => this.annotation.destroy());
     this.$el.find(".vac-comments-wrap").on("mousewheel DOMMouseScroll", (e) => this.limitScroll(e));
+    this.$el.find(".delete-comment").click((e) => this.destroyComment(e));
   }
 
   bindCommentFormEvents() {
@@ -14889,6 +14891,21 @@ class CommentList extends PlayerComponent {
     if(this.$newCommentForm) this.$newCommentForm.remove();
   }
 
+  destroyComment(event) {
+    if(this.comments.length == 1) {
+      this.annotation.destroy();
+    } else {
+      var $comment   = $(event.target).closest(".comment");
+      var commentId  = $comment.data('id');
+      var commentObj = _.find(this.comments, (c) => { return c.id == commentId });
+
+      var i = this.comments.indexOf(commentObj);
+      this.comments.splice(i, 1);
+
+      this.reRender();
+    }
+  }
+
   teardown() {
     if(this.$el) this.$el.remove();
   }
@@ -14914,7 +14931,7 @@ module.exports = {
   class: CommentList
 };
 
-},{"./../templates/comment_list":60,"./comment":52,"./player_component":58}],54:[function(require,module,exports){
+},{"./../templates/comment_list":60,"./comment":52,"./player_component":58,"underscore":47}],54:[function(require,module,exports){
 "use strict";
 /*
   Component for managing annotation "control box" in upper left of video when in annotation mode, including all
@@ -15455,10 +15472,12 @@ var commentListTemplate = `
   <div class="vac-comments-container">
     <div class="vac-comments-wrap">
       {{#each comments as |comment|}}
-        <div class="comment">
+        <div class="comment" data-id="{{comment.id}}">
           <div class="comment-header">
             <div class="author-name">{{comment.meta.user_name}}</div>
-            <div class="timestamp">{{comment.timeSince}} ago</div>
+            <div class="timestamp">{{comment.timeSince}} ago
+              <span class="delete-comment">&nbsp;&nbsp;X</span>
+            </div>
           </div>
           <div class="comment-body">
             {{breaklines comment.body}}

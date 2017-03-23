@@ -459,6 +459,10 @@ $dark_gray: #383838;
 					background-color: $dark_gray;
 					text-align: left;
 
+					&:hover .delete-comment {
+						display: inline;
+					}
+
 					.author-name, .timestamp {
 						display: inline-block;
 						line-height: 16px;
@@ -477,6 +481,12 @@ $dark_gray: #383838;
 						float: right;
 						text-align: right;
 						font-size: 10px;
+					}
+
+					.delete-comment {
+						display: none;
+						cursor: pointer;
+						color: $red;
 					}
 				}
 
