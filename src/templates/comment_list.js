@@ -18,7 +18,7 @@ var commentListTemplate = `
     <div class="vac-comments-control-bar">
       <div class="vac-range"><b>@</b> {{rangeStr}}</div>
       <div class="control-buttons">
-        <a>DELETE</a> | <a class="vac-close-comment-list">CLOSE</a>
+        <a class="vac-delete-annotation">DELETE</a> | <a class="vac-close-comment-list">CLOSE</a>
       </div>
     </div>
   </div>

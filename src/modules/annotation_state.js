@@ -14,7 +14,7 @@ class AnnotationState extends PlayerComponent {
     this.activeAnnotation = null;
     this.enabled = false;
     this.skipNextTimeCheck = false;
-    
+
     this.lastVideoTime = 0;
 
     this.bindEvents()
@@ -73,6 +73,16 @@ class AnnotationState extends PlayerComponent {
     this.sortAnnotations();
     this.rebuildAnnotationTimeMap();
     this.openAnnotation(annotation, true);
+    this.plugin.components.playerButton.updateNumAnnotations(this._annotations.length);
+  }
+
+  // Remove an annotation
+  removeAnnotation (annotation) {
+    var i = this._annotations.indexOf(annotation);
+    this._annotations.splice(i, 1);
+    this.sortAnnotations();
+    this.rebuildAnnotationTimeMap();
+    this.plugin.components.playerButton.updateNumAnnotations(this._annotations.length);
   }
 
   // Set the live annotation based on current video time
