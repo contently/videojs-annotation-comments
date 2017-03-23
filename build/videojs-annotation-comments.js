@@ -14408,7 +14408,7 @@ process.umask = function() { return 0; };
 	  	// Bind needed events for interaction w/ components
 	  	bindEvents () {
 	  		this.components.playerButton.$el.on('click', () => {
-		        this.toggleAnnotations();
+		      this.toggleAnnotations();
 		    });
 	  	}
 
@@ -14498,6 +14498,12 @@ class Annotation extends PlayerComponent {
     return seconds;
   }
 
+  destroy() {
+    this.close(true);
+    this.plugin.annotationState.removeAnnotation(this);
+    this.marker.teardown();
+  }
+
   static newFromData (range, shape, commentStr, plugin) {
     let comment = Comment.dataObj(commentStr, plugin);
     let data = {
@@ -14572,7 +14578,7 @@ class AnnotationState extends PlayerComponent {
     this.activeAnnotation = null;
     this.enabled = false;
     this.skipNextTimeCheck = false;
-    
+
     this.lastVideoTime = 0;
 
     this.bindEvents()
@@ -14631,6 +14637,16 @@ class AnnotationState extends PlayerComponent {
     this.sortAnnotations();
     this.rebuildAnnotationTimeMap();
     this.openAnnotation(annotation, true);
+    this.plugin.components.playerButton.updateNumAnnotations(this._annotations.length);
+  }
+
+  // Remove an annotation
+  removeAnnotation (annotation) {
+    var i = this._annotations.indexOf(annotation);
+    this._annotations.splice(i, 1);
+    this.sortAnnotations();
+    this.rebuildAnnotationTimeMap();
+    this.plugin.components.playerButton.updateNumAnnotations(this._annotations.length);
   }
 
   // Set the live annotation based on current video time
@@ -14781,6 +14797,7 @@ class CommentList extends PlayerComponent {
   bindListEvents() {
     this.$el.find(".vac-close-comment-list").click(() => this.annotation.close());
     this.$el.find(".reply-btn").click(() => this.addNewComment());
+    this.$el.find(".vac-delete-annotation").click(() => this.annotation.destroy());
   }
 
   bindCommentFormEvents() {
@@ -15383,7 +15400,7 @@ var commentListTemplate = `
     <div class="vac-comments-control-bar">
       <div class="vac-range"><b>@</b> {{rangeStr}}</div>
       <div class="control-buttons">
-        <a>DELETE</a> | <a class="vac-close-comment-list">CLOSE</a>
+        <a class="vac-delete-annotation">DELETE</a> | <a class="vac-close-comment-list">CLOSE</a>
       </div>
     </div>
   </div>

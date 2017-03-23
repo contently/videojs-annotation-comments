@@ -20,6 +20,7 @@ class CommentList extends PlayerComponent {
   bindListEvents() {
     this.$el.find(".vac-close-comment-list").click(() => this.annotation.close());
     this.$el.find(".reply-btn").click(() => this.addNewComment());
+    this.$el.find(".vac-delete-annotation").click(() => this.annotation.destroy());
   }
 
   bindCommentFormEvents() {

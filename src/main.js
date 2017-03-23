@@ -48,7 +48,7 @@
 	  	// Bind needed events for interaction w/ components
 	  	bindEvents () {
 	  		this.components.playerButton.$el.on('click', () => {
-		        this.toggleAnnotations();
+		      this.toggleAnnotations();
 		    });
 	  	}
 

@@ -66,6 +66,12 @@ class Annotation extends PlayerComponent {
     return seconds;
   }
 
+  destroy() {
+    this.close(true);
+    this.plugin.annotationState.removeAnnotation(this);
+    this.marker.teardown();
+  }
+
   static newFromData (range, shape, commentStr, plugin) {
     let comment = Comment.dataObj(commentStr, plugin);
     let data = {
