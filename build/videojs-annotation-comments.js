@@ -15045,7 +15045,7 @@ class Controls extends PlayerComponent {
     var comment = this.$player.find(".vac-video-write-new textarea").val();
     if(!comment) return; // empty comment - TODO add validation / err message in future
 
-    var a = Annotation.newFromData(this.marker.range, this.marker.shape, comment, this.plugin);
+    var a = Annotation.newFromData(this.marker.range, this.selectableShape.shape, comment, this.plugin);
     this.plugin.annotationState.addNewAnnotation(a);
 
     this.cancelAddNew();
