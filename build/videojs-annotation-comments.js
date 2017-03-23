@@ -14994,6 +14994,8 @@ class Controls extends PlayerComponent {
       .on("click", ".vac-video-write-new.annotation button", this.saveNew.bind(this)) // 'Save' button click while adding
       .on("click", ".vac-controls .next", () => this.plugin.annotationState.nextAnnotation() ) // Click 'next'
       .on("click", ".vac-controls .prev", () => this.plugin.annotationState.prevAnnotation() ); // Click 'prev'
+
+    $(document).on("keyup", (e) => this.handleArrowKeys(e));
   }
 
   // Clear existing UI (resetting components if need be)
@@ -15071,6 +15073,13 @@ class Controls extends PlayerComponent {
   restoreNormalUI () {
     this.plugin.annotationState.enabled = true;
     this.enablePlayingAndControl();
+  }
+
+  handleArrowKeys (event) {
+    var keyId = event.which;
+
+    if(keyId == 37) this.plugin.annotationState.prevAnnotation();
+    if(keyId == 39) this.plugin.annotationState.nextAnnotation();
   }
 
 };
