@@ -53,6 +53,8 @@
   height: 100%;
   z-index: 11;
   background-color: rgba(0, 0, 0, 0.7); }
+  .video-js .vac-video-write-new-wrap.vac-new-comment {
+    background-color: rgba(0, 0, 0, 0.4); }
   .video-js .vac-video-write-new-wrap .vac-video-write-new {
     width: 100%;
     height: 100%;
@@ -71,42 +73,48 @@
         font-size: 15px;
         color: #000;
         font-weight: normal; }
-      .video-js .vac-video-write-new-wrap .vac-video-write-new > div > div {
-        border-radius: 1px;
-        background-color: white;
-        margin-top: 20px;
+    .video-js .vac-video-write-new-wrap .vac-video-write-new .comment-showbox {
+      border-radius: 1px;
+      background-color: white;
+      margin-top: 20px;
+      width: 100%;
+      border-bottom: 2px solid #ee9828; }
+      .video-js .vac-video-write-new-wrap .vac-video-write-new .comment-showbox textarea {
+        border: none;
+        font-size: 13px;
+        color: #383838;
+        line-height: 16px;
+        padding: 8px;
+        box-sizing: border-box;
+        min-height: 110px;
         width: 100%;
-        border-bottom: 2px solid #ee9828; }
-        .video-js .vac-video-write-new-wrap .vac-video-write-new > div > div textarea {
-          border: none;
-          font-size: 13px;
+        resize: none; }
+      .video-js .vac-video-write-new-wrap .vac-video-write-new .comment-showbox > div {
+        padding: 10px;
+        box-sizing: content-box;
+        height: 27px; }
+        .video-js .vac-video-write-new-wrap .vac-video-write-new .comment-showbox > div button {
+          float: right;
+          width: auto;
+          padding: 0 40px;
+          margin: 0; }
+        .video-js .vac-video-write-new-wrap .vac-video-write-new .comment-showbox > div a {
+          float: right;
+          font-size: 12px;
+          text-decoration: underline;
+          line-height: 27px;
+          display: inline-block;
           color: #383838;
-          line-height: 16px;
-          padding: 8px;
-          box-sizing: border-box;
-          min-height: 110px;
-          width: 100%;
-          resize: none; }
-        .video-js .vac-video-write-new-wrap .vac-video-write-new > div > div > div {
-          padding: 10px;
-          box-sizing: content-box;
-          height: 27px; }
-          .video-js .vac-video-write-new-wrap .vac-video-write-new > div > div > div button {
-            float: right;
-            width: auto;
-            padding: 0 40px;
-            margin: 0; }
-          .video-js .vac-video-write-new-wrap .vac-video-write-new > div > div > div a {
-            float: right;
-            font-size: 12px;
-            text-decoration: underline;
-            line-height: 27px;
-            display: inline-block;
-            color: #383838;
-            cursor: pointer;
-            margin-right: 20px; }
-            .video-js .vac-video-write-new-wrap .vac-video-write-new > div > div > div a:hover {
-              color: #FF0000; }
+          cursor: pointer;
+          margin-right: 20px; }
+          .video-js .vac-video-write-new-wrap .vac-video-write-new .comment-showbox > div a:hover {
+            color: #FF0000; }
+    .video-js .vac-video-write-new-wrap .vac-video-write-new.comment {
+      display: block; }
+      .video-js .vac-video-write-new-wrap .vac-video-write-new.comment .comment-showbox {
+        position: absolute;
+        padding: 0;
+        margin: 0; }
 
 .video-js .vac-shape {
   position: absolute;
@@ -313,6 +321,10 @@
     max-width: 480px; }
     .video-js .vac-comments-container:hover .vac-comments-wrap, .video-js .vac-comments-container.active .vac-comments-wrap {
       opacity: 1; }
+    .video-js .vac-comments-container:hover.active .add-new-shapebox, .video-js .vac-comments-container.active.active .add-new-shapebox {
+      display: block; }
+    .video-js .vac-comments-container:hover.active .reply-btn, .video-js .vac-comments-container.active.active .reply-btn {
+      display: none; }
   .video-js .vac-comments-container .vac-comments-wrap {
     opacity: .9;
     height: calc(100% - 26px);
@@ -367,6 +379,13 @@
     .video-js .vac-comments-container .vac-comments-wrap .reply-btn {
       margin: 10px 0 0 0;
       width: 100%; }
+    .video-js .vac-comments-container .vac-comments-wrap .add-new-shapebox {
+      margin: 10px 0 0 0;
+      border-radius: 2px;
+      height: 157px;
+      padding: 0;
+      color: orange;
+      display: none; }
   .video-js .vac-comments-container .vac-comments-control-bar {
     height: 26px;
     border-bottom: 1px solid #eed428;

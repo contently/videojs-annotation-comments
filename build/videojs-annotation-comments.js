@@ -14790,7 +14790,6 @@ class CommentList extends PlayerComponent {
   }
 
   render() {
-    console.log(this.annotation);
     this.$el = $(this.renderTemplate(
       this.commentsTemplate,
       {
@@ -14800,6 +14799,7 @@ class CommentList extends PlayerComponent {
     ));
 
     this.$player.append(this.$el);
+    this.$wrap = this.$player.find(".vac-comments-container");
     this.bindListEvents();
   }
 
@@ -14809,12 +14809,20 @@ class CommentList extends PlayerComponent {
   }
 
   addNewComment() {
-    this.$newCommentForm = $(this.renderTemplate(this.newCommentTemplate));
+    this.$wrap.addClass("active").find(".vac-comments-wrap").scrollTop(999999);
+    var $shapebox = this.$wrap.find(".add-new-shapebox"),
+        width = $shapebox.outerWidth(),
+        top = $shapebox.position().top + 10,
+        right = this.$wrap.outerWidth() - ($shapebox.position().left + width);
+
+    this.$newCommentForm = $(this.renderTemplate(this.newCommentTemplate, {width, top, right}));
     this.bindCommentFormEvents();
     this.$player.append(this.$newCommentForm);
   }
 
   saveNewComment() {
+    this.$wrap.removeClass("active");
+
     var user_id = 1,
       body = this.$player.find(".vac-video-write-new textarea").val();
     var comment = Comment.newFromData(body, this.plugin);
@@ -14824,6 +14832,7 @@ class CommentList extends PlayerComponent {
   }
 
   closeNewComment() {
+    this.$wrap.removeClass("active");
     if(this.$newCommentForm) this.$newCommentForm.remove();
   }
 
@@ -15379,6 +15388,7 @@ var commentListTemplate = `
         </div>
       {{/each}}
       <div class="reply-btn vac-button">ADD REPLY</div>
+      <div class="add-new-shapebox"></div>
     </div>
     <div class="vac-comments-control-bar">
       <div class="vac-range"><b>@</b> {{rangeStr}}</div>
@@ -15390,19 +15400,15 @@ var commentListTemplate = `
 `;
 
 var newCommentTemplate = `
-  <div class="vac-video-write-new-wrap vac-control">
+  <div class="vac-video-write-new-wrap vac-new-comment">
     <div class="vac-video-write-new comment">
-      <div>
-        <h5><b>New Comment</b></h5>
+      <div class="comment-showbox" style="width:{{width}}px;top:{{top}}px;right:{{right}}px">
+        <textarea placeholder="Enter comment..."></textarea>
         <div>
-          <textarea placeholder="Enter comment..."></textarea>
-          <div>
-            <button class="vac-button">SAVE</button>
-            <a>Cancel</a>
-          </div>
+          <button class="vac-button">SAVE</button>
+          <a>Cancel</a>
         </div>
       </div>
-    </div>
   </div>
 `
 
@@ -15440,7 +15446,7 @@ var ControlsTemplate = `
 				<div class="vac-video-write-new annotation">
 					<div>
 						<h5><b>New Annotation</b> @ {{rangeStr}}</h5>
-						<div>
+						<div class="comment-showbox">
 							<textarea placeholder="Enter comment..."></textarea>
 							<div>
 								<button class="vac-button">SAVE</button>

@@ -29,7 +29,7 @@ var ControlsTemplate = `
 				<div class="vac-video-write-new annotation">
 					<div>
 						<h5><b>New Annotation</b> @ {{rangeStr}}</h5>
-						<div>
+						<div class="comment-showbox">
 							<textarea placeholder="Enter comment..."></textarea>
 							<div>
 								<button class="vac-button">SAVE</button>

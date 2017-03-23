@@ -79,6 +79,9 @@ $dark_gray: #383838;
 		height: 100%;
 		z-index: 11;
 		background-color: rgba($black, .7);
+		&.vac-new-comment{
+			background-color: rgba($black, .4);
+		}
 		.vac-video-write-new {
 			width: 100%;
 			height: 100%;
@@ -98,47 +101,55 @@ $dark_gray: #383838;
   					color: $black;
   					font-weight: normal;
   				}
-  				& > div{
-  					border-radius: 1px;
-  					background-color: white;
-  					margin-top: 20px;
-  					width: 100%;
-  					border-bottom: 2px solid $orange;
-  					textarea{
-  						border: none;
-  						font-size: 13px;
-  						color: $dark_gray;
-  						line-height: 16px;
-  						padding: 8px;
-  						box-sizing: border-box;
-  						min-height: 110px;
-  						width: 100%;
-  						resize: none;
-  					}
-  					& > div{
-  						padding: 10px;
-  						box-sizing: content-box;
-  						height: 27px;
-	  					button{
-	  						float: right;
-	  						width: auto;
-	  						padding: 0 40px;
-	  						margin: 0;
-	  					}
-	  					a{
-	  						float:right;
-	  						font-size: 12px;
-	  						text-decoration: underline;
-	  						line-height: 27px;
-	  						display: inline-block;
-	  						color: $dark_gray;
-	  						cursor: pointer;
-	  						margin-right: 20px;
-	  						&:hover{
-	  							color: $red;
-	  						}
-	  					}
-	  				}
+  			}
+			.comment-showbox{
+				border-radius: 1px;
+				background-color: white;
+				margin-top: 20px;
+				width: 100%;
+				border-bottom: 2px solid $orange;
+				textarea{
+					border: none;
+					font-size: 13px;
+					color: $dark_gray;
+					line-height: 16px;
+					padding: 8px;
+					box-sizing: border-box;
+					min-height: 110px;
+					width: 100%;
+					resize: none;
+				}
+				& > div{
+					padding: 10px;
+					box-sizing: content-box;
+					height: 27px;
+					button{
+						float: right;
+						width: auto;
+						padding: 0 40px;
+						margin: 0;
+					}
+					a{
+						float:right;
+						font-size: 12px;
+						text-decoration: underline;
+						line-height: 27px;
+						display: inline-block;
+						color: $dark_gray;
+						cursor: pointer;
+						margin-right: 20px;
+						&:hover{
+							color: $red;
+						}
+					}
+  				}
+  			}
+  			&.comment{
+  				display:block;
+  				.comment-showbox{
+  					position: absolute;
+  					padding:0;
+  					margin: 0;
   				}
   			}
 		}
@@ -403,6 +414,14 @@ $dark_gray: #383838;
 			.vac-comments-wrap{
 				opacity: 1;
 			}
+			&.active{
+				.add-new-shapebox{
+					display: block;
+				}
+				.reply-btn{
+					display:none;
+				}
+			}
 		}
 		transition: all .15s linear;
 
@@ -479,6 +498,15 @@ $dark_gray: #383838;
 			.reply-btn {
 				margin:10px 0 0 0;
 				width: 100%;
+			}
+
+			.add-new-shapebox{
+				margin: 10px 0 0 0;
+				border-radius: 2px;
+				height: 157px;
+				padding:0;
+				color: orange;
+				display:none;
 			}
 		}
 

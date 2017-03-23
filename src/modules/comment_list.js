@@ -29,7 +29,6 @@ class CommentList extends PlayerComponent {
   }
 
   render() {
-    console.log(this.annotation);
     this.$el = $(this.renderTemplate(
       this.commentsTemplate,
       {
@@ -39,6 +38,7 @@ class CommentList extends PlayerComponent {
     ));
 
     this.$player.append(this.$el);
+    this.$wrap = this.$player.find(".vac-comments-container");
     this.bindListEvents();
   }
 
@@ -48,12 +48,20 @@ class CommentList extends PlayerComponent {
   }
 
   addNewComment() {
-    this.$newCommentForm = $(this.renderTemplate(this.newCommentTemplate));
+    this.$wrap.addClass("active").find(".vac-comments-wrap").scrollTop(999999);
+    var $shapebox = this.$wrap.find(".add-new-shapebox"),
+        width = $shapebox.outerWidth(),
+        top = $shapebox.position().top + 10,
+        right = this.$wrap.outerWidth() - ($shapebox.position().left + width);
+
+    this.$newCommentForm = $(this.renderTemplate(this.newCommentTemplate, {width, top, right}));
     this.bindCommentFormEvents();
     this.$player.append(this.$newCommentForm);
   }
 
   saveNewComment() {
+    this.$wrap.removeClass("active");
+
     var user_id = 1,
       body = this.$player.find(".vac-video-write-new textarea").val();
     var comment = Comment.newFromData(body, this.plugin);
@@ -63,6 +71,7 @@ class CommentList extends PlayerComponent {
   }
 
   closeNewComment() {
+    this.$wrap.removeClass("active");
     if(this.$newCommentForm) this.$newCommentForm.remove();
   }
 

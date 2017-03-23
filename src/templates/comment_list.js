@@ -13,6 +13,7 @@ var commentListTemplate = `
         </div>
       {{/each}}
       <div class="reply-btn vac-button">ADD REPLY</div>
+      <div class="add-new-shapebox"></div>
     </div>
     <div class="vac-comments-control-bar">
       <div class="vac-range"><b>@</b> {{rangeStr}}</div>
@@ -24,19 +25,15 @@ var commentListTemplate = `
 `;
 
 var newCommentTemplate = `
-  <div class="vac-video-write-new-wrap vac-control">
+  <div class="vac-video-write-new-wrap vac-new-comment">
     <div class="vac-video-write-new comment">
-      <div>
-        <h5><b>New Comment</b></h5>
+      <div class="comment-showbox" style="width:{{width}}px;top:{{top}}px;right:{{right}}px">
+        <textarea placeholder="Enter comment..."></textarea>
         <div>
-          <textarea placeholder="Enter comment..."></textarea>
-          <div>
-            <button class="vac-button">SAVE</button>
-            <a>Cancel</a>
-          </div>
+          <button class="vac-button">SAVE</button>
+          <a>Cancel</a>
         </div>
       </div>
-    </div>
   </div>
 `
 
