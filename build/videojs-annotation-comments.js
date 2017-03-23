@@ -14456,6 +14456,16 @@ class Annotation extends PlayerComponent {
     this.bindMarkerEvents();
   }
 
+  // Serialize object
+  get data () {
+    return {
+      id: this.id,
+      range: this.range,
+      shape: this.shape,
+      comments: this.commentList.data
+    };
+  }
+
   bindMarkerEvents() {
     this.marker.$el.click(() => { this.plugin.annotationState.openAnnotation(this) });
   }
@@ -14621,6 +14631,11 @@ class AnnotationState extends PlayerComponent {
     return this._activeAnnotation || {close: (function (){return null})}
   }
 
+  // Serialize data
+  get data () {
+    return this._annotations.map((a) => a.data);
+  }
+
   // Bind events for setting liveAnnotation on video time change
   bindEvents() {
     this.player.on("timeupdate", _.throttle(this.setLiveAnnotation.bind(this), 1000));
@@ -14749,7 +14764,17 @@ class Comment extends PlayerComponent {
     this.id = data.id;
     this.meta = data.meta;
     this.body = data.body;
+    this.timestamp = moment(data.meta.datetime).unix();
     this.timeSince = this.timeSince();
+  }
+
+  // Serialize data
+  get data () {
+    return {
+        id: this.id,
+        meta: this.meta,
+        body: this.body
+    };
   }
 
   timeSince () {
@@ -14793,8 +14818,14 @@ class CommentList extends PlayerComponent {
 
     this.annotation = data.annotation;
     this.comments = data.comments.map((c) => new Comment(c, playerId));
+    this.sortComments();
     this.commentsTemplate = CommentListTemplate;
     this.newCommentTemplate = NewCommentTemplate;
+  }
+
+  // Serialize object
+  get data () {
+    return this.comments.map((c) => c.data);
   }
 
   bindListEvents() {
@@ -14848,6 +14879,7 @@ class CommentList extends PlayerComponent {
       body = this.$player.find(".vac-video-write-new textarea").val();
     var comment = Comment.newFromData(body, this.plugin);
     this.comments.push(comment);
+    this.sortComments();
     this.closeNewComment();
     this.reRender();
   }
@@ -14869,6 +14901,12 @@ class CommentList extends PlayerComponent {
 
     $(event.currentTarget).scrollTop(currentPos + (delta < 0 ? 1 : -1) * 30);
     event.preventDefault();
+  }
+
+  sortComments () {
+    this.comments.sort((a,b) => {
+      return a.timestamp < b.timestamp ? -1 : (a.timestamp > b.timestamp ? 1 : 0);
+    });
   }
 }
 

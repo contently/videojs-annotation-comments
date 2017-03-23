@@ -114,7 +114,8 @@
       .video-js .vac-video-write-new-wrap .vac-video-write-new.comment .comment-showbox {
         position: absolute;
         padding: 0;
-        margin: 0; }
+        margin: 0;
+        max-width: none; }
 
 .video-js .vac-shape {
   position: absolute;

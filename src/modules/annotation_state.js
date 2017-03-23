@@ -54,6 +54,11 @@ class AnnotationState extends PlayerComponent {
     return this._activeAnnotation || {close: (function (){return null})}
   }
 
+  // Serialize data
+  get data () {
+    return this._annotations.map((a) => a.data);
+  }
+
   // Bind events for setting liveAnnotation on video time change
   bindEvents() {
     this.player.on("timeupdate", _.throttle(this.setLiveAnnotation.bind(this), 1000));

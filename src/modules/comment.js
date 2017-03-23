@@ -11,7 +11,17 @@ class Comment extends PlayerComponent {
     this.id = data.id;
     this.meta = data.meta;
     this.body = data.body;
+    this.timestamp = moment(data.meta.datetime).unix();
     this.timeSince = this.timeSince();
+  }
+
+  // Serialize data
+  get data () {
+    return {
+        id: this.id,
+        meta: this.meta,
+        body: this.body
+    };
   }
 
   timeSince () {

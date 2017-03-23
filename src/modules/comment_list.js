@@ -13,8 +13,14 @@ class CommentList extends PlayerComponent {
 
     this.annotation = data.annotation;
     this.comments = data.comments.map((c) => new Comment(c, playerId));
+    this.sortComments();
     this.commentsTemplate = CommentListTemplate;
     this.newCommentTemplate = NewCommentTemplate;
+  }
+
+  // Serialize object
+  get data () {
+    return this.comments.map((c) => c.data);
   }
 
   bindListEvents() {
@@ -68,6 +74,7 @@ class CommentList extends PlayerComponent {
       body = this.$player.find(".vac-video-write-new textarea").val();
     var comment = Comment.newFromData(body, this.plugin);
     this.comments.push(comment);
+    this.sortComments();
     this.closeNewComment();
     this.reRender();
   }
@@ -89,6 +96,12 @@ class CommentList extends PlayerComponent {
 
     $(event.currentTarget).scrollTop(currentPos + (delta < 0 ? 1 : -1) * 30);
     event.preventDefault();
+  }
+
+  sortComments () {
+    this.comments.sort((a,b) => {
+      return a.timestamp < b.timestamp ? -1 : (a.timestamp > b.timestamp ? 1 : 0);
+    });
   }
 }
 

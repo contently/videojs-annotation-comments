@@ -24,6 +24,16 @@ class Annotation extends PlayerComponent {
     this.bindMarkerEvents();
   }
 
+  // Serialize object
+  get data () {
+    return {
+      id: this.id,
+      range: this.range,
+      shape: this.shape,
+      comments: this.commentList.data
+    };
+  }
+
   bindMarkerEvents() {
     this.marker.$el.click(() => { this.plugin.annotationState.openAnnotation(this) });
   }
