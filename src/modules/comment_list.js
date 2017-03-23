@@ -79,6 +79,8 @@ class CommentList extends PlayerComponent {
     this.sortComments();
     this.closeNewComment();
     this.reRender();
+
+    this.plugin.annotationState.stateChangedCallback();
   }
 
   closeNewComment() {
@@ -99,6 +101,8 @@ class CommentList extends PlayerComponent {
 
       this.reRender();
     }
+
+    this.plugin.annotationState.stateChangedCallback();
   }
 
   disablePageScroll(event) {

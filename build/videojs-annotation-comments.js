@@ -14383,7 +14383,7 @@ process.umask = function() { return 0; };
 
 	    	// setup initial state and draw UI after video is loaded
 	    	player.on("loadedmetadata", () => {
-	    		this.annotationState = new AnnotationState(this.playerId);
+	    		this.annotationState = new AnnotationState(this.playerId, options.onStateChanged);
 	    		this.annotationState.annotations = options.annotationsObjects;
 
 		    	this.drawUI();
@@ -14581,8 +14581,9 @@ const Annotation = require("./annotation").class;
 
 class AnnotationState extends PlayerComponent {
 
-  constructor(playerId) {
+  constructor(playerId, onStateChanged) {
     super(playerId);
+    this.onStateChanged = onStateChanged || (() => {return null});
 
     this.annotations = [];
     this.annotationTimeMap = {};
@@ -14626,7 +14627,7 @@ class AnnotationState extends PlayerComponent {
 
   // Get current active annotation or something close to it
   get activeAnnotation () {
-    return this._activeAnnotation || {close: (function (){return null})}
+    return this._activeAnnotation || {close: (() => {return null})}
   }
 
   // Serialize data
@@ -14654,6 +14655,8 @@ class AnnotationState extends PlayerComponent {
     this.rebuildAnnotationTimeMap();
     this.openAnnotation(annotation, true);
     this.plugin.components.playerButton.updateNumAnnotations(this._annotations.length);
+
+    this.stateChangedCallback();
   }
 
   // Remove an annotation
@@ -14663,6 +14666,8 @@ class AnnotationState extends PlayerComponent {
     this.sortAnnotations();
     this.rebuildAnnotationTimeMap();
     this.plugin.components.playerButton.updateNumAnnotations(this._annotations.length);
+
+    this.stateChangedCallback();
   }
 
   // Set the live annotation based on current video time
@@ -14741,6 +14746,10 @@ class AnnotationState extends PlayerComponent {
       if(this.annotations[i].range.start < time) return this.openAnnotation(this.annotations[i], true);
     }
     this.openAnnotation(this.annotations[this.annotations.length-1], true);
+  }
+
+  stateChangedCallback() {
+    this.onStateChanged(this.data);
   }
 }
 
@@ -14895,6 +14904,8 @@ class CommentList extends PlayerComponent {
     this.sortComments();
     this.closeNewComment();
     this.reRender();
+
+    this.plugin.annotationState.stateChangedCallback();
   }
 
   closeNewComment() {
@@ -14915,6 +14926,8 @@ class CommentList extends PlayerComponent {
 
       this.reRender();
     }
+
+    this.plugin.annotationState.stateChangedCallback();
   }
 
   disablePageScroll(event) {

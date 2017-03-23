@@ -136,7 +136,7 @@
 					},
 					shape: null,
 					comments: [
-						{	
+						{
 							id: guid(),
 							meta: {
 								user_id: 1,
@@ -165,14 +165,14 @@
 		<script src="/video.js/dist/video.min.js"></script>
 		<script src="/videojs-annotation-comments.js"></script>
 		<script>
-			//var annotations = [];
 			var player = videojs('the_video');
 			player.annotationComments({
-				annotationsObjects: annotations, 
+				annotationsObjects: annotations,
 				meta: {
 					user_id: 999,
 					user_name: "Ron Swanson"
-				}
+				},
+				onStateChanged: function(data){console.log(data)}
 			});
 		</script>
 	</BODY>
