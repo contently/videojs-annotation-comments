@@ -56,7 +56,7 @@ class CommentList extends PlayerComponent {
   saveNewComment() {
     var user_id = 1,
       body = this.$player.find(".vac-video-write-new textarea").val();
-    var comment = Comment.newFromData(user_id, body, this.plugin);
+    var comment = Comment.newFromData(body, this.plugin);
     this.comments.push(comment);
     this.closeNewComment();
     this.reRender();

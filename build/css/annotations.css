@@ -304,7 +304,7 @@
   top: 0;
   width: 40%;
   max-width: 300px;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.6);
   height: calc(100% - 42px);
   box-sizing: border-box; }
   .video-js .vac-comments-container .vac-comments-wrap {
@@ -313,9 +313,17 @@
     overflow-y: auto;
     box-sizing: border-box;
     padding: 10px;
-    border-left: 2px solid #dbdcdc; }
+    border-left: 1px solid #dbdcdc; }
+    .video-js .vac-comments-container .vac-comments-wrap::-webkit-scrollbar {
+      width: 6px;
+      background-color: transparent; }
+    .video-js .vac-comments-container .vac-comments-wrap::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+      -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      background-color: #383838; }
     .video-js .vac-comments-container .vac-comments-wrap .comment {
-      border-radius: 1px; }
+      border-radius: 1px;
+      box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.43); }
       .video-js .vac-comments-container .vac-comments-wrap .comment .comment-header {
         width: 100%;
         height: 24px;
@@ -329,19 +337,23 @@
         .video-js .vac-comments-container .vac-comments-wrap .comment .comment-header .author-name {
           font-weight: bold;
           text-align: left;
-          font-size: 13px; }
+          font-size: 11px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis; }
         .video-js .vac-comments-container .vac-comments-wrap .comment .comment-header .timestamp {
           float: right;
           text-align: right;
           font-size: 10px; }
       .video-js .vac-comments-container .vac-comments-wrap .comment .comment-body {
         width: 100%;
-        padding: 5px;
+        padding: 8px;
         box-sizing: border-box;
         margin-bottom: 10px;
         background-color: #fff;
         color: #000;
-        font-size: 1.2em;
+        font-size: 13px;
+        line-height: 16px;
         text-align: left;
         border-bottom-left-radius: 2px;
         border-bottom-right-radius: 2px;

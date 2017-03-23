@@ -7,9 +7,18 @@
 		<link href="assets/page.css" rel="stylesheet">
 		<link href="css/annotations.css" rel="stylesheet">
 		<script>
+			function guid() {
+		      function s4() {
+		        return Math.floor((1 + Math.random()) * 0x10000)
+		          .toString(16)
+		          .substring(1);
+		      }
+		      return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+		        s4() + '-' + s4() + s4() + s4();
+		    }
 			var annotations = [
 				{
-					id: 1234,
+					id: guid(),
 					range: {
 						start: 25
 					},
@@ -21,30 +30,63 @@
 					},
 					comments: [
 						{
+							id: guid(),
 							meta: {
 								user_id: 1,
+								user_name: "Evan Carothers",
 								datetime: "2017-03-19T02:05:55+00:00"
 							},
 							body: "This is a test - hopefully it's super awesome!"
 						},
 						{
+							id: guid(),
 							meta: {
 								user_id: 2,
+								user_name: "Bob Smith",
 								datetime: "2017-03-19T02:05:55+00:00"
 							},
 							body: "This is a second comment."
 						},
 						{
+							id: guid(),
 							meta: {
 								user_id: 1,
+								user_name: "Jack Pope",
 								datetime: "2017-03-19T02:05:55+00:00"
 							},
-							body: "This is a third comment."
+							body: "This is a third comment that is much longer than the others.\n\nHopefully it looks good still! Long comments are super cool, don't you think?"
+						},
+						{
+							id: guid(),
+							meta: {
+								user_id: 1,
+								user_name: "Jack Pope",
+								datetime: "2017-03-19T02:05:55+00:00"
+							},
+							body: "This is a third comment that is much longer than the others.\n\nHopefully it looks good still! Long comments are super cool, don't you think?"
+						},
+						{
+							id: guid(),
+							meta: {
+								user_id: 1,
+								user_name: "Jack Pope",
+								datetime: "2017-03-19T02:05:55+00:00"
+							},
+							body: "This is a third comment that is much longer than the others.\n\nHopefully it looks good still! Long comments are super cool, don't you think?"
+						},
+						{
+							id: guid(),
+							meta: {
+								user_id: 1,
+								user_name: "Jack Pope",
+								datetime: "2017-03-19T02:05:55+00:00"
+							},
+							body: "This is a third comment that is much longer than the others.\n\nHopefully it looks good still! Long comments are super cool, don't you think?"
 						}
 					]
 				},
 				{
-					id: 1235,
+					id: guid(),
 					range: {
 						start: 31,
 						end: 70
@@ -57,8 +99,10 @@
 					},
 					comments: [
 						{
+							id: guid(),
 							meta: {
 								user_id: 1,
+								user_name: "Evan Carothers",
 								datetime: "2017-03-19T02:05:55+00:00"
 							},
 							body: "Man how much fun can we have on hack week!!!"
@@ -66,7 +110,7 @@
 					]
 				},
 				{
-					id: 1238,
+					id: guid(),
 					range: {
 						start: 50,
 						end: 80
@@ -74,8 +118,10 @@
 					shape: null,
 					comments: [
 						{
+							id: guid(),
 							meta: {
-								user_id: 1,
+								user_id: 3,
+								user_name: "Jack Pope",
 								datetime: "2017-03-19T02:05:55+00:00"
 							},
 							body: "lets overlap!"
@@ -83,16 +129,18 @@
 					]
 				},
 				{
-					id: 1236,
+					id: guid(),
 					range: {
 						start: 75,
 						end: 83
 					},
 					shape: null,
 					comments: [
-						{
+						{	
+							id: guid(),
 							meta: {
 								user_id: 1,
+								user_name: "Evan Carothers",
 								datetime: "2017-03-19T02:05:55+00:00"
 							},
 							body: "I should be in bed right now. Oh well!"
@@ -121,7 +169,10 @@
 			var player = videojs('the_video');
 			player.annotationComments({
 				annotationsObjects: annotations, 
-				meta: {user_id:999}
+				meta: {
+					user_id: 999,
+					user_name: "Ron Swanson"
+				}
 			});
 		</script>
 	</BODY>

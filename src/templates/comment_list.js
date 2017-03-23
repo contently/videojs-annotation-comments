@@ -4,7 +4,7 @@ var commentListTemplate = `
       {{#each comments as |comment|}}
         <div class="comment">
           <div class="comment-header">
-            <div class="author-name">{{comment.meta.user_id}}</div>
+            <div class="author-name">{{comment.meta.user_name}}</div>
             <div class="timestamp">{{comment.timeSince}} ago</div>
           </div>
           <div class="comment-body">

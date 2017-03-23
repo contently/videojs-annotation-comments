@@ -14437,6 +14437,7 @@ const moment = require("moment");
 const PlayerComponent = require("./player_component").class;
 const CommentList = require("./comment_list").class;
 const Marker = require("./marker").class;
+const Comment = require("./comment").class;
 const AnnotationShape = require("./annotation_shape").class;
 
 class Annotation extends PlayerComponent {
@@ -14498,12 +14499,7 @@ class Annotation extends PlayerComponent {
   }
 
   static newFromData (range, shape, commentStr, plugin) {
-    let comment = {
-      body: commentStr,
-      meta: _.extend({
-          datetime: moment().toISOString()
-        }, plugin.meta)
-    };
+    let comment = Comment.dataObj(commentStr, plugin);
     let data = {
       range,
       shape,
@@ -14517,7 +14513,7 @@ module.exports = {
   class: Annotation
 };
 
-},{"./annotation_shape":50,"./comment_list":53,"./marker":56,"./player_component":58,"moment":44,"underscore":47}],50:[function(require,module,exports){
+},{"./annotation_shape":50,"./comment":52,"./comment_list":53,"./marker":56,"./player_component":58,"moment":44,"underscore":47}],50:[function(require,module,exports){
 "use strict";
 
 const PlayerComponent = require("./player_component").class;
@@ -14723,6 +14719,7 @@ module.exports = {
 },{"./annotation":49,"./player_component":58,"underscore":47}],52:[function(require,module,exports){
 "use strict";
 
+const _ = require("underscore");
 const PlayerComponent = require("./player_component").class;
 const moment = require("moment");
 
@@ -14730,6 +14727,7 @@ class Comment extends PlayerComponent {
 
   constructor(data, playerId) {
   	super(playerId);
+    this.id = data.id;
     this.meta = data.meta;
     this.body = data.body;
     this.timeSince = this.timeSince();
@@ -14739,16 +14737,19 @@ class Comment extends PlayerComponent {
     return moment(this.meta.datetime).fromNow();
   }
 
-  static newFromData(user_id, body, plugin) {
-    let data = {
-      meta: {
-        user_id,
-        datetime: moment().toISOString()
-      },
-      body
-    };
-
+  static newFromData(body, plugin) {
+    let data = this.dataObj(body, plugin);
     return new Comment(data, plugin.playerId);
+  }
+
+  static dataObj(body, plugin) {
+    return {
+        meta:  _.extend({
+                datetime: moment().toISOString()
+            }, plugin.meta),
+        id: this.guid(),
+        body
+    };
   }
 
 }
@@ -14757,7 +14758,7 @@ module.exports = {
 	class: Comment
 };
 
-},{"./player_component":58,"moment":44}],53:[function(require,module,exports){
+},{"./player_component":58,"moment":44,"underscore":47}],53:[function(require,module,exports){
 "use strict";
 
 const PlayerComponent = require("./player_component").class;
@@ -14816,7 +14817,7 @@ class CommentList extends PlayerComponent {
   saveNewComment() {
     var user_id = 1,
       body = this.$player.find(".vac-video-write-new textarea").val();
-    var comment = Comment.newFromData(user_id, body, this.plugin);
+    var comment = Comment.newFromData(body, this.plugin);
     this.comments.push(comment);
     this.closeNewComment();
     this.reRender();
@@ -15234,17 +15235,16 @@ class PlayerComponent {
 
   // Generate a pseudo-guid ID for this component, to use as an ID in the DOM
   generateComponentId () {
-    function guid() {
-      function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-          .toString(16)
-          .substring(1);
-      }
-      return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
-    }
-    this.componentId = guid();
+    this.componentId = this.constructor.guid();
   }
+
+  static guid() {
+    function s4() {
+      return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +  s4() + '-' + s4() + s4() + s4();
+  }
+
 }
 
 module.exports = {
@@ -15370,7 +15370,7 @@ var commentListTemplate = `
       {{#each comments as |comment|}}
         <div class="comment">
           <div class="comment-header">
-            <div class="author-name">{{comment.meta.user_id}}</div>
+            <div class="author-name">{{comment.meta.user_name}}</div>
             <div class="timestamp">{{comment.timeSince}} ago</div>
           </div>
           <div class="comment-body">

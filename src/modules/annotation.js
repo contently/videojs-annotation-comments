@@ -5,6 +5,7 @@ const moment = require("moment");
 const PlayerComponent = require("./player_component").class;
 const CommentList = require("./comment_list").class;
 const Marker = require("./marker").class;
+const Comment = require("./comment").class;
 const AnnotationShape = require("./annotation_shape").class;
 
 class Annotation extends PlayerComponent {
@@ -66,12 +67,7 @@ class Annotation extends PlayerComponent {
   }
 
   static newFromData (range, shape, commentStr, plugin) {
-    let comment = {
-      body: commentStr,
-      meta: _.extend({
-          datetime: moment().toISOString()
-        }, plugin.meta)
-    };
+    let comment = Comment.dataObj(commentStr, plugin);
     let data = {
       range,
       shape,
