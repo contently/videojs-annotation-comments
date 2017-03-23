@@ -14833,7 +14833,7 @@ class CommentList extends PlayerComponent {
     this.$el.find(".vac-close-comment-list").click(() => this.annotation.close());
     this.$el.find(".reply-btn").click(() => this.addNewComment());
     this.$el.find(".vac-delete-annotation").click(() => this.annotation.destroy());
-    this.$el.find(".vac-comments-wrap").on("mousewheel DOMMouseScroll", (e) => this.limitScroll(e));
+    this.$el.find(".vac-comments-wrap").on("mousewheel DOMMouseScroll", this.disablePageScroll);
     this.$el.find(".delete-comment").click((e) => this.destroyComment(e));
   }
 
@@ -14910,14 +14910,26 @@ class CommentList extends PlayerComponent {
     if(this.$el) this.$el.remove();
   }
 
-  limitScroll(event) {
-    var $target    = $(event.currentTarget);
-    var currentPos = $target.scrollTop();
-    var ogEvent    = event.originalEvent;
-    var delta      = ogEvent.wheelDelta || -ogEvent.detail;
+  disablePageScroll(event) {
+    var $target = $(event.currentTarget);
+    var height  = $target.height();
+    var ogEvent = event.originalEvent;
+    var delta   = ogEvent.wheelDelta || -ogEvent.detail;
+    var dir     = delta < 0 ? "down" : "up";
 
-    $(event.currentTarget).scrollTop(currentPos + (delta < 0 ? 1 : -1) * 30);
-    event.preventDefault();
+    // if scrolling into top of div
+    if ($target.scrollTop() < 20 && dir == "up") {
+      $target.stop();
+      $target.animate({scrollTop: 0}, 100);
+      event.preventDefault();
+    }
+
+    // if scrolling into bottom of div
+    if ($target.scrollTop() > (height) && dir == "down") {
+      $target.stop();
+      $target.animate({scrollTop: height + 40}, 100);
+      event.preventDefault();
+    }
   }
 
   sortComments () {
