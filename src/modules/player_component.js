@@ -6,6 +6,7 @@ class PlayerComponent {
   constructor(playerId) {
   	this.playerId = playerId;
     this.generateComponentId();
+    this.registerHandlebarsHelpers();
   }
 
   get plugin () {
@@ -43,6 +44,14 @@ class PlayerComponent {
   renderTemplate(htmlString, options = {}) {
     var template = Handlebars.compile(htmlString);
     return template(options);
+  }
+
+  registerHandlebarsHelpers() {
+    Handlebars.registerHelper('breaklines', function(text) {
+      text = Handlebars.Utils.escapeExpression(text);
+      text = text.replace(/(\r\n|\n|\r)/gm, '<br>');
+      return new Handlebars.SafeString(text);
+    });
   }
 
   // Convert a range to human readable format (M:SS) or (M:SS-M:SS)

@@ -8,7 +8,7 @@ var commentListTemplate = `
             <div class="timestamp">{{comment.timeSince}} ago</div>
           </div>
           <div class="comment-body">
-            {{comment.body}}
+            {{breaklines comment.body}}
           </div>
         </div>
       {{/each}}
