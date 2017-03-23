@@ -303,68 +303,77 @@
   right: 0;
   top: 0;
   width: 40%;
-  background-color: rgba(0, 0, 0, 0.3);
-  overflow-x: hidden;
-  overflow-y: auto; }
-  .video-js .vac-comments-container .comment {
-    width: 90%;
-    margin-left: 5%;
-    margin-top: 15px;
-    border-radius: 10px; }
-    .video-js .vac-comments-container .comment .comment-header {
-      width: 100%;
-      height: 28px;
-      padding: 2%;
-      font-size: 1.4em;
-      color: #FFF;
-      background-color: gray;
-      font-weight: bold; }
-      .video-js .vac-comments-container .comment .comment-header .author-name, .video-js .vac-comments-container .comment .comment-header .timestamp {
-        display: inline-block;
-        width: 45%; }
-      .video-js .vac-comments-container .comment .comment-header .author-name {
-        float: left;
+  max-width: 300px;
+  background-color: rgba(255, 255, 255, 0.5);
+  height: calc(100% - 42px);
+  box-sizing: border-box; }
+  .video-js .vac-comments-container .vac-comments-wrap {
+    height: calc(100% - 26px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 10px;
+    border-left: 2px solid #dbdcdc; }
+    .video-js .vac-comments-container .vac-comments-wrap .comment {
+      border-radius: 1px; }
+      .video-js .vac-comments-container .vac-comments-wrap .comment .comment-header {
+        width: 100%;
+        height: 24px;
+        line-height: 24px;
+        padding: 0 5px;
+        color: #FFF;
+        background-color: #383838;
         text-align: left; }
-      .video-js .vac-comments-container .comment .comment-header .timestamp {
-        float: right;
-        text-align: right; }
-    .video-js .vac-comments-container .comment .comment-body {
-      width: 100%;
-      padding: 4%;
-      background-color: #fff;
-      color: #000;
-      font-size: 1.2em;
-      text-align: left; }
-  .video-js .vac-comments-container .reply-btn {
-    width: 90%;
-    margin-left: 5%;
-    height: 25px;
-    padding-top: 3px;
-    margin-top: 20px;
-    color: #fff;
-    font-size: 1.6em;
-    background-color: #00A6C2;
-    border-radius: 2px;
-    margin-bottom: 20px;
-    cursor: pointer; }
-
-.video-js .vac-comments-control-bar {
-  height: 40px;
-  width: 40%;
-  background: #000;
-  position: absolute;
-  bottom: 42px;
-  right: 0;
-  padding: 14px;
-  font-size: 1.2em; }
-  .video-js .vac-comments-control-bar .timestamp, .video-js .vac-comments-control-bar .control-buttons {
-    display: inline-block;
-    width: 45%; }
-  .video-js .vac-comments-control-bar .timestamp {
-    float: left;
-    text-align: left; }
-  .video-js .vac-comments-control-bar .control-buttons {
-    float: right;
-    text-align: right; }
-    .video-js .vac-comments-control-bar .control-buttons a {
-      cursor: pointer; }
+        .video-js .vac-comments-container .vac-comments-wrap .comment .comment-header .author-name, .video-js .vac-comments-container .vac-comments-wrap .comment .comment-header .timestamp {
+          display: inline-block; }
+        .video-js .vac-comments-container .vac-comments-wrap .comment .comment-header .author-name {
+          font-weight: bold;
+          text-align: left;
+          font-size: 13px; }
+        .video-js .vac-comments-container .vac-comments-wrap .comment .comment-header .timestamp {
+          float: right;
+          text-align: right;
+          font-size: 10px; }
+      .video-js .vac-comments-container .vac-comments-wrap .comment .comment-body {
+        width: 100%;
+        padding: 5px;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+        background-color: #fff;
+        color: #000;
+        font-size: 1.2em;
+        text-align: left;
+        border-bottom-left-radius: 2px;
+        border-bottom-right-radius: 2px;
+        border-bottom: 1px solid white; }
+    .video-js .vac-comments-container .vac-comments-wrap .reply-btn {
+      margin: 10px 0 0 0;
+      width: 100%; }
+  .video-js .vac-comments-container .vac-comments-control-bar {
+    height: 26px;
+    border-bottom: 1px solid #eed428;
+    line-height: 26px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    width: 100%;
+    background: #000; }
+    .video-js .vac-comments-container .vac-comments-control-bar .vac-range, .video-js .vac-comments-container .vac-comments-control-bar .control-buttons {
+      display: inline-block;
+      width: 45%; }
+    .video-js .vac-comments-container .vac-comments-control-bar .vac-range {
+      float: left;
+      text-align: left;
+      color: #eed428; }
+      .video-js .vac-comments-container .vac-comments-control-bar .vac-range b {
+        color: white; }
+    .video-js .vac-comments-container .vac-comments-control-bar .control-buttons {
+      float: right;
+      text-align: right; }
+      .video-js .vac-comments-container .vac-comments-control-bar .control-buttons a {
+        margin: 0 4px;
+        cursor: pointer;
+        color: red; }
+        .video-js .vac-comments-container .vac-comments-control-bar .control-buttons a.vac-close-comment-list {
+          color: white; }
+        .video-js .vac-comments-container .vac-comments-control-bar .control-buttons a:hover {
+          text-decoration: underline; }

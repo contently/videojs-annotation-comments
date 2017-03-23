@@ -392,93 +392,108 @@ $dark_gray: #383838;
 	    right: 0;
 	    top: 0;
 	    width: 40%;
-		background-color: rgba($black, 0.30);
-		overflow-x: hidden;
-		overflow-y: auto;
+	    max-width: 300px;
+		background-color: rgba($white, 0.50);
+		height: calc(100% - 42px);
+		box-sizing: border-box;
 
+		.vac-comments-wrap{
+			height: calc(100% - 26px);
+			overflow-x: hidden;
+			overflow-y: auto;
+			box-sizing: border-box;
+			padding: 10px;
+			border-left: 2px solid $med_gray;
 
-		.comment {
-			width: 90%;
-			margin-left: 5%;
-			margin-top: 15px;
-			border-radius: 10px;
+			.comment {
+				border-radius:1px;
 
-			.comment-header {
-				width: 100%;
-				height: 28px;
-				padding: 2%;
-				font-size: 1.4em;
-				color: $white;
-				background-color: gray;
-				font-weight: bold;
+				.comment-header {
+					width: 100%;
+					height: 24px;
+					line-height: 24px;
 
-				.author-name, .timestamp {
-					display: inline-block;
-					width: 45%;
-				}
-
-				.author-name {
-					float: left;
+					padding: 0 5px;
+					color: $white;
+					background-color: $dark_gray;
 					text-align: left;
+
+					.author-name, .timestamp {
+						display: inline-block;
+					}
+
+					.author-name {
+						font-weight: bold;
+						text-align: left;
+						font-size: 13px;
+					}
+
+					.timestamp {
+						float: right;
+						text-align: right;
+						font-size: 10px;
+					}
 				}
 
-				.timestamp {
-					float: right;
-					text-align: right;
+				.comment-body {
+					width: 100%;
+					padding: 5px;
+					box-sizing: border-box;
+					margin-bottom:10px;
+					background-color: #fff;
+					color: #000;
+					font-size: 1.2em;
+					text-align: left;
+					border-bottom-left-radius:2px;
+					border-bottom-right-radius:2px;
+					border-bottom: 1px solid lighten($med_gray, 20%);
 				}
 			}
 
-			.comment-body {
+			.reply-btn {
+				margin:10px 0 0 0;
 				width: 100%;
-				padding: 4%;
-				background-color: #fff;
-				color: #000;
-				font-size: 1.2em;
-				text-align: left;
 			}
 		}
 
-		.reply-btn {
-			width: 90%;
-			margin-left: 5%;
-			height: 25px;
-			padding-top: 3px;
-			margin-top: 20px;
-			color: #fff;
-			font-size: 1.6em;
-			background-color: $blue;
-			border-radius: 2px;
-			margin-bottom: 20px;
-			cursor: pointer;
-		}
-	}
+		.vac-comments-control-bar {
+			height: 26px;
+			border-bottom: 1px solid $yellow;
+			line-height:26px;
+			padding: 0 10px;
+			box-sizing: border-box;
+			width: 100%;
+			background: $black;
 
-	.vac-comments-control-bar {
-		height: 40px;
-		width: 40%;
-		background: $black;
-		position: absolute;
-		bottom: 42px;
-		right: 0;
-		padding: 14px;
-		font-size: 1.2em;
+			.vac-range, .control-buttons {
+				display: inline-block;
+				width: 45%;
+			}
 
-		.timestamp, .control-buttons {
-			display: inline-block;
-			width: 45%;
-		}
+			.vac-range {
+				float: left;
+				text-align: left;
+				color: $yellow;
+				b{
+					color: white;
+				}
+			}
 
-		.timestamp {
-			float: left;
-			text-align: left;
-		}
+			.control-buttons {
+				float: right;
+				text-align: right;
 
-		.control-buttons {
-			float: right;
-			text-align: right;
-
-			a {
-				cursor: pointer;
+				a {
+					margin: 0 4px;
+					cursor: pointer;
+					color: red;
+					&.vac-close-comment-list{
+						color: white;
+					}
+					&:hover{
+						text-decoration: underline;
+					}
+				}
 			}
 		}
 	}

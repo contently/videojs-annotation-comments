@@ -29,12 +29,12 @@ class CommentList extends PlayerComponent {
   }
 
   render() {
+    console.log(this.annotation);
     this.$el = $(this.renderTemplate(
       this.commentsTemplate,
       {
         comments: this.comments,
-        height: $(".vjs-text-track-display").height() - 40 + 'px',
-        timeSince: this.comments[0].timeSince
+        rangeStr: this.humanTime(this.annotation.range)
       }
     ));
 
