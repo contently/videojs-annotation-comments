@@ -27,7 +27,7 @@ class CommentList extends PlayerComponent {
   bindListEvents() {
     this.$el.find(".vac-close-comment-list").click(() => this.annotation.close());
     this.$el.find(".reply-btn").click(() => this.addNewComment());
-    this.$el.find(".vac-delete-annotation").click(() => this.annotation.destroy());
+    this.$el.find(".vac-delete-annotation").click((e) => this.handleDeleteAnnotationClick(e));
     this.$el.find(".vac-comments-wrap").on("mousewheel DOMMouseScroll", this.disablePageScroll);
     this.$el.find(".delete-comment").click((e) => this.destroyComment(e));
   }
@@ -111,6 +111,7 @@ class CommentList extends PlayerComponent {
     var ogEvent = event.originalEvent;
     var delta   = ogEvent.wheelDelta || -ogEvent.detail;
     var dir     = delta < 0 ? "down" : "up";
+    var scrollDiff = Math.abs(event.currentTarget.scrollHeight - event.currentTarget.clientHeight);
 
     // if scrolling into top of div
     if ($target.scrollTop() < 20 && dir == "up") {
@@ -120,7 +121,7 @@ class CommentList extends PlayerComponent {
     }
 
     // if scrolling into bottom of div
-    if ($target.scrollTop() > (height) && dir == "down") {
+    if ($target.scrollTop() > (scrollDiff - 10) && dir == "down") {
       $target.stop();
       $target.animate({scrollTop: height + 40}, 100);
       event.preventDefault();
@@ -131,6 +132,12 @@ class CommentList extends PlayerComponent {
     this.comments.sort((a,b) => {
       return a.timestamp < b.timestamp ? -1 : (a.timestamp > b.timestamp ? 1 : 0);
     });
+  }
+
+  handleDeleteAnnotationClick(event) {
+    var $confirmEl = $("<a/>").text("CONFIRM");
+    $confirmEl.click(() => this.annotation.destroy());
+    $(event.target).replaceWith($confirmEl);
   }
 }
 

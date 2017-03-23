@@ -401,10 +401,10 @@ $dark_gray: #383838;
 
 	.vac-comments-container {
 		position: absolute;
-	    right: 0;
-	    top: 0;
-	    width: 15%;
-	    min-width: 225px;
+    right: 0;
+    top: 0;
+    width: 15%;
+    min-width: 225px;
 		background-color: rgba($white, 0.60);
 		height: calc(100% - 42px);
 		box-sizing: border-box;
@@ -422,6 +422,11 @@ $dark_gray: #383838;
 				.reply-btn{
 					display:none;
 				}
+			}
+
+			.control-buttons {
+				font-size: 12px !important;
+				transition: all .25s linear;
 			}
 		}
 		transition: all .15s linear;
@@ -547,6 +552,7 @@ $dark_gray: #383838;
 			.control-buttons {
 				float: right;
 				text-align: right;
+				font-size: 8px;
 
 				a {
 					margin: 0 4px;

@@ -326,6 +326,9 @@
       display: block; }
     .video-js .vac-comments-container:hover.active .reply-btn, .video-js .vac-comments-container.active.active .reply-btn {
       display: none; }
+    .video-js .vac-comments-container:hover .control-buttons, .video-js .vac-comments-container.active .control-buttons {
+      font-size: 12px !important;
+      transition: all .25s linear; }
   .video-js .vac-comments-container .vac-comments-wrap {
     opacity: .9;
     height: calc(100% - 26px);
@@ -412,7 +415,8 @@
         color: white; }
     .video-js .vac-comments-container .vac-comments-control-bar .control-buttons {
       float: right;
-      text-align: right; }
+      text-align: right;
+      font-size: 8px; }
       .video-js .vac-comments-container .vac-comments-control-bar .control-buttons a {
         margin: 0 4px;
         cursor: pointer;
