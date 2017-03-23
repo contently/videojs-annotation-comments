@@ -302,12 +302,19 @@
   position: absolute;
   right: 0;
   top: 0;
-  width: 40%;
-  max-width: 300px;
+  width: 15%;
+  min-width: 225px;
   background-color: rgba(255, 255, 255, 0.6);
   height: calc(100% - 42px);
-  box-sizing: border-box; }
+  box-sizing: border-box;
+  transition: all .15s linear; }
+  .video-js .vac-comments-container:hover, .video-js .vac-comments-container.active {
+    width: 60%;
+    max-width: 480px; }
+    .video-js .vac-comments-container:hover .vac-comments-wrap, .video-js .vac-comments-container.active .vac-comments-wrap {
+      opacity: 1; }
   .video-js .vac-comments-container .vac-comments-wrap {
+    opacity: .9;
     height: calc(100% - 26px);
     overflow-x: hidden;
     overflow-y: auto;
@@ -326,14 +333,13 @@
       box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.43); }
       .video-js .vac-comments-container .vac-comments-wrap .comment .comment-header {
         width: 100%;
-        height: 24px;
-        line-height: 24px;
-        padding: 0 5px;
+        padding: 2px 5px;
         color: #FFF;
         background-color: #383838;
         text-align: left; }
         .video-js .vac-comments-container .vac-comments-wrap .comment .comment-header .author-name, .video-js .vac-comments-container .vac-comments-wrap .comment .comment-header .timestamp {
-          display: inline-block; }
+          display: inline-block;
+          line-height: 16px; }
         .video-js .vac-comments-container .vac-comments-wrap .comment .comment-header .author-name {
           font-weight: bold;
           text-align: left;
@@ -371,7 +377,7 @@
     background: #000; }
     .video-js .vac-comments-container .vac-comments-control-bar .vac-range, .video-js .vac-comments-container .vac-comments-control-bar .control-buttons {
       display: inline-block;
-      width: 45%; }
+      width: 49%; }
     .video-js .vac-comments-container .vac-comments-control-bar .vac-range {
       float: left;
       text-align: left;

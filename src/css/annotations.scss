@@ -391,13 +391,23 @@ $dark_gray: #383838;
 		position: absolute;
 	    right: 0;
 	    top: 0;
-	    width: 40%;
-	    max-width: 300px;
+	    width: 15%;
+	    min-width: 225px;
 		background-color: rgba($white, 0.60);
 		height: calc(100% - 42px);
 		box-sizing: border-box;
 
+		&:hover, &.active{
+			width: 60%;
+			max-width: 480px;
+			.vac-comments-wrap{
+				opacity: 1;
+			}
+		}
+		transition: all .15s linear;
+
 		.vac-comments-wrap{
+			opacity: .9;
 			height: calc(100% - 26px);
 			overflow-x: hidden;
 			overflow-y: auto;
@@ -423,16 +433,15 @@ $dark_gray: #383838;
 
 				.comment-header {
 					width: 100%;
-					height: 24px;
-					line-height: 24px;
 
-					padding: 0 5px;
+					padding: 2px 5px;
 					color: $white;
 					background-color: $dark_gray;
 					text-align: left;
 
 					.author-name, .timestamp {
 						display: inline-block;
+						line-height: 16px;
 					}
 
 					.author-name {
@@ -484,7 +493,7 @@ $dark_gray: #383838;
 
 			.vac-range, .control-buttons {
 				display: inline-block;
-				width: 45%;
+				width: 49%;
 			}
 
 			.vac-range {
