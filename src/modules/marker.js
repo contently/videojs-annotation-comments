@@ -20,11 +20,6 @@ class Marker extends PlayerComponent {
   	return "vacmarker_"+this.componentId;
   }
 
-  // attribute to get the jQuery elem for this marker
-  get $el () {
-  	return this.$marker;
-  }
-
   setActive (showTooltip=false) {
     this.$el.addClass("active");
     if(showTooltip){
@@ -52,18 +47,18 @@ class Marker extends PlayerComponent {
     $timeline.find("#"+this.markerId).remove();
 
     // Bind to local instance var, add to DOM, and setup events
-    this.$marker = $(this.renderTemplate(this.template, this.markerTemplateData));
-    $markerWrap.append(this.$marker);
+    this.$el = $(this.renderTemplate(this.template, this.markerTemplateData));
+    $markerWrap.append(this.$el);
     this.bindMarkerEvents();
   }
 
   // Bind needed events for this marker
   bindMarkerEvents () {
   	// handle dimming other markers + highlighting this one on mouseenter/leave
-    this.$marker.on("mouseenter.marker", () => {
-      this.$marker.addClass('hovering').closest(".vac-marker-wrap").addClass('dim-all')
+    this.$el.on("mouseenter.marker", () => {
+      this.$el.addClass('hovering').closest(".vac-marker-wrap").addClass('dim-all')
     }).on("mouseleave.marker", () => {
-      this.$marker.removeClass('hovering').closest(".vac-marker-wrap").removeClass('dim-all');
+      this.$el.removeClass('hovering').closest(".vac-marker-wrap").removeClass('dim-all');
     });
   }
 
@@ -84,7 +79,8 @@ class Marker extends PlayerComponent {
 
   // Unbind event listeners on teardown and remove DOM nodes
   teardown () {
-  	this.$marker.off("mouseenter.marker mousleave.marker").remove();
+    this.$el.off("mouseenter.marker mousleave.marker")
+    super.teardown();
   }
 }
 

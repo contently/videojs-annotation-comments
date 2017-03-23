@@ -28,12 +28,6 @@ class AnnotationShape extends PlayerComponent {
     });
   }
 
-  teardown () {
-    if(this.shape){
-      this.$el.remove();
-    }
-  }
-
 }
 
 module.exports = {

@@ -1,18 +1,8 @@
 var commentListTemplate = `
   <div class="vac-comments-container">
     <div class="vac-comments-wrap">
-      {{#each comments as |comment|}}
-        <div class="comment" data-id="{{comment.id}}">
-          <div class="comment-header">
-            <div class="author-name">{{comment.meta.user_name}}</div>
-            <div class="timestamp">{{comment.timeSince}} ago
-              <span class="delete-comment">&nbsp;&nbsp;X</span>
-            </div>
-          </div>
-          <div class="comment-body">
-            {{breaklines comment.body}}
-          </div>
-        </div>
+      {{#each commentsHTML as |comment|}}
+        {{{comment}}}
       {{/each}}
       <div class="reply-btn vac-button">ADD REPLY</div>
       <div class="add-new-shapebox"></div>

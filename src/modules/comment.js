@@ -3,6 +3,7 @@
 const _ = require("underscore");
 const PlayerComponent = require("./player_component").class;
 const moment = require("moment");
+const CommentTemplate = require("./../templates/comment").commentTemplate;
 
 class Comment extends PlayerComponent {
 
@@ -22,6 +23,18 @@ class Comment extends PlayerComponent {
         meta: this.meta,
         body: this.body
     };
+  }
+
+  get HTML () {
+    return this.renderTemplate(
+      CommentTemplate,
+      {
+        id: this.id,
+        body: this.body,
+        meta: this.meta,
+        timeSince: this.timeSince
+      }
+    );
   }
 
   timeSince () {

@@ -16,13 +16,13 @@ class draggableMarker extends Marker {
     this.dragging = false;                    // Is a drag action currently occring?
     this.rangePin = range.start;              // What's the original pinned timeline point when marker was added
     this.draw();
-    this.$parent = this.$marker.closest(".vac-marker-wrap"); // Set parent as marker wrap
+    this.$parent = this.$el.closest(".vac-marker-wrap"); // Set parent as marker wrap
   }
 
   // Bind needed evnets for UI interaction
   bindMarkerEvents () {
     // On mouse down init drag
-    this.$marker.mousedown((e) => {
+    this.$el.mousedown((e) => {
       e.preventDefault();
       this.dragging = true;
       // When mouse moves (with mouse down) call onDrag, throttling to once each 250 ms

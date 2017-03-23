@@ -14566,12 +14566,6 @@ class AnnotationShape extends PlayerComponent {
     });
   }
 
-  teardown () {
-    if(this.shape){
-      this.$el.remove();
-    }
-  }
-
 }
 
 module.exports = {
@@ -14760,6 +14754,7 @@ module.exports = {
 const _ = require("underscore");
 const PlayerComponent = require("./player_component").class;
 const moment = require("moment");
+const CommentTemplate = require("./../templates/comment").commentTemplate;
 
 class Comment extends PlayerComponent {
 
@@ -14779,6 +14774,18 @@ class Comment extends PlayerComponent {
         meta: this.meta,
         body: this.body
     };
+  }
+
+  get HTML () {
+    return this.renderTemplate(
+      CommentTemplate,
+      {
+        id: this.id,
+        body: this.body,
+        meta: this.meta,
+        timeSince: this.timeSince
+      }
+    );
   }
 
   timeSince () {
@@ -14806,7 +14813,7 @@ module.exports = {
 	class: Comment
 };
 
-},{"./player_component":58,"moment":44,"underscore":47}],53:[function(require,module,exports){
+},{"./../templates/comment":60,"./player_component":58,"moment":44,"underscore":47}],53:[function(require,module,exports){
 "use strict";
 
 const _ = require("underscore");
@@ -14851,7 +14858,7 @@ class CommentList extends PlayerComponent {
     this.$el = $(this.renderTemplate(
       this.commentsTemplate,
       {
-        comments: this.comments,
+        commentsHTML: this.comments.map((c) => c.HTML),
         rangeStr: this.humanTime(this.annotation.range)
       }
     ));
@@ -14910,10 +14917,6 @@ class CommentList extends PlayerComponent {
     }
   }
 
-  teardown() {
-    if(this.$el) this.$el.remove();
-  }
-
   disablePageScroll(event) {
     var $target = $(event.currentTarget);
     var height  = $target.height();
@@ -14954,7 +14957,7 @@ module.exports = {
   class: CommentList
 };
 
-},{"./../templates/comment_list":60,"./comment":52,"./player_component":58,"underscore":47}],54:[function(require,module,exports){
+},{"./../templates/comment_list":61,"./comment":52,"./player_component":58,"underscore":47}],54:[function(require,module,exports){
 "use strict";
 /*
   Component for managing annotation "control box" in upper left of video when in annotation mode, including all
@@ -15076,7 +15079,7 @@ module.exports = {
   class: Controls
 };
 
-},{"./../templates/controls":61,"./annotation":49,"./draggable_marker.js":55,"./player_component":58,"./selectable_shape.js":59,"underscore":47}],55:[function(require,module,exports){
+},{"./../templates/controls":62,"./annotation":49,"./draggable_marker.js":55,"./player_component":58,"./selectable_shape.js":59,"underscore":47}],55:[function(require,module,exports){
 "use strict";
 /*
   Component for a timeline marker that is draggable when user clicks/drags on it, and rebuilds underlying range
@@ -15095,13 +15098,13 @@ class draggableMarker extends Marker {
     this.dragging = false;                    // Is a drag action currently occring?
     this.rangePin = range.start;              // What's the original pinned timeline point when marker was added
     this.draw();
-    this.$parent = this.$marker.closest(".vac-marker-wrap"); // Set parent as marker wrap
+    this.$parent = this.$el.closest(".vac-marker-wrap"); // Set parent as marker wrap
   }
 
   // Bind needed evnets for UI interaction
   bindMarkerEvents () {
     // On mouse down init drag
-    this.$marker.mousedown((e) => {
+    this.$el.mousedown((e) => {
       e.preventDefault();
       this.dragging = true;
       // When mouse moves (with mouse down) call onDrag, throttling to once each 250 ms
@@ -15156,7 +15159,7 @@ class draggableMarker extends Marker {
 module.exports = {
 	class: draggableMarker
 };
-},{"./../templates/marker":62,"./marker":56,"underscore":47}],56:[function(require,module,exports){
+},{"./../templates/marker":63,"./marker":56,"underscore":47}],56:[function(require,module,exports){
 "use strict";
 /*
   Component for a timeline marker with capabilities to draw on timeline, including tooltip for comment
@@ -15177,11 +15180,6 @@ class Marker extends PlayerComponent {
   // attribute to get the DOM id for this marker node
   get markerId () {
   	return "vacmarker_"+this.componentId;
-  }
-
-  // attribute to get the jQuery elem for this marker
-  get $el () {
-  	return this.$marker;
   }
 
   setActive (showTooltip=false) {
@@ -15211,18 +15209,18 @@ class Marker extends PlayerComponent {
     $timeline.find("#"+this.markerId).remove();
 
     // Bind to local instance var, add to DOM, and setup events
-    this.$marker = $(this.renderTemplate(this.template, this.markerTemplateData));
-    $markerWrap.append(this.$marker);
+    this.$el = $(this.renderTemplate(this.template, this.markerTemplateData));
+    $markerWrap.append(this.$el);
     this.bindMarkerEvents();
   }
 
   // Bind needed events for this marker
   bindMarkerEvents () {
   	// handle dimming other markers + highlighting this one on mouseenter/leave
-    this.$marker.on("mouseenter.marker", () => {
-      this.$marker.addClass('hovering').closest(".vac-marker-wrap").addClass('dim-all')
+    this.$el.on("mouseenter.marker", () => {
+      this.$el.addClass('hovering').closest(".vac-marker-wrap").addClass('dim-all')
     }).on("mouseleave.marker", () => {
-      this.$marker.removeClass('hovering').closest(".vac-marker-wrap").removeClass('dim-all');
+      this.$el.removeClass('hovering').closest(".vac-marker-wrap").removeClass('dim-all');
     });
   }
 
@@ -15243,7 +15241,8 @@ class Marker extends PlayerComponent {
 
   // Unbind event listeners on teardown and remove DOM nodes
   teardown () {
-  	this.$marker.off("mouseenter.marker mousleave.marker").remove();
+    this.$el.off("mouseenter.marker mousleave.marker")
+    super.teardown();
   }
 }
 
@@ -15251,7 +15250,7 @@ module.exports = {
 	class: Marker
 };
 
-},{"./../templates/marker":62,"./player_component":58}],57:[function(require,module,exports){
+},{"./../templates/marker":63,"./player_component":58}],57:[function(require,module,exports){
 "use strict";
 
 const PlayerComponent = require("./player_component").class;
@@ -15363,6 +15362,10 @@ class PlayerComponent {
   // Generate a pseudo-guid ID for this component, to use as an ID in the DOM
   generateComponentId () {
     this.componentId = this.constructor.guid();
+  }
+
+  teardown() {
+    if(this.$el) this.$el.remove();
   }
 
   static guid() {
@@ -15491,21 +15494,28 @@ module.exports = {
 	class: SelectableShape
 };
 },{"./annotation_shape":50,"underscore":47}],60:[function(require,module,exports){
+var commentTemplate = `
+  <div class="comment" data-id="{{id}}">
+    <div class="comment-header">
+      <div class="author-name">{{meta.user_name}}</div>
+      <div class="timestamp">{{timeSince}} ago
+        <span class="delete-comment">&nbsp;&nbsp;X</span>
+      </div>
+    </div>
+    <div class="comment-body">
+      {{breaklines body}}
+    </div>
+  </div>
+`;
+
+module.exports = {commentTemplate};
+
+},{}],61:[function(require,module,exports){
 var commentListTemplate = `
   <div class="vac-comments-container">
     <div class="vac-comments-wrap">
-      {{#each comments as |comment|}}
-        <div class="comment" data-id="{{comment.id}}">
-          <div class="comment-header">
-            <div class="author-name">{{comment.meta.user_name}}</div>
-            <div class="timestamp">{{comment.timeSince}} ago
-              <span class="delete-comment">&nbsp;&nbsp;X</span>
-            </div>
-          </div>
-          <div class="comment-body">
-            {{breaklines comment.body}}
-          </div>
-        </div>
+      {{#each commentsHTML as |comment|}}
+        {{{comment}}}
       {{/each}}
       <div class="reply-btn vac-button">ADD REPLY</div>
       <div class="add-new-shapebox"></div>
@@ -15534,7 +15544,7 @@ var newCommentTemplate = `
 
 module.exports = {commentListTemplate, newCommentTemplate};
 
-},{}],61:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 var ControlsTemplate = `
 	{{#unless adding}}
 	  	<div class="vac-controls vac-control">
@@ -15583,7 +15593,7 @@ var ControlsTemplate = `
 
 module.exports = {ControlsTemplate};
 
-},{}],62:[function(require,module,exports){
+},{}],63:[function(require,module,exports){
 var markerTemplate = `
   <div id="{{id}}" class="vac-marker {{#if rangeShow}}ranged-marker{{/if}}" style="left: {{left}}; {{#if rangeShow}}width:{{width}};{{/if}}">
     {{#if tooltipBody}}

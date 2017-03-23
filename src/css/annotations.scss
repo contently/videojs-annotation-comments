@@ -423,11 +423,6 @@ $dark_gray: #383838;
 					display:none;
 				}
 			}
-
-			.control-buttons {
-				font-size: 12px !important;
-				transition: all .25s linear;
-			}
 		}
 		transition: all .15s linear;
 
@@ -552,7 +547,7 @@ $dark_gray: #383838;
 			.control-buttons {
 				float: right;
 				text-align: right;
-				font-size: 8px;
+				font-size: 10px;
 
 				a {
 					margin: 0 4px;

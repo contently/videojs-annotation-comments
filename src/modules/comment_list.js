@@ -42,7 +42,7 @@ class CommentList extends PlayerComponent {
     this.$el = $(this.renderTemplate(
       this.commentsTemplate,
       {
-        comments: this.comments,
+        commentsHTML: this.comments.map((c) => c.HTML),
         rangeStr: this.humanTime(this.annotation.range)
       }
     ));
@@ -99,10 +99,6 @@ class CommentList extends PlayerComponent {
 
       this.reRender();
     }
-  }
-
-  teardown() {
-    if(this.$el) this.$el.remove();
   }
 
   disablePageScroll(event) {

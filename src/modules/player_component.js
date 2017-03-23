@@ -71,6 +71,10 @@ class PlayerComponent {
     this.componentId = this.constructor.guid();
   }
 
+  teardown() {
+    if(this.$el) this.$el.remove();
+  }
+
   static guid() {
     function s4() {
       return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
