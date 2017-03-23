@@ -47,7 +47,11 @@ class Annotation extends PlayerComponent {
     }
 
     this.annotationShape.draw();
-    if(this.shape) this.annotationShape.$el.on("click.annotation", () => this.open());
+    if(this.shape) {
+      this.annotationShape.$el.on("click.annotation", () => {
+        this.plugin.annotationState.openAnnotation(this, false, false, false);
+      });
+    };
 
     if(withPause) {
       this.player.pause();
