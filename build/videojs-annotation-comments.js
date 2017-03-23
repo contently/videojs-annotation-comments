@@ -14801,6 +14801,7 @@ class CommentList extends PlayerComponent {
     this.$el.find(".vac-close-comment-list").click(() => this.annotation.close());
     this.$el.find(".reply-btn").click(() => this.addNewComment());
     this.$el.find(".vac-delete-annotation").click(() => this.annotation.destroy());
+    this.$el.find(".vac-comments-wrap").on("mousewheel DOMMouseScroll", (e) => this.limitScroll(e));
   }
 
   bindCommentFormEvents() {
@@ -14858,6 +14859,16 @@ class CommentList extends PlayerComponent {
 
   teardown() {
     if(this.$el) this.$el.remove();
+  }
+
+  limitScroll(event) {
+    var $target    = $(event.currentTarget);
+    var currentPos = $target.scrollTop();
+    var ogEvent    = event.originalEvent;
+    var delta      = ogEvent.wheelDelta || -ogEvent.detail;
+
+    $(event.currentTarget).scrollTop(currentPos + (delta < 0 ? 1 : -1) * 30);
+    event.preventDefault();
   }
 }
 
@@ -15211,6 +15222,7 @@ class PlayerComponent {
   constructor(playerId) {
   	this.playerId = playerId;
     this.generateComponentId();
+    this.registerHandlebarsHelpers();
   }
 
   get plugin () {
@@ -15248,6 +15260,14 @@ class PlayerComponent {
   renderTemplate(htmlString, options = {}) {
     var template = Handlebars.compile(htmlString);
     return template(options);
+  }
+
+  registerHandlebarsHelpers() {
+    Handlebars.registerHelper('breaklines', function(text) {
+      text = Handlebars.Utils.escapeExpression(text);
+      text = text.replace(/(\r\n|\n|\r)/gm, '<br>');
+      return new Handlebars.SafeString(text);
+    });
   }
 
   // Convert a range to human readable format (M:SS) or (M:SS-M:SS)
@@ -15403,7 +15423,7 @@ var commentListTemplate = `
             <div class="timestamp">{{comment.timeSince}} ago</div>
           </div>
           <div class="comment-body">
-            {{comment.body}}
+            {{breaklines comment.body}}
           </div>
         </div>
       {{/each}}

@@ -21,6 +21,7 @@ class CommentList extends PlayerComponent {
     this.$el.find(".vac-close-comment-list").click(() => this.annotation.close());
     this.$el.find(".reply-btn").click(() => this.addNewComment());
     this.$el.find(".vac-delete-annotation").click(() => this.annotation.destroy());
+    this.$el.find(".vac-comments-wrap").on("mousewheel DOMMouseScroll", (e) => this.limitScroll(e));
   }
 
   bindCommentFormEvents() {
@@ -78,6 +79,16 @@ class CommentList extends PlayerComponent {
 
   teardown() {
     if(this.$el) this.$el.remove();
+  }
+
+  limitScroll(event) {
+    var $target    = $(event.currentTarget);
+    var currentPos = $target.scrollTop();
+    var ogEvent    = event.originalEvent;
+    var delta      = ogEvent.wheelDelta || -ogEvent.detail;
+
+    $(event.currentTarget).scrollTop(currentPos + (delta < 0 ? 1 : -1) * 30);
+    event.preventDefault();
   }
 }
 
