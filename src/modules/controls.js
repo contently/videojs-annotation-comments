@@ -48,7 +48,7 @@ class Controls extends PlayerComponent {
     }
     this.$player.find(".vac-control").remove();
 
-    $(document).off("keyup");
+    $(document).off("keyup.vacVideo");
   }
 
   // Draw the UI elements (based on uiState)
@@ -61,7 +61,7 @@ class Controls extends PlayerComponent {
 
     var $ctrls = this.renderTemplate(this.template, data);
     this.$player.append($ctrls);
-    $(document).on("keyup", (e) => this.handleArrowKeys(e));
+    $(document).on("keyup.vacVideo", (e) => this.handleArrowKeys(e));
   }
 
   // User clicked to cancel in-progress add - restore to normal state
