@@ -18,7 +18,6 @@ const gulp = require('gulp'),
 const FILENAME = "videojs-annotation-comments.js",
       PACKAGE = require('./package.json');
 
-//TODO - update this
 const ATTIBUTION = "/* Version "+PACKAGE.version+" videojs-annotation-comments (https://github.com/contently/videojs-annotation-comments.git), Authored by Evan Carothers & Jack Pope */"+"\n\n";
 
 //compilation function for browserify/bundler/transpilation
