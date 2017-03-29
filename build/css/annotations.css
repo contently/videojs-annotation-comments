@@ -1,7 +1,13 @@
+.video-js .vac-control {
+  display: none; }
+
 .video-js.vac-active .vjs-mouse-display, .video-js.vac-active .vjs-big-play-button {
   display: none !important; }
 
 .video-js.vac-active .vac-marker-owrap {
+  display: block; }
+
+.video-js.vac-active .vac-control {
   display: block; }
 
 .video-js.vac-active .vjs-control-bar {
@@ -313,6 +319,7 @@
   top: 0;
   width: 15%;
   min-width: 225px;
+  z-index: 11;
   background-color: rgba(255, 255, 255, 0.6);
   height: calc(100% - 42px);
   box-sizing: border-box;

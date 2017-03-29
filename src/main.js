@@ -29,9 +29,9 @@
 		    	this.drawUI();
 		    	this.bindEvents();
 
-		    	this.toggleAnnotations(); 	//TODO - for dev, remove
-		    	player.muted(true);			//TODO - for dev, remove
-				player.play();			//TODO - for dev, remove
+		    	//this.toggleAnnotations(); 	//TODO - for dev, remove
+		    	//player.muted(true);			//TODO - for dev, remove
+				//player.play();			//TODO - for dev, remove
 		    });
 	  	}
 

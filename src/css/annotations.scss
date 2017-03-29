@@ -10,12 +10,19 @@ $dark_gray: #383838;
 
 .video-js{
 
+	.vac-control{
+		display:none;
+
+	}
 	&.vac-active{
 		.vjs-mouse-display, .vjs-big-play-button{
 			display: none !important;
 		}
 		.vac-marker-owrap{
 			display: block;
+		}
+		.vac-control{
+			display:block;
 		}
 		.vjs-control-bar{
 			z-index: 2;
@@ -401,10 +408,11 @@ $dark_gray: #383838;
 
 	.vac-comments-container {
 		position: absolute;
-    right: 0;
-    top: 0;
-    width: 15%;
-    min-width: 225px;
+	    right: 0;
+	    top: 0;
+	    width: 15%;
+	    min-width: 225px;
+	    z-index: 11;
 		background-color: rgba($white, 0.60);
 		height: calc(100% - 42px);
 		box-sizing: border-box;
