@@ -120,11 +120,12 @@
 			var player = videojs('the_video');
 			player.annotationComments({
 				annotationsObjects: annotations,
+				bindArrowKeys: true,
 				meta: {
 					user_id: 2,
 					user_name: "Evan Carothers"
 				},
-				onStateChanged: function(data){console.log(data)}
+				onStateChanged: (data) => { console.log(data); }
 			});
 		</script>
 	</BODY>

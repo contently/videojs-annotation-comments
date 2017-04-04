@@ -6,7 +6,6 @@ const gulp = require('gulp'),
       watchify = require('watchify'),
       insert = require('gulp-insert'),
       babelify = require('babelify'),
-      eslint = require('gulp-eslint'),
       stripComments = require('gulp-strip-comments'),
       rename = require('gulp-rename'),
       webserver = require('gulp-webserver'),
@@ -57,14 +56,6 @@ function getBundler(path, options){
   bundler.on('error', gutil.log.bind(gutil.colors.red, 'Browserify Error'));
   return bundler;
 };
-
-
-gulp.task('lint', () => {
-  return gulp.src('./src/**/*.js')
-    .pipe(eslint())
-    .pipe(eslint.format())
-    .pipe(eslint.failAfterError());
-});
 
 gulp.task('dev_webserver', () => {
   console.log(":::: > Test page at http://localhost:3004/test.html");

@@ -14362,75 +14362,85 @@ process.umask = function() { return 0; };
 
 (($, videojs) => {
 
-	const _ = require("underscore");
-	const Plugin = videojs.getPlugin('plugin');
-	const Controls = require("./modules/controls").class;
-	const PlayerButton = require("./modules/player_button").class;
-	const AnnotationState = require("./modules/annotation_state").class;
+    const _ = require("underscore");
+    const Plugin = videojs.getPlugin('plugin');
+    const Controls = require("./modules/controls").class;
+    const PlayerButton = require("./modules/player_button").class;
+    const AnnotationState = require("./modules/annotation_state").class;
 
-	class Main extends Plugin {
+    const DEFAULT_OPTIONS = Object.freeze({
+        bindArrowKeys:      true,
+        meta:               {},
+        onStateChanged:     null,
+        annotationsObjects: []
+    });
 
-		constructor(player, options) {
-	    	super(player, options);
+    class Main extends Plugin {
 
-	    	this.playerId = $(player.el()).attr('id');
-	    	this.player = player;
-	    	this.meta = options.meta;
+        constructor(player, options) {
+            // TODO - fix this!
+            //options = _.extend(options, DEFAULT_OPTIONS);
+            
+            super(player, options);
 
-	    	//assign reference to this class to player for access later by components where needed
-	    	var self = this;
-	    	player.annotationComments = () => { return self };
+            this.playerId = $(player.el()).attr('id');
+            this.player = player;
+            this.meta = options.meta;
+            this.options = options;
 
-	    	// setup initial state and draw UI after video is loaded
-	    	player.on("loadedmetadata", () => {
-	    		this.annotationState = new AnnotationState(this.playerId, options.onStateChanged);
-	    		this.annotationState.annotations = options.annotationsObjects;
+            //assign reference to this class to player for access later by components where needed
+            let self = this;
+            player.annotationComments = () => { return self };
 
-		    	this.drawUI();
-		    	this.bindEvents();
+            // setup initial state and draw UI after video is loaded
+            player.on("loadedmetadata", () => {
+                this.annotationState = new AnnotationState(this.playerId, options.onStateChanged);
+                this.annotationState.annotations = options.annotationsObjects;
 
-		    	//this.toggleAnnotations(); 	//TODO - for dev, remove
-		    	//player.muted(true);			//TODO - for dev, remove
-				//player.play();			//TODO - for dev, remove
-		    });
-	  	}
+                this.drawUI();
+                this.bindEvents();
+            });
+        }
 
-	  	// Draw UI components for interaction
-	  	drawUI () {
-	  		this.components = {
-	  			playerButton: new PlayerButton(this.playerId),
-	  			controls: new Controls(this.playerId)
-	  		};
+        // Draw UI components for interaction
+        drawUI () {
+            this.components = {
+                playerButton:   new PlayerButton(this.playerId),
+                controls:       new Controls(this.playerId, this.options.bindArrowKeys)
+            };
 
-	  		this.components.playerButton.updateNumAnnotations(this.annotationState.annotations.length);
-	  	}
+            this.components.playerButton.updateNumAnnotations(this.annotationState.annotations.length);
+        }
 
-	  	// Bind needed events for interaction w/ components
-	  	bindEvents () {
-	  		this.components.playerButton.$el.on('click', () => {
-		      this.toggleAnnotations();
-		    });
-	  	}
+        // Bind needed events for interaction w/ components
+        bindEvents () {
+            this.components.playerButton.$el.on('click', () => {
+                this.toggleAnnotations();
+            });
+        }
 
-	  	// Toggle annotations mode on/off
-	  	toggleAnnotations() {
-	  		this.active = !this.active;
-	  		this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
-	  		this.annotationState.enabled = this.active;
-	  		if(!this.active){
-	  			this.components.controls.clear(true);
-	  		}else{
-	  			this.components.controls.draw();
-	  		}
-	  	}
-	}
+        // Toggle annotations mode on/off
+        toggleAnnotations() {
+            this.active = !this.active;
+            this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
+            this.annotationState.enabled = this.active;
+            if(!this.active){
+                this.components.controls.clear(true);
+            }else{
+                this.components.controls.draw();
+            }
+        }
+    }
 
-	videojs.registerPlugin('annotationComments', Main);
+    videojs.registerPlugin('annotationComments', Main);
 
 })(jQuery, window.videojs);
 
 },{"./modules/annotation_state":51,"./modules/controls":54,"./modules/player_button":57,"underscore":47}],49:[function(require,module,exports){
 "use strict";
+/*
+    Component for an annottion, which includes controlling the marker/shape, rendering a commentList, etc
+*/
 
 const _ = require("underscore");
 const moment = require("moment");
@@ -14442,138 +14452,147 @@ const AnnotationShape = require("./annotation_shape").class;
 
 class Annotation extends PlayerComponent {
 
-  constructor(data, playerId) {
-    super(playerId);
-    this.id = data.id;
-    this.range = data.range;
-    this.shape = data.shape;
+    constructor (data, playerId) {
+        super(playerId);
+        this.id = data.id;
+        this.range = data.range;
+        this.shape = data.shape;
 
-    this.commentList = new CommentList({"comments": data.comments, "annotation": this}, playerId)
-    this.marker = new Marker(this.range, this.commentList.comments[0], playerId);
-    this.marker.draw();
-    this.annotationShape = new AnnotationShape(this.shape, playerId);
-    this.secondsActive = this.buildSecondsActiveArray();
-    this.bindMarkerEvents();
-  }
-
-  // Serialize object
-  get data () {
-    return {
-      id: this.id,
-      range: this.range,
-      shape: this.shape,
-      comments: this.commentList.data
-    };
-  }
-
-  bindMarkerEvents() {
-    this.marker.$el.click(() => { this.plugin.annotationState.openAnnotation(this) });
-  }
-
-  open(withPause=true, previewOnly=false) {
-    if(previewOnly){
-      this.marker.setActive(true);
-    }else{
-      this.commentList.render();
-      this.marker.setActive(false);
+        this.commentList = new CommentList({"comments": data.comments, "annotation": this}, playerId)
+        this.marker = new Marker(this.range, this.commentList.comments[0], playerId);
+        this.marker.draw();
+        this.annotationShape = new AnnotationShape(this.shape, playerId);
+        this.secondsActive = this.buildSecondsActiveArray();
+        this.bindMarkerEvents();
     }
 
-    this.annotationShape.draw();
-    if(this.shape) {
-      this.annotationShape.$el.on("click.annotation", () => {
-        this.plugin.annotationState.openAnnotation(this, false, false, false);
-      });
-    };
-
-    if(withPause) {
-      this.player.pause();
-      this.player.currentTime(this.range.start);
+    // Serialize object
+    get data () {
+        return {
+            id:         this.id,
+            range:      this.range,
+            shape:      this.shape,
+            comments:   this.commentList.data
+        };
     }
-  }
 
-  close(clearActive=true) {
-    this.marker.deactivate();
-    this.commentList.teardown();
-    if(this.shape) this.annotationShape.$el.off("click.annotation")
-    this.annotationShape.teardown();
-    if(clearActive) this.plugin.annotationState.clearActive();
-  }
-
-  buildSecondsActiveArray () {
-    var seconds = [];
-    if(!!this.range.end) {
-      for (var i = this.range.start; i <= this.range.end; i++) {
-        seconds.push(i);
-      }
-    } else {
-      var start = this.range.start;
-      if(start > 0) seconds.push(start-1);
-      seconds.push(start);
-      if(start < this.duration) seconds.push(start+1);
+    bindMarkerEvents () {
+        this.marker.$el.click(() => { this.plugin.annotationState.openAnnotation(this) });
     }
-    return seconds;
-  }
 
-  destroy() {
-    this.close(true);
-    this.plugin.annotationState.removeAnnotation(this);
-    this.marker.teardown();
-  }
+    open (withPause=true, previewOnly=false) {
+        if(previewOnly){
+            this.marker.setActive(true);
+        }else{
+            this.commentList.render();
+            this.marker.setActive(false);
+        }
 
-  static newFromData (range, shape, commentStr, plugin) {
-    let comment = Comment.dataObj(commentStr, plugin);
-    let data = {
-      range,
-      shape,
-      comments: [comment]
+        this.annotationShape.draw();
+        if(this.shape) {
+            this.annotationShape.$el.on("click.annotation", () => {
+                this.plugin.annotationState.openAnnotation(this, false, false, false);
+            });
+        };
+
+        if(withPause) {
+            this.player.pause();
+            this.player.currentTime(this.range.start);
+        }
     }
-    return new Annotation(data, plugin.playerId);
-  }
+
+    close (clearActive=true) {
+        this.marker.deactivate();
+        this.commentList.teardown();
+        if(this.shape) this.annotationShape.$el.off("click.annotation")
+        this.annotationShape.teardown();
+        if(clearActive) this.plugin.annotationState.clearActive();
+    }
+
+    buildSecondsActiveArray () {
+        let seconds = [];
+        if(!!this.range.end) {
+            for (let i = this.range.start; i <= this.range.end; i++) {
+                seconds.push(i);
+            }
+        } else {
+            let start = this.range.start;
+            if(start > 0) seconds.push(start-1);
+            seconds.push(start);
+            if(start < this.duration) seconds.push(start+1);
+        }
+        return seconds;
+    }
+
+    destroy () {
+        this.close(true);
+        this.plugin.annotationState.removeAnnotation(this);
+        this.marker.teardown();
+    }
+
+    // Build a new annotation instance by passing in data for range, shape, comment, & plugin ref
+    static newFromData (range, shape, commentStr, plugin) {
+        let comment = Comment.dataObj(commentStr, plugin);
+        let data = {
+            range,
+            shape,
+            comments: [comment]
+        }
+        return new Annotation(data, plugin.playerId);
+    }
 }
 
 module.exports = {
-  class: Annotation
+    class: Annotation
 };
 
 },{"./annotation_shape":50,"./comment":52,"./comment_list":53,"./marker":56,"./player_component":58,"moment":44,"underscore":47}],50:[function(require,module,exports){
 "use strict";
+/*
+    Component for managing a shape (i.e. box drawn on the player) for an annotation
+*/
 
 const PlayerComponent = require("./player_component").class;
 
 class AnnotationShape extends PlayerComponent {
 
-  constructor(shape, playerId) {
-  	super(playerId);
-    this.shape = shape;
-    this.$parent = this.$player;
-  }
+    constructor (shape, playerId) {
+        super(playerId);
+        this.shape = shape;
+        this.$parent = this.$player;
+    }
 
-  draw () {
-    if(!this.shape) return;
-    if(this.$el) this.$el.remove();
-    
-    this.$el = $("<div/>").addClass("vac-shape");
-    this.setDimsFromShape();
-    this.$parent.append(this.$el);
-  }
+    // Draw the shape element on the $parent
+    draw () {
+        if(!this.shape) return;
+        if(this.$el) this.$el.remove();
+        
+        this.$el = $("<div/>").addClass("vac-shape");
+        this.setDimsFromShape();
+        this.$parent.append(this.$el);
+    }
 
-  setDimsFromShape () {
-    this.$el.css({
-      left: this.shape.x1 + "%",
-      top: this.shape.y1 + "%",
-      width: (this.shape.x2-this.shape.x1) + "%",
-      height: (this.shape.y2-this.shape.y1) + "%"
-    });
-  }
-
+    // Set/update the dimensions of the shape based  on this.shape
+    setDimsFromShape () {
+        this.$el.css({
+            left:   this.shape.x1 + "%",
+            top:    this.shape.y1 + "%",
+            width:  (this.shape.x2-this.shape.x1) + "%",
+            height: (this.shape.y2-this.shape.y1) + "%"
+        });
+    }
 }
 
 module.exports = {
-	class: AnnotationShape
+    class: AnnotationShape
 };
 
 },{"./player_component":58}],51:[function(require,module,exports){
 "use strict";
+/*
+  Component for managing the state of annotations, including showing active annotation during playback,
+  toggling active states for annotations, navigating annotations forward/back, etc
+*/
 
 const _ = require("underscore");
 const PlayerComponent = require("./player_component").class;
@@ -14581,400 +14600,431 @@ const Annotation = require("./annotation").class;
 
 class AnnotationState extends PlayerComponent {
 
-  constructor(playerId, onStateChanged) {
-    super(playerId);
-    this.onStateChanged = onStateChanged || (() => {return null});
+	constructor (playerId, onStateChanged) {
+		super(playerId);
+		this.onStateChanged = onStateChanged || (() => {return null});
 
-    this.annotations = [];
-    this.annotationTimeMap = {};
-    this.activeAnnotation = null;
-    this.enabled = false;
-    this.skipNextTimeCheck = false;
+		this.annotations = [];
+		this.annotationTimeMap = {};
+		this.activeAnnotation = null;
+		this.enabled = false;
+		this.skipNextTimeCheck = false;
 
-    this.lastVideoTime = 0;
+		this.lastVideoTime = 0;
 
-    this.bindEvents()
-  }
+		this.bindEvents()
+	}
 
-  set enabled (shouldBeEnabled){
-    this._enabled = shouldBeEnabled;
-    if(!shouldBeEnabled) this.activeAnnotation.close();
-    if(shouldBeEnabled){
-      this.skipLiveCheck = false;
-      this.setLiveAnnotation();
-    }
-  }
+	set enabled (shouldBeEnabled) {
+		this._enabled = shouldBeEnabled;
+		if(!shouldBeEnabled) this.activeAnnotation.close();
+		if(shouldBeEnabled){
+			this.skipLiveCheck = false;
+			this.setLiveAnnotation();
+		}
+	}
 
-  get enabled () {
-    return this._enabled;
-  }
+	get enabled () {
+		return this._enabled;
+	}
 
-  // set annottions w/ input of annotations objects - sets internal variable to array of annotations instances
-  // NOTE stord internally as this._annotations
-  set annotations (annotationsData) {
-    this._annotations = annotationsData.map((a) => new Annotation(a, this.playerId));
-    this.sortAnnotations();
-    this.rebuildAnnotationTimeMap()
-  }
+	// set annottions w/ input of annotations objects - sets internal variable to array of annotations instances
+	// NOTE stord internally as this._annotations
+	set annotations (annotationsData) {
+		this._annotations = annotationsData.map((a) => new Annotation(a, this.playerId));
+		this.sortAnnotations();
+		this.rebuildAnnotationTimeMap()
+	}
 
-  get annotations (){
-    return this._annotations;
-  }
+	get annotations () {
+		return this._annotations;
+	}
 
-  set activeAnnotation (annotation=null) {
-    this._activeAnnotation = annotation
-  }
+	set activeAnnotation (annotation=null) {
+		this._activeAnnotation = annotation
+	}
 
-  // Get current active annotation or something close to it
-  get activeAnnotation () {
-    return this._activeAnnotation || {close: (() => {return null})}
-  }
+	// Get current active annotation or something close to it
+	get activeAnnotation () {
+		return this._activeAnnotation || {close: (() => {return null})}
+	}
 
-  // Serialize data
-  get data () {
-    return this._annotations.map((a) => a.data);
-  }
+	// Serialize data
+	get data () {
+		return this._annotations.map((a) => a.data);
+	}
 
-  // Bind events for setting liveAnnotation on video time change
-  bindEvents() {
-    this.player.on("timeupdate", _.throttle(this.setLiveAnnotation.bind(this), 1000));
-  }
+	// Bind events for setting liveAnnotation on video time change
+	bindEvents () {
+		this.player.on("timeupdate", _.throttle(this.setLiveAnnotation.bind(this), 1000));
+	}
 
-  // Sort annotations by range.start
-  sortAnnotations () {
-    // Sort annotations by range.start
-    this._annotations.sort((a,b) => {
-      return a.range.start < b.range.start ? -1 : (a.range.start > b.range.start ? 1 : 0);
-    });
-  }
+	// Sort annotations by range.start
+	sortAnnotations () {
+		// Sort annotations by range.start
+		this._annotations.sort((a,b) => {
+			return a.range.start < b.range.start ? -1 : (a.range.start > b.range.start ? 1 : 0);
+		});
+	}
 
-  // Add a new annotation
-  addNewAnnotation (annotation) {
-    this._annotations.push(annotation);
-    this.sortAnnotations();
-    this.rebuildAnnotationTimeMap();
-    this.openAnnotation(annotation, true);
-    this.plugin.components.playerButton.updateNumAnnotations(this._annotations.length);
+	// Add a new annotation
+	addNewAnnotation (annotation) {
+		this._annotations.push(annotation);
+		this.sortAnnotations();
+		this.rebuildAnnotationTimeMap();
+		this.openAnnotation(annotation, true);
+		this.plugin.components.playerButton.updateNumAnnotations(this._annotations.length);
 
-    this.stateChangedCallback();
-  }
+		this.stateChangedCallback();
+	}
 
-  // Remove an annotation
-  removeAnnotation (annotation) {
-    var i = this._annotations.indexOf(annotation);
-    this._annotations.splice(i, 1);
-    this.sortAnnotations();
-    this.rebuildAnnotationTimeMap();
-    this.plugin.components.playerButton.updateNumAnnotations(this._annotations.length);
+	// Remove an annotation
+	removeAnnotation (annotation) {
+		var i = this._annotations.indexOf(annotation);
+		this._annotations.splice(i, 1);
+		this.sortAnnotations();
+		this.rebuildAnnotationTimeMap();
+		this.plugin.components.playerButton.updateNumAnnotations(this._annotations.length);
 
-    this.stateChangedCallback();
-  }
+		this.stateChangedCallback();
+	}
 
-  // Set the live annotation based on current video time
-  setLiveAnnotation() {
-    if(!this.enabled) return;
+	// Set the live annotation based on current video time
+	setLiveAnnotation () {
+		if(!this.enabled) return;
 
-    var time = Math.floor(this.player.currentTime());
+		let time = Math.floor(this.player.currentTime());
 
-    if(this.skipLiveCheck){
-      if(time !== this.lastVideoTime) this.skipLiveCheck = false;
-      return;
-    }
+		if(this.skipLiveCheck){
+			if(time !== this.lastVideoTime) this.skipLiveCheck = false;
+			return;
+		}
 
-    var matches = this.activeAnnotationsForTime(time);
-    if(!matches.length) return this.activeAnnotation.close();
+		let matches = this.activeAnnotationsForTime(time);
+		if(!matches.length) return this.activeAnnotation.close();
 
-    var liveAnnotation = this.annotations[matches[matches.length-1]];
-    if(liveAnnotation === this.activeAnnotation) return;
+		let liveAnnotation = this.annotations[matches[matches.length-1]];
+		if(liveAnnotation === this.activeAnnotation) return;
 
-    this.openAnnotation(liveAnnotation, false, false, true);
-  }
+		this.openAnnotation(liveAnnotation, false, false, true);
+	}
 
-  // Get all active annotations for a time (in seconds)
-  activeAnnotationsForTime (time) {
-    if(!this.annotations.length) return [];
-    return this.annotationTimeMap[time] || [];
-  }
+	// Get all active annotations for a time (in seconds)
+	activeAnnotationsForTime (time) {
+		if(!this.annotations.length) return [];
+		return this.annotationTimeMap[time] || [];
+	}
 
-  // Rebuild the annotation time map
-  rebuildAnnotationTimeMap() {
-    var timeMap = {};
-    this.annotations.forEach((annotation) => {
-      annotation.secondsActive.forEach((second) => {
-        var val = (timeMap[second] || [])
-        val.push(this.annotations.indexOf(annotation));
-        timeMap[second] = val;
-      });
-    });
-    this.annotationTimeMap = timeMap;
-  }
+	// Rebuild the annotation time map
+	rebuildAnnotationTimeMap () {
+		let timeMap = {};
+		this.annotations.forEach((annotation) => {
+			annotation.secondsActive.forEach((second) => {
+				let val = (timeMap[second] || [])
+				val.push(this.annotations.indexOf(annotation));
+				timeMap[second] = val;
+			});
+		});
+		this.annotationTimeMap = timeMap;
+	}
 
-  clearActive () {
-    this.activeAnnotation.close(false);
-    this._activeAnnotation = null;
-  }
+	clearActive () {
+		this.activeAnnotation.close(false);
+		this._activeAnnotation = null;
+	}
 
-  openAnnotation (annotation, skipLiveCheck=false, pause=true, previewOnly=false) {
-    this.skipLiveCheck = skipLiveCheck;
-    this.clearActive();
-    annotation.open(pause, previewOnly);
-    this.activeAnnotation = annotation;
-    this.lastVideoTime = this.activeAnnotation.range.start;
-  }
+	openAnnotation (annotation, skipLiveCheck=false, pause=true, previewOnly=false) {
+		this.skipLiveCheck = skipLiveCheck;
+		this.clearActive();
+		annotation.open(pause, previewOnly);
+		this.activeAnnotation = annotation;
+		this.lastVideoTime = this.activeAnnotation.range.start;
+	}
 
-  nextAnnotation () {
-    if(this._activeAnnotation){
-      var ind = this.annotations.indexOf(this._activeAnnotation),
-          nextInd = (ind === this.annotations.length-1 ? 0 : ind+1);
-      return this.openAnnotation(this.annotations[nextInd], true);
-    }
-    var time = Math.floor(this.player.currentTime());
-    for(let i=0; i<this.annotations.length; i++){
-      if(this.annotations[i].range.start > time) return this.openAnnotation(this.annotations[i], true);
-    }
-    this.openAnnotation(this.annotations[0], true);
-  }
+	nextAnnotation () {
+		if(this._activeAnnotation){
+			let ind = this.annotations.indexOf(this._activeAnnotation),
+					nextInd = (ind === this.annotations.length-1 ? 0 : ind+1);
+			return this.openAnnotation(this.annotations[nextInd], true);
+		}
+		let time = Math.floor(this.player.currentTime());
+		for(let i=0; i<this.annotations.length; i++){
+			if(this.annotations[i].range.start > time) return this.openAnnotation(this.annotations[i], true);
+		}
+		this.openAnnotation(this.annotations[0], true);
+	}
 
-  prevAnnotation () {
-    if(this._activeAnnotation){
-      var ind = this.annotations.indexOf(this._activeAnnotation),
-          nextInd = (ind === 0 ? this.annotations.length-1 : ind-1);
-      return this.openAnnotation(this.annotations[nextInd], true);
-    }
-    var time = Math.floor(this.player.currentTime());
-    for(let i=this.annotations.length-1; i>=0; i--){
-      if(this.annotations[i].range.start < time) return this.openAnnotation(this.annotations[i], true);
-    }
-    this.openAnnotation(this.annotations[this.annotations.length-1], true);
-  }
+	prevAnnotation () {
+		if(this._activeAnnotation){
+			let ind = this.annotations.indexOf(this._activeAnnotation),
+					nextInd = (ind === 0 ? this.annotations.length-1 : ind-1);
+			return this.openAnnotation(this.annotations[nextInd], true);
+		}
+		let time = Math.floor(this.player.currentTime());
+		for(let i=this.annotations.length-1; i>=0; i--){
+			if(this.annotations[i].range.start < time) return this.openAnnotation(this.annotations[i], true);
+		}
+		this.openAnnotation(this.annotations[this.annotations.length-1], true);
+	}
 
-  stateChangedCallback() {
-    this.onStateChanged(this.data);
-  }
+	stateChangedCallback () {
+		this.onStateChanged(this.data);
+	}
 }
 
 module.exports = {
-  class: AnnotationState
+	class: AnnotationState
 };
 
 },{"./annotation":49,"./player_component":58,"underscore":47}],52:[function(require,module,exports){
 "use strict";
+/*
+  Component for an invidual comment
+*/
 
 const _ = require("underscore");
 const PlayerComponent = require("./player_component").class;
 const moment = require("moment");
-const CommentTemplate = require("./../templates/comment").commentTemplate;
+const CommentTemplate = require("./../templates/comment.hbs").commentTemplate;
 
 class Comment extends PlayerComponent {
 
-  constructor(data, playerId) {
-  	super(playerId);
-    this.id = data.id;
-    this.meta = data.meta;
-    this.body = data.body;
-    this.timestamp = moment(data.meta.datetime).unix();
-    this.timeSince = this.timeSince();
-  }
+    constructor (data, playerId) {
+        super(playerId);
+        this.id = data.id;
+        this.meta = data.meta;
+        this.body = data.body;
+        this.timestamp = moment(data.meta.datetime).unix();
+        this.timeSince = this.timeSince();
+    }
 
-  // Serialize data
-  get data () {
-    return {
-        id: this.id,
-        meta: this.meta,
-        body: this.body
-    };
-  }
+    // Serialize data
+    get data () {
+        return {
+            id: this.id,
+            meta: this.meta,
+            body: this.body
+        };
+    }
 
-  get HTML () {
-    return this.renderTemplate(
-      CommentTemplate,
-      {
-        id: this.id,
-        body: this.body,
-        meta: this.meta,
-        timeSince: this.timeSince
-      }
-    );
-  }
+    // Render HTML for this comment
+    get HTML () {
+        return this.renderTemplate(
+            CommentTemplate,
+            {
+                id:         this.id,
+                body:       this.body,
+                meta:       this.meta,
+                timeSince:  this.timeSince
+            }
+        );
+    }
 
-  timeSince () {
-    return moment(this.meta.datetime).fromNow();
-  }
+    timeSince () {
+        return moment(this.meta.datetime).fromNow();
+    }
 
-  static newFromData(body, plugin) {
-    let data = this.dataObj(body, plugin);
-    return new Comment(data, plugin.playerId);
-  }
+    static newFromData (body, plugin) {
+        let data = this.dataObj(body, plugin);
+        return new Comment(data, plugin.playerId);
+    }
 
-  static dataObj(body, plugin) {
-    return {
-        meta:  _.extend({
-                datetime: moment().toISOString()
-            }, plugin.meta),
-        id: this.guid(),
-        body
-    };
-  }
-
+    static dataObj (body, plugin) {
+        return {
+            meta:   _.extend({
+                        datetime: moment().toISOString()
+                    }, plugin.meta),
+            id:     this.guid(),
+            body
+        };
+    }
 }
 
 module.exports = {
-	class: Comment
+    class: Comment
 };
 
-},{"./../templates/comment":60,"./player_component":58,"moment":44,"underscore":47}],53:[function(require,module,exports){
+},{"./../templates/comment.hbs":60,"./player_component":58,"moment":44,"underscore":47}],53:[function(require,module,exports){
 "use strict";
+/*
+  Component for a list of comments in a visible/active annotation
+*/
 
 const _ = require("underscore");
 const PlayerComponent = require("./player_component").class;
 const Comment = require("./comment").class;
-const Templates = require("./../templates/comment_list");
+const Templates = require("./../templates/comment_list.hbs");
 const CommentListTemplate = Templates.commentListTemplate;
 const NewCommentTemplate = Templates.newCommentTemplate;
 
+// TODO - comment each of these methods
+
 class CommentList extends PlayerComponent {
 
-  constructor(data, playerId) {
-    super(playerId);
+    constructor (data, playerId) {
+        super(playerId);
 
-    this.annotation = data.annotation;
-    this.comments = data.comments.map((c) => new Comment(c, playerId));
-    this.sortComments();
-    this.commentsTemplate = CommentListTemplate;
-    this.newCommentTemplate = NewCommentTemplate;
-  }
-
-  // Serialize object
-  get data () {
-    return this.comments.map((c) => c.data);
-  }
-
-  bindListEvents() {
-    this.$el.find(".vac-close-comment-list").click(() => this.annotation.close());
-    this.$el.find(".reply-btn").click(() => this.addNewComment());
-    this.$el.find(".vac-delete-annotation").click((e) => this.handleDeleteAnnotationClick(e));
-    this.$el.find(".vac-comments-wrap").on("mousewheel DOMMouseScroll", this.disablePageScroll);
-    this.$el.find(".delete-comment").click((e) => this.destroyComment(e));
-  }
-
-  bindCommentFormEvents() {
-    this.$newCommentForm
-      .on("click", ".vac-add-controls a, .vac-video-write-new.comment a", this.closeNewComment.bind(this))
-      .on("click", ".vac-video-write-new.comment button", this.saveNewComment.bind(this));
-  }
-
-  render() {
-    this.$el = $(this.renderTemplate(
-      this.commentsTemplate,
-      {
-        commentsHTML: this.comments.map((c) => c.HTML),
-        rangeStr: this.humanTime(this.annotation.range)
-      }
-    ));
-
-    this.$player.append(this.$el);
-    this.$wrap = this.$player.find(".vac-comments-container");
-    this.bindListEvents();
-  }
-
-  reRender() {
-    this.teardown();
-    this.render();
-  }
-
-  addNewComment() {
-    this.$wrap.addClass("active").find(".vac-comments-wrap").scrollTop(999999);
-    var $shapebox = this.$wrap.find(".add-new-shapebox"),
-        width = $shapebox.outerWidth(),
-        top = $shapebox.position().top + 10,
-        right = this.$wrap.outerWidth() - ($shapebox.position().left + width);
-
-    this.$newCommentForm = $(this.renderTemplate(this.newCommentTemplate, {width, top, right}));
-    this.bindCommentFormEvents();
-    this.$player.append(this.$newCommentForm);
-  }
-
-  saveNewComment() {
-    this.$wrap.removeClass("active");
-
-    var user_id = 1,
-      body = this.$player.find(".vac-video-write-new textarea").val();
-    var comment = Comment.newFromData(body, this.plugin);
-    this.comments.push(comment);
-    this.sortComments();
-    this.closeNewComment();
-    this.reRender();
-
-    this.plugin.annotationState.stateChangedCallback();
-  }
-
-  closeNewComment() {
-    this.$wrap.removeClass("active");
-    if(this.$newCommentForm) this.$newCommentForm.remove();
-  }
-
-  destroyComment(event) {
-    if(this.comments.length == 1) {
-      this.annotation.destroy();
-    } else {
-      var $comment   = $(event.target).closest(".comment");
-      var commentId  = $comment.data('id');
-      var commentObj = _.find(this.comments, (c) => { return c.id == commentId });
-
-      var i = this.comments.indexOf(commentObj);
-      this.comments.splice(i, 1);
-
-      this.reRender();
+        this.annotation = data.annotation;
+        this.comments = data.comments.map((c) => new Comment(c, playerId));
+        this.sortComments();
+        this.commentsTemplate = CommentListTemplate;
+        this.newCommentTemplate = NewCommentTemplate;
     }
 
-    this.plugin.annotationState.stateChangedCallback();
-  }
-
-  disablePageScroll(event) {
-    var $target = $(event.currentTarget);
-    var height  = $target.height();
-    var ogEvent = event.originalEvent;
-    var delta   = ogEvent.wheelDelta || -ogEvent.detail;
-    var dir     = delta < 0 ? "down" : "up";
-    var scrollDiff = Math.abs(event.currentTarget.scrollHeight - event.currentTarget.clientHeight);
-
-    // if scrolling into top of div
-    if ($target.scrollTop() < 20 && dir == "up") {
-      $target.stop();
-      $target.animate({scrollTop: 0}, 100);
-      event.preventDefault();
+    // Serialize object
+    get data () {
+        return this.comments.map((c) => c.data);
     }
 
-    // if scrolling into bottom of div
-    if ($target.scrollTop() > (scrollDiff - 10) && dir == "down") {
-      $target.stop();
-      $target.animate({scrollTop: height + 40}, 100);
-      event.preventDefault();
+    // Bind all events needed for the comment list
+    bindListEvents () {
+        // TODO - comment to describe each of these
+        this.$el
+            .on("click.comment", ".vac-close-comment-list", () => this.annotation.close())
+            .on("click.comment", ".vac-reply-btn", () => this.addNewComment())
+            .on("click.comment", ".vac-delete-annotation", (e) => this.handleDeleteAnnotationClick(e))
+            .on("click.comment", ".vac-delete-comment", (e) => this.destroyComment(e))
+            .on("mousewheel.comment DOMMouseScroll.comment", ".vac-comments-wrap", this.disablePageScroll);
     }
-  }
 
-  sortComments () {
-    this.comments.sort((a,b) => {
-      return a.timestamp < b.timestamp ? -1 : (a.timestamp > b.timestamp ? 1 : 0);
-    });
-  }
+    // Bind event listeners for new comments form
+    bindCommentFormEvents () {
+        this.$newCommentForm
+            .on("click.comment", ".vac-add-controls a, .vac-video-write-new.vac-comment a", this.closeNewComment.bind(this))
+            .on("click.comment", ".vac-video-write-new.vac-is-comment button", this.saveNewComment.bind(this));
+    }
 
-  handleDeleteAnnotationClick(event) {
-    var $confirmEl = $("<a/>").text("CONFIRM");
-    $confirmEl.click(() => this.annotation.destroy());
-    $(event.target).replaceWith($confirmEl);
-  }
+    render () {
+        this.$el = $(this.renderTemplate(
+            this.commentsTemplate,
+            {
+                commentsHTML: this.comments.map((c) => c.HTML),
+                rangeStr: this.humanTime(this.annotation.range)
+            }
+        ));
+
+        this.$player.append(this.$el);
+        this.$wrap = this.$player.find(".vac-comments-container");
+        this.bindListEvents();
+    }
+
+    reRender () {
+        this.teardown();
+        this.render();
+    }
+
+    addNewComment () {
+        this.$wrap.addClass("vac-active").find(".vac-comments-wrap").scrollTop(999999);
+        var $shapebox = this.$wrap.find(".vac-add-new-shapebox"),
+            width = $shapebox.outerWidth(),
+            top = $shapebox.position().top + 10,
+            right = this.$wrap.outerWidth() - ($shapebox.position().left + width);
+
+        this.$newCommentForm = $(this.renderTemplate(this.newCommentTemplate, {width, top, right}));
+        this.bindCommentFormEvents();
+        this.$player.append(this.$newCommentForm);
+    }
+
+    saveNewComment () {
+        this.$wrap.removeClass("vac-active");
+
+        let user_id = 1,
+            body = this.$player.find(".vac-video-write-new textarea").val();
+
+        if(!body) return; // empty comment - TODO add validation / err message
+
+        let comment = Comment.newFromData(body, this.plugin);
+        this.comments.push(comment);
+        this.sortComments();
+        this.closeNewComment();
+        this.reRender();
+
+        this.plugin.annotationState.stateChangedCallback();
+    }
+
+    closeNewComment () {
+        this.$wrap.removeClass("vac-active");
+        if(this.$newCommentForm) this.$newCommentForm.remove();
+    }
+
+    destroyComment (event) {
+        if(this.comments.length == 1) {
+            this.annotation.destroy();
+        } else {
+            let $comment   = $(event.target).closest(".vac-comment"),
+                commentId  = $comment.data('id'),
+                commentObj = _.find(this.comments, (c) => { return c.id == commentId }),
+                i = this.comments.indexOf(commentObj);
+            this.comments.splice(i, 1);
+            this.reRender();
+        }
+
+        this.plugin.annotationState.stateChangedCallback();
+    }
+
+    disablePageScroll (event) {
+        let $target = $(event.currentTarget),
+            height  = $target.height(),
+            ogEvent = event.originalEvent,
+            delta   = ogEvent.wheelDelta || -ogEvent.detail,
+            dir     = delta < 0 ? "down" : "up",
+            scrollDiff = Math.abs(event.currentTarget.scrollHeight - event.currentTarget.clientHeight);
+
+        // if scrolling into top of div
+        if ($target.scrollTop() < 20 && dir == "up") {
+            $target.stop();
+            $target.animate({scrollTop: 0}, 100);
+            event.preventDefault();
+        }
+
+        // if scrolling into bottom of div
+        if ($target.scrollTop() > (scrollDiff - 10) && dir == "down") {
+            $target.stop();
+            $target.animate({scrollTop: height + 40}, 100);
+            event.preventDefault();
+        }
+    }
+
+    sortComments () {
+        this.comments.sort((a,b) => {
+            return a.timestamp < b.timestamp ? -1 : (a.timestamp > b.timestamp ? 1 : 0);
+        });
+    }
+
+    handleDeleteAnnotationClick (e) {
+        let $confirmEl = $("<a/>").text("CONFIRM");
+        $confirmEl.on("click.comment", () => {
+            $confirmEl.off("click.comment");
+            this.annotation.destroy()
+        });
+        $(e.target).replaceWith($confirmEl);
+    }
+
+    teardown () {
+        super.teardown();
+        this.$el
+            .off("click.comment", ".vac-close-comment-list")
+            .off("click.comment", ".vac-reply-btn")
+            .off("click.comment", ".vac-delete-annotation")
+            .off("click.comment", ".vac-delete-comment")
+            .off("mousewheel.comment DOMMouseScroll.comment", ".vac-comments-wrap");
+        if(this.$newCommentForm){
+            this.$newCommentForm
+                .off("click.comment", ".vac-add-controls a, .vac-video-write-new.vac-comment a")
+                .off("click.comment", ".vac-video-write-new.vac-comment button");
+        }
+    }
 }
 
 module.exports = {
-  class: CommentList
+    class: CommentList
 };
 
-},{"./../templates/comment_list":61,"./comment":52,"./player_component":58,"underscore":47}],54:[function(require,module,exports){
+},{"./../templates/comment_list.hbs":61,"./comment":52,"./player_component":58,"underscore":47}],54:[function(require,module,exports){
 "use strict";
 /*
-  Component for managing annotation "control box" in upper left of video when in annotation mode, including all
-  functionality to add new annotations
+    Component for managing annotation "control box" in upper left of video when in annotation mode, including all
+    functionality to add new annotations
 */
 
 const _ = require("underscore");
@@ -14982,349 +15032,367 @@ const DraggableMarker = require("./draggable_marker.js").class;
 const SelectableShape = require("./selectable_shape.js").class;
 const PlayerComponent = require("./player_component").class;
 const Annotation = require("./annotation").class;
-const ControlsTemplate = require("./../templates/controls").ControlsTemplate;
+const ControlsTemplate = require("./../templates/controls.hbs").ControlsTemplate;
 
+// Control uses a "ui state" to determine how UI is rendered - this object is the base state, containing a
+// default value for each item in the state
 const BASE_UI_STATE = Object.freeze({
-  adding: false,          // Are we currently adding a new annotaiton? (step 1 of flow)
-  writingComment: false  // Are we currently writing the comment for annotation (step 2 of flow)
+    adding: false,          // Are we currently adding a new annotaiton? (step 1 of flow)
+    writingComment: false   // Are we currently writing the comment for annotation (step 2 of flow)
 });
 
 class Controls extends PlayerComponent {
 
-  constructor(playerId) {
-    super(playerId);
-    this.template = ControlsTemplate;
-    this.uiState = _.clone(BASE_UI_STATE);
-    this.bindEvents();
-    this.draw();
-  }
-
-  // Bind all the events we need for UI interaction
-  bindEvents () {
-    this.$player.on("click", ".vac-controls button", this.startAddNew.bind(this)) // Add new button click
-      .on("click", ".vac-add-controls a, .vac-video-write-new.annotation a", this.cancelAddNew.bind(this)) // Cancel link click
-      .on("click", ".vac-add-controls button", this.writeComment.bind(this)) // 'Next' button click while adding
-      .on("click", ".vac-video-write-new.annotation button", this.saveNew.bind(this)) // 'Save' button click while adding
-      .on("click", ".vac-controls .next", () => this.plugin.annotationState.nextAnnotation() ) // Click 'next'
-      .on("click", ".vac-controls .prev", () => this.plugin.annotationState.prevAnnotation() ); // Click 'prev'
-  }
-
-  // Clear existing UI (resetting components if need be)
-  clear(reset=false) {
-    if(reset){
-      if(this.uiState.adding){
-        this.restoreNormalUI();
-        this.marker.teardown();
-        this.selectableShape.teardown();
-      }
-      this.uiState = _.clone(BASE_UI_STATE);
+    constructor (playerId, bindArrowKeys) {
+        super(playerId);
+        this.template = ControlsTemplate;
+        this.uiState = _.clone(BASE_UI_STATE);
+        this.bindEvents(bindArrowKeys);
+        this.draw();
     }
-    this.$player.find(".vac-control").remove();
 
-    $(document).off("keyup.vacVideo");
-  }
+    // Bind all the events we need for UI interaction
+    bindEvents (bindArrowKeys) {
+        this.$player.on("click", ".vac-controls button", this.startAddNew.bind(this)) // Add new button click
+            .on("click", ".vac-add-controls a, .vac-video-write-new.vac-is-annotation a", this.cancelAddNew.bind(this)) // Cancel link click
+            .on("click", ".vac-add-controls button", this.writeComment.bind(this)) // 'Next' button click while adding
+            .on("click", ".vac-video-write-new.vac-is-annotation button", this.saveNew.bind(this)) // 'Save' button click while adding
+            .on("click", ".vac-annotation-nav .vac-a-next", () => this.plugin.annotationState.nextAnnotation() ) // Click 'next' on annotation nav
+            .on("click", ".vac-annotation-nav .vac-a-prev", () => this.plugin.annotationState.prevAnnotation() ) // Click 'prev' on annotation nav
+            .on("click", ".vac-video-move .vac-a-next", () => this.scrubVideo(1) ) // Click '+1 sec' on marker nav
+            .on("click", ".vac-video-move .vac-a-prev", () => this.scrubVideo(-1) ); // Click '-1 sec' on marker nav
+        if(bindArrowKeys){
+            $(document).on("keyup.vac-nav", (e) => this.handleArrowKeys(e));
+        }
+    }
 
-  // Draw the UI elements (based on uiState)
-  draw (reset=false) {
-    this.clear(reset);
-    var data = _.extend({
-                  rangeStr: this.marker ? this.humanTime(this.marker.range) : null,
-                  showNav: this.plugin.annotationState.annotations.length > 1
-                }, this.uiState);
+    // Clear existing UI (resetting components if need be)
+    clear (reset=false) {
+        if(reset){
+            if(this.uiState.adding){
+                this.restoreNormalUI();
+                this.marker.teardown();
+                this.selectableShape.teardown();
+            }
+            this.uiState = _.clone(BASE_UI_STATE);
+        }
+        this.$player.find(".vac-control").remove();
+    }
 
-    var $ctrls = this.renderTemplate(this.template, data);
-    this.$player.append($ctrls);
-    $(document).on("keyup.vacVideo", (e) => this.handleArrowKeys(e));
-  }
+    // Draw the UI elements (based on uiState)
+    draw (reset=false) {
+        this.clear(reset);
+        let data = _.extend({
+                        rangeStr:   this.marker ? this.humanTime(this.marker.range) : null,
+                        showNav:    this.plugin.annotationState.annotations.length > 1
+                    }, this.uiState);
 
-  // User clicked to cancel in-progress add - restore to normal state
-  cancelAddNew () {
-    this.draw(true);
-    this.marker.teardown();
-    this.marker = null;
-  }
+        let $ctrls = this.renderTemplate(this.template, data);
+        this.$player.append($ctrls);
+    }
 
-  // User clicked 'add' button in the controls - setup UI and marker
-  startAddNew () {
-    this.player.pause();
-    this.setAddingUI();
-    this.uiState.adding = true;
-    this.draw();
+    // Move the video & marker start by some num seconds (pos or neg)
+    scrubVideo (secs) {
+        // TODO - write this
+    }
 
-    // construct new range and create marker
-    let range = {
-      start: parseInt(this.player.currentTime(),10),
-      stop: parseInt(this.player.currentTime(),10)
-    };
-    this.marker = new DraggableMarker(range, this.playerId);
-    this.selectableShape = new SelectableShape(this.playerId);
-  }
+    // User clicked to cancel in-progress add - restore to normal state
+    cancelAddNew () {
+        this.draw(true);
+        this.marker.teardown();
+        this.marker = null;
+    }
 
-  // User clicked 'next' action - show UI to write comment
-  writeComment () {
-    this.uiState.writingComment = true;
-    this.draw();
-  }
+    // User clicked 'add' button in the controls - setup UI and marker
+    startAddNew () {
+        this.player.pause();
+        this.setAddingUI();
+        this.uiState.adding = true;
+        this.draw();
 
-  // User clicked to save a new annotation/comment during add new flow
-  saveNew () {
-    var comment = this.$player.find(".vac-video-write-new textarea").val();
-    if(!comment) return; // empty comment - TODO add validation / err message in future
+        // construct new range and create marker
+        let range = {
+            start: parseInt(this.player.currentTime(),10),
+            stop: parseInt(this.player.currentTime(),10)
+        };
+        this.marker = new DraggableMarker(range, this.playerId);
+        this.selectableShape = new SelectableShape(this.playerId);
+    }
 
-    var a = Annotation.newFromData(this.marker.range, this.selectableShape.shape, comment, this.plugin);
-    this.plugin.annotationState.addNewAnnotation(a);
+    // User clicked 'next' action - show UI to write comment
+    writeComment () {
+        this.uiState.writingComment = true;
+        this.draw();
+    }
 
-    this.cancelAddNew();
-  }
+    // User clicked to save a new annotation/comment during add new flow
+    saveNew () {
+        let comment = this.$player.find(".vac-video-write-new textarea").val();
+        if(!comment) return; // empty comment - TODO add validation / err message
 
-  // Change normal UI (hide markers, hide playback, etc) on init add state
-  setAddingUI () {
-    this.plugin.annotationState.enabled = false;
-    this.disablePlayingAndControl();
-  }
+        let a = Annotation.newFromData(this.marker.range, this.selectableShape.shape, comment, this.plugin);
+        this.plugin.annotationState.addNewAnnotation(a);
 
-  // Restore normal UI after add state
-  restoreNormalUI () {
-    this.plugin.annotationState.enabled = true;
-    this.enablePlayingAndControl();
-  }
+        this.cancelAddNew();
+    }
 
-  handleArrowKeys (event) {
-    var keyId = event.which;
+    // Change normal UI (hide markers, hide playback, etc) on init add state
+    setAddingUI () {
+        this.plugin.annotationState.enabled = false;
+        this.disablePlayingAndControl();
+    }
 
-    if(keyId == 37) this.plugin.annotationState.prevAnnotation();
-    if(keyId == 39) this.plugin.annotationState.nextAnnotation();
-  }
+    // Restore normal UI after add state
+    restoreNormalUI () {
+        this.plugin.annotationState.enabled = true;
+        this.enablePlayingAndControl();
+    }
 
+    handleArrowKeys (e) {
+        if(!this.plugin.active) return;
+        let keyId = e.which;
+
+        if(keyId == 37) this.plugin.annotationState.prevAnnotation();
+        if(keyId == 39) this.plugin.annotationState.nextAnnotation();
+    }
 };
 
 module.exports = {
-  class: Controls
+    class: Controls
 };
 
-},{"./../templates/controls":62,"./annotation":49,"./draggable_marker.js":55,"./player_component":58,"./selectable_shape.js":59,"underscore":47}],55:[function(require,module,exports){
+},{"./../templates/controls.hbs":62,"./annotation":49,"./draggable_marker.js":55,"./player_component":58,"./selectable_shape.js":59,"underscore":47}],55:[function(require,module,exports){
 "use strict";
 /*
-  Component for a timeline marker that is draggable when user clicks/drags on it, and rebuilds underlying range
-  as drag occurs
+    Component for a timeline marker that is draggable when user clicks/drags on it, and rebuilds underlying range
+    as drag occurs
 */
 
 const _ = require("underscore");
 const Marker = require("./marker").class;
-const DraggableMarkerTemplate = require("./../templates/marker").draggableMarkerTemplate;
+const DraggableMarkerTemplate = require("./../templates/marker.hbs").draggableMarkerTemplate;
 
 class draggableMarker extends Marker {
 
-  constructor(range, playerId) {
-    super(range, null, playerId);
-    this.template = DraggableMarkerTemplate;  // Change template from base Marker template
-    this.dragging = false;                    // Is a drag action currently occring?
-    this.rangePin = range.start;              // What's the original pinned timeline point when marker was added
-    this.draw();
-    this.$parent = this.$el.closest(".vac-marker-wrap"); // Set parent as marker wrap
-  }
-
-  // Bind needed evnets for UI interaction
-  bindMarkerEvents () {
-    // On mouse down init drag
-    this.$el.mousedown((e) => {
-      e.preventDefault();
-      this.dragging = true;
-      // When mouse moves (with mouse down) call onDrag, throttling to once each 250 ms
-      $(document).on("mousemove.draggableMarker", _.throttle(this.onDrag.bind(this), 250) );
-    });
-
-    // On mouse up end drag action and unbind mousemove event
-    $(document).on("mouseup.draggableMarker", (e) => {
-       if(!this.dragging) return;
-       $(document).off("mousemove.draggableMarker");
-       this.dragging = false;
-    });
-  }
-
-  // On drag action, calculate new range and redraw marker
-  onDrag (e) {
-    var dragPercent = this.percentValFromXpos(e.pageX),
-        secVal = parseInt(this.duration * dragPercent);
-
-    if(secVal > this.rangePin){
-      this.range = {
-        start: this.rangePin,
-        end: secVal
-      };
-    }else{
-      this.range = {
-        start: secVal,
-        end: this.rangePin
-      };
+    constructor (range, playerId) {
+        super(range, null, playerId);
+        this.template = DraggableMarkerTemplate;  // Change template from base Marker template
+        this.dragging = false;                    // Is a drag action currently occring?
+        this.rangePin = range.start;              // What's the original pinned timeline point when marker was added
+        this.draw();
+        this.$parent = this.$el.closest(".vac-marker-wrap"); // Set parent as marker wrap
     }
-    this.draw();
-  }
 
-  // Cal percentage (of video) position for a pixel-based X position on the document
-  percentValFromXpos (xpos) {
-    var x = Math.max(0, xpos - this.$parent.offset().left), // px val
-        max = this.$parent.innerWidth(),
-        per = (x / max);
-    if(per > 1) per = 1;
-    if(per < 0) per = 0;
-    return per;
-  }
+    // Bind needed evnets for UI interaction
+    bindMarkerEvents () {
+        // On mouse down init drag
+        this.$el.mousedown((e) => {
+            e.preventDefault();
+            this.dragging = true;
+            // When mouse moves (with mouse down) call onDrag, throttling to once each 250 ms
+            $(document).on("mousemove.draggableMarker", _.throttle(this.onDrag.bind(this), 250) );
+        });
 
-  // Remove bound events on destructon
-  teardown () {
-    super.teardown();
-    $(document).off("mousemove.draggableMarker");
-    $(document).off("mouseup.draggableMarker");
-  }
+        // On mouse up end drag action and unbind mousemove event
+        $(document).on("mouseup.draggableMarker", (e) => {
+             if(!this.dragging) return;
+             $(document).off("mousemove.draggableMarker");
+             this.dragging = false;
+        });
+    }
+
+    // On drag action, calculate new range and redraw marker
+    onDrag (e) {
+        var dragPercent = this.percentValFromXpos(e.pageX),
+            secVal = parseInt(this.duration * dragPercent);
+
+        if(secVal > this.rangePin){
+            this.range = {
+                start:  this.rangePin,
+                end:    secVal
+            };
+        }else{
+            this.range = {
+                start:  secVal,
+                end:    this.rangePin
+            };
+        }
+        this.draw();
+    }
+
+    // Cal percentage (of video) position for a pixel-based X position on the document
+    percentValFromXpos (xpos) {
+        var x = Math.max(0, xpos - this.$parent.offset().left), // px val
+            max = this.$parent.innerWidth(),
+            per = (x / max);
+        if(per > 1) per = 1;
+        if(per < 0) per = 0;
+        return per;
+    }
+
+    // Remove bound events on destructon
+    teardown () {
+        super.teardown();
+        $(document).off("mousemove.draggableMarker");
+        $(document).off("mouseup.draggableMarker");
+    }
 }
 
 module.exports = {
-	class: draggableMarker
+    class: draggableMarker
 };
-},{"./../templates/marker":63,"./marker":56,"underscore":47}],56:[function(require,module,exports){
+},{"./../templates/marker.hbs":63,"./marker":56,"underscore":47}],56:[function(require,module,exports){
 "use strict";
 /*
-  Component for a timeline marker with capabilities to draw on timeline, including tooltip for comment
+    Component for a timeline marker with capabilities to draw on timeline, including tooltip for comment
 */
 
-const MarkerTemplate = require("./../templates/marker").markerTemplate;
+const MarkerTemplate = require("./../templates/marker.hbs").markerTemplate;
 const PlayerComponent = require("./player_component").class;
 
 class Marker extends PlayerComponent {
 
-  constructor(range, comment, playerId) {
-  	super(playerId);
-    this.range = range;
-    this.comment = comment;
-    this.template = MarkerTemplate;
-  }
-
-  // attribute to get the DOM id for this marker node
-  get markerId () {
-  	return "vacmarker_"+this.componentId;
-  }
-
-  setActive (showTooltip=false) {
-    this.$el.addClass("active");
-    if(showTooltip){
-      this.$el.addClass('force-tooltip');
-    }
-  }
-
-  deactivate () {
-    this.$el.removeClass("active force-tooltip");
-  }
-
-  // Draw marker on timeline for this.range;
-  draw () {
-    var $timeline = this.$player.find('.vjs-progress-control'),
-    	$markerWrap = $timeline.find(".vac-marker-wrap");
-
-    // If markerWrap does NOT exist yet, draw it on the timeline and grab it's jquery ref
-    if(!$markerWrap.length){
-      var $outerWrap = $("<div/>").addClass("vac-marker-owrap");
-      $markerWrap = $("<div/>").addClass("vac-marker-wrap");
-      $timeline.append($outerWrap.append($markerWrap));
+    constructor (range, comment, playerId) {
+        super(playerId);
+        this.range = range;
+        this.comment = comment;
+        this.template = MarkerTemplate;
     }
 
-    // clear existing marker if this one was already drawn
-    $timeline.find("#"+this.markerId).remove();
-
-    // Bind to local instance var, add to DOM, and setup events
-    this.$el = $(this.renderTemplate(this.template, this.markerTemplateData));
-    $markerWrap.append(this.$el);
-    this.bindMarkerEvents();
-  }
-
-  // Bind needed events for this marker
-  bindMarkerEvents () {
-  	// handle dimming other markers + highlighting this one on mouseenter/leave
-    this.$el.on("mouseenter.marker", () => {
-      this.$el.addClass('hovering').closest(".vac-marker-wrap").addClass('dim-all')
-    }).on("mouseleave.marker", () => {
-      this.$el.removeClass('hovering').closest(".vac-marker-wrap").removeClass('dim-all');
-    });
-  }
-
-  // Build object for template
-  get markerTemplateData () {
-    var left = (this.range.start / this.duration) * 100;
-    var width = ((this.range.end / this.duration) * 100) - left;
-    return {
-      "left"        : left + "%",
-      "width"       : width + "%",
-      "tooltipRight": left > 50,
-      "tooltipTime" : this.humanTime(this.range),
-      "tooltipBody" : !this.comment ? null : this.comment.body,
-      "rangeShow"   : !!this.range.end,
-      "id"			: this.markerId
+    // attribute to get the DOM id for this marker node
+    get markerId () {
+        return "vacmarker_" + this.componentId;
     }
-  }
 
-  // Unbind event listeners on teardown and remove DOM nodes
-  teardown () {
-    this.$el.off("mouseenter.marker mousleave.marker")
-    super.teardown();
-  }
+    // Set this marker as active (highlight) and optionally show tooltip also
+    setActive (showTooltip=false) {
+        this.$el.addClass("vac-active");
+        if(showTooltip){
+            this.$el.addClass('vac-force-tooltip');
+        }
+    }
+
+    // Deactivate this marker
+    deactivate () {
+        this.$el.removeClass("vac-active vac-force-tooltip");
+    }
+
+    // Draw marker on timeline for this.range;
+    draw () {
+        let $timeline = this.$player.find('.vjs-progress-control'),
+            $markerWrap = $timeline.find(".vac-marker-wrap");
+
+        // If markerWrap does NOT exist yet, draw it on the timeline and grab it's jquery ref
+        if(!$markerWrap.length){
+            let $outerWrap = $("<div/>").addClass("vac-marker-owrap");
+            $markerWrap = $("<div/>").addClass("vac-marker-wrap");
+            $timeline.append($outerWrap.append($markerWrap));
+        }
+
+        // clear existing marker if this one was already drawn
+        $timeline.find("#" + this.markerId).remove();
+
+        // Bind to local instance var, add to DOM, and setup events
+        this.$el = $(this.renderTemplate(this.template, this.markerTemplateData));
+        $markerWrap.append(this.$el);
+        this.bindMarkerEvents();
+    }
+
+    // Bind needed events for this marker
+    bindMarkerEvents () {
+        // handle dimming other markers + highlighting this one on mouseenter/leave
+        this.$el.on("mouseenter.marker", () => {
+            this.$el.addClass('vac-hovering').closest(".vac-marker-wrap").addClass('vac-dim-all')
+        }).on("mouseleave.marker", () => {
+            this.$el.removeClass('vac-hovering').closest(".vac-marker-wrap").removeClass('vac-dim-all');
+        });
+    }
+
+    // Build object for template
+    get markerTemplateData () {
+        let left = (this.range.start / this.duration) * 100,
+            width = ((this.range.end / this.duration) * 100) - left;
+        return {
+            "left":         left + "%",
+            "width":        width + "%",
+            "tooltipRight": left > 50,
+            "tooltipTime":  this.humanTime(this.range),
+            "tooltipBody":  !this.comment ? null : this.comment.body,
+            "rangeShow":    !!this.range.end,
+            "id":           this.markerId
+        }
+    }
+
+    // Unbind event listeners on teardown and remove DOM nodes
+    teardown () {
+        this.$el.off("mouseenter.marker mousleave.marker")
+        super.teardown();
+    }
 }
 
 module.exports = {
-	class: Marker
+    class: Marker
 };
 
-},{"./../templates/marker":63,"./player_component":58}],57:[function(require,module,exports){
+},{"./../templates/marker.hbs":63,"./player_component":58}],57:[function(require,module,exports){
 "use strict";
+/*
+    Component main 'annotation toggle' button in the player controls, including notifier for # annotations
+*/
 
 const PlayerComponent = require("./player_component").class;
 
 class PlayerButton extends PlayerComponent {
 
-  constructor(playerId) {
-  	super(playerId);
-    this.draw();
-  }
-
-
-  draw () {
-    // Add button to player
-    var btn = player.getChild('controlBar').addChild('button', {});
-    btn.addClass('vac-player-btn');
-    btn.controlText("Toggle Animations");
-    this.$el = $(btn.el());
-  }
-
-  // Update the number of annotations displayed in the bubble
-  updateNumAnnotations (num) {
-    var $bubble = this.$el.find("b");
-
-    if(!$bubble.length){
-        $bubble = $("<b/>");
-        this.$el.append($bubble);
+    constructor (playerId) {
+        super(playerId);
+        this.draw();
     }
 
-    $bubble.text(num);
-    num > 0 ? this.$el.addClass('show') : this.$el.addClass('hide');
-  }
+    // Add button to player
+    draw () {
+        let btn = player.getChild('controlBar').addChild('button', {});
+        btn.addClass('vac-player-btn');
+        btn.controlText("Toggle Animations");
+        this.$el = $(btn.el());
+    }
 
+    // Update the number of annotations displayed in the bubble
+    updateNumAnnotations (num) {
+        let $bubble = this.$el.find("b");
+
+        if(!$bubble.length){
+                $bubble = $("<b/>");
+                this.$el.append($bubble);
+        }
+
+        $bubble.text(num);
+        num > 0 ? this.$el.addClass('show') : this.$el.addClass('hide');
+    }
 }
 
 module.exports = {
-	class: PlayerButton
+    class: PlayerButton
 };
 
 },{"./player_component":58}],58:[function(require,module,exports){
 "use strict";
+/*
+   Base class all player components interit from - it includes lots of helper functions (to get reference to 
+   the player, the plugin, video state, template rendering, etc)
+*/
 
 const Handlebars = require("handlebars");
 
 class PlayerComponent {
-  constructor(playerId) {
+
+  constructor (playerId) {
   	this.playerId = playerId;
     this.generateComponentId();
     this.registerHandlebarsHelpers();
   }
 
+  // attribute to get reference to the main plugin object (main.js instance)
   get plugin () {
     return this.player.annotationComments();
   }
@@ -15357,27 +15425,27 @@ class PlayerComponent {
   }
 
   // Render a handlebars template with local data passed in via key/val in object
-  renderTemplate(htmlString, options = {}) {
+  renderTemplate (htmlString, options = {}) {
     var template = Handlebars.compile(htmlString);
     return template(options);
   }
 
-  registerHandlebarsHelpers() {
-    Handlebars.registerHelper('breaklines', function(text) {
+  registerHandlebarsHelpers () {
+    Handlebars.registerHelper('breaklines', (text) => {
       text = Handlebars.Utils.escapeExpression(text);
       text = text.replace(/(\r\n|\n|\r)/gm, '<br>');
       return new Handlebars.SafeString(text);
     });
   }
 
-  // Convert a range to human readable format (M:SS) or (M:SS-M:SS)
+  // Convert a time range to human readable format (M:SS) or (M:SS-M:SS)
   humanTime (range) {
     function readable(sec){
-      var mins = Math.floor(sec/60),
+      let mins = Math.floor(sec/60),
           secs = String(sec % 60);
       return mins + ":" + (secs.length==1 ? "0" : "") + secs;
     }
-    var time = [readable(range.start)];
+    let time = [readable(range.start)];
     if(range.end) time.push(readable(range.end));
     return time.join("-");
   }
@@ -15387,17 +15455,16 @@ class PlayerComponent {
     this.componentId = this.constructor.guid();
   }
 
-  teardown() {
+  teardown () {
     if(this.$el) this.$el.remove();
   }
 
-  static guid() {
+  static guid () {
     function s4() {
       return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     }
     return s4() + s4() + '-' + s4() + '-' + s4() + '-' +  s4() + '-' + s4() + s4() + s4();
   }
-
 }
 
 module.exports = {
@@ -15406,126 +15473,129 @@ module.exports = {
 
 },{"handlebars":32}],59:[function(require,module,exports){
 "use strict";
+/*
+        Component for a shape that can be drug/sized on top of the video while adding a new annotation
+*/
 
 const _ = require("underscore");
 const AnnotationShape = require("./annotation_shape").class;
 
 class SelectableShape extends AnnotationShape {
 
-  constructor(playerId) {
-  	super(null, playerId);
-    this.$parent = this.$player.find(".vac-video-cover-canvas");
-    this.bindEvents();
-    this.dragging = false;
-  }
-
-  // Bind all needed events for drag action
-  bindEvents () {
-    // On mousedown initialize drag
-    this.$parent.on("mousedown.selectableShape", (e) => {
-      // Check a few conditions to see if we should *not* start drag
-      if( !($(e.target).hasClass('vac-video-cover-canvas')) ) return; //didn't click on overlay
-      if( $(e.target).hasClass('vac-shape') ) return; //user clicked on annotation
-
-      // Remove old shape if one existed
-      if(this.$el) this.$el.remove();
-
-      // Define default starting shape (just x/y coords of where user clicked no width/height yet)
-      let shape = {
-        x1: this.xCoordToPercent(e.pageX),
-        y1: this.YCoordToPercent(e.pageY)
-      };
-      shape.x2 = shape.x1;
-      shape.y2 = shape.y2;
-      this.shape = shape;
-
-      // Save origin points for future use
-      this.originX = shape.x1;
-      this.originY = shape.y1;
-
-      // Draw shape and start drag state
-      this.draw();
-      this.dragging = true;
-      this.dragMoved = false; // used to determine if user actually dragged or just clicked
-
-      // Bind event on doc mousemove to track drag, throttled to once each 250ms
-      $(document).on("mousemove.selectableShape", _.throttle(this.onDrag.bind(this), 250) );
-    });
-
-    // On mouseup, if during drag cancel drag event listeners
-    $(document).on("mouseup.selectableShape", (e) => {
-      if(!this.dragging) return;
-
-      $(document).off("mousemove.selectableShape");
-
-      if(!this.dragMoved){
-        //clear shape if it's just a click (and not a drag)
-        this.shape = null;
-        if(this.$el) this.$el.remove();
-      }
-
-      this.dragging = false;
-    });
-  }
-
-  // On each interation of drag action (mouse movement), recalc position and redraw shape
-  onDrag (e) {
-    this.dragMoved = true;
-
-    var xPer = this.xCoordToPercent(e.pageX),
-        yPer = this.YCoordToPercent(e.pageY);
-
-    if(xPer < this.originX){
-      this.shape.x2 = this.originX;
-      this.shape.x1 = Math.max(0, xPer);
-    }else{
-      this.shape.x2 = Math.min(100, xPer);
-      this.shape.x1 = this.originX;
+    constructor (playerId) {
+        super(null, playerId);
+        this.$parent = this.$player.find(".vac-video-cover-canvas");
+        this.bindEvents();
+        this.dragging = false;
     }
-    if(yPer < this.originY){
-      this.shape.y2 = this.originY;
-      this.shape.y1 = Math.max(0, yPer);
-    }else{
-      this.shape.y2 = Math.min(100, yPer);
-      this.shape.y1 = this.originY;
+
+    // Bind all needed events for drag action
+    bindEvents () {
+        // On mousedown initialize drag
+        this.$parent.on("mousedown.selectableShape", (e) => {
+            // Check a few conditions to see if we should *not* start drag
+            if( !($(e.target).hasClass('vac-video-cover-canvas')) ) return; //didn't click on overlay
+            if( $(e.target).hasClass('vac-shape') ) return; //user clicked on annotation
+
+            // Remove old shape if one existed
+            if(this.$el) this.$el.remove();
+
+            // Define default starting shape (just x/y coords of where user clicked no width/height yet)
+            let shape = {
+                x1: this.xCoordToPercent(e.pageX),
+                y1: this.YCoordToPercent(e.pageY)
+            };
+            shape.x2 = shape.x1;
+            shape.y2 = shape.y2;
+            this.shape = shape;
+
+            // Save origin points for future use
+            this.originX = shape.x1;
+            this.originY = shape.y1;
+
+            // Draw shape and start drag state
+            this.draw();
+            this.dragging = true;
+            this.dragMoved = false; // used to determine if user actually dragged or just clicked
+
+            // Bind event on doc mousemove to track drag, throttled to once each 250ms
+            $(document).on("mousemove.selectableShape", _.throttle(this.onDrag.bind(this), 250) );
+        });
+
+        // On mouseup, if during drag cancel drag event listeners
+        $(document).on("mouseup.selectableShape", (e) => {
+            if(!this.dragging) return;
+
+            $(document).off("mousemove.selectableShape");
+
+            if(!this.dragMoved){
+                //clear shape if it's just a click (and not a drag)
+                this.shape = null;
+                if(this.$el) this.$el.remove();
+            }
+
+            this.dragging = false;
+        });
     }
-    this.setDimsFromShape();
-  }
 
-  xCoordToPercent (x) {
-    x = x - this.$parent.offset().left; //pixel position
-    var max = this.$parent.innerWidth();
-    return Number(((x / max) * 100).toFixed(2)); //round to 2 decimal places
-  }
+    // On each interation of drag action (mouse movement), recalc position and redraw shape
+    onDrag (e) {
+        this.dragMoved = true;
 
-  YCoordToPercent (y) {
-    y = y - this.$parent.offset().top; //pixel position
-    var max = this.$parent.innerHeight();
-    return Number(((y / max) * 100).toFixed(2)); //round to 2 decimal places
-  }
+        let xPer = this.xCoordToPercent(e.pageX),
+                yPer = this.YCoordToPercent(e.pageY);
 
-  teardown () {
-    this.$parent.off("mousedown.selectableShape");
-    $(document).off("mouseup.selectableShape");
-    super.teardown();
-  }
+        if(xPer < this.originX){
+            this.shape.x2 = this.originX;
+            this.shape.x1 = Math.max(0, xPer);
+        }else{
+            this.shape.x2 = Math.min(100, xPer);
+            this.shape.x1 = this.originX;
+        }
+        if(yPer < this.originY){
+            this.shape.y2 = this.originY;
+            this.shape.y1 = Math.max(0, yPer);
+        }else{
+            this.shape.y2 = Math.min(100, yPer);
+            this.shape.y1 = this.originY;
+        }
+        this.setDimsFromShape();
+    }
 
+    // Convert pixel-based x position (relative to document) to percentage in video
+    xCoordToPercent (x) {
+        x = x - this.$parent.offset().left; //pixel position
+        let max = this.$parent.innerWidth();
+        return Number(((x / max) * 100).toFixed(2)); //round to 2 decimal places
+    }
 
+    // Convert pixel-based y position (relative to document) to percentage in video
+    YCoordToPercent (y) {
+        y = y - this.$parent.offset().top; //pixel position
+        let max = this.$parent.innerHeight();
+        return Number(((y / max) * 100).toFixed(2)); //round to 2 decimal places
+    }
+
+    teardown () {
+        this.$parent.off("mousedown.selectableShape");
+        $(document).off("mouseup.selectableShape");
+        super.teardown();
+    }
 }
 
 module.exports = {
-	class: SelectableShape
+    class: SelectableShape
 };
 },{"./annotation_shape":50,"underscore":47}],60:[function(require,module,exports){
 var commentTemplate = `
-  <div class="comment" data-id="{{id}}">
-    <div class="comment-header">
-      <div class="author-name">{{meta.user_name}}</div>
-      <div class="timestamp">{{timeSince}} ago
-        <span class="delete-comment">&nbsp;&nbsp;X</span>
+  <div class="vac-comment" data-id="{{id}}">
+    <div class="vac-comment-header">
+      <div class="vac-author-name">{{meta.user_name}}</div>
+      <div class="vac-timestamp">{{timeSince}} ago
+        <span class="vac-delete-comment">&nbsp;&nbsp;X</span>
       </div>
     </div>
-    <div class="comment-body">
+    <div class="vac-comment-body">
       {{breaklines body}}
     </div>
   </div>
@@ -15540,12 +15610,12 @@ var commentListTemplate = `
       {{#each commentsHTML as |comment|}}
         {{{comment}}}
       {{/each}}
-      <div class="reply-btn vac-button">ADD REPLY</div>
-      <div class="add-new-shapebox"></div>
+      <div class="vac-reply-btn vac-button">ADD REPLY</div>
+      <div class="vac-add-new-shapebox"></div>
     </div>
     <div class="vac-comments-control-bar">
       <div class="vac-range"><b>@</b> {{rangeStr}}</div>
-      <div class="control-buttons">
+      <div class="vac-control-buttons">
         <a class="vac-delete-annotation">DELETE</a> | <a class="vac-close-comment-list">CLOSE</a>
       </div>
     </div>
@@ -15554,8 +15624,8 @@ var commentListTemplate = `
 
 var newCommentTemplate = `
   <div class="vac-video-write-new-wrap vac-new-comment">
-    <div class="vac-video-write-new comment">
-      <div class="comment-showbox" style="width:{{width}}px;top:{{top}}px;right:{{right}}px">
+    <div class="vac-video-write-new vac-is-comment">
+      <div class="vac-comment-showbox" style="width:{{width}}px;top:{{top}}px;right:{{right}}px">
         <textarea placeholder="Enter comment..."></textarea>
         <div>
           <button class="vac-button">SAVE</button>
@@ -15563,7 +15633,7 @@ var newCommentTemplate = `
         </div>
       </div>
   </div>
-`
+`;
 
 module.exports = {commentListTemplate, newCommentTemplate};
 
@@ -15574,9 +15644,9 @@ var ControlsTemplate = `
 		  	Annotations
 			<button class="vac-button">+ NEW</button>
 			{{#if showNav}}
-				<div class="nav">
-					<div class="prev">Prev</div>
-					<div class="next">Next</div>
+				<div class="vac-annotation-nav">
+					<div class="vac-a-prev">Prev</div>
+					<div class="vac-a-next">Next</div>
 				</div>
 			{{/if}}
 		</div>
@@ -15592,14 +15662,18 @@ var ControlsTemplate = `
 			<i>Select shape + range</i>
 			<button class="vac-button">CONTINUE</button>
 			<a>cancel</a>
+			<div class="vac-video-move">
+				<div class="vac-a-prev">-1 sec</div>
+				<div class="vac-a-next">+1 sec</div>
+			</div>
 		</div>
 
 		{{#if writingComment}}
 			<div class="vac-video-write-new-wrap vac-control">
-				<div class="vac-video-write-new annotation">
+				<div class="vac-video-write-new vac-is-annotation">
 					<div>
 						<h5><b>New Annotation</b> @ {{rangeStr}}</h5>
-						<div class="comment-showbox">
+						<div class="vac-comment-showbox">
 							<textarea placeholder="Enter comment..."></textarea>
 							<div>
 								<button class="vac-button">SAVE</button>
@@ -15621,7 +15695,7 @@ var markerTemplate = `
   <div id="{{id}}" class="vac-marker {{#if rangeShow}}ranged-marker{{/if}}" style="left: {{left}}; {{#if rangeShow}}width:{{width}};{{/if}}">
     {{#if tooltipBody}}
     	<div>
-	     	<span class="vac-tooltip {{#if tooltipRight}}right-side{{/if}}">
+	     	<span class="vac-tooltip {{#if tooltipRight}}vac-right-side{{/if}}">
 	        	<b>{{tooltipTime}}</b> - {{tooltipBody}}
 	      	</span>
     	</div>

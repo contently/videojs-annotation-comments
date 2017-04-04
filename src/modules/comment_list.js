@@ -1,146 +1,174 @@
 "use strict";
+/*
+  Component for a list of comments in a visible/active annotation
+*/
 
 const _ = require("underscore");
 const PlayerComponent = require("./player_component").class;
 const Comment = require("./comment").class;
-const Templates = require("./../templates/comment_list");
+const Templates = require("./../templates/comment_list.hbs");
 const CommentListTemplate = Templates.commentListTemplate;
 const NewCommentTemplate = Templates.newCommentTemplate;
 
+// TODO - comment each of these methods
+
 class CommentList extends PlayerComponent {
 
-  constructor(data, playerId) {
-    super(playerId);
+    constructor (data, playerId) {
+        super(playerId);
 
-    this.annotation = data.annotation;
-    this.comments = data.comments.map((c) => new Comment(c, playerId));
-    this.sortComments();
-    this.commentsTemplate = CommentListTemplate;
-    this.newCommentTemplate = NewCommentTemplate;
-  }
-
-  // Serialize object
-  get data () {
-    return this.comments.map((c) => c.data);
-  }
-
-  bindListEvents() {
-    this.$el.find(".vac-close-comment-list").click(() => this.annotation.close());
-    this.$el.find(".reply-btn").click(() => this.addNewComment());
-    this.$el.find(".vac-delete-annotation").click((e) => this.handleDeleteAnnotationClick(e));
-    this.$el.find(".vac-comments-wrap").on("mousewheel DOMMouseScroll", this.disablePageScroll);
-    this.$el.find(".delete-comment").click((e) => this.destroyComment(e));
-  }
-
-  bindCommentFormEvents() {
-    this.$newCommentForm
-      .on("click", ".vac-add-controls a, .vac-video-write-new.comment a", this.closeNewComment.bind(this))
-      .on("click", ".vac-video-write-new.comment button", this.saveNewComment.bind(this));
-  }
-
-  render() {
-    this.$el = $(this.renderTemplate(
-      this.commentsTemplate,
-      {
-        commentsHTML: this.comments.map((c) => c.HTML),
-        rangeStr: this.humanTime(this.annotation.range)
-      }
-    ));
-
-    this.$player.append(this.$el);
-    this.$wrap = this.$player.find(".vac-comments-container");
-    this.bindListEvents();
-  }
-
-  reRender() {
-    this.teardown();
-    this.render();
-  }
-
-  addNewComment() {
-    this.$wrap.addClass("active").find(".vac-comments-wrap").scrollTop(999999);
-    var $shapebox = this.$wrap.find(".add-new-shapebox"),
-        width = $shapebox.outerWidth(),
-        top = $shapebox.position().top + 10,
-        right = this.$wrap.outerWidth() - ($shapebox.position().left + width);
-
-    this.$newCommentForm = $(this.renderTemplate(this.newCommentTemplate, {width, top, right}));
-    this.bindCommentFormEvents();
-    this.$player.append(this.$newCommentForm);
-  }
-
-  saveNewComment() {
-    this.$wrap.removeClass("active");
-
-    var user_id = 1,
-      body = this.$player.find(".vac-video-write-new textarea").val();
-    var comment = Comment.newFromData(body, this.plugin);
-    this.comments.push(comment);
-    this.sortComments();
-    this.closeNewComment();
-    this.reRender();
-
-    this.plugin.annotationState.stateChangedCallback();
-  }
-
-  closeNewComment() {
-    this.$wrap.removeClass("active");
-    if(this.$newCommentForm) this.$newCommentForm.remove();
-  }
-
-  destroyComment(event) {
-    if(this.comments.length == 1) {
-      this.annotation.destroy();
-    } else {
-      var $comment   = $(event.target).closest(".comment");
-      var commentId  = $comment.data('id');
-      var commentObj = _.find(this.comments, (c) => { return c.id == commentId });
-
-      var i = this.comments.indexOf(commentObj);
-      this.comments.splice(i, 1);
-
-      this.reRender();
+        this.annotation = data.annotation;
+        this.comments = data.comments.map((c) => new Comment(c, playerId));
+        this.sortComments();
+        this.commentsTemplate = CommentListTemplate;
+        this.newCommentTemplate = NewCommentTemplate;
     }
 
-    this.plugin.annotationState.stateChangedCallback();
-  }
-
-  disablePageScroll(event) {
-    var $target = $(event.currentTarget);
-    var height  = $target.height();
-    var ogEvent = event.originalEvent;
-    var delta   = ogEvent.wheelDelta || -ogEvent.detail;
-    var dir     = delta < 0 ? "down" : "up";
-    var scrollDiff = Math.abs(event.currentTarget.scrollHeight - event.currentTarget.clientHeight);
-
-    // if scrolling into top of div
-    if ($target.scrollTop() < 20 && dir == "up") {
-      $target.stop();
-      $target.animate({scrollTop: 0}, 100);
-      event.preventDefault();
+    // Serialize object
+    get data () {
+        return this.comments.map((c) => c.data);
     }
 
-    // if scrolling into bottom of div
-    if ($target.scrollTop() > (scrollDiff - 10) && dir == "down") {
-      $target.stop();
-      $target.animate({scrollTop: height + 40}, 100);
-      event.preventDefault();
+    // Bind all events needed for the comment list
+    bindListEvents () {
+        // TODO - comment to describe each of these
+        this.$el
+            .on("click.comment", ".vac-close-comment-list", () => this.annotation.close())
+            .on("click.comment", ".vac-reply-btn", () => this.addNewComment())
+            .on("click.comment", ".vac-delete-annotation", (e) => this.handleDeleteAnnotationClick(e))
+            .on("click.comment", ".vac-delete-comment", (e) => this.destroyComment(e))
+            .on("mousewheel.comment DOMMouseScroll.comment", ".vac-comments-wrap", this.disablePageScroll);
     }
-  }
 
-  sortComments () {
-    this.comments.sort((a,b) => {
-      return a.timestamp < b.timestamp ? -1 : (a.timestamp > b.timestamp ? 1 : 0);
-    });
-  }
+    // Bind event listeners for new comments form
+    bindCommentFormEvents () {
+        this.$newCommentForm
+            .on("click.comment", ".vac-add-controls a, .vac-video-write-new.vac-comment a", this.closeNewComment.bind(this))
+            .on("click.comment", ".vac-video-write-new.vac-is-comment button", this.saveNewComment.bind(this));
+    }
 
-  handleDeleteAnnotationClick(event) {
-    var $confirmEl = $("<a/>").text("CONFIRM");
-    $confirmEl.click(() => this.annotation.destroy());
-    $(event.target).replaceWith($confirmEl);
-  }
+    render () {
+        this.$el = $(this.renderTemplate(
+            this.commentsTemplate,
+            {
+                commentsHTML: this.comments.map((c) => c.HTML),
+                rangeStr: this.humanTime(this.annotation.range)
+            }
+        ));
+
+        this.$player.append(this.$el);
+        this.$wrap = this.$player.find(".vac-comments-container");
+        this.bindListEvents();
+    }
+
+    reRender () {
+        this.teardown();
+        this.render();
+    }
+
+    addNewComment () {
+        this.$wrap.addClass("vac-active").find(".vac-comments-wrap").scrollTop(999999);
+        var $shapebox = this.$wrap.find(".vac-add-new-shapebox"),
+            width = $shapebox.outerWidth(),
+            top = $shapebox.position().top + 10,
+            right = this.$wrap.outerWidth() - ($shapebox.position().left + width);
+
+        this.$newCommentForm = $(this.renderTemplate(this.newCommentTemplate, {width, top, right}));
+        this.bindCommentFormEvents();
+        this.$player.append(this.$newCommentForm);
+    }
+
+    saveNewComment () {
+        this.$wrap.removeClass("vac-active");
+
+        let user_id = 1,
+            body = this.$player.find(".vac-video-write-new textarea").val();
+
+        if(!body) return; // empty comment - TODO add validation / err message
+
+        let comment = Comment.newFromData(body, this.plugin);
+        this.comments.push(comment);
+        this.sortComments();
+        this.closeNewComment();
+        this.reRender();
+
+        this.plugin.annotationState.stateChangedCallback();
+    }
+
+    closeNewComment () {
+        this.$wrap.removeClass("vac-active");
+        if(this.$newCommentForm) this.$newCommentForm.remove();
+    }
+
+    destroyComment (event) {
+        if(this.comments.length == 1) {
+            this.annotation.destroy();
+        } else {
+            let $comment   = $(event.target).closest(".vac-comment"),
+                commentId  = $comment.data('id'),
+                commentObj = _.find(this.comments, (c) => { return c.id == commentId }),
+                i = this.comments.indexOf(commentObj);
+            this.comments.splice(i, 1);
+            this.reRender();
+        }
+
+        this.plugin.annotationState.stateChangedCallback();
+    }
+
+    disablePageScroll (event) {
+        let $target = $(event.currentTarget),
+            height  = $target.height(),
+            ogEvent = event.originalEvent,
+            delta   = ogEvent.wheelDelta || -ogEvent.detail,
+            dir     = delta < 0 ? "down" : "up",
+            scrollDiff = Math.abs(event.currentTarget.scrollHeight - event.currentTarget.clientHeight);
+
+        // if scrolling into top of div
+        if ($target.scrollTop() < 20 && dir == "up") {
+            $target.stop();
+            $target.animate({scrollTop: 0}, 100);
+            event.preventDefault();
+        }
+
+        // if scrolling into bottom of div
+        if ($target.scrollTop() > (scrollDiff - 10) && dir == "down") {
+            $target.stop();
+            $target.animate({scrollTop: height + 40}, 100);
+            event.preventDefault();
+        }
+    }
+
+    sortComments () {
+        this.comments.sort((a,b) => {
+            return a.timestamp < b.timestamp ? -1 : (a.timestamp > b.timestamp ? 1 : 0);
+        });
+    }
+
+    handleDeleteAnnotationClick (e) {
+        let $confirmEl = $("<a/>").text("CONFIRM");
+        $confirmEl.on("click.comment", () => {
+            $confirmEl.off("click.comment");
+            this.annotation.destroy()
+        });
+        $(e.target).replaceWith($confirmEl);
+    }
+
+    teardown () {
+        super.teardown();
+        this.$el
+            .off("click.comment", ".vac-close-comment-list")
+            .off("click.comment", ".vac-reply-btn")
+            .off("click.comment", ".vac-delete-annotation")
+            .off("click.comment", ".vac-delete-comment")
+            .off("mousewheel.comment DOMMouseScroll.comment", ".vac-comments-wrap");
+        if(this.$newCommentForm){
+            this.$newCommentForm
+                .off("click.comment", ".vac-add-controls a, .vac-video-write-new.vac-comment a")
+                .off("click.comment", ".vac-video-write-new.vac-comment button");
+        }
+    }
 }
 
 module.exports = {
-  class: CommentList
+    class: CommentList
 };

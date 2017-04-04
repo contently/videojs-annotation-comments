@@ -2,7 +2,7 @@ var markerTemplate = `
   <div id="{{id}}" class="vac-marker {{#if rangeShow}}ranged-marker{{/if}}" style="left: {{left}}; {{#if rangeShow}}width:{{width}};{{/if}}">
     {{#if tooltipBody}}
     	<div>
-	     	<span class="vac-tooltip {{#if tooltipRight}}right-side{{/if}}">
+	     	<span class="vac-tooltip {{#if tooltipRight}}vac-right-side{{/if}}">
 	        	<b>{{tooltipTime}}</b> - {{tooltipBody}}
 	      	</span>
     	</div>

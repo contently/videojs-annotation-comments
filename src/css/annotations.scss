@@ -1,48 +1,56 @@
-$blue: #00A6C2;
-$yellow: #eed428;
-$orange: #ee9828;
+$primaryColor: #00A6C2;		// Primary color, used for buttons and toggle colors
+$secondaryColor: #eed428;	// Secondary color, used for highlight elements and markers
+$activeColor: #ee9828;		// Active color, used for annotation shapes & marker interaction
 $white: #FFF;
 $black: #000;
 $red: #FF0000;
 
-$med_gray: #dbdcdc;
-$dark_gray: #383838;
+$medGray: #dbdcdc;
+$darkGray: #383838;
 
+// NOTES
+// Videojs standard elements are prefixed with 'vjs-'*
+// Elements added by videojs-annotation-comments are prefixed with 'vac-'*
+
+// TODO
+// Change browser specific stuff (box-shadow, -webkit-*, etc) to mixins
+
+// Scope to video-js player element
 .video-js{
 
-	.vac-control{
-		display:none;
-
-	}
+	// Applied when annotations are toggled 'on'
 	&.vac-active{
+		// Hide timeline status and large play button
 		.vjs-mouse-display, .vjs-big-play-button{
 			display: none !important;
 		}
-		.vac-marker-owrap{
+		// Display outer wrap for timeline markers & annotation control elements
+		.vac-marker-owrap, .vac-control{
 			display: block;
 		}
-		.vac-control{
-			display:block;
-		}
+		// Set low z-inddx for vjs controls
 		.vjs-control-bar{
 			z-index: 2;
 		}
-		.vac-player-btn{
-			span.vjs-icon-placeholder{
-				background-color: $blue !important;
-			}
+		// Toggle color of annotation enable button in controls
+		.vac-player-btn span.vjs-icon-placeholder{
+			background-color: $primaryColor !important;
 		}
 	}
 
+	// Class applied when video play controls are disabled
 	&.vac-disable-play{
+		// Hide individual markers
 		.vac-marker{
 			display: none !important;
 		}
+		// Make vjs progress/controls invisible
 		.vjs-play-control, .vjs-play-progress{
 			visibility: hidden !important;
 		}
 	}
 
+	// Standard button class
 	.vac-button {
 		transition: all .2s ease-in-out;
 		margin:10px;
@@ -52,16 +60,16 @@ $dark_gray: #383838;
 		width: calc(100% - 20px);
 		text-align: center;
 		border-radius: 2px;
-		background: $blue;
+		background: $primaryColor;
 		color: white;
 		display: block;
 		cursor: pointer;
 		&:hover{
-			background-color: lighten($blue, 15%);
+			background-color: lighten($primaryColor, 15%);
 		}
 	}
 
-	// Add new annotation - red-tinted cover over vide
+	// Tinted overlay cover visible when adding new annotations (prevents user click on video)
 	.vac-video-cover {
 		z-index: 1;
 		position: absolute;
@@ -77,7 +85,8 @@ $dark_gray: #383838;
 		}
 	}
 
-	// Add new annotation - wrap + box/text input for last step
+	// Wrapper class for control elements displayed during 'add new annotation' final step,
+	// where 'write comment' box is displayed AND when adding a new comment to an existing annotation
 	.vac-video-write-new-wrap{
 		position: absolute;
 		top: 0;
@@ -109,16 +118,17 @@ $dark_gray: #383838;
   					font-weight: normal;
   				}
   			}
-			.comment-showbox{
+  			// Wrapper div around textarea and save/cancel controls
+			.vac-comment-showbox{
 				border-radius: 1px;
 				background-color: white;
 				margin-top: 20px;
 				width: 100%;
-				border-bottom: 2px solid $orange;
+				border-bottom: 2px solid $activeColor;
 				textarea{
 					border: none;
 					font-size: 13px;
-					color: $dark_gray;
+					color: $darkGray;
 					line-height: 16px;
 					padding: 8px;
 					box-sizing: border-box;
@@ -130,19 +140,21 @@ $dark_gray: #383838;
 					padding: 10px;
 					box-sizing: content-box;
 					height: 27px;
+					// 'Save' button
 					button{
 						float: right;
 						width: auto;
 						padding: 0 40px;
 						margin: 0;
 					}
+					// Cancel link
 					a{
 						float:right;
 						font-size: 12px;
 						text-decoration: underline;
 						line-height: 27px;
 						display: inline-block;
-						color: $dark_gray;
+						color: $darkGray;
 						cursor: pointer;
 						margin-right: 20px;
 						&:hover{
@@ -151,9 +163,10 @@ $dark_gray: #383838;
 					}
   				}
   			}
-  			&.comment{
+  			&.vac-is-comment{
   				display:block;
-  				.comment-showbox{
+  				// Box is positioned via javascript on add to overlap exactly with underlying positioned box
+  				.vac-comment-showbox{
   					position: absolute;
   					padding:0;
   					margin: 0;
@@ -163,13 +176,15 @@ $dark_gray: #383838;
 		}
 	}
 
+	// Annotation 'shape' element drawn on top of video - positioned by javascript
 	.vac-shape{
 		position: absolute;
 		z-index: 1;
-		background-color: rgba($orange, 0.65);
-		border: 2px dotted $orange;
+		background-color: rgba($activeColor, 0.65);
+		border: 2px dotted $activeColor;
 	}
 
+	// Control elements ('Add new box', etc)
 	.vac-controls, .vac-add-controls{
 		z-index: 3;
 		position: absolute;
@@ -182,8 +197,10 @@ $dark_gray: #383838;
 		font-size: 14px;
 		color: white;
 		width: 150px;
+		display: none;
+		// Subtext
 		i{
-			color: $med_gray;
+			color: $medGray;
 			font-size: 11px;
 			font-style: normal;
 			display: block;
@@ -198,20 +215,21 @@ $dark_gray: #383838;
 			width: calc(100% - 20px);
 			text-align: center;
 			border-radius: 2px;
-			background: $blue;
+			background: $primaryColor;
 			color: white;
 			display: block;
 			cursor: pointer;
 			&:hover{
-				background-color: lighten($blue, 15%);
+				background-color: lighten($primaryColor, 15%);
 			}
 		}
+		// Wrapper for button controls (save, cancel, continue)
 		&.vac-add-controls{
 			button{
-				background-color: $yellow;
-				color: $dark_gray;
+				background-color: $secondaryColor;
+				color: $darkGray;
 				&:hover{
-					background-color: lighten($yellow, 15%);
+					background-color: lighten($secondaryColor, 15%);
 				}
 			}
 			a{
@@ -227,7 +245,8 @@ $dark_gray: #383838;
 				}
 			}
 		}
-		.nav{
+		// Wrapper for controls to go to <prev|next> annotation and to scrub +/- 1 sec
+		.vac-annotation-nav, .vac-video-move{
 			margin-top: 8px;
 			width: 100%;
 			display:flex;
@@ -237,26 +256,25 @@ $dark_gray: #383838;
 				background-color: rgba($black,.8);
 				text-align: center;
 				line-height: 22px;
-				color: $yellow;
+				color: $secondaryColor;
 				transition: all .2s ease-in-out;
 				cursor: pointer;
 				font-size: 12px;
-				&.hide{
-					visibility: hidden;
-				}
 				&:hover{
-					background-color: $yellow;
+					background-color: $secondaryColor;
 					color: $black;
 				}
-				&.prev{
+				&.vac-a-prev{
 					margin-right: 1px;
 				}
 			}
 		}
 	}
 
+	// Button added to the control bar, which toggles annotation mode
 	.vac-player-btn{
 		margin-right:8px;
+		// Overwrite normal vjs-icon-placeholder w/ svg 'comment' icon (from Google Material Icons)
 		span.vjs-icon-placeholder{
 			width: 100%;
 			height: 100%;
@@ -267,10 +285,11 @@ $dark_gray: #383838;
 		}
 		&:hover{
 			span.vjs-icon-placeholder{
-				background-color: lighten($blue, 30%);
+				background-color: lighten($primaryColor, 30%);
 			}
 		}
 		cursor: pointer;
+		// 'Bubble' showing # annotations present
 		b{
 			position: absolute;
 			display: inline-block;
@@ -288,6 +307,7 @@ $dark_gray: #383838;
 		}
 	}
 
+	// Outwer wrap for area containing all timeline markers
 	.vac-marker-owrap{
 		display:none;
 		z-index: 10;
@@ -297,78 +317,79 @@ $dark_gray: #383838;
 		width: 100%;
 		height: 100%;
 
+		// Inner, relatively positioned wrapper for markers
 		.vac-marker-wrap{
 			margin: 0 10px;
 			height: 100%;
 		    position: relative;
 		    flex: auto;
 
+		    // Actual marker element drawn on timeline (for both regular and draggable marker)
+		    // NOTE - marker is drawn as standard div but long-tail for range is drawn as a box-shadow
 			.vac-marker, .vac-marker-draggable{
 				position: absolute;
 				width: 7px;
 				margin-left: -3.5px;
 				height: 30px;
 				bottom: 6px;
-				background: $blue;
+				background: $primaryColor;
 				border-radius: 2px;
 				cursor: pointer;
 				transition: all .2s ease-in-out;
-				&.hovering, &.force-tooltip{
+				// When hoving or in 'force tooltip' state, show tooltip and highlight/enlarge
+				&.vac-hovering, &.vac-force-tooltip{
 					opacity: 1 !important;
-					background: $yellow;
+					background: $secondaryColor;
 					height: 35px;
 					& > div{
 						display:block ;
 						opacity: 1;
 					}
-					&.fhovering{
-						& > div{
-							display:block !important;
-						}
-					}
 					&.ranged-marker{
-						box-shadow: 7px 0 0 0 $yellow inset;
-						background-color: rgba($yellow, 0.65);
+						box-shadow: 7px 0 0 0 $secondaryColor inset;
+						background-color: rgba($secondaryColor, 0.65);
 					}
 				}
-
-				&.active {
-					background-color: $yellow;
+				// When a marker is active, highlight it appropriately
+				&.vac-active {
+					background-color: $secondaryColor;
 					&.ranged-marker {
-						box-shadow: 7px 0 0 0 $yellow inset;
-						background-color: rgba($yellow, 0.65);
+						box-shadow: 7px 0 0 0 $secondaryColor inset;
+						background-color: rgba($secondaryColor, 0.65);
 					}
 				}
-
+				// Range markers have 'tail' drawn with box shadow
 				&.ranged-marker{
-					box-shadow: 7px 0 0 0 $blue inset;
-					background-color: rgba($blue, 0.65);
+					box-shadow: 7px 0 0 0 $primaryColor inset;
+					background-color: rgba($primaryColor, 0.65);
 				}
-
+				// Ranged markers use different color than regular markers (and are always range markers)
 				&.vac-marker-draggable{
-					box-shadow: 7px 0 0 0 $orange inset;
-					background-color: rgba($orange, 0.65);
+					box-shadow: 7px 0 0 0 $activeColor inset;
+					background-color: rgba($activeColor, 0.65);
 					cursor: ew-resize;
 					min-width: 7px !important;
 				}
 
-				// Tooltip wrapper for marker
+				// Tooltip wrapper for a marker
 				& > div {
 					width: 100%;
 					position: relative;
 					display:none;
 					opacity: 0;
 					transition: opacity .2s ease-in-out;
-					span{ // Tooltip
+					// Actual tooltip element, which is positioned left/right based on what side of timeline it's in
+					span{
+						// Time/range display
 						b{
-							color: $yellow;
+							color: $secondaryColor;
 							display: inline-block;
 							margin-right: 5px;
 							font-weight: normal;
 						}
 						text-overflow: ellipsis;
 						white-space: nowrap;
-						border-bottom: 1px solid $yellow;
+						border-bottom: 1px solid $secondaryColor;
 						display: block;
 						position: absolute;
 						max-width: 250px;
@@ -384,19 +405,19 @@ $dark_gray: #383838;
 						font-family: Arial;
 						font-size: 12px;
 						left:0px;
-						&.right-side{
+						&.vac-right-side{
 							left: auto;
 							right: 0px;
 						}
 					}
 				}
 			}
-
-			&.dim-all{
+			// When hovering/active, dim all OTHER markers so active can be highlighted
+			&.vac-dim-all{
 				.vac-marker{
 					height: 30px;
 					opacity: .4;
-					&.force-tooltip{
+					&.vac-force-tooltip{
 						& > div{
 							display: none;
 						}
@@ -406,6 +427,7 @@ $dark_gray: #383838;
 		}
 	}
 
+	// Container element for comments in a displayed annotation
 	.vac-comments-container {
 		position: absolute;
 	    right: 0;
@@ -416,24 +438,25 @@ $dark_gray: #383838;
 		background-color: rgba($white, 0.60);
 		height: calc(100% - 42px);
 		box-sizing: border-box;
-
-		&:hover, &.active{
+		transition: all .15s linear;
+		// When hovering over or interacting with comments list, toggle opacity and slide out
+		&:hover, &.vac-active{
 			width: 60%;
 			max-width: 480px;
 			.vac-comments-wrap{
 				opacity: 1;
 			}
-			&.active{
-				.add-new-shapebox{
+			&.vac-active{
+				// Box used to position 'add new comment' textbox over
+				.vac-add-new-shapebox{
 					display: block;
 				}
-				.reply-btn{
+				.vac-reply-btn{
 					display:none;
 				}
 			}
 		}
-		transition: all .15s linear;
-
+		// Wrapper for list of comments
 		.vac-comments-wrap{
 			opacity: .9;
 			height: calc(100% - 26px);
@@ -441,8 +464,8 @@ $dark_gray: #383838;
 			overflow-y: auto;
 			box-sizing: border-box;
 			padding: 10px;
-			border-left: 1px solid $med_gray;
-
+			border-left: 1px solid $medGray;
+			// Style scrollbar in comments list
 			&::-webkit-scrollbar
 			{
 				width: 6px;
@@ -452,53 +475,48 @@ $dark_gray: #383838;
 			{
 				border-radius: 5px;
 				-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-				background-color: $dark_gray;
+				background-color: $darkGray;
 			}
-
-			.comment {
+			// Individual comment in the comments list
+			.vac-comment {
 				border-radius:1px;
 				box-shadow: 2px 2px 5px 0px rgba(0,0,0,0.43);
-
-				.comment-header {
+				// Header of comment containing user name & timestamp
+				.vac-comment-header {
 					width: 100%;
-
 					padding: 2px 5px;
 					color: $white;
-					background-color: $dark_gray;
+					background-color: $darkGray;
 					text-align: left;
-
-					&:hover .delete-comment {
+					// Display delete button on hover
+					&:hover .vac-delete-comment {
 						display: inline;
 					}
-
-					.author-name, .timestamp {
+					.vac-author-name, .vac-timestamp {
 						display: inline-block;
 						line-height: 16px;
+						&.vac-author-name {
+							font-weight: bold;
+							text-align: left;
+							font-size: 11px;
+							overflow: hidden;
+							white-space: nowrap;
+							text-overflow: ellipsis;
+						}
+						&.vac-timestamp {
+							float: right;
+							text-align: right;
+							font-size: 10px;
+						}
 					}
-
-					.author-name {
-						font-weight: bold;
-						text-align: left;
-						font-size: 11px;
-						overflow: hidden;
-						white-space: nowrap;
-						text-overflow: ellipsis;
-					}
-
-					.timestamp {
-						float: right;
-						text-align: right;
-						font-size: 10px;
-					}
-
-					.delete-comment {
+					.vac-delete-comment {
 						display: none;
 						cursor: pointer;
 						color: $red;
 					}
 				}
-
-				.comment-body {
+				// Main body of the comment
+				.vac-comment-body {
 					width: 100%;
 					padding: 8px;
 					box-sizing: border-box;
@@ -510,16 +528,16 @@ $dark_gray: #383838;
 					text-align: left;
 					border-bottom-left-radius:2px;
 					border-bottom-right-radius:2px;
-					border-bottom: 1px solid lighten($med_gray, 20%);
+					border-bottom: 1px solid lighten($medGray, 20%);
 				}
 			}
-
-			.reply-btn {
+			// Replay to a comment button
+			.vac-reply-btn {
 				margin:10px 0 0 0;
 				width: 100%;
 			}
-
-			.add-new-shapebox{
+			// This box is used for the javascript to position the overlay display for adding a new comment
+			.vac-add-new-shapebox{
 				margin: 10px 0 0 0;
 				border-radius: 2px;
 				height: 157px;
@@ -528,35 +546,31 @@ $dark_gray: #383838;
 				display:none;
 			}
 		}
-
+		// Control bar displayed at the bottom in the comments list
 		.vac-comments-control-bar {
 			height: 26px;
-			border-bottom: 1px solid $yellow;
+			border-bottom: 1px solid $secondaryColor;
 			line-height:26px;
 			padding: 0 10px;
 			box-sizing: border-box;
 			width: 100%;
 			background: $black;
-
-			.vac-range, .control-buttons {
+			.vac-range, .vac-control-buttons {
 				display: inline-block;
 				width: 49%;
-			}
-
-			.vac-range {
-				float: left;
-				text-align: left;
-				color: $yellow;
-				b{
-					color: white;
+				&.vac-range {
+					float: left;
+					text-align: left;
+					color: $secondaryColor;
+					b{
+						color: white;
+					}
 				}
 			}
-
-			.control-buttons {
+			.vac-control-buttons {
 				float: right;
 				text-align: right;
 				font-size: 10px;
-
 				a {
 					margin: 0 4px;
 					cursor: pointer;

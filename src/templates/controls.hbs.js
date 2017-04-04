@@ -4,9 +4,9 @@ var ControlsTemplate = `
 		  	Annotations
 			<button class="vac-button">+ NEW</button>
 			{{#if showNav}}
-				<div class="nav">
-					<div class="prev">Prev</div>
-					<div class="next">Next</div>
+				<div class="vac-annotation-nav">
+					<div class="vac-a-prev">Prev</div>
+					<div class="vac-a-next">Next</div>
 				</div>
 			{{/if}}
 		</div>
@@ -22,14 +22,18 @@ var ControlsTemplate = `
 			<i>Select shape + range</i>
 			<button class="vac-button">CONTINUE</button>
 			<a>cancel</a>
+			<div class="vac-video-move">
+				<div class="vac-a-prev">-1 sec</div>
+				<div class="vac-a-next">+1 sec</div>
+			</div>
 		</div>
 
 		{{#if writingComment}}
 			<div class="vac-video-write-new-wrap vac-control">
-				<div class="vac-video-write-new annotation">
+				<div class="vac-video-write-new vac-is-annotation">
 					<div>
 						<h5><b>New Annotation</b> @ {{rangeStr}}</h5>
-						<div class="comment-showbox">
+						<div class="vac-comment-showbox">
 							<textarea placeholder="Enter comment..."></textarea>
 							<div>
 								<button class="vac-button">SAVE</button>
