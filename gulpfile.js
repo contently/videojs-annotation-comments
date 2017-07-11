@@ -14,6 +14,7 @@ const gulp          = require('gulp'),
       sass          = require('gulp-sass'),
       debug         = require('gulp-debug');
       pump          = require('pump');
+      mocha         = require('gulp-mocha');
 
 const FILENAME = "videojs-annotation-comments.js",
       PACKAGE = require('./package.json');
@@ -60,6 +61,15 @@ function getBundler(path, options){
     return bundler;
 };
 
+gulp.task('test', () => {
+    gulp.src(['test/test_suite.js'], { read: false })
+        .pipe(mocha({ compilers: ['js:babel-core/register'], reporter: 'landing' }));
+});
+
+gulp.task('tdd', function() {
+    gulp.watch(['src/*.js', 'test/test_suite.js'], ['test']);
+});
+
 gulp.task('dev_webserver', () => {
     console.log(":::: > Test page at http://localhost:3004/test.html");
     return gulp.src(['build','test','node_modules'])
@@ -89,5 +99,6 @@ gulp.task('build', ['transpile'], (cb) => {
 
 gulp.task('transpile', (cb) => compile(false, cb) );
 gulp.task('bundle_watch', (cb) => compile(true, cb) );
-gulp.task('watch', ['bundle_watch', 'dev_webserver', 'sass:watch']);
+// NOTE: remove tdd watch if it becomes slow
+gulp.task('watch', ['bundle_watch', 'dev_webserver', 'sass:watch', 'tdd']);
 gulp.task('default', ['watch']);
