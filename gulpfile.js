@@ -1,18 +1,19 @@
-const gulp = require('gulp'),
-      sourcemaps = require('gulp-sourcemaps'),
-      source = require('vinyl-source-stream'),
-      buffer = require('vinyl-buffer'),
-      browserify = require('browserify'),
-      watchify = require('watchify'),
-      insert = require('gulp-insert'),
-      babelify = require('babelify'),
+const gulp          = require('gulp'),
+      sourcemaps    = require('gulp-sourcemaps'),
+      source        = require('vinyl-source-stream'),
+      buffer        = require('vinyl-buffer'),
+      browserify    = require('browserify'),
+      watchify      = require('watchify'),
+      insert        = require('gulp-insert'),
+      babelify      = require('babelify'),
       stripComments = require('gulp-strip-comments'),
-      rename = require('gulp-rename'),
-      webserver = require('gulp-webserver'),
-      uglify = require('gulp-uglify'),
-      gutil = require('gulp-util'),
-      sass = require('gulp-sass'),
-      debug = require('gulp-debug');
+      rename        = require('gulp-rename'),
+      webserver     = require('gulp-webserver'),
+      uglify        = require('gulp-uglify'),
+      gutil         = require('gulp-util'),
+      sass          = require('gulp-sass'),
+      debug         = require('gulp-debug');
+      pump          = require('pump');
 
 const FILENAME = "videojs-annotation-comments.js",
       PACKAGE = require('./package.json');
@@ -21,66 +22,69 @@ const ATTIBUTION = "/* Version "+PACKAGE.version+" videojs-annotation-comments (
 
 //compilation function for browserify/bundler/transpilation
 function compile(watch, cb){
-  var bundler = watchify(browserify('./src/main.js', { debug: true }));
-                  //.transform(babelify, {presets: ["es2015-script"]} );
+    var bundler = watchify(
+        browserify('./src/main.js', { debug: true })
+            .transform(babelify, {presets: ["es2015-script"]})
+    );
 
-  function rebundle() {
-    bundler.bundle()
-      .on('log', gutil.log)
-      .on('error', gutil.log.bind(gutil.colors.red, 'Browserify Error'))
-      .pipe(source('src/main.js'))
-      .pipe(rename(FILENAME))
-      .pipe(buffer())
-      .pipe(sourcemaps.init({ loadMaps: true }))
-      .pipe(sourcemaps.write('./'))
-      .pipe(gulp.dest('./build'));
-  }
+    function rebundle() {
+        bundler.bundle()
+            .on('log', gutil.log)
+            .on('error', gutil.log.bind(gutil.colors.red, 'Browserify Error'))
+            .pipe(source('src/main.js'))
+            .pipe(rename(FILENAME))
+            .pipe(buffer())
+            .pipe(sourcemaps.init({ loadMaps: true }))
+            .pipe(sourcemaps.write('./'))
+            .pipe(gulp.dest('./build'));
+    }
 
-  if (watch) {
-    rebundle();
-    bundler.on('update', function() {
-      console.log('-> bundling...');
-      rebundle();
-    });
-  }else{
-    rebundle();
-    cb();
-  }
+    if (watch) {
+        rebundle();
+        bundler.on('update', function() {
+            console.log('-> bundling...');
+            rebundle();
+        });
+    } else {
+        rebundle();
+        cb();
+    }
 }
 
 // Get bundler from bundlify
 function getBundler(path, options){
-  var bundler = browserify(path, { debug: options.debug, cache: {}, packageCache: {} });
-  bundler.transform(babelify, {presets: ["es2015"]})
-  bundler.on('log', gutil.log);
-  bundler.on('error', gutil.log.bind(gutil.colors.red, 'Browserify Error'));
-  return bundler;
+    var bundler = browserify(path, { debug: options.debug, cache: {}, packageCache: {} });
+    bundler.transform(babelify, {presets: ["es2015"]})
+    bundler.on('log', gutil.log);
+    bundler.on('error', gutil.log.bind(gutil.colors.red, 'Browserify Error'));
+    return bundler;
 };
 
 gulp.task('dev_webserver', () => {
-  console.log(":::: > Test page at http://localhost:3004/test.html");
-  return gulp.src(['build','test','node_modules'])
-      .pipe(webserver({ port: 3004 })
-    );
+    console.log(":::: > Test page at http://localhost:3004/test.html");
+    return gulp.src(['build','test','node_modules'])
+        .pipe(webserver({ port: 3004 }));
 });
 
 gulp.task('sass', () => {
-  return gulp.src('src/css/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest('./build/css'));
-});
- 
-gulp.task('sass:watch', () => {
-  gulp.watch('./src/css/**/*.scss', ['sass']);
+    return gulp.src('src/css/*.scss')
+        .pipe(sass().on('error', sass.logError))
+        .pipe(gulp.dest('./build/css'));
 });
 
-gulp.task('build', ['transpile'], () => {
-  return gulp.src('build/videojs-annotation-comments.js')
-    .pipe(rename(FILENAME.replace(".js",".min.js")))
-    .pipe( stripComments() )
-    .pipe(uglify())
-    .pipe( insert.prepend(ATTIBUTION) )
-    .pipe( gulp.dest("./build") )
+gulp.task('sass:watch', () => {
+    gulp.watch('./src/css/**/*.scss', ['sass']);
+});
+
+gulp.task('build', ['transpile'], (cb) => {
+    pump([
+        gulp.src('build/videojs-annotation-comments.js'),
+        rename(FILENAME.replace(".js",".min.js")),
+        stripComments(),
+        uglify(),
+        insert.prepend(ATTIBUTION),
+        gulp.dest('./build')
+    ], cb);
 });
 
 gulp.task('transpile', (cb) => compile(false, cb) );
