@@ -41,15 +41,18 @@ class Comment extends PlayerComponent {
         );
     }
 
+    // Return time since comment timestamp
     timeSince () {
         return moment(this.meta.datetime).fromNow();
     }
 
+    // Return a Comment obj given body content and plugin reference
     static newFromData (body, plugin) {
         let data = this.dataObj(body, plugin);
         return new Comment(data, plugin.playerId);
     }
 
+    // Return an object with plugin data, timestamp, unique id, and body content
     static dataObj (body, plugin) {
         return {
             meta:   _.extend({

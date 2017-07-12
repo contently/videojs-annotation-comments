@@ -20,7 +20,7 @@
         constructor(player, options) {
             // TODO - fix this!
             //options = _.extend(options, DEFAULT_OPTIONS);
-            
+
             super(player, options);
 
             this.playerId = $(player.el()).attr('id');

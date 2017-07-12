@@ -1,10 +1,8 @@
 "use strict";
 /*
-    Component for an annottion, which includes controlling the marker/shape, rendering a commentList, etc
+    Component for an annotation, which includes controlling the marker/shape, rendering a commentList, etc
 */
 
-const _ = require("underscore");
-const moment = require("moment");
 const PlayerComponent = require("./player_component").class;
 const CommentList = require("./comment_list").class;
 const Marker = require("./marker").class;
@@ -24,7 +22,7 @@ class Annotation extends PlayerComponent {
         this.marker.draw();
         this.annotationShape = new AnnotationShape(this.shape, playerId);
         this.secondsActive = this.buildSecondsActiveArray();
-        this.bindMarkerEvents();
+        this.bindEvents();
     }
 
     // Serialize object
@@ -37,10 +35,11 @@ class Annotation extends PlayerComponent {
         };
     }
 
-    bindMarkerEvents () {
+    bindEvents () {
         this.marker.$el.click(() => { this.plugin.annotationState.openAnnotation(this) });
     }
 
+    // Opens the annotation. Handles marker, commentList, shape, Annotation state, and player state
     open (withPause=true, previewOnly=false) {
         if(previewOnly){
             this.marker.setActive(true);
@@ -62,6 +61,7 @@ class Annotation extends PlayerComponent {
         }
     }
 
+    // Closes the annotation. Handles marker, commendList, shape, and AnnotationState
     close (clearActive=true) {
         this.marker.deactivate();
         this.commentList.teardown();
@@ -70,6 +70,8 @@ class Annotation extends PlayerComponent {
         if(clearActive) this.plugin.annotationState.clearActive();
     }
 
+    // For preloading an array of seconds active on initialization
+    // Values used to build timeMap in AnnotationState
     buildSecondsActiveArray () {
         let seconds = [];
         if(!!this.range.end) {
@@ -85,6 +87,7 @@ class Annotation extends PlayerComponent {
         return seconds;
     }
 
+    // Tearsdown annotation and marker, removes object from AnnotationState
     destroy () {
         this.close(true);
         this.plugin.annotationState.removeAnnotation(this);

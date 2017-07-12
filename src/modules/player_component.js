@@ -1,6 +1,6 @@
 "use strict";
 /*
-   Base class all player components interit from - it includes lots of helper functions (to get reference to 
+   Base class all player components interit from - it includes lots of helper functions (to get reference to
    the player, the plugin, video state, template rendering, etc)
 */
 
@@ -52,6 +52,7 @@ class PlayerComponent {
     return template(options);
   }
 
+  // Handle escaped breaklines in Handlebars
   registerHandlebarsHelpers () {
     Handlebars.registerHelper('breaklines', (text) => {
       text = Handlebars.Utils.escapeExpression(text);
@@ -77,10 +78,12 @@ class PlayerComponent {
     this.componentId = this.constructor.guid();
   }
 
+  // Provide basic teardown function to inherit
   teardown () {
     if(this.$el) this.$el.remove();
   }
 
+  // Generate unique ids
   static guid () {
     function s4() {
       return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);

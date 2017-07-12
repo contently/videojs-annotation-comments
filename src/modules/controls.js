@@ -1,7 +1,7 @@
 "use strict";
 /*
-    Component for managing annotation "control box" in upper left of video when in annotation mode, including all
-    functionality to add new annotations
+    Component for managing annotation "control box" in upper left of video when in annotation mode,
+    including all functionality to add new annotations
 */
 
 const _ = require("underscore");
@@ -14,7 +14,7 @@ const ControlsTemplate = require("./../templates/controls.hbs").ControlsTemplate
 // Control uses a "ui state" to determine how UI is rendered - this object is the base state, containing a
 // default value for each item in the state
 const BASE_UI_STATE = Object.freeze({
-    adding: false,          // Are we currently adding a new annotaiton? (step 1 of flow)
+    adding: false,          // Are we currently adding a new annotation? (step 1 of flow)
     writingComment: false   // Are we currently writing the comment for annotation (step 2 of flow)
 });
 
@@ -39,7 +39,7 @@ class Controls extends PlayerComponent {
             .on("click", ".vac-video-move .vac-a-next", () => this.scrubVideo(1) ) // Click '+1 sec' on marker nav
             .on("click", ".vac-video-move .vac-a-prev", () => this.scrubVideo(-1) ); // Click '-1 sec' on marker nav
         if(bindArrowKeys){
-            $(document).on("keyup.vac-nav", (e) => this.handleArrowKeys(e));
+            $(document).on("keyup.vac-nav", (e) => this.handleArrowKeys(e)); // Use arrow keys to navigate annotations
         }
     }
 
@@ -125,6 +125,7 @@ class Controls extends PlayerComponent {
         this.enablePlayingAndControl();
     }
 
+    // On arrow key press, navigate to next or prev Annotation
     handleArrowKeys (e) {
         if(!this.plugin.active) return;
         let keyId = e.which;

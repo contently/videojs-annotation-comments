@@ -1,6 +1,6 @@
 "use strict";
 /*
-        Component for a shape that can be drug/sized on top of the video while adding a new annotation
+    Component for a shape that can be drug/sized on top of the video while adding a new annotation
 */
 
 const _ = require("underscore");
@@ -102,6 +102,7 @@ class SelectableShape extends AnnotationShape {
         return Number(((y / max) * 100).toFixed(2)); //round to 2 decimal places
     }
 
+    // Unbind events and remove element
     teardown () {
         this.$parent.off("mousedown.selectableShape");
         $(document).off("mouseup.selectableShape");

@@ -10,8 +10,6 @@ const Templates = require("./../templates/comment_list.hbs");
 const CommentListTemplate = Templates.commentListTemplate;
 const NewCommentTemplate = Templates.newCommentTemplate;
 
-// TODO - comment each of these methods
-
 class CommentList extends PlayerComponent {
 
     constructor (data, playerId) {
@@ -31,22 +29,22 @@ class CommentList extends PlayerComponent {
 
     // Bind all events needed for the comment list
     bindListEvents () {
-        // TODO - comment to describe each of these
         this.$el
-            .on("click.comment", ".vac-close-comment-list", () => this.annotation.close())
-            .on("click.comment", ".vac-reply-btn", () => this.addNewComment())
-            .on("click.comment", ".vac-delete-annotation", (e) => this.handleDeleteAnnotationClick(e))
-            .on("click.comment", ".vac-delete-comment", (e) => this.destroyComment(e))
-            .on("mousewheel.comment DOMMouseScroll.comment", ".vac-comments-wrap", this.disablePageScroll);
+            .on("click.comment", ".vac-close-comment-list", () => this.annotation.close()) // Hide CommentList UI with close button
+            .on("click.comment", ".vac-reply-btn", () => this.addNewComment()) // Open new reply UI with reply button
+            .on("click.comment", ".vac-delete-annotation", (e) => this.handleDeleteAnnotationClick(e)) // Delete annotation with main delete button
+            .on("click.comment", ".vac-delete-comment", (e) => this.destroyComment(e)) // Delete comment with delete comment button
+            .on("mousewheel.comment DOMMouseScroll.comment", ".vac-comments-wrap", this.disablePageScroll); // Prevent outer page scroll when scrolling inside of the CommentList UI
     }
 
     // Bind event listeners for new comments form
     bindCommentFormEvents () {
         this.$newCommentForm
-            .on("click.comment", ".vac-add-controls a, .vac-video-write-new.vac-comment a", this.closeNewComment.bind(this))
-            .on("click.comment", ".vac-video-write-new.vac-is-comment button", this.saveNewComment.bind(this));
+            .on("click.comment", ".vac-add-controls a, .vac-video-write-new.vac-is-comment a", this.closeNewComment.bind(this)) // Cancel new comment creation with cancel link
+            .on("click.comment", ".vac-video-write-new.vac-is-comment button", this.saveNewComment.bind(this)); // Save new comment with save button
     }
 
+    // Render CommentList UI with all comments using template
     render () {
         this.$el = $(this.renderTemplate(
             this.commentsTemplate,
@@ -61,11 +59,13 @@ class CommentList extends PlayerComponent {
         this.bindListEvents();
     }
 
+    // Re-render UI on state change
     reRender () {
         this.teardown();
         this.render();
     }
 
+    // Render new comment form
     addNewComment () {
         this.$wrap.addClass("vac-active").find(".vac-comments-wrap").scrollTop(999999);
         var $shapebox = this.$wrap.find(".vac-add-new-shapebox"),
@@ -78,6 +78,7 @@ class CommentList extends PlayerComponent {
         this.$player.append(this.$newCommentForm);
     }
 
+    // Save comment from new comment form, update state and re-render UI
     saveNewComment () {
         this.$wrap.removeClass("vac-active");
 
@@ -92,14 +93,17 @@ class CommentList extends PlayerComponent {
         this.closeNewComment();
         this.reRender();
 
-        this.plugin.annotationState.stateChangedCallback();
+        this.plugin.annotationState.stateChanged();
     }
 
+    // Cancel comment adding process
     closeNewComment () {
         this.$wrap.removeClass("vac-active");
         if(this.$newCommentForm) this.$newCommentForm.remove();
     }
 
+    // Delete a comment. If it is the only comment, delete the annotation
+    // Update state and re-render UI
     destroyComment (event) {
         if(this.comments.length == 1) {
             this.annotation.destroy();
@@ -112,9 +116,11 @@ class CommentList extends PlayerComponent {
             this.reRender();
         }
 
-        this.plugin.annotationState.stateChangedCallback();
+        this.plugin.annotationState.stateChanged();
     }
 
+    // Prevents outer page scroll when at the top or bottom of CommentList UI
+    // TODO: This might need to be fine-tuned?
     disablePageScroll (event) {
         let $target = $(event.currentTarget),
             height  = $target.height(),
@@ -138,12 +144,14 @@ class CommentList extends PlayerComponent {
         }
     }
 
+    // Sort comments by timestamp
     sortComments () {
         this.comments.sort((a,b) => {
             return a.timestamp < b.timestamp ? -1 : (a.timestamp > b.timestamp ? 1 : 0);
         });
     }
 
+    // Delete the annotation
     handleDeleteAnnotationClick (e) {
         let $confirmEl = $("<a/>").text("CONFIRM");
         $confirmEl.on("click.comment", () => {
@@ -153,14 +161,17 @@ class CommentList extends PlayerComponent {
         $(e.target).replaceWith($confirmEl);
     }
 
+    // Teardown CommentList UI, unbind events
     teardown () {
         super.teardown();
-        this.$el
-            .off("click.comment", ".vac-close-comment-list")
-            .off("click.comment", ".vac-reply-btn")
-            .off("click.comment", ".vac-delete-annotation")
-            .off("click.comment", ".vac-delete-comment")
-            .off("mousewheel.comment DOMMouseScroll.comment", ".vac-comments-wrap");
+        if(this.$el) {
+            this.$el
+                .off("click.comment", ".vac-close-comment-list")
+                .off("click.comment", ".vac-reply-btn")
+                .off("click.comment", ".vac-delete-annotation")
+                .off("click.comment", ".vac-delete-comment")
+                .off("mousewheel.comment DOMMouseScroll.comment", ".vac-comments-wrap");
+        }
         if(this.$newCommentForm){
             this.$newCommentForm
                 .off("click.comment", ".vac-add-controls a, .vac-video-write-new.vac-comment a")
