@@ -89,5 +89,5 @@ gulp.task('build', ['transpile'], (cb) => {
 
 gulp.task('transpile', (cb) => compile(false, cb) );
 gulp.task('bundle_watch', (cb) => compile(true, cb) );
-gulp.task('watch', ['bundle_watch', 'dev_webserver', 'sass:watch']);
+gulp.task('watch', ['bundle_watch', 'dev_webserver', 'sass', 'sass:watch']);
 gulp.task('default', ['watch']);

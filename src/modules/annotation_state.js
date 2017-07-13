@@ -22,7 +22,7 @@ class AnnotationState extends PlayerComponent {
 
 		this.lastVideoTime = 0;
 
-		this.bindEvents()
+		this.bindEvents();
 	}
 
 	set enabled (shouldBeEnabled) {
