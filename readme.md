@@ -12,9 +12,35 @@
 
 [VideoJS](http://docs.videojs.com/) is a popular open source HTML5 video player library used by 400k+ sites. As of v6, there is an extendable plugin architecture which was used to create this plugin. Here are some [examples of other VideoJS plugins.](https://github.com/videojs/video.js/wiki/Plugins). This plugin is built against [VideoJS v 6.2.0](https://www.npmjs.com/package/video.js/)
 
+### Add it to your VideoJS player
+
+```javascript
+// Initialize VideoJS
+var player = videojs('video-id');
+
+// Add plugin
+// Options here are set to defaults
+player.annotationComments({
+	// Collection of annotation data to initialize
+	annotationObjects: [],
+    // Use arrow keys to move through annotations when Annotation mode is active
+    bindArrowKeys: true,
+    // Flexible meta data object. Currently used for user data
+    meta: { user_id: null, user_name: null },
+    // Provide a callback func to be fired when the plugin data state changes
+    onStateChanged: null,
+    // Show or hide the control panel
+    showControls: true,
+    // Show or hide the comment list when an annotation is active
+    showCommentList: true,
+    // Show or hide the full screen button within the player toolbar
+    showFullScreen: true
+});
+```
+
 ### Develop and Build
 
-We're using [npm](https://www.npmjs.com/) for package management and [gulp](https://github.com/gulpjs/gulp) as our build system. The fastest way to get started is to clone the repo, run `npm install`, and then `gulp watch`. Visit `http://localhost:3004/test.html` to see the magic happen.
+We're using [npm](https://www.npmjs.com/) for package management and [gulp](https://github.com/gulpjs/gulp) as our build system. The fastest way to get started is to clone the repo, run `npm install`, and then `gulp build` and `gulp watch`. Visit `http://localhost:3004/test.html` to see the magic happen.
 
 
 #### Gulp commands

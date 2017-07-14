@@ -10,7 +10,7 @@
 
     const DEFAULT_OPTIONS = Object.freeze({
         bindArrowKeys:      true,
-        meta:               {},
+        meta:               { user_id: null, user_name: null },
         onStateChanged:     null,
         annotationsObjects: [],
         showControls:       true,
