@@ -41,7 +41,7 @@ class Annotation extends PlayerComponent {
 
     // Opens the annotation. Handles marker, commentList, shape, Annotation state, and player state
     open (withPause=true, previewOnly=false) {
-        if(previewOnly){
+        if(previewOnly || !this.plugin.options.showCommentList){
             this.marker.setActive(true);
         }else{
             this.commentList.render();

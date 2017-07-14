@@ -2,7 +2,7 @@
 
 (($, videojs) => {
 
-    const _ = require("underscore");
+    const cloneObject = require("./utils").cloneObject;
     const Plugin = videojs.getPlugin('plugin');
     const Controls = require("./modules/controls").class;
     const PlayerButton = require("./modules/player_button").class;
@@ -12,15 +12,16 @@
         bindArrowKeys:      true,
         meta:               {},
         onStateChanged:     null,
-        annotationsObjects: []
+        annotationsObjects: [],
+        showControls:       true,
+        showCommentList:    true,
+        showFullScreen:     true
     });
 
     class Main extends Plugin {
 
         constructor(player, options) {
-            // TODO - fix this!
-            //options = _.extend(options, DEFAULT_OPTIONS);
-
+            options = Object.assign(cloneObject(DEFAULT_OPTIONS), options);
             super(player, options);
 
             this.playerId = $(player.el()).attr('id');
@@ -28,9 +29,14 @@
             this.meta = options.meta;
             this.options = options;
 
-            //assign reference to this class to player for access later by components where needed
+            // assign reference to this class to player for access later by components where needed
             let self = this;
             player.annotationComments = () => { return self };
+
+            // remove player fullscreen button if showFullScreen: false
+            if (!this.options.showFullScreen) {
+                $(player.el).find('.vjs-fullscreen-control').remove();
+            }
 
             // setup initial state and draw UI after video is loaded
             player.on("loadedmetadata", () => {
@@ -44,9 +50,11 @@
 
         // Draw UI components for interaction
         drawUI () {
-            this.components = {
-                playerButton:   new PlayerButton(this.playerId),
-                controls:       new Controls(this.playerId, this.options.bindArrowKeys)
+            this.components = { playerButton: new PlayerButton(this.playerId) };
+
+            // initialize Controls if showControls: true
+            if (this.options.showControls) {
+                this.components.controls = new Controls(this.playerId, this.options.bindArrowKeys);
             };
 
             this.components.playerButton.updateNumAnnotations(this.annotationState.annotations.length);
@@ -64,10 +72,14 @@
             this.active = !this.active;
             this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
             this.annotationState.enabled = this.active;
-            if(!this.active){
-                this.components.controls.clear(true);
-            }else{
-                this.components.controls.draw();
+
+            // handle control component UI if showControls: true
+            if(this.components.controls){
+                if(!this.active){
+                    this.components.controls.clear(true);
+                }else{
+                    this.components.controls.draw();
+                }
             }
         }
     }
