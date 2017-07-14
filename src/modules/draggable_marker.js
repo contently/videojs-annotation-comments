@@ -4,9 +4,9 @@
     as drag occurs
 */
 
-const _ = require("underscore");
+const throttle = require('./../utils').throttle;
 const Marker = require("./marker").class;
-const DraggableMarkerTemplate = require("./../templates/marker.hbs").draggableMarkerTemplate;
+const markerTemplateName = 'daggable_marker.hbs'
 
 class draggableMarker extends Marker {
 
@@ -26,7 +26,7 @@ class draggableMarker extends Marker {
             e.preventDefault();
             this.dragging = true;
             // When mouse moves (with mouse down) call onDrag, throttling to once each 250 ms
-            $(document).on("mousemove.draggableMarker", _.throttle(this.onDrag.bind(this), 250) );
+            $(document).on("mousemove.draggableMarker", throttle(this.onDrag.bind(this), 250) );
         });
 
         // On mouse up end drag action and unbind mousemove event

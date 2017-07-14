@@ -14,7 +14,8 @@ const gulp          = require('gulp'),
       sass          = require('gulp-sass'),
       debug         = require('gulp-debug'),
       pump          = require('pump'),
-      mocha         = require('gulp-mocha');
+      mocha         = require('gulp-mocha'),
+      shell         = require('gulp-shell');
 
 const FILENAME = "videojs-annotation-comments.js",
       PACKAGE = require('./package.json');
@@ -76,6 +77,12 @@ gulp.task('sass', () => {
 gulp.task('sass:watch', () => {
     gulp.watch('./src/css/**/*.scss', ['sass']);
 });
+
+// you gotta globally install handlebars bc im tired of shitty handlebars-gulp libs
+gulp.task('templates', shell.task([
+    'handlebars ./src/templates/*.hbs -f ./src/compiled_templates.js',
+    "echo 'var Handlebars = require(\"handlebars/runtime\");\n' | cat - ./src/compiled_templates.js > temp && mv temp ./src/compiled_templates.js"
+]));
 
 gulp.task('build', ['transpile'], (cb) => {
     pump([

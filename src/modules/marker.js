@@ -3,7 +3,7 @@
     Component for a timeline marker with capabilities to draw on timeline, including tooltip for comment
 */
 
-const MarkerTemplate = require("./../templates/marker.hbs").markerTemplate;
+const markerTemplateName = 'marker.hbs';
 const PlayerComponent = require("./player_component").class;
 
 class Marker extends PlayerComponent {
@@ -12,7 +12,7 @@ class Marker extends PlayerComponent {
         super(playerId);
         this.range = range;
         this.comment = comment;
-        this.template = MarkerTemplate;
+        this.templateName = markerTemplateName;
     }
 
     // attribute to get the DOM id for this marker node
@@ -49,7 +49,7 @@ class Marker extends PlayerComponent {
         $timeline.find("#" + this.markerId).remove();
 
         // Bind to local instance var, add to DOM, and setup events
-        this.$el = $(this.renderTemplate(this.template, this.markerTemplateData));
+        this.$el = $(this.renderTemplate(this.templateName, this.markerTemplateData));
         $markerWrap.append(this.$el);
         this.bindMarkerEvents();
     }

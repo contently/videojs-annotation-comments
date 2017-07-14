@@ -4,7 +4,7 @@
 	toggling active states for annotations, navigating annotations forward/back, etc
 */
 
-const _ = require("underscore");
+const throttle = require('./../utils').throttle;
 const PlayerComponent = require("./player_component").class;
 const Annotation = require("./annotation").class;
 
@@ -38,7 +38,7 @@ class AnnotationState extends PlayerComponent {
 		return this._enabled;
 	}
 
-	// Sets _.annotations w/Annoation objects from input array
+	// Sets _annotations w/Annoation objects from input array
 	set annotations (annotationsData) {
 		this._annotations = annotationsData.map((a) => new Annotation(a, this.playerId));
 		this.sortAnnotations();
@@ -65,7 +65,7 @@ class AnnotationState extends PlayerComponent {
 
 	// Bind events for setting liveAnnotation on video time change
 	bindEvents () {
-		this.player.on("timeupdate", _.throttle(this.setLiveAnnotation.bind(this), 1000));
+		this.player.on("timeupdate", throttle(this.setLiveAnnotation.bind(this), 1000));
 	}
 
 	// Sort annotations by range.start

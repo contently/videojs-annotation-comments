@@ -5,7 +5,8 @@
 */
 
 const EventDispatcher = require("./event_dispatcher").class
-const Handlebars = require("handlebars");
+const Handlebars = require('handlebars/runtime');
+require('./../compiled_templates');
 
 class PlayerComponent {
 
@@ -49,9 +50,8 @@ class PlayerComponent {
   }
 
   // Render a handlebars template with local data passed in via key/val in object
-  renderTemplate (htmlString, options = {}) {
-    var template = Handlebars.compile(htmlString);
-    return template(options);
+  renderTemplate (templateName, options = {}) {
+      return Handlebars.templates[templateName](options);
   }
 
   // Handle escaped breaklines in Handlebars

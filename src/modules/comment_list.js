@@ -3,12 +3,10 @@
   Component for a list of comments in a visible/active annotation
 */
 
-const _ = require("underscore");
 const PlayerComponent = require("./player_component").class;
 const Comment = require("./comment").class;
-const Templates = require("./../templates/comment_list.hbs");
-const CommentListTemplate = Templates.commentListTemplate;
-const NewCommentTemplate = Templates.newCommentTemplate;
+const commentListTemplateName = 'comment_list.hbs';
+const newCommentTemplateName = 'new_comment.hbs';
 
 class CommentList extends PlayerComponent {
 
@@ -18,8 +16,6 @@ class CommentList extends PlayerComponent {
         this.annotation = data.annotation;
         this.comments = data.comments.map((c) => new Comment(c, playerId));
         this.sortComments();
-        this.commentsTemplate = CommentListTemplate;
-        this.newCommentTemplate = NewCommentTemplate;
     }
 
     // Serialize object
@@ -47,7 +43,7 @@ class CommentList extends PlayerComponent {
     // Render CommentList UI with all comments using template
     render () {
         this.$el = $(this.renderTemplate(
-            this.commentsTemplate,
+            commentListTemplateName,
             {
                 commentsHTML: this.comments.map((c) => c.HTML),
                 rangeStr: this.humanTime(this.annotation.range)
@@ -73,7 +69,7 @@ class CommentList extends PlayerComponent {
             top = $shapebox.position().top + 10,
             right = this.$wrap.outerWidth() - ($shapebox.position().left + width);
 
-        this.$newCommentForm = $(this.renderTemplate(this.newCommentTemplate, {width, top, right}));
+        this.$newCommentForm = $(this.renderTemplate(newCommentTemplateName, {width, top, right}));
         this.bindCommentFormEvents();
         this.$player.append(this.$newCommentForm);
     }
@@ -110,7 +106,7 @@ class CommentList extends PlayerComponent {
         } else {
             let $comment   = $(event.target).closest(".vac-comment"),
                 commentId  = $comment.data('id'),
-                commentObj = _.find(this.comments, (c) => { return c.id == commentId }),
+                commentObj = this.comments.find((c) => c.id == commentId),
                 i = this.comments.indexOf(commentObj);
             this.comments.splice(i, 1);
             this.reRender();
