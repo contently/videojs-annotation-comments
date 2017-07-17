@@ -63,7 +63,7 @@ function getBundler(path, options){
 
 gulp.task('test', () => {
     gulp.src(['test/test_suite.js'], { read: false })
-        .pipe(mocha({ compilers: ['js:babel-core/register'], reporter: 'landing' }));
+        .pipe(mocha({ compilers: ['js:babel-core/register'] }));
 });
 
 gulp.task('tdd', function() {
