@@ -1,18 +1,3 @@
-const expect = chai.expect;
-const videoHTML = '<video id="main_player" class="video-js" controls preload="auto" width="720" height="405" data-setup="{}"><source src="./../Docal_announmt_final.mp4" type="video/mp4"></video>'
-
-const addVideo = () => $('#video-container').html(videoHTML);
-var player, plugin;
-const initVJS = () => videojs('main_player');
-
-const resetVJS = () => {
-    if(player) player.dispose();
-    player = null;
-    plugin = null;
-    addVideo();
-    player = videojs('main_player');
-};
-
 describe('videojs-annotation-comments', function() {
     beforeEach(resetVJS);
 
