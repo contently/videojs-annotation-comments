@@ -2,6 +2,10 @@
 <HTML>
 	<HEAD>
 		<title>VideoJS Annotated Comments Automated Tests</title>
+		<link href="/video.js/dist/video-js.css" rel="stylesheet">
+		<link href="./../assets/videojs_skin.css" rel="stylesheet">
+		<link href="./../assets/page.css" rel="stylesheet">
+		<link href="./../css/annotations.css" rel="stylesheet">
         <link rel="stylesheet" href="/mocha/mocha.css">
 		<script>
 			var annotations = [
@@ -57,27 +61,18 @@
 			];
 		</script>
         <style>
-            #main_player { display: none; }
+            /*#main_player { display: none; }*/
+			#mocha { text-align: left; }
         </style>
 
 	</HEAD>
 	<BODY>
-		<video id="main_player" class="video-js" controls preload="auto" width="720" height="405" data-setup="{}">
-		    <source src="./../Docal_announmt_final.mp4" type='video/mp4'>
-		    <p class="vjs-no-js">
-		     	To view this video please enable JavaScript, and consider upgrading to a web browser that
-		     	<a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-		    </p>
-		</video>
-
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 		<script src="/video.js/dist/video.min.js"></script>
 		<script src="/videojs-annotation-comments.js"></script>
-		<script>
-			var player = window.videojs('main_player');
-		</script>
 
         <div id="mocha"></div>
+		<div id="video-container"></div>
         <script src="/mocha/mocha.js"></script>
         <script src="/chai/chai.js"></script>
         <script>
