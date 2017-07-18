@@ -41,7 +41,9 @@
             // setup initial state and draw UI after video is loaded
             player.on("loadedmetadata", () => {
                 this.annotationState = new AnnotationState(this.playerId, options.onStateChanged);
-                this.annotationState.annotations = options.annotationsObjects;
+                if (options.annotationsObjects && options.annotationsObjects.length) {
+                    this.annotationState.annotations = options.annotationsObjects;
+                }
 
                 this.drawUI();
                 this.bindEvents();
