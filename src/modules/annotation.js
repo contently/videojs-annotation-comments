@@ -16,13 +16,24 @@ class Annotation extends PlayerComponent {
         this.id = data.id;
         this.range = data.range;
         this.shape = data.shape;
-
-        this.commentList = new CommentList({"comments": data.comments, "annotation": this}, playerId)
-        this.marker = new Marker(this.range, this.commentList.comments[0], playerId);
-        this.marker.draw();
-        this.annotationShape = new AnnotationShape(this.shape, playerId);
         this.secondsActive = this.buildSecondsActiveArray();
+        this.buildComments()
+        this.buildMarker()
+        this.buildShape()
         this.bindEvents();
+    }
+
+    buildComments() {
+        this.commentList = new CommentList({"comments": data.comments, "annotation": this}, this.playerId)
+    }
+
+    buildMarker () {
+        this.marker = new Marker(this.range, this.commentList.comments[0], this.playerId);
+        this.marker.draw();
+    }
+
+    buildShape() {
+        this.annotationShape = new AnnotationShape(this.shape, this.playerId);
     }
 
     // Serialize object
