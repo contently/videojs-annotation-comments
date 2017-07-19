@@ -1,0 +1,152 @@
+<!DOCTYPE HTML>
+<HTML>
+	<HEAD>
+		<title>VideoJS Annotated Comments Test Page</title>
+		<link href="/video.js/dist/video-js.css" rel="stylesheet">
+		<link href="assets/videojs_skin.css" rel="stylesheet">
+		<link href="assets/page.css" rel="stylesheet">
+		<link href="css/annotations.css" rel="stylesheet">
+		<script>
+			function guid() {
+		      function s4() {
+		        return Math.floor((1 + Math.random()) * 0x10000)
+		          .toString(16)
+		          .substring(1);
+		      }
+		      return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+		        s4() + '-' + s4() + s4() + s4();
+		    }
+			var annotations = [
+				{
+					"id": 1,
+					"range": {
+						"start": 55, "end": 60
+					},
+					"shape": {
+						"x1":23.47,"y1":9.88,"x2":60.83,"y2":44.2
+					},
+					"comments":[
+						{
+							"id": guid(),
+							"meta":{
+								"datetime": "2017-03-28T19:17:32.238Z",
+								"user_id":1,
+								"user_name": "Jack Pope"
+							},
+							"body": "Is the \"Stories API\" the only API we want to highlight here? It makes the system feel a little limited, even though we have robust functionality and multiple APIs"
+						}
+					]
+				},
+				{
+                    "id": 2,
+					"range": {
+						"start":65,"stop":65
+					},
+					"shape": {
+						"x1":0.97,"y1":65.19,"x2":36.25,"y2":97.28
+					},
+					"comments": [
+						{
+							"id": guid(),
+							"meta": {
+								"datetime":"2017-03-28T19:18:25.485Z",
+								"user_id":2,
+								"user_name": "Evan Carothers"
+							},
+						"body": "Can we replace this logo with Microsoft?"
+						},
+						{
+							id: guid(),
+							meta: {
+								"datetime":"2017-03-29T00:18:25.485Z",
+								user_id: 1,
+								user_name: "Jack Pope"
+							},
+							body: "Great idea Evan, that's a SUPER recognizable brand!\n\nAny other major company brands we are missing in this shot?"
+						}
+					]
+				},
+				{
+                    "id": 3,
+					"range": {
+						"start":100,"end":130
+					},
+					"shape": null,
+					"comments": [
+						{
+							"id": guid(),
+							"meta": {
+								"datetime": "2017-03-28T19:21:41.351Z",
+								"user_id":1,
+								"user_name": "Jack Pope"
+							},
+							"body": "Can we have a music change for this final section that transitions towards the final frame? Some sweet heavy rock 80s ballad?"
+						}
+					]
+				},
+				{
+                    "id": 4,
+					"range": {
+						"start":21,"end":61
+					},
+					"shape": null,
+					"comments": [
+						{
+							"id": guid(),
+							"meta": {
+								"datetime": "2017-03-28T19:21:41.351Z",
+								"user_id": 2,
+								"user_name": "Evan Carothers"
+							},
+							"body": "The music is a little loud through this section and distracts from the content and narration a bit - can we tone 'er down a couple nocks here?"
+						}
+					]
+				}
+			];
+		</script>
+
+	</HEAD>
+	<BODY>
+		<video id="the_video" class="video-js" controls preload="auto" width="720" height="405" poster="MY_VIDEO_POSTER.jpg" data-setup="{}">
+		    <source src="contently-platform-overview.mp4" type='video/mp4'>
+		    <p class="vjs-no-js">
+		     	To view this video please enable JavaScript, and consider upgrading to a web browser that
+		     	<a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+		    </p>
+		</video>
+
+        <div id="test-control-panel">
+            <p><strong>AnnotationDispatcher <-> DOM</strong></p>
+
+            <div class="control-section">
+                <p>SEND: Open Annotation Event</p>
+                <label>Annotation ID</label>
+                <input id="annotation-id-input"></input>
+                <button id="fire-open-annotation">FIRE</button>
+            </div>
+        </div>
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+		<script src="/video.js/dist/video.min.js"></script>
+		<script src="/videojs-annotation-comments.js"></script>
+		<script>
+			var player = videojs('the_video');
+			var plugin = player.annotationComments({
+				annotationsObjects: annotations,
+				bindArrowKeys: true,
+				meta: {
+					user_id: 2,
+					user_name: "Evan Carothers"
+				},
+				onStateChanged: (data) => { console.log(data); }
+			});
+
+            $(function() {
+                $("#fire-open-annotation").on("click", function() {
+                    var id = $("#annotation-id-input").val();
+                    plugin.fire('openAnnotation', {id: id});
+                });
+            });
+		</script>
+	</BODY>
+</HTML>
