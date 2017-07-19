@@ -10,12 +10,13 @@ class MockedAnnotation extends Annotation {
     buildMarker() {}
     buildShape() {}
     bindEvents() {}
+    buildEventDispatcher() {}
 }
 
 describe('Annotation', () => {
     describe('get data', () => {
         it('returns the data the annotation was initalized with', () => {
-            var annotation = new MockedAnnotation({
+            let annotationData = {
                 'id': 'myId',
                 'range': { 'start': 55, 'end': 60 },
                 'shape': { 'x1':23.47,'y1':9.88,'x2':60.83,'y2':44.2 },
@@ -30,9 +31,10 @@ describe('Annotation', () => {
                         }
                     }
                 ]
-            });
+            };
 
-            var data = annotation.data;
+            let annotation = new MockedAnnotation(annotationData, 'fakePlayerId');
+            let data = annotation.data;
 
             expect(data.id).to.equal('myId');
             expect(data.range.start).to.equal(55);

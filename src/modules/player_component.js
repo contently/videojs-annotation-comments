@@ -12,7 +12,7 @@ class PlayerComponent {
   constructor (playerId) {
   	this.playerId = playerId;
     this.generateComponentId();
-    this.buildEventDispatcher()
+    this.buildEventDispatcher();
     this.registerHandlebarsHelpers(); // TODO: does this need to be inherited for every object init?
   }
 
