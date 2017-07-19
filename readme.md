@@ -40,13 +40,40 @@ player.annotationComments({
 
 ### Develop and Build
 
-We're using [npm](https://www.npmjs.com/) for package management and [gulp](https://github.com/gulpjs/gulp) as our build system. The fastest way to get started is to clone the repo, run `npm install`, and then `gulp build` and `gulp watch`. Visit `http://localhost:3004/test.html` to see the magic happen.
+We're using [npm](https://www.npmjs.com/) for package management and [gulp](https://github.com/gulpjs/gulp) as our build system.
 
+The fastest way to get started:
+- Clone the repo
+- Run `npm install`
+- Run `npm install -g handlebars` (NOTE: the template compilation process should be improved so this is no longer needed)
+- Run `gulp build`
+- Run `gulp watch`
+- Visit `http://localhost:3004/test.html` to see the magic happen.
+
+#### Templates
+
+We're using the handlebars templating library to render various components within the plugin. For performance, the templates are pre-compiled into a JS file within the development environment. That way we only need to require the runtime, saving nearly 100kb from the minified build! ⚡️
+
+The `gulp templates` task is used to precompile every template within the `/src/templates` directory. The destination file is `/src/compiled_templates.js`.
+
+#### Testing
+
+##### Feature tests
+
+Feature tests are currently browser-based and run by visiting `http://localhost:3004/test/mocha/features/index.html`. Feature tests can be added as files in the `/test/mocha/features/` directory and then included within the `index.html` file as an external script. In the future, running these tests should be automated through phantomJS and a gulp task.
+
+##### Unit tests
+
+Unit tests are run through the `gulp test` task. If the `tdd` task is included in `gulp watch`, the tests will run with every change to the test files. Each module should have a corresponding unit test file within the `/test/mocha/modules` directory.
 
 #### Gulp commands
 
-`gulp watch`: fires up webserver @ `http://localhost:3004/test.html` and watches for any file changes in `/src` (which repackages and transpiles to unminified file in `/build`)
+`gulp watch`: Fires up webserver @ `http://localhost:3004/test.html` and watches for any file changes in `/src` (which repackages and transpiles to unminified file in `/build`)
 
 `gulp transpile`: Transpiles modules/files to build file in `/build` with JS maps
 
-`gulp build`: runs transpile then minifies to distributino filename in `/build` with attribution
+`gulp build`: Runs transpile then minifies to distribution filename in `/build` with attribution
+
+`gulp templates`: Uses handlebars cli to pre-compile templates into a javascript file. See Templates section above.
+
+`gulp test`: Runs the mocha unit tests within the `/test/mocha/modules/` directory.
