@@ -18,7 +18,7 @@
 		    }
 			var annotations = [
 				{
-					"id": guid(),
+					"id": 1,
 					"range": {
 						"start": 55, "end": 60
 					},
@@ -27,7 +27,7 @@
 					},
 					"comments":[
 						{
-							"id":guid(),
+							"id": guid(),
 							"meta":{
 								"datetime": "2017-03-28T19:17:32.238Z",
 								"user_id":1,
@@ -38,6 +38,7 @@
 					]
 				},
 				{
+                    "id": 2,
 					"range": {
 						"start":65,"stop":65
 					},
@@ -46,7 +47,7 @@
 					},
 					"comments": [
 						{
-							"id": "2854a682-ffdf-78a4-796d-22abb6d9cac3",
+							"id": guid(),
 							"meta": {
 								"datetime":"2017-03-28T19:18:25.485Z",
 								"user_id":2,
@@ -66,13 +67,14 @@
 					]
 				},
 				{
+                    "id": 3,
 					"range": {
 						"start":100,"end":130
 					},
 					"shape": null,
 					"comments": [
 						{
-							"id": "e0b9787b-fbe7-f1e9-5134-d0eb69a783aa",
+							"id": guid(),
 							"meta": {
 								"datetime": "2017-03-28T19:21:41.351Z",
 								"user_id":1,
@@ -83,13 +85,14 @@
 					]
 				},
 				{
+                    "id": 4,
 					"range": {
 						"start":21,"end":61
 					},
 					"shape": null,
 					"comments": [
 						{
-							"id": "e0b9787b-fbe7-f1e9-5134-d0eb69a783aa",
+							"id": guid(),
 							"meta": {
 								"datetime": "2017-03-28T19:21:41.351Z",
 								"user_id": 2,
@@ -112,24 +115,38 @@
 		    </p>
 		</video>
 
+        <div id="test-control-panel">
+            <p><strong>AnnotationDispatcher <-> DOM</strong></p>
+
+            <div class="control-section">
+                <p>SEND: Open Annotation Event</p>
+                <label>Annotation ID</label>
+                <input id="annotation-id-input"></input>
+                <button id="fire-open-annotation">FIRE</button>
+            </div>
+        </div>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 		<script src="/video.js/dist/video.min.js"></script>
 		<script src="/videojs-annotation-comments.js"></script>
 		<script>
-			var player = window.videojs('the_video');
-			player.annotationComments({
+			var player = videojs('the_video');
+			var plugin = player.annotationComments({
 				annotationsObjects: annotations,
 				bindArrowKeys: true,
 				meta: {
 					user_id: 2,
 					user_name: "Evan Carothers"
 				},
-				onStateChanged: (data) => { console.log(data); },
-				showControls: true,
-				showCommentList: true,
-				showFullScreen: true
+				onStateChanged: (data) => { console.log(data); }
 			});
+
+            $(function() {
+                $("#fire-open-annotation").on("click", function() {
+                    var id = $("#annotation-id-input").val();
+                    plugin.fire('openAnnotation', {id: id});
+                });
+            });
 		</script>
 	</BODY>
 </HTML>

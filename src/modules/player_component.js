@@ -4,6 +4,7 @@
    the player, the plugin, video state, template rendering, etc)
 */
 
+const EventDispatcher = require("./event_dispatcher").class
 const Handlebars = require("handlebars");
 
 class PlayerComponent {
@@ -11,7 +12,8 @@ class PlayerComponent {
   constructor (playerId) {
   	this.playerId = playerId;
     this.generateComponentId();
-    this.registerHandlebarsHelpers();
+    this.buildEventDispatcher()
+    this.registerHandlebarsHelpers(); // TODO: does this need to be inherited for every object init?
   }
 
   // attribute to get reference to the main plugin object (main.js instance)
@@ -81,6 +83,15 @@ class PlayerComponent {
   // Provide basic teardown function to inherit
   teardown () {
     if(this.$el) this.$el.remove();
+  }
+
+  // Initialize the event listener if needed
+  // Register all events in the EventRegistry matching this component
+  buildEventDispatcher () {
+      if (!this.plugin.eventDispatcher) {
+          this.plugin.eventDispatcher = new EventDispatcher(this.plugin);
+      }
+      this.plugin.eventDispatcher.registerListenersFor(this); // TODO: should listeners be removed on obj destroy?
   }
 
   // Generate unique ids

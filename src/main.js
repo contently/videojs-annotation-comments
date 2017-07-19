@@ -30,7 +30,6 @@
             this.options = options;
 
             // assign reference to this class to player for access later by components where needed
-            let self = this;
             player.annotationComments = () => { return self };
 
             // remove player fullscreen button if showFullScreen: false
@@ -40,8 +39,11 @@
 
             // setup initial state and draw UI after video is loaded
             player.on("loadedmetadata", () => {
-                this.annotationState = new AnnotationState(this.playerId, options.onStateChanged);
-                this.annotationState.annotations = options.annotationsObjects;
+                this.annotationState = new AnnotationState(this.playerId, this.options.onStateChanged);
+
+                if (this.options.annotationsObjects.length) {
+                    this.annotationState.annotations = this.options.annotationsObjects;
+                }
 
                 this.drawUI();
                 this.bindEvents();
@@ -65,6 +67,12 @@
             this.components.playerButton.$el.on('click', () => {
                 this.toggleAnnotations();
             });
+        }
+
+        // A wrapper func to make it easier to use EventDispatcher from the client
+        // Ex: plugin.fire(type, data);
+        fire (type, data) {
+            this.eventDispatcher.fire(type, data);
         }
 
         // Toggle annotations mode on/off

@@ -22,7 +22,7 @@ class AnnotationState extends PlayerComponent {
 
 		this.lastVideoTime = 0;
 
-		this.bindEvents()
+		this.bindEvents();
 	}
 
 	set enabled (shouldBeEnabled) {
@@ -95,7 +95,7 @@ class AnnotationState extends PlayerComponent {
 
 		let time = Math.floor(this.player.currentTime());
 
-		if(this.skipLiveCheck){
+		if(this.skipLiveCheck) {
 			if(time !== this.lastVideoTime) this.skipLiveCheck = false;
 			return;
 		}
