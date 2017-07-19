@@ -67,6 +67,12 @@
             });
         }
 
+        // A wrapper func to make it easier to use EventDispatcher from the client
+        // Ex: plugin.fire(type, data);
+        fire (type, data) {
+            this.eventDispatcher.fire(type, data);
+        }
+
         // Toggle annotations mode on/off
         toggleAnnotations() {
             this.active = !this.active;
