@@ -3,7 +3,7 @@
     Component for a shape that can be drug/sized on top of the video while adding a new annotation
 */
 
-const _ = require("underscore");
+const throttle = require('./../utils').throttle;
 const AnnotationShape = require("./annotation_shape").class;
 
 class SelectableShape extends AnnotationShape {
@@ -45,7 +45,7 @@ class SelectableShape extends AnnotationShape {
             this.dragMoved = false; // used to determine if user actually dragged or just clicked
 
             // Bind event on doc mousemove to track drag, throttled to once each 250ms
-            $(document).on("mousemove.selectableShape", _.throttle(this.onDrag.bind(this), 250) );
+            $(document).on("mousemove.selectableShape", throttle(this.onDrag.bind(this), 250) );
         });
 
         // On mouseup, if during drag cancel drag event listeners

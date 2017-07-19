@@ -3,10 +3,9 @@
   Component for an invidual comment
 */
 
-const _ = require("underscore");
 const PlayerComponent = require("./player_component").class;
 const moment = require("moment");
-const CommentTemplate = require("./../templates/comment.hbs").commentTemplate;
+const templateName = 'comment.hbs';
 
 class Comment extends PlayerComponent {
 
@@ -31,7 +30,7 @@ class Comment extends PlayerComponent {
     // Render HTML for this comment
     get HTML () {
         return this.renderTemplate(
-            CommentTemplate,
+            templateName,
             {
                 id:         this.id,
                 body:       this.body,
@@ -55,7 +54,7 @@ class Comment extends PlayerComponent {
     // Return an object with plugin data, timestamp, unique id, and body content
     static dataObj (body, plugin) {
         return {
-            meta:   _.extend({
+            meta:   Object.assign({
                         datetime: moment().toISOString()
                     }, plugin.meta),
             id:     this.guid(),

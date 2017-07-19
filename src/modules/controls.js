@@ -4,12 +4,12 @@
     including all functionality to add new annotations
 */
 
-const _ = require("underscore");
+const cloneObject = require("./../utils").cloneObject;
 const DraggableMarker = require("./draggable_marker.js").class;
 const SelectableShape = require("./selectable_shape.js").class;
 const PlayerComponent = require("./player_component").class;
 const Annotation = require("./annotation").class;
-const ControlsTemplate = require("./../templates/controls.hbs").ControlsTemplate;
+const templateName = 'controls.hbs'//require("./../templates/controls.hbs").ControlsTemplate;
 
 // Control uses a "ui state" to determine how UI is rendered - this object is the base state, containing a
 // default value for each item in the state
@@ -22,8 +22,7 @@ class Controls extends PlayerComponent {
 
     constructor (playerId, bindArrowKeys) {
         super(playerId);
-        this.template = ControlsTemplate;
-        this.uiState = _.clone(BASE_UI_STATE);
+        this.uiState = cloneObject(BASE_UI_STATE);
         this.bindEvents(bindArrowKeys);
         this.draw();
     }
@@ -51,7 +50,7 @@ class Controls extends PlayerComponent {
                 this.marker.teardown();
                 this.selectableShape.teardown();
             }
-            this.uiState = _.clone(BASE_UI_STATE);
+            this.uiState = cloneObject(BASE_UI_STATE);
         }
         this.$player.find(".vac-control").remove();
     }
@@ -59,12 +58,12 @@ class Controls extends PlayerComponent {
     // Draw the UI elements (based on uiState)
     draw (reset=false) {
         this.clear(reset);
-        let data = _.extend({
+        let data = Object.assign({
                         rangeStr:   this.marker ? this.humanTime(this.marker.range) : null,
                         showNav:    this.plugin.annotationState.annotations.length > 1
                     }, this.uiState);
 
-        let $ctrls = this.renderTemplate(this.template, data);
+        let $ctrls = this.renderTemplate(templateName, data);
         this.$player.append($ctrls);
     }
 
