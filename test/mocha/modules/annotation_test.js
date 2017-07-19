@@ -43,7 +43,7 @@ describe('Annotation', () => {
             expect(data.shape.x2).to.equal(60.83);
             expect(data.shape.y1).to.equal(9.88);
             expect(data.shape.y2).to.equal(44.2);
-            expect(data.comments).to.be.an("array").that.is.empty
-        }) ;
+            expect(data.comments).to.be.an("array").that.is.empty;
+        });
     });
 });

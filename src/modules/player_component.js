@@ -91,7 +91,7 @@ class PlayerComponent {
       if (!this.plugin.eventDispatcher) {
           this.plugin.eventDispatcher = new EventDispatcher(this.plugin);
       }
-      this.plugin.eventDispatcher.registerListenersFor(this); // TODO: should listeners be removed on obj destroy?
+      this.plugin.eventDispatcher.registerListenersFor(this);
   }
 
   // Generate unique ids

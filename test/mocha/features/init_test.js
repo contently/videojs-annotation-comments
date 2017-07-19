@@ -1,4 +1,6 @@
-describe('videojs-annotation-comments', () => {
+'use strict';
+
+describe('plugin initialization', () => {
     beforeEach(resetVJS);
 
     it('initializes', (done) => {

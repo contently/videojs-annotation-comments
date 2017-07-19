@@ -9,6 +9,7 @@ class EventDispatcher {
     constructor (plugin) {
         this.plugin = plugin;
         this.registeredListeners = [];
+        this.eventRegistry = EventRegistry;
     }
 
     // TODO: use a smarter namespacing system
@@ -19,7 +20,7 @@ class EventDispatcher {
 
     // Use the EventRegistry to mass register events on each component initialization
     registerListenersFor (obj) {
-        let matchingEvents = EventRegistry[obj.constructor.name];
+        let matchingEvents = this.eventRegistry[obj.constructor.name];
         if (matchingEvents) {
             Object.keys(matchingEvents).forEach((key) => {
                 // Don't register again if already in cached collection
@@ -37,12 +38,6 @@ class EventDispatcher {
         this.registeredListeners.push(type);
     }
 
-    // Remove a listener to the plugin
-    // NOTE: not yet being used
-    destroyListener (type) {
-        this.plugin.off(this.nameSpacedType(type));
-    }
-
     // Trigger an event on the plugin
     fire (type, data) {
         let evt = new CustomEvent(this.nameSpacedType(type), { 'detail': data });
@@ -52,6 +47,8 @@ class EventDispatcher {
 
 /*
     A centralized collection of event callbacks organized by component and name
+    Main reference for external event api
+    These events will be bound to the plugin on initialization of their respective components
 */
 
 const EventRegistry = {
@@ -65,5 +62,6 @@ const EventRegistry = {
 }
 
 module.exports = {
-    class: EventDispatcher
+    class: EventDispatcher,
+    registry: EventRegistry
 };
