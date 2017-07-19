@@ -12,8 +12,9 @@ const gulp          = require('gulp'),
       uglify        = require('gulp-uglify'),
       gutil         = require('gulp-util'),
       sass          = require('gulp-sass'),
-      debug         = require('gulp-debug');
-      pump          = require('pump');
+      debug         = require('gulp-debug'),
+      pump          = require('pump'),
+      mocha         = require('gulp-mocha');
 
 const FILENAME = "videojs-annotation-comments.js",
       PACKAGE = require('./package.json');
@@ -87,7 +88,16 @@ gulp.task('build', ['transpile'], (cb) => {
     ], cb);
 });
 
+gulp.task('test', () => {
+    gulp.src(['test/mocha/modules/*.js'], { read: false })
+        .pipe(mocha({ compilers: ['js:babel-core/register'] }));
+});
+
+gulp.task('tdd', function() {
+    gulp.watch(['src/*.js', 'test/mocha/modules/*.js'], ['test']);
+});
+
 gulp.task('transpile', (cb) => compile(false, cb) );
 gulp.task('bundle_watch', (cb) => compile(true, cb) );
-gulp.task('watch', ['bundle_watch', 'dev_webserver', 'sass', 'sass:watch']);
+gulp.task('watch', ['bundle_watch', 'dev_webserver', 'sass', 'sass:watch', 'tdd']);
 gulp.task('default', ['watch']);

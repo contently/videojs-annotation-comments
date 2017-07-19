@@ -95,7 +95,7 @@ class AnnotationState extends PlayerComponent {
 
 		let time = Math.floor(this.player.currentTime());
 
-		if(this.skipLiveCheck){
+		if(this.skipLiveCheck) {
 			if(time !== this.lastVideoTime) this.skipLiveCheck = false;
 			return;
 		}
