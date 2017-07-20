@@ -15,7 +15,8 @@
         annotationsObjects: [],
         showControls:       true,
         showCommentList:    true,
-        showFullScreen:     true
+        showFullScreen:     true,
+        showMarkerTooltips: true
     });
 
     class Main extends Plugin {

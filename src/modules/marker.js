@@ -23,7 +23,7 @@ class Marker extends PlayerComponent {
     // Set this marker as active (highlight) and optionally show tooltip also
     setActive (showTooltip=false) {
         this.$el.addClass("vac-active");
-        if(showTooltip){
+        if(showTooltip && this.plugin.options.showMarkerTooltips){
             this.$el.addClass('vac-force-tooltip');
         }
     }
@@ -69,13 +69,14 @@ class Marker extends PlayerComponent {
         let left = (this.range.start / this.duration) * 100,
             width = ((this.range.end / this.duration) * 100) - left;
         return {
-            "left":         left + "%",
-            "width":        width + "%",
-            "tooltipRight": left > 50,
-            "tooltipTime":  this.humanTime(this.range),
-            "tooltipBody":  !this.comment ? null : this.comment.body,
-            "rangeShow":    !!this.range.end,
-            "id":           this.markerId
+            left:         left + '%',
+            width:        width + '%',
+            showTooltip:  this.plugin.options.showMarkerTooltips,
+            tooltipRight: left > 50,
+            tooltipTime:  this.humanTime(this.range),
+            tooltipBody:  !this.comment ? null : this.comment.body,
+            rangeShow:    !!this.range.end,
+            id:           this.markerId
         }
     }
 

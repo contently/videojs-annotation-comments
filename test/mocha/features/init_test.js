@@ -28,7 +28,8 @@ describe('plugin initialization', () => {
                     onStateChanged: null,
                     showCommentList: true,
                     showControls: true,
-                    showFullScreen: true
+                    showFullScreen: true,
+                    showMarkerTooltips: true
                 });
                 done();
             });
@@ -112,7 +113,7 @@ describe('plugin initialization', () => {
 
                 player.on('loadedmetadata', () => {
                     player.play().then(() => {
-                        $('.vac-player-btn').click();
+                        toggleAnnotationMode();
                         expect($('.vac-controls').length).to.equal(1);
                         done();
                     });
@@ -124,7 +125,7 @@ describe('plugin initialization', () => {
 
                 player.on('loadedmetadata', () => {
                     player.play().then(() => {
-                        $('.vac-player-btn').click();
+                        toggleAnnotationMode();
                         expect($('.vac-controls').length).to.equal(0);
                         done();
                     });
@@ -140,8 +141,8 @@ describe('plugin initialization', () => {
 
                 player.on('loadedmetadata', () => {
                     player.play().then(() => {
-                        $('.vac-player-btn').click();
-                        $('.vac-marker').click();
+                        toggleAnnotationMode();
+                        $('.vac-marker').first().click();
                         expect($('.vac-comments-container').length).to.equal(1);
                         done();
                     });
@@ -156,7 +157,7 @@ describe('plugin initialization', () => {
 
                 player.on('loadedmetadata', () => {
                     player.play().then(() => {
-                        $('.vac-player-btn').click();
+                        toggleAnnotationMode();
                         $('.vac-marker').click();
                         expect($('.vac-comments-container').length).to.equal(0);
                         done();
@@ -185,6 +186,37 @@ describe('plugin initialization', () => {
                 player.on('loadedmetadata', () => {
                     player.play().then(() => {
                         expect($('.vjs-fullscreen-control').length).to.equal(0);
+                        done();
+                    });
+                });
+            });
+        });
+
+        describe('showMarkerTooltips', () => {
+            beforeEach(resetVJS);
+
+            it('has a default of true and shows tooltips', (done) => {
+                plugin = player.annotationComments({ annotationsObjects: annotations });
+
+                player.on('loadedmetadata', () => {
+                    player.play().then(() => {
+                        toggleAnnotationMode();
+                        expect($('.vac-marker').first().find('span.vac-tooltip').length).to.equal(1);
+                        done();
+                    });
+                });
+            });
+
+            it('can be set to false to hide the tooltips', (done) => {
+                plugin = player.annotationComments({
+                    annotationsObjects: annotations,
+                    showMarkerTooltips: false
+                });
+
+                player.on('loadedmetadata', () => {
+                    player.play().then(() => {
+                        toggleAnnotationMode();
+                        expect($('.vac-marker').first().find('span.vac-tooltip').length).to.equal(0);
                         done();
                     });
                 });

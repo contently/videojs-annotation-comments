@@ -34,7 +34,9 @@ player.annotationComments({
     // Show or hide the comment list when an annotation is active
     showCommentList: true,
     // Show or hide the full screen button within the player toolbar
-    showFullScreen: true
+    showFullScreen: true,
+	// Show or hide the tool tips on marker hover
+	showMarkerTooltips: true
 });
 ```
 
