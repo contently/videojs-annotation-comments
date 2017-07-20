@@ -116,14 +116,19 @@
 		</video>
 
         <div id="test-control-panel">
-            <p><strong>AnnotationDispatcher <-> DOM</strong></p>
+            <p><strong>AnnotationComments <-> DOM</strong></p>
 
             <div class="control-section">
-                <p>SEND: Open Annotation Event</p>
+                <p class="event-type"><strong>SEND:</strong> Open Annotation Event</p>
                 <label>Annotation ID</label>
                 <input id="annotation-id-input"></input>
                 <button id="fire-open-annotation">FIRE</button>
             </div>
+
+			<div class="control-section">
+				<p class="event-type"><strong>RECEIVE:</strong> Annotation Opened Event</p>
+				<p>Id opened: <span id="annotation-opened-id"></span></p>
+			</div>
         </div>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -146,6 +151,11 @@
                     var id = $("#annotation-id-input").val();
                     plugin.fire('openAnnotation', {id: id});
                 });
+
+				plugin.on('annotationOpened.videoAnnotations', function(event) {
+					var id = event.detail.id;
+					$("#annotation-opened-id").html(id);
+				});
             });
 		</script>
 	</BODY>

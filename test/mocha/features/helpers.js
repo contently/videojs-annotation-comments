@@ -15,11 +15,6 @@ const resetVJS = () => {
     player = videojs('main_player');
 };
 
-const enableVJS = () => {
-    firstPlay();
-    toggleAnnotationMode();
-}
-
 const simplePluginSetup = () => {
     return player.annotationComments({
         annotationsObjects: annotations,
