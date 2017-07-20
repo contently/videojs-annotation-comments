@@ -82,7 +82,7 @@ class Marker extends PlayerComponent {
 
     // Unbind event listeners on teardown and remove DOM nodes
     teardown () {
-        this.$el.off("mouseenter.marker mousleave.marker")
+        this.$el.off("mouseenter.marker mouseleave.marker")
         super.teardown();
     }
 }

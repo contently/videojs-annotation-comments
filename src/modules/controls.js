@@ -9,7 +9,7 @@ const DraggableMarker = require("./draggable_marker.js").class;
 const SelectableShape = require("./selectable_shape.js").class;
 const PlayerComponent = require("./player_component").class;
 const Annotation = require("./annotation").class;
-const templateName = 'controls.hbs'//require("./../templates/controls.hbs").ControlsTemplate;
+const templateName = 'controls.hbs';
 
 // Control uses a "ui state" to determine how UI is rendered - this object is the base state, containing a
 // default value for each item in the state
@@ -35,8 +35,8 @@ class Controls extends PlayerComponent {
             .on("click", ".vac-video-write-new.vac-is-annotation button", this.saveNew.bind(this)) // 'Save' button click while adding
             .on("click", ".vac-annotation-nav .vac-a-next", () => this.plugin.annotationState.nextAnnotation() ) // Click 'next' on annotation nav
             .on("click", ".vac-annotation-nav .vac-a-prev", () => this.plugin.annotationState.prevAnnotation() ) // Click 'prev' on annotation nav
-            .on("click", ".vac-video-move .vac-a-next", () => this.scrubVideo(1) ) // Click '+1 sec' on marker nav
-            .on("click", ".vac-video-move .vac-a-prev", () => this.scrubVideo(-1) ); // Click '-1 sec' on marker nav
+            .on("click", ".vac-video-move .vac-a-next", () => this.marker.scrubStart(1) ) // Click '+1 sec' on marker nav
+            .on("click", ".vac-video-move .vac-a-prev", () => this.marker.scrubStart(-1) ); // Click '-1 sec' on marker nav
         if(bindArrowKeys){
             $(document).on("keyup.vac-nav", (e) => this.handleArrowKeys(e)); // Use arrow keys to navigate annotations
         }
@@ -59,17 +59,12 @@ class Controls extends PlayerComponent {
     draw (reset=false) {
         this.clear(reset);
         let data = Object.assign({
-                        rangeStr:   this.marker ? this.humanTime(this.marker.range) : null,
-                        showNav:    this.plugin.annotationState.annotations.length > 1
-                    }, this.uiState);
+            rangeStr: this.marker ? this.humanTime(this.marker.range) : null,
+            showNav: this.plugin.annotationState.annotations.length > 1
+        }, this.uiState);
 
         let $ctrls = this.renderTemplate(templateName, data);
         this.$player.append($ctrls);
-    }
-
-    // Move the video & marker start by some num seconds (pos or neg)
-    scrubVideo (secs) {
-        // TODO - write this
     }
 
     // User clicked to cancel in-progress add - restore to normal state

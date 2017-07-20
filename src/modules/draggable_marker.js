@@ -6,13 +6,13 @@
 
 const throttle = require('./../utils').throttle;
 const Marker = require("./marker").class;
-const markerTemplateName = 'daggable_marker.hbs'
+const markerTemplateName = 'draggable_marker.hbs'
 
-class draggableMarker extends Marker {
+class DraggableMarker extends Marker {
 
     constructor (range, playerId) {
         super(range, null, playerId);
-        this.template = DraggableMarkerTemplate;  // Change template from base Marker template
+        this.templateName = markerTemplateName;   // Change template from base Marker template
         this.dragging = false;                    // Is a drag action currently occring?
         this.rangePin = range.start;              // What's the original pinned timeline point when marker was added
         this.draw();
@@ -72,8 +72,19 @@ class draggableMarker extends Marker {
         $(document).off("mousemove.draggableMarker");
         $(document).off("mouseup.draggableMarker");
     }
+
+    // Move the video & marker start by some num seconds (pos or neg)
+    scrubStart (secondsChanged) {
+        let newStart = this.range.start + secondsChanged;
+        this.player.currentTime(newStart);
+
+        this.range.start = newStart;
+        this.rangePin = newStart;
+        this.teardown();
+        this.draw();
+    }
 }
 
 module.exports = {
-    class: draggableMarker
+    class: DraggableMarker
 };
