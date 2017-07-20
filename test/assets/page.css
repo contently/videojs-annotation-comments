@@ -34,3 +34,16 @@ p {
 .event-type {
 	font-size: 1.1em;
 }
+
+#mocha {
+	text-align: left;
+	width: 50%;
+	float: left;
+}
+#mocha-video-container {
+	float: left;
+	width: 40%;
+	margin-top: 50px;
+	position: fixed;
+	right: 6%;
+}
