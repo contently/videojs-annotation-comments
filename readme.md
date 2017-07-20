@@ -21,8 +21,8 @@ var player = videojs('video-id');
 // Add plugin
 // Options here are set to defaults
 player.annotationComments({
-	// Collection of annotation data to initialize
-	annotationObjects: [],
+    // Collection of annotation data to initialize
+    annotationObjects: [],
     // Use arrow keys to move through annotations when Annotation mode is active
     bindArrowKeys: true,
     // Flexible meta data object. Currently used for user data
@@ -35,8 +35,29 @@ player.annotationComments({
     showCommentList: true,
     // Show or hide the full screen button within the player toolbar
     showFullScreen: true,
-	// Show or hide the tool tips on marker hover
-	showMarkerTooltips: true
+    // Show or hide the tool tips on marker hover
+    showMarkerTooltips: true
+});
+```
+
+### Programmatic Control
+
+If you'd like to drive the plugin or render plugin data through external UI elements, you can configure the plugin to hide the internal components and pass data through custom events. There are two kinds of AnnotationComments API events, _externally fired_ and _internally fired_.
+
+##### Supported Externally Fired Events:
+
+```javascript
+// openAnnotation : Opens an annotation within the player given an ID
+plugin.fire('openAnnotation', { id: myAnnotationId });
+```
+
+##### Supported Internally Fired Events:
+
+```javascript
+// annotationOpened.videoAnnotations : Fired whenever an annotation is opened
+plugin.on('annotationOpened.videoAnnotations', function(event) {
+    var annotationData = event.detail;
+    // do something with annotation data
 });
 ```
 
