@@ -30,7 +30,7 @@ describe('external event-based API', () => {
                 plugin = simplePluginSetup();
 
                 // Add listener
-                plugin.on('annotationOpened.videoAnnotations', (event) => {
+                plugin.on('annotationOpened', (event) => {
                     expect(event.detail.id).to.equal(1);
                     expect(event.detail.range.end).to.equal(60);
                     done();
@@ -39,7 +39,7 @@ describe('external event-based API', () => {
                 player.on('loadedmetadata', () => {
                     player.play().then(() => {
                         toggleAnnotationMode();
-                        // Marker click triggers annotationOpened.videoAnnotations
+                        // Marker click triggers annotationOpened
                         $('.vac-marker').first().click();
                     });
                 });

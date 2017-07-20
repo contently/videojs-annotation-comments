@@ -12,12 +12,6 @@ class EventDispatcher {
         this.eventRegistry = EventRegistry;
     }
 
-    // TODO: use a smarter namespacing system
-        // so all matching event types aren't unbound at the same time
-    nameSpacedType (type) {
-        return type + '.videoAnnotations';
-    }
-
     // Use the EventRegistry to mass register events on each component initialization
     registerListenersFor (obj) {
         let matchingEvents = this.eventRegistry[obj.constructor.name];
@@ -34,13 +28,13 @@ class EventDispatcher {
 
     // Bind a listener to the plugin
     registerListener (type, callback) {
-        this.plugin.on(this.nameSpacedType(type), callback);
+        this.plugin.on(type, callback);
         this.registeredListeners.push(type);
     }
 
     // Trigger an event on the plugin
     fire (type, data) {
-        let evt = new CustomEvent(this.nameSpacedType(type), { 'detail': data });
+        let evt = new CustomEvent(type, { 'detail': data });
         this.plugin.trigger(evt);
     }
 };

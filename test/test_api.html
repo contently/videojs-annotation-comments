@@ -152,7 +152,7 @@
                     plugin.fire('openAnnotation', {id: id});
                 });
 
-				plugin.on('annotationOpened.videoAnnotations', function(event) {
+				plugin.on('annotationOpened', function(event) {
 					var id = event.detail.id;
 					$("#annotation-opened-id").html(id);
 				});

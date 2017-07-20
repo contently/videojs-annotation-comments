@@ -25,13 +25,6 @@ describe('EventDispatcher', () => {
         });
     });
 
-    describe('nameSpacedType', () => {
-        it('creates a consistent namespace for VAC events', () => {
-            let eventDispatcher = new EventDispatcher(MockedPlugin);
-            // expect(eventDispatcher.nameSpacedType('my-type')).to.equal('my-type.videoAnnotations');
-        });
-    });
-
     describe('registerListener', () => {
         it('caches the type as a registered listener', () => {
             let eventDispatcher = new EventDispatcher(MockedPlugin);

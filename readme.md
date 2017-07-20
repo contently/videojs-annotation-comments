@@ -1,6 +1,4 @@
-# Annotations Plugin for VideoJS
-
-## Collaboration through in-player annotations
+# AnnotationComments : Collaborate in your VideoJS player
 
 ##### Goals:
 
@@ -54,8 +52,8 @@ plugin.fire('openAnnotation', { id: myAnnotationId });
 ##### Supported Internally Fired Events:
 
 ```javascript
-// annotationOpened.videoAnnotations : Fired whenever an annotation is opened
-plugin.on('annotationOpened.videoAnnotations', function(event) {
+// annotationOpened : Fired whenever an annotation is opened
+plugin.on('annotationOpened', function(event) {
     var annotationData = event.detail;
     // do something with annotation data
 });
