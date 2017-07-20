@@ -66,11 +66,14 @@ class Marker extends PlayerComponent {
 
     // Build object for template
     get markerTemplateData () {
+         // the smaller the width, the higher the z-index so overlaps are clickable
         let left = (this.range.start / this.duration) * 100,
-            width = ((this.range.end / this.duration) * 100) - left;
+            width = ((this.range.end / this.duration) * 100) - left,
+            zIndex = (100 - Math.floor(width)) || 100;
         return {
             left:         left + '%',
             width:        width + '%',
+            zIndex:       zIndex,
             showTooltip:  this.plugin.options.showMarkerTooltips,
             tooltipRight: left > 50,
             tooltipTime:  this.humanTime(this.range),
