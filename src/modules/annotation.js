@@ -24,7 +24,10 @@ class Annotation extends PlayerComponent {
     }
 
     buildComments(data) {
-        this.commentList = new CommentList({"comments": data.comments, "annotation": this}, this.playerId)
+        this.commentList = new CommentList(
+            {"comments": data.comments, "annotation": this},
+            this.playerId
+        );
     }
 
     buildMarker () {
@@ -47,14 +50,14 @@ class Annotation extends PlayerComponent {
     }
 
     bindEvents () {
-        this.marker.$el.click(() => { this.plugin.annotationState.openAnnotation(this) });
+        this.marker.$el.click(() => { this.plugin.annotationState.openAnnotation(this); });
     }
 
     // Opens the annotation. Handles marker, commentList, shape, Annotation state, and player state
     open (withPause=true, previewOnly=false) {
-        if(previewOnly || !this.plugin.options.showCommentList){
+        if(previewOnly || !this.plugin.options.showCommentList) {
             this.marker.setActive(true);
-        }else{
+        } else {
             this.commentList.render();
             this.marker.setActive(false);
         }
@@ -64,7 +67,7 @@ class Annotation extends PlayerComponent {
             this.annotationShape.$el.on("click.annotation", () => {
                 this.plugin.annotationState.openAnnotation(this, false, false, false);
             });
-        };
+        }
 
         if(withPause) {
             this.player.pause();
@@ -76,7 +79,7 @@ class Annotation extends PlayerComponent {
     close (clearActive=true) {
         this.marker.deactivate();
         this.commentList.teardown();
-        if(this.shape) this.annotationShape.$el.off("click.annotation")
+        if(this.shape) this.annotationShape.$el.off("click.annotation");
         this.annotationShape.teardown();
         if(clearActive) this.plugin.annotationState.clearActive();
     }
@@ -112,7 +115,7 @@ class Annotation extends PlayerComponent {
             range,
             shape,
             comments: [comment]
-        }
+        };
         return new Annotation(data, plugin.playerId);
     }
 }

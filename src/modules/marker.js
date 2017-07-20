@@ -58,7 +58,7 @@ class Marker extends PlayerComponent {
     bindMarkerEvents () {
         // handle dimming other markers + highlighting this one on mouseenter/leave
         this.$el.on("mouseenter.marker", () => {
-            this.$el.addClass('vac-hovering').closest(".vac-marker-wrap").addClass('vac-dim-all')
+            this.$el.addClass('vac-hovering').closest(".vac-marker-wrap").addClass('vac-dim-all');
         }).on("mouseleave.marker", () => {
             this.$el.removeClass('vac-hovering').closest(".vac-marker-wrap").removeClass('vac-dim-all');
         });
@@ -80,12 +80,12 @@ class Marker extends PlayerComponent {
             tooltipBody:  !this.comment ? null : this.comment.body,
             rangeShow:    !!this.range.end,
             id:           this.markerId
-        }
+        };
     }
 
     // Unbind event listeners on teardown and remove DOM nodes
     teardown () {
-        this.$el.off("mouseenter.marker mouseleave.marker")
+        this.$el.off("mouseenter.marker mouseleave.marker");
         super.teardown();
     }
 }

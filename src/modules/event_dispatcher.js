@@ -19,8 +19,8 @@ class EventDispatcher {
             Object.keys(matchingEvents).forEach((key) => {
                 // Don't register again if already in cached collection
                 if (!~this.registeredListeners.indexOf(key)) {
-                    let callback = matchingEvents[key].bind(obj)
-                    this.registerListener(key, callback)
+                    let callback = matchingEvents[key].bind(obj);
+                    this.registerListener(key, callback);
                 }
             });
         }
@@ -37,7 +37,7 @@ class EventDispatcher {
         let evt = new CustomEvent(type, { 'detail': data });
         this.plugin.trigger(evt);
     }
-};
+}
 
 /*
     A centralized collection of event callbacks organized by component and name
@@ -53,7 +53,7 @@ const EventRegistry = {
             if (annotation) this.openAnnotation(annotation);
         }
     }
-}
+};
 
 module.exports = {
     class: EventDispatcher,

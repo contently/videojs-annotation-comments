@@ -1,0 +1,10 @@
+{
+    "esversion": 6,
+    "node": true,
+    "globals": {
+        "$": true,
+        "document": true,
+        "videojs": true,
+        "CustomEvent": true
+    }
+}

@@ -12,7 +12,7 @@ class AnnotationState extends PlayerComponent {
 
 	constructor (playerId, onStateChanged) {
 		super(playerId);
-		this.onStateChanged = onStateChanged || (() => {return null});
+		this.onStateChanged = onStateChanged || (() => {});
 
 		this.annotations = [];
 		this.annotationTimeMap = {};
@@ -25,6 +25,7 @@ class AnnotationState extends PlayerComponent {
 		this.bindEvents();
 	}
 
+	// sets _enabled and closes or opens annotation as needed
 	set enabled (shouldBeEnabled) {
 		this._enabled = shouldBeEnabled;
 		if(!shouldBeEnabled) this.activeAnnotation.close();
@@ -42,7 +43,7 @@ class AnnotationState extends PlayerComponent {
 	set annotations (annotationsData) {
 		this._annotations = annotationsData.map((a) => new Annotation(a, this.playerId));
 		this.sortAnnotations();
-		this.rebuildAnnotationTimeMap()
+		this.rebuildAnnotationTimeMap();
 	}
 
 	get annotations () {
@@ -50,12 +51,12 @@ class AnnotationState extends PlayerComponent {
 	}
 
 	set activeAnnotation (annotation=null) {
-		this._activeAnnotation = annotation
+		this._activeAnnotation = annotation;
 	}
 
 	// Get current active annotation or a null object with .close()
 	get activeAnnotation () {
-		return this._activeAnnotation || {close: (() => {return null})}
+		return this._activeAnnotation || { close: (() => {}) };
 	}
 
 	// Serialize data

@@ -98,3 +98,5 @@ Unit tests are run through the `gulp test` task. If the `tdd` task is included i
 `gulp templates`: Uses handlebars cli to pre-compile templates into a javascript file. See Templates section above.
 
 `gulp test`: Runs the mocha unit tests within the `/test/mocha/modules/` directory.
+
+`gulp lint`: Runs jshint linter on javascript files in `/src`

@@ -127,7 +127,7 @@ class Controls extends PlayerComponent {
         if(keyId == 37) this.plugin.annotationState.prevAnnotation();
         if(keyId == 39) this.plugin.annotationState.nextAnnotation();
     }
-};
+}
 
 module.exports = {
     class: Controls

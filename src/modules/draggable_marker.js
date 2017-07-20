@@ -6,7 +6,7 @@
 
 const throttle = require('./../utils').throttle;
 const Marker = require("./marker").class;
-const markerTemplateName = 'draggable_marker.hbs'
+const markerTemplateName = 'draggable_marker.hbs';
 
 class DraggableMarker extends Marker {
 

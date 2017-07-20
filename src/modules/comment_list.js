@@ -152,7 +152,7 @@ class CommentList extends PlayerComponent {
         let $confirmEl = $("<a/>").text("CONFIRM");
         $confirmEl.on("click.comment", () => {
             $confirmEl.off("click.comment");
-            this.annotation.destroy()
+            this.annotation.destroy();
         });
         $(e.target).replaceWith($confirmEl);
     }

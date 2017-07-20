@@ -4,7 +4,7 @@
    the player, the plugin, video state, template rendering, etc)
 */
 
-const EventDispatcher = require("./event_dispatcher").class
+const EventDispatcher = require("./event_dispatcher").class;
 const Handlebars = require('handlebars/runtime');
 require('./../compiled_templates');
 

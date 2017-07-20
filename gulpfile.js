@@ -15,7 +15,9 @@ const gulp          = require('gulp'),
       debug         = require('gulp-debug'),
       pump          = require('pump'),
       mocha         = require('gulp-mocha'),
-      shell         = require('gulp-shell');
+      shell         = require('gulp-shell'),
+      jshint        = require('gulp-jshint'),
+      stylish       = require('jshint-stylish');
 
 const FILENAME = "videojs-annotation-comments.js",
       PACKAGE = require('./package.json');
@@ -102,6 +104,12 @@ gulp.task('test', () => {
 
 gulp.task('tdd', function() {
     gulp.watch(['src/*.js', 'test/mocha/modules/*.js'], ['test']);
+});
+
+gulp.task('lint', function() {
+  return gulp.src('./src/*/*.js')
+    .pipe(jshint('.jshintrc'))
+    .pipe(jshint.reporter(stylish));
 });
 
 gulp.task('transpile', (cb) => compile(false, cb) );

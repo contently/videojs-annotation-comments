@@ -14,7 +14,7 @@ class PlayerButton extends PlayerComponent {
 
     // Add button to player
     draw () {
-        let btn = player.getChild('controlBar').addChild('button', {});
+        let btn = this.player.getChild('controlBar').addChild('button', {});
         btn.addClass('vac-player-btn');
         btn.controlText("Toggle Animations");
         this.$el = $(btn.el());
