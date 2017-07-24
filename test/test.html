@@ -107,8 +107,8 @@
 		<video id="the_video" class="video-js" controls preload="auto" width="720" height="405" poster="MY_VIDEO_POSTER.jpg" data-setup="{}">
 		    <source src="contently-platform-overview.mp4" type='video/mp4'>
 		    <p class="vjs-no-js">
-		     	To view this video please enable JavaScript, and consider upgrading to a web browser that
-		     	<a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+		    	To view this video please enable JavaScript, and consider upgrading to a web browser that
+		    	<a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
 		    </p>
 		</video>
 
@@ -118,18 +118,20 @@
 		<script src="/videojs-annotation-comments.js"></script>
 		<script>
 			var player = window.videojs('the_video');
-			player.annotationComments({
-				annotationsObjects: annotations,
-				bindArrowKeys: true,
-				meta: {
-					user_id: 2,
-					user_name: "Evan Carothers"
-				},
-				onStateChanged: (data) => { console.log(data); },
-				showControls: true,
-				showCommentList: true,
-				showFullScreen: true,
-				showMarkerTooltips: false
+			player.on('loadedmetadata', function() {
+				player.annotationComments({
+					annotationsObjects: annotations,
+					bindArrowKeys: true,
+					meta: {
+						user_id: 2,
+						user_name: "Evan Carothers"
+					},
+					onStateChanged: (data) => { console.log(data); },
+					showControls: true,
+					showCommentList: true,
+					showFullScreen: true,
+					showMarkerTooltips: false
+				});
 			});
 		</script>
 	</BODY>

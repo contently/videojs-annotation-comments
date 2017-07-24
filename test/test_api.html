@@ -136,14 +136,16 @@
 		<script src="/videojs-annotation-comments.js"></script>
 		<script>
 			var player = videojs('the_video');
-			var plugin = player.annotationComments({
-				annotationsObjects: annotations,
-				bindArrowKeys: true,
-				meta: {
-					user_id: 2,
-					user_name: "Evan Carothers"
-				},
-				onStateChanged: (data) => { console.log(data); }
+			player.on('loadedmetadata', function() {
+				var plugin = player.annotationComments({
+					annotationsObjects: annotations,
+					bindArrowKeys: true,
+					meta: {
+						user_id: 2,
+						user_name: "Evan Carothers"
+					},
+					onStateChanged: (data) => { console.log(data); }
+				});
 			});
 
             $(function() {

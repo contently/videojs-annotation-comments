@@ -16,25 +16,27 @@
 // Initialize VideoJS
 var player = videojs('video-id');
 
-// Add plugin
+// Add plugin after video meta data is finished
 // Options here are set to defaults
-player.annotationComments({
-    // Collection of annotation data to initialize
-    annotationObjects: [],
-    // Use arrow keys to move through annotations when Annotation mode is active
-    bindArrowKeys: true,
-    // Flexible meta data object. Currently used for user data
-    meta: { user_id: null, user_name: null },
-    // Provide a callback func to be fired when the plugin data state changes
-    onStateChanged: null,
-    // Show or hide the control panel
-    showControls: true,
-    // Show or hide the comment list when an annotation is active
-    showCommentList: true,
-    // Show or hide the full screen button within the player toolbar
-    showFullScreen: true,
-    // Show or hide the tool tips on marker hover
-    showMarkerTooltips: true
+player.on('loadedmetadata', function() {
+    player.annotationComments({
+        // Collection of annotation data to initialize
+        annotationObjects: [],
+        // Use arrow keys to move through annotations when Annotation mode is active
+        bindArrowKeys: true,
+        // Flexible meta data object. Currently used for user data
+        meta: { user_id: null, user_name: null },
+        // Provide a callback func to be fired when the plugin data state changes
+        onStateChanged: null,
+        // Show or hide the control panel
+        showControls: true,
+        // Show or hide the comment list when an annotation is active
+        showCommentList: true,
+        // Show or hide the full screen button within the player toolbar
+        showFullScreen: true,
+        // Show or hide the tool tips on marker hover
+        showMarkerTooltips: true
+    });
 });
 ```
 

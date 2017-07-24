@@ -39,14 +39,12 @@
                 $(player.el).find('.vjs-fullscreen-control').remove();
             }
 
-            // setup initial state and draw UI after video is loaded
-            player.on("loadedmetadata", () => {
-                this.annotationState = new AnnotationState(this.playerId, options.onStateChanged);
-                this.annotationState.annotations = options.annotationsObjects;
+            // setup initial state and draw UI
+            this.annotationState = new AnnotationState(this.playerId, options.onStateChanged);
+            this.annotationState.annotations = options.annotationsObjects;
 
-                this.drawUI();
-                this.bindEvents();
-            });
+            this.drawUI();
+            this.bindEvents();
         }
 
         // Draw UI components for interaction
