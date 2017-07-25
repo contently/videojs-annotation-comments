@@ -31,12 +31,19 @@
             this.options = options;
 
             // assign reference to this class to player for access later by components where needed
-            let self = this;
+            var self = this;
             player.annotationComments = () => { return self };
 
-            // remove player fullscreen button if showFullScreen: false
+            // remove annotation features on fullscreen if showFullScreen: false
             if (!this.options.showFullScreen) {
-                $(player.el).find('.vjs-fullscreen-control').remove();
+                player.on('fullscreenchange', () => {
+                    if (player.isFullscreen_) {
+                        if(self.active) self.toggleAnnotations();
+                        $(player.el()).addClass('vac-disable-fullscreen');
+                    } else {
+                        $(player.el()).removeClass('vac-disable-fullscreen');
+                    }
+                });
             }
 
             // setup initial state and draw UI

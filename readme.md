@@ -32,7 +32,7 @@ player.on('loadedmetadata', function() {
         showControls: true,
         // Show or hide the comment list when an annotation is active
         showCommentList: true,
-        // Show or hide the full screen button within the player toolbar
+        // If false, annotations mode will be disabled in fullscreen
         showFullScreen: true,
         // Show or hide the tool tips on marker hover
         showMarkerTooltips: true

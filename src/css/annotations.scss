@@ -38,6 +38,12 @@ $darkGray: #383838;
 		}
 	}
 
+	&.vac-disable-fullscreen {
+		.vac-player-btn {
+			display: none;
+		}
+	}
+
 	// Class applied when video play controls are disabled
 	&.vac-disable-play{
 		// Hide individual markers
