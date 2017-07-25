@@ -85,7 +85,7 @@ class AnnotationState extends PlayerComponent {
 
 	// Create and add a annotation
 	createAndAddAnnotation (data) {
-		let annotation = Annotation.newFromData(data.id, data.range, data.shape, data.commentStr || "", this.plugin)
+		let annotation = Annotation.newFromData(data.range, data.shape, data.commentStr || "", this.plugin, data.id)
 		this.addNewAnnotation(annotation)
 	}
 
@@ -149,6 +149,7 @@ class AnnotationState extends PlayerComponent {
 	// Open annotation with options to pause and show preview
 	// skipLiveCheck will short circuit setLiveAnnotation()
 	openAnnotation (annotation, skipLiveCheck=false, pause=true, previewOnly=false) {
+		if(!this.plugin.active) this.plugin.toggleAnnotations();
 		this.skipLiveCheck = skipLiveCheck;
 		this.clearActive();
 		annotation.open(pause, previewOnly);
