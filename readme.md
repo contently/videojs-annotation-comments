@@ -51,6 +51,11 @@ If you'd like to drive the plugin or render plugin data through external UI elem
 plugin.fire('openAnnotation', { id: myAnnotationId });
 ```
 
+```javascript
+// newAnnotation : Adds a new annotation within the player and opens it given comment data
+plugin.fire('newAnnotation', { id: 1, range: { start: 20, end: null }, commentStr: "" });
+```
+
 ##### Supported Internally Fired Events:
 
 ```javascript

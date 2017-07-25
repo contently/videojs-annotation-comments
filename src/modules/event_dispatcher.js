@@ -51,6 +51,9 @@ const EventRegistry = {
             let annotationId = event.detail.id;
             let annotation = this.annotations.find((a) => a.id === parseInt(annotationId));
             if (annotation) this.openAnnotation(annotation);
+        },
+        newAnnotation: function (event) {
+            this.createAndAddAnnotation(event.detail)
         }
     }
 };
