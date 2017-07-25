@@ -13,7 +13,7 @@ class Annotation extends PlayerComponent {
 
     constructor (data, playerId) {
         super(playerId);
-        this.id = data.id;
+        this.id = data.id || this.componentId;
         this.range = data.range;
         this.shape = data.shape;
         this.secondsActive = this.buildSecondsActiveArray();
@@ -109,9 +109,10 @@ class Annotation extends PlayerComponent {
     }
 
     // Build a new annotation instance by passing in data for range, shape, comment, & plugin ref
-    static newFromData (range, shape, commentStr, plugin) {
+    static newFromData (id=null, range, shape, commentStr, plugin) {
         let comment = Comment.dataObj(commentStr, plugin);
         let data = {
+            id,
             range,
             shape,
             comments: [comment]

@@ -20,6 +20,32 @@ describe('external event-based API', () => {
                 });
             })
         });
+
+        describe('newAnnotation', () => {
+            beforeEach(resetVJS);
+
+            it('activates an annotation when triggered', (done) => {
+                plugin = simplePluginSetup();
+
+                player.on('loadedmetadata', () => {
+                    player.play().then(() => {
+                        toggleAnnotationMode();
+                        let startingLength = plugin.annotationState.annotations.length
+                        plugin.fire('newAnnotation', { id: 1, range: { start: 20, end: null }, commentStr: "yeoooop" });
+
+                        expect(plugin.annotationState.annotations.length).to.equal(startingLength + 1)
+
+                        expect(plugin.annotationState.annotations[0].id).to.equal(1);
+                        expect(plugin.annotationState.annotations[0].range["start"]).to.equal(20);
+                        expect(plugin.annotationState.annotations[0].range["end"]).to.equal(null);
+                        expect(plugin.annotationState.annotations[0].commentList.comments[0].body).to.equal("yeoooop")
+
+                        expect($('.vac-marker').last().hasClass('vac-active')).to.equal(true);
+                        done();
+                    });
+                });
+            })
+        });
     });
 
     describe('internally fired events', () => {

@@ -83,6 +83,12 @@ class AnnotationState extends PlayerComponent {
 		this.stateChanged();
 	}
 
+	// Create and add a annotation
+	createAndAddAnnotation (data) {
+		let annotation = Annotation.newFromData(data.id, data.range, data.shape, data.commentStr || "", this.plugin)
+		this.addNewAnnotation(annotation)
+	}
+
 	// Remove an annotation
 	removeAnnotation (annotation) {
 		var i = this._annotations.indexOf(annotation);

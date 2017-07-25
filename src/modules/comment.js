@@ -11,7 +11,7 @@ class Comment extends PlayerComponent {
 
     constructor (data, playerId) {
         super(playerId);
-        this.id = data.id;
+        this.id = data.id || this.componentId;
         this.meta = data.meta;
         this.body = data.body;
         this.timestamp = moment(data.meta.datetime).unix();
