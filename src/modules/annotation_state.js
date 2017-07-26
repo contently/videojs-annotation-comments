@@ -12,6 +12,8 @@ class AnnotationState extends PlayerComponent {
 
 	constructor (playerId, onStateChanged) {
 		super(playerId);
+		this.initAPI(this, 'AnnotationState');
+
 		this.onStateChanged = onStateChanged || (() => {});
 
 		this.annotations = [];

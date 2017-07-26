@@ -4,8 +4,6 @@ const EventDispatcher = require("../../../src/modules/event_dispatcher").class,
     expect = require('chai').expect;
 
 const MockedPlugin = { on: (type, callback) => {} };
-const mockedClassOneInstance = { constructor: { name: 'ClassOne' } };
-const mockedClassTwoInstance = { constructor: { name: 'ClassTwo' } };
 const MockedEventRegistry = {
     ClassOne: {
         myFirstEvent: () => {},
@@ -38,12 +36,12 @@ describe('EventDispatcher', () => {
             let eventDispatcher = new EventDispatcher(MockedPlugin);
             eventDispatcher.eventRegistry = MockedEventRegistry;
 
-            eventDispatcher.registerListenersFor(mockedClassOneInstance);
+            eventDispatcher.registerListenersFor({}, 'ClassOne');
             expect(eventDispatcher.registeredListeners).to.include('myFirstEvent');
             expect(eventDispatcher.registeredListeners).to.include('mySecondEvent');
             expect(eventDispatcher.registeredListeners).to.not.include('myThirdEvent');
 
-            eventDispatcher.registerListenersFor(mockedClassTwoInstance);
+            eventDispatcher.registerListenersFor({}, 'ClassTwo');
             expect(eventDispatcher.registeredListeners).to.include('myThirdEvent');
         });
 
@@ -51,8 +49,8 @@ describe('EventDispatcher', () => {
             let eventDispatcher = new EventDispatcher(MockedPlugin);
             eventDispatcher.eventRegistry = MockedEventRegistry;
 
-            eventDispatcher.registerListenersFor(mockedClassOneInstance);
-            eventDispatcher.registerListenersFor(mockedClassOneInstance);
+            eventDispatcher.registerListenersFor({}, 'ClassOne');
+            eventDispatcher.registerListenersFor({}, 'ClassOne');
 
             expect(eventDispatcher.registeredListeners.length).to.equal(2);
         });

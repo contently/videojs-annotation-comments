@@ -13,8 +13,8 @@ class EventDispatcher {
     }
 
     // Use the EventRegistry to mass register events on each component initialization
-    registerListenersFor (obj) {
-        let matchingEvents = this.eventRegistry[obj.constructor.name];
+    registerListenersFor (obj, className) {
+        let matchingEvents = this.eventRegistry[className];
         if (matchingEvents) {
             Object.keys(matchingEvents).forEach((key) => {
                 // Don't register again if already in cached collection

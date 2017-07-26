@@ -86,12 +86,15 @@ class PlayerComponent {
   }
 
   // Initialize the event listener if needed
-  // Register all events in the EventRegistry matching this component
   buildEventDispatcher () {
       if (!this.plugin.eventDispatcher) {
           this.plugin.eventDispatcher = new EventDispatcher(this.plugin);
       }
-      this.plugin.eventDispatcher.registerListenersFor(this);
+  }
+
+  // Register all events in the EventRegistry matching this className
+  initAPI (obj, className) {
+      this.plugin.eventDispatcher.registerListenersFor(obj, className);
   }
 
   // Generate unique ids
