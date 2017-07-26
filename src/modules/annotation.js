@@ -79,7 +79,7 @@ class Annotation extends PlayerComponent {
     close (clearActive=true) {
         this.marker.deactivate();
         this.commentList.teardown();
-        if(this.shape) this.annotationShape.$el.off("click.annotation");
+        if(this.annotationShape.$el) this.annotationShape.$el.off("click.annotation");
         this.annotationShape.teardown();
         if(clearActive) this.plugin.annotationState.clearActive();
     }
