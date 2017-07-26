@@ -56,8 +56,8 @@ plugin.fire('closeActiveAnnotation');
 // newAnnotation : Adds a new annotation within the player and opens it given comment data
 plugin.fire('newAnnotation', { id: 1, range: { start: 20, end: null }, commentStr: "" });
 
-// resolveAnnotation : Removes an annotation and it's marker within the player given comment data
-plugin.fire('resolveAnnotation', { id: 1 });
+// destroyAnnotation : Removes an annotation and it's marker within the player given comment data
+plugin.fire('destroyAnnotation', { id: 1 });
 ```
 
 ##### Supported Internally Fired Events:

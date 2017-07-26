@@ -68,7 +68,7 @@ describe('external event-based API', () => {
             })
         });
 
-        describe('resolveAnnotation', () => {
+        describe('destroyAnnotation', () => {
             beforeEach(resetVJS);
 
             it('removes an annotation when triggered', (done) => {
@@ -79,7 +79,7 @@ describe('external event-based API', () => {
                         toggleAnnotationMode();
                         let startingLength = plugin.annotationState.annotations.length
                         let openId = plugin.annotationState.annotations[0].id;
-                        plugin.fire('resolveAnnotation', { id: openId });
+                        plugin.fire('destroyAnnotation', { id: openId });
 
                         expect(plugin.annotationState.annotations.length).to.equal(startingLength - 1)
                         done();
