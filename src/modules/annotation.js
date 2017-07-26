@@ -109,7 +109,7 @@ class Annotation extends PlayerComponent {
     }
 
     // Build a new annotation instance by passing in data for range, shape, comment, & plugin ref
-    static newFromData (id=null, range, shape, commentStr, plugin) {
+    static newFromData (range, shape, commentStr, plugin, id=null) {
         let comment = Comment.dataObj(commentStr, plugin);
         let data = {
             id,
