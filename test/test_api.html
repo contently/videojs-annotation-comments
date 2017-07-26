@@ -126,6 +126,11 @@
             </div>
 
 			<div class="control-section">
+				<p class="event-type"><strong>SEND:</strong> Close Active Annotation Event</p>
+				<button id="fire-close-active-annotation">FIRE</button>
+			</div>
+
+			<div class="control-section">
 				<p class="event-type"><strong>RECEIVE:</strong> Annotation Opened Event</p>
 				<p>Id opened: <span id="annotation-opened-id"></span></p>
 			</div>
@@ -137,7 +142,7 @@
 		<script>
 			var player = videojs('the_video');
 			player.on('loadedmetadata', function() {
-				var plugin = player.annotationComments({
+				window.plugin = player.annotationComments({
 					annotationsObjects: annotations,
 					bindArrowKeys: true,
 					meta: {
@@ -146,19 +151,21 @@
 					},
 					onStateChanged: (data) => { console.log(data); }
 				});
-			});
 
-            $(function() {
-                $("#fire-open-annotation").on("click", function() {
+				$("#fire-open-annotation").on("click", function() {
                     var id = $("#annotation-id-input").val();
-                    plugin.fire('openAnnotation', {id: id});
+                    plugin.fire("openAnnotation", {id: id});
                 });
+
+				$("#fire-close-active-annotation").on("click", function() {
+					plugin.fire("closeActiveAnnotation", {});
+				});
 
 				plugin.on('annotationOpened', function(event) {
 					var id = event.detail.id;
 					$("#annotation-opened-id").html(id);
 				});
-            });
+			});
 		</script>
 	</BODY>
 </HTML>

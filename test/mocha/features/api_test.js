@@ -21,6 +21,27 @@ describe('external event-based API', () => {
             })
         });
 
+        describe('closeActiveAnnotation', () => {
+            beforeEach(resetVJS);
+
+            it('closes the active annotation', (done) => {
+                plugin = simplePluginSetup();
+
+                player.on('loadedmetadata', () => {
+                    player.play().then(() => {
+                        toggleAnnotationMode();
+                        $('.vac-marker').first().click();
+                        expect(plugin.annotationState.activeAnnotation.id).to.equal(1);
+
+                        plugin.fire('closeActiveAnnotation');
+
+                        expect(plugin.annotationState.activeAnnotation.id).to.be.undefined;
+                        done();
+                    });
+                });
+            });
+        });
+
         describe('newAnnotation', () => {
             beforeEach(resetVJS);
 
@@ -59,6 +80,9 @@ describe('external event-based API', () => {
                 plugin.on('annotationOpened', (event) => {
                     expect(event.detail.id).to.equal(1);
                     expect(event.detail.range.end).to.equal(60);
+
+                    // remove this listener to play nicely with other tests
+                    plugin.off('annotationOpened');
                     done();
                 });
 

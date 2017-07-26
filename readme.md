@@ -1,6 +1,6 @@
 # AnnotationComments : Collaborate in your VideoJS player
 
-##### Goals:
+### Goals
 
 - Provide useful collaboration features including annotations, comments/replies, ranged time markers, and more. All with intuitive controls.
 - Everything is contained within the player. There is no need to build additional UI components. Just install VideoJS, register the plugin, and start collaborating.
@@ -49,9 +49,10 @@ If you'd like to drive the plugin or render plugin data through external UI elem
 ```javascript
 // openAnnotation : Opens an annotation within the player given an ID
 plugin.fire('openAnnotation', { id: myAnnotationId });
-```
 
-```javascript
+// closeActiveAnnotation : Closes any active annotation
+plugin.fire('closeActiveAnnotation');
+
 // newAnnotation : Adds a new annotation within the player and opens it given comment data
 plugin.fire('newAnnotation', { id: 1, range: { start: 20, end: null }, commentStr: "" });
 ```
@@ -73,7 +74,7 @@ We're using [npm](https://www.npmjs.com/) for package management and [gulp](http
 The fastest way to get started:
 - Clone the repo
 - Run `npm install`
-- Run `npm install -g handlebars` (NOTE: the template compilation process should be improved so this is no longer needed)
+- Run `npm install -g gulp`
 - Run `gulp build`
 - Run `gulp watch`
 - Visit `http://localhost:3004/test.html` to see the magic happen.
