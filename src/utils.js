@@ -31,10 +31,19 @@ const Utils = {
           }
           return result;
         };
+    },
+    parseIntObj: (obj) => {
+        Object.keys(obj).forEach((key) => {
+            if(parseInt(obj[key])) {
+                obj[key] = parseInt(obj[key]);
+            }
+        });
+        return obj;
     }
 }
 
 module.exports = {
     cloneObject: Utils.cloneObject,
-    throttle: Utils.throttle
+    throttle: Utils.throttle,
+    parseIntObj: Utils.parseIntObj
 }

@@ -87,7 +87,13 @@ class AnnotationState extends PlayerComponent {
 
 	// Create and add a annotation
 	createAndAddAnnotation (data) {
-		let annotation = Annotation.newFromData(data.range, data.shape, data.commentStr || "", this.plugin, data.id)
+		let annotation = Annotation.newFromData(
+			data.range,
+			data.shape,
+			data.commentStr || "",
+			this.plugin,
+			data.id
+		)
 		this.addNewAnnotation(annotation)
 	}
 

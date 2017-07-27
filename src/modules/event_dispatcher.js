@@ -56,6 +56,8 @@ const EventRegistry = {
             this.clearActive();
         },
         newAnnotation: function (event) {
+            let controls = this.plugin.components.controls;
+            if(controls.uiState.adding) controls.cancelAddNew();
             this.createAndAddAnnotation(event.detail);
         },
         destroyAnnotation: function (event) {

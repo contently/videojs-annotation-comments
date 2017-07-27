@@ -56,7 +56,17 @@ plugin.fire('openAnnotation', { id: myAnnotationId });
 plugin.fire('closeActiveAnnotation');
 
 // newAnnotation : Adds a new annotation within the player and opens it given comment data
-plugin.fire('newAnnotation', { id: 1, range: { start: 20, end: null }, commentStr: "" });
+plugin.fire('newAnnotation', {
+    id: 1,
+    range: { start: 20, end: null },
+    shape: {
+        x1: null,
+        x2: null,
+        y1: null,
+        y2: null
+    }
+    commentStr: ""
+});
 
 // destroyAnnotation : Removes an annotation and it's marker within the player given comment data
 plugin.fire('destroyAnnotation', { id: 1 });
@@ -82,8 +92,8 @@ plugin.on('annotationOpened', function(event) {
 //  2. the start of the marker is moved via control buttons
 //  3. the shape is dragged
 plugin.on('addingAnnotationDataChanged', function(event) {
-    var newRange = event.detail; // returns range data if range was changed
-    var newShape = event.detail; // returns shape data if shape was changed
+    var newRange = event.detail.range; // returns range data if range was changed
+    var newShape = event.detail.shape; // returns shape data if shape was changed
     // do something with the data
 });
 
