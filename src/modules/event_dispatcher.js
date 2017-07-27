@@ -57,6 +57,11 @@ const EventRegistry = {
         },
         newAnnotation: function (event) {
             this.createAndAddAnnotation(event.detail);
+        },
+        destroyAnnotation: function (event) {
+            let annotationId = event.detail.id;
+            let annotation = this.annotations.find((a) => a.id === parseInt(annotationId));
+            if (annotation) annotation.destroy();
         }
     }
 };
