@@ -63,6 +63,15 @@ const EventRegistry = {
             let annotation = this.annotations.find((a) => a.id === parseInt(annotationId));
             if (annotation) annotation.destroy();
         }
+    },
+    Controls: {
+        addingAnnotation: function (event) {
+            if(!this.plugin.active) this.plugin.toggleAnnotations();
+            this.startAddNew();
+        },
+        cancelAddingAnnotation: function (event) {
+            this.cancelAddNew();
+        }
     }
 };
 

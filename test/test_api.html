@@ -134,6 +134,16 @@
 				<p class="event-type"><strong>RECEIVE:</strong> Annotation Opened Event</p>
 				<p>Id opened: <span id="annotation-opened-id"></span></p>
 			</div>
+
+			<div class="control-section">
+				<p class="event-type"><strong>SEND:</strong> Adding Annotation Event</p>
+				<button id="fire-adding-annotation">FIRE</button>
+			</div>
+
+			<div class="control-section">
+				<p class="event-type"><strong>SEND:</strong> Cancel Adding Annotation Event</p>
+				<button id="fire-cancel-adding-annotation">FIRE</button>
+			</div>
         </div>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -149,7 +159,8 @@
 						user_id: 2,
 						user_name: "Evan Carothers"
 					},
-					onStateChanged: (data) => { console.log(data); }
+					onStateChanged: (data) => { console.log(data); },
+					internalCommenting: false
 				});
 
 				$("#fire-open-annotation").on("click", function() {
@@ -161,10 +172,27 @@
 					plugin.fire("closeActiveAnnotation", {});
 				});
 
+				$("#fire-adding-annotation").on("click", function() {
+					plugin.fire("addingAnnotation");
+				});
+
+				$("#fire-cancel-adding-annotation").on("click", function() {
+					plugin.fire("cancelAddingAnnotation");
+				});
+
 				plugin.on('annotationOpened', function(event) {
 					var id = event.detail.id;
 					$("#annotation-opened-id").html(id);
 				});
+
+				plugin.on('addingAnnotationDataChanged', function(event) {
+					console.log(event.detail);
+				});
+
+				plugin.on('enteredAddingAnnotation', function(event) {
+					console.log('Starting add annotation process');
+				});
+
 			});
 		</script>
 	</BODY>

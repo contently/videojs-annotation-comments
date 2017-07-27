@@ -69,7 +69,7 @@ class SelectableShape extends AnnotationShape {
         this.dragMoved = true;
 
         let xPer = this.xCoordToPercent(e.pageX),
-                yPer = this.YCoordToPercent(e.pageY);
+            yPer = this.YCoordToPercent(e.pageY);
 
         if(xPer < this.originX){
             this.shape.x2 = this.originX;
@@ -86,6 +86,8 @@ class SelectableShape extends AnnotationShape {
             this.shape.y1 = this.originY;
         }
         this.setDimsFromShape();
+
+        this.plugin.fire('addingAnnotationDataChanged', { shape: this.shape });
     }
 
     // Convert pixel-based x position (relative to document) to percentage in video

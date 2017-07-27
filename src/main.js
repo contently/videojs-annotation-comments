@@ -16,7 +16,8 @@
         showControls:       true,
         showCommentList:    true,
         showFullScreen:     true,
-        showMarkerTooltips: true
+        showMarkerTooltips: true,
+        internalCommenting: true
     });
 
     class Main extends Plugin {

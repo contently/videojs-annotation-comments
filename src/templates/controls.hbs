@@ -19,8 +19,10 @@
     <div class="vac-add-controls vac-control">
         New Annotation
         <i>Select shape + range</i>
-        <button class="vac-button">CONTINUE</button>
-        <a>cancel</a>
+        {{#if internalCommenting}}
+            <button class="vac-button">CONTINUE</button>
+            <a>cancel</a>
+        {{/if}}
         <div class="vac-video-move">
             <div class="vac-a-prev">-1 sec</div>
             <div class="vac-a-next">+1 sec</div>

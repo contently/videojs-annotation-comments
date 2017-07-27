@@ -54,6 +54,7 @@ class DraggableMarker extends Marker {
             };
         }
         this.draw();
+        this.plugin.fire('addingAnnotationDataChanged', { range: this.range });
     }
 
     // Cal percentage (of video) position for a pixel-based X position on the document
@@ -82,6 +83,8 @@ class DraggableMarker extends Marker {
         this.rangePin = newStart;
         this.teardown();
         this.draw();
+
+        this.plugin.fire('addingAnnotationDataChanged', { range: this.range });
     }
 }
 

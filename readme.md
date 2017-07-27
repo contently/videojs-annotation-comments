@@ -35,7 +35,9 @@ player.on('loadedmetadata', function() {
         // If false, annotations mode will be disabled in fullscreen
         showFullScreen: true,
         // Show or hide the tool tips on marker hover
-        showMarkerTooltips: true
+        showMarkerTooltips: true,
+        // If false, step two of adding annotations (writing and saving the comment) will be disabled
+        internalCommenting: true
     });
 });
 ```
@@ -58,6 +60,12 @@ plugin.fire('newAnnotation', { id: 1, range: { start: 20, end: null }, commentSt
 
 // destroyAnnotation : Removes an annotation and it's marker within the player given comment data
 plugin.fire('destroyAnnotation', { id: 1 });
+
+// addingAnnotation : Plugin enters the adding annotation state
+plugin.fire('addingAnnotation');
+
+// cancelAddingAnnotation : Plugin exists the adding annotation state
+plugin.fire('cancelAddingAnnotation');
 ```
 
 ##### Supported Internally Fired Events:
@@ -67,6 +75,21 @@ plugin.fire('destroyAnnotation', { id: 1 });
 plugin.on('annotationOpened', function(event) {
     var annotationData = event.detail;
     // do something with annotation data
+});
+
+// addingAnnotationDataChanged : Fired from adding annotation state if:
+//  1. the marker is dragged
+//  2. the start of the marker is moved via control buttons
+//  3. the shape is dragged
+plugin.on('addingAnnotationDataChanged', function(event) {
+    var newRange = event.detail; // returns range data if range was changed
+    var newShape = event.detail; // returns shape data if shape was changed
+    // do something with the data
+});
+
+// enteredAnnotationMode : Fired when the plugin enters adding annotation mode
+plugin.on('enteredAddingAnnotation', function(event) {
+    // do something when adding annotation state begins
 });
 ```
 

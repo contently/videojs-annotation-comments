@@ -22,6 +22,9 @@ class Controls extends PlayerComponent {
 
     constructor (playerId, bindArrowKeys) {
         super(playerId);
+        this.initAPI(this, 'Controls');
+
+        this.internalCommenting = this.plugin.options.internalCommenting;
         this.uiState = cloneObject(BASE_UI_STATE);
         this.bindEvents(bindArrowKeys);
         this.draw();
@@ -30,13 +33,16 @@ class Controls extends PlayerComponent {
     // Bind all the events we need for UI interaction
     bindEvents (bindArrowKeys) {
         this.$player.on("click", ".vac-controls button", this.startAddNew.bind(this)) // Add new button click
-            .on("click", ".vac-add-controls a, .vac-video-write-new.vac-is-annotation a", this.cancelAddNew.bind(this)) // Cancel link click
-            .on("click", ".vac-add-controls button", this.writeComment.bind(this)) // 'Next' button click while adding
-            .on("click", ".vac-video-write-new.vac-is-annotation button", this.saveNew.bind(this)) // 'Save' button click while adding
             .on("click", ".vac-annotation-nav .vac-a-next", () => this.plugin.annotationState.nextAnnotation() ) // Click 'next' on annotation nav
             .on("click", ".vac-annotation-nav .vac-a-prev", () => this.plugin.annotationState.prevAnnotation() ) // Click 'prev' on annotation nav
             .on("click", ".vac-video-move .vac-a-next", () => this.marker.scrubStart(1) ) // Click '+1 sec' on marker nav
             .on("click", ".vac-video-move .vac-a-prev", () => this.marker.scrubStart(-1) ); // Click '-1 sec' on marker nav
+
+        if(this.internalCommenting) {
+            this.$player.on("click", ".vac-add-controls button", this.writeComment.bind(this)) // 'Next' button click while adding
+                .on("click", ".vac-video-write-new.vac-is-annotation button", this.saveNew.bind(this)) // 'Save' button click while adding
+                .on("click", ".vac-add-controls a, .vac-video-write-new.vac-is-annotation a", this.cancelAddNew.bind(this)) // Cancel link click
+        }
         if(bindArrowKeys){
             $(document).on("keyup.vac-nav", (e) => this.handleArrowKeys(e)); // Use arrow keys to navigate annotations
         }
@@ -58,10 +64,14 @@ class Controls extends PlayerComponent {
     // Draw the UI elements (based on uiState)
     draw (reset=false) {
         this.clear(reset);
-        let data = Object.assign({
-            rangeStr: this.marker ? this.humanTime(this.marker.range) : null,
-            showNav: this.plugin.annotationState.annotations.length > 1
-        }, this.uiState);
+        let data = Object.assign(
+            {
+                rangeStr: this.marker ? this.humanTime(this.marker.range) : null,
+                showNav: this.plugin.annotationState.annotations.length > 1
+            },
+            this.uiState,
+            { internalCommenting: this.internalCommenting }
+        );
 
         let $ctrls = this.renderTemplate(templateName, data);
         this.$player.append($ctrls);
@@ -88,6 +98,8 @@ class Controls extends PlayerComponent {
         };
         this.marker = new DraggableMarker(range, this.playerId);
         this.selectableShape = new SelectableShape(this.playerId);
+
+        this.plugin.fire('enteredAddingAnnotation');
     }
 
     // User clicked 'next' action - show UI to write comment
