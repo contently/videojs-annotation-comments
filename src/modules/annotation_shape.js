@@ -7,7 +7,7 @@ const PlayerUIComponent = require("./player_ui_component").class;
 
 class AnnotationShape extends PlayerUIComponent {
 
-    constructor (shape, playerId) {
+    constructor (playerId, shape=null) {
         super(playerId);
         this.shape = shape;
         this.$parent = this.$player;

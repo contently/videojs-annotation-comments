@@ -13,20 +13,19 @@ class PlayerUIComponent extends PlayerComponent{
 
     constructor (playerId) {
         super(playerId);
-        this.generateComponentId();
-        this.registerHandlebarsHelpers();
     }
 
     // helpers to get various UI components of the player quickly, keeping commonly reused class names
     // consolidated in case of need to change in the future (and for quick access)
     get $UI () {
         return Object.freeze({
-            commentsContainer:          this.$player.find(".vac-comments-container"),       // outer container for all comments
-            controlElements:            this.$player.find(".vac-control"),                  // Each of multiple control elements in the control bar
-            newCommentTextarea:         this.$player.find(".vac-video-write-new textarea"), // Textarea for writing a new comment
-            timeline:                   this.$player.find('.vjs-progress-control'),         // Timeline element
-            markerCursorHelpText:       this.$player.find('.vac-cursor-help-text'),         // Help text that appears with 'click/drag..' on timeline
-            controlBar:                 this.$player.find('.vjs-control-bar'),              // Conrol bar wrapper for vjs
+            commentsContainer:      this.$player.find(".vac-comments-container"),       // outer container for all comments
+            controlElements:        this.$player.find(".vac-control"),                  // Each of multiple control elements in the control bar
+            newCommentTextarea:     this.$player.find(".vac-video-write-new textarea"), // Textarea for writing a new comment
+            timeline:               this.$player.find('.vjs-progress-control'),         // Timeline element
+            markerCursorHelpText:   this.$player.find('.vac-cursor-help-text'),         // Help text that appears with 'click/drag..' on timeline
+            controlBar:             this.$player.find('.vjs-control-bar'),              // Conrol bar wrapper for vjs
+            markerWrap:             this.$player.find('.vac-marker-wrap')               // wrapper element to place markers in on timeline 
         });
     }
 
@@ -43,6 +42,12 @@ class PlayerUIComponent extends PlayerComponent{
         return $(this.player.el());
     }
 
+        // Generate a pseudo-guid ID for this component, to use as an ID in the DOM
+    get componentId () {
+        this._id = this._id || Utils.guid()
+        return this._id;
+    }
+
     // Disable play/control actions on the current player
     disablePlayingAndControl () {
         this.$player.addClass('vac-disable-play');
@@ -57,23 +62,18 @@ class PlayerUIComponent extends PlayerComponent{
 
     // Render a handlebars template with local data passed in via key/val in object
     renderTemplate (templateName, options = {}) {
+        this.registerHandlebarsHelpers();
         return Templates[templateName](options);
     }
 
     // Handle escaped breaklines in Handlebars
     registerHandlebarsHelpers () {
         if('breaklines' in Handlebars.helpers) return;
-
         Handlebars.registerHelper('breaklines', (text) => {
             text = Handlebars.Utils.escapeExpression(text);
             text = text.replace(/(\r\n|\n|\r)/gm, '<br>');
             return new Handlebars.SafeString(text);
         });
-    }
-
-    // Generate a pseudo-guid ID for this component, to use as an ID in the DOM
-    generateComponentId () {
-        this.componentId =  Utils.guid();
     }
 
     // Provide basic teardown function to inherit

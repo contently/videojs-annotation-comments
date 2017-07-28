@@ -15,13 +15,13 @@ const gulp          = require('gulp'),
       debug         = require('gulp-debug'),
       pump          = require('pump'),
       mocha         = require('gulp-mocha'),
-      shell         = require('gulp-shell'),
       jshint        = require('gulp-jshint'),
       stylish       = require('jshint-stylish'),
       handlebars    = require('gulp-handlebars'),
       wrap          = require('gulp-wrap'),
       concat        = require('gulp-concat'),
-      declare       = require('gulp-declare');
+      declare       = require('gulp-declare'),
+      autoprefixer  = require('gulp-autoprefixer');
 
 const FILENAME = "videojs-annotation-comments.js",
       PACKAGE = require('./package.json');
@@ -77,6 +77,11 @@ gulp.task('dev_webserver', () => {
 gulp.task('sass', () => {
     return gulp.src('src/css/*.scss')
         .pipe(sass().on('error', sass.logError))
+        .pipe(autoprefixer({
+            browsers: ['defaults','not ie <= 9'],
+            cascade: false
+        }))
+        .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('./build/css'));
 });
 

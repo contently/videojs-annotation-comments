@@ -112,13 +112,13 @@
 		    </p>
 		</video>
 
-
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 		<script src="/video.js/dist/video.min.js"></script>
 		<script src="/videojs-annotation-comments.js"></script>
 		<script>
 			var player = window.videojs('the_video');
 			player.on('loadedmetadata', function() {
+				player.muted(true);
 				var plugin = player.annotationComments({
 					annotationsObjects: annotations,
 					bindArrowKeys: true,
@@ -126,16 +126,18 @@
 						user_id: 2,
 						user_name: "Evan Carothers"
 					},
-					onStateChanged: (data) => { console.log(data); },
+					onStateChanged: function(data){ 
+						console.log(data); 
+					},
 					showControls: true,
 					showCommentList: true,
 					showFullScreen: true,
 					showMarkerTooltips: true
 				});
-				plugin.on('annotationOpened', (e) => {
+				plugin.on('annotationOpened', function(e){
 					console.log("annotationOpened", e.detail);
 				});
-				plugin.on('annotationClosed', (e) => {
+				plugin.on('annotationClosed', function(e){
 					console.log("annotationClosed", e.detail);
 				})
 			});
