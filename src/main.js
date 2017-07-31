@@ -84,7 +84,7 @@
             this.annotationState.enabled = this.active;
 
             // handle control component UI if showControls: true
-            if(this.components.controls && this.options.showControls){
+            if(this.options.showControls){
                 if(!this.active){
                     this.components.controls.clear(true);
                 }else{
