@@ -134,6 +134,29 @@
 				<p class="event-type"><strong>RECEIVE:</strong> Annotation Opened Event</p>
 				<p>Id opened: <span id="annotation-opened-id"></span></p>
 			</div>
+
+			<div class="control-section">
+				<p class="event-type"><strong>SEND:</strong> Adding Annotation Event</p>
+				<button id="fire-adding-annotation">FIRE</button>
+			</div>
+
+			<div class="control-section">
+				<p class="event-type"><strong>SEND:</strong> Cancel Adding Annotation Event</p>
+				<button id="fire-cancel-adding-annotation">FIRE</button>
+			</div>
+
+			<div class="control-section hidden" id="new-annotation-form">
+				<p class="event-type"><strong>SEND:</strong> New Annotation Event</p>
+				<label>Comment body</label>
+				<textarea id="new-comment-body"></textarea>
+				<input type="hidden" id="new-annotation-range-start"></input>
+				<input type="hidden" id="new-annotation-range-end"></input>
+				<input type="hidden" id="new-annotation-shape-x1"></input>
+				<input type="hidden" id="new-annotation-shape-x2"></input>
+				<input type="hidden" id="new-annotation-shape-y1"></input>
+				<input type="hidden" id="new-annotation-shape-y2"></input>
+				<button id="fire-new-annotation">Save</button>
+			</div>
         </div>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
@@ -149,7 +172,9 @@
 						user_id: 2,
 						user_name: "Evan Carothers"
 					},
-					onStateChanged: (data) => { console.log(data); }
+					onStateChanged: (data) => { console.log(data); },
+					internalCommenting: false,
+					showCommentList: false
 				});
 
 				$("#fire-open-annotation").on("click", function() {
@@ -161,9 +186,59 @@
 					plugin.fire("closeActiveAnnotation", {});
 				});
 
-				plugin.on('annotationOpened', function(event) {
+				$("#fire-adding-annotation").on("click", function() {
+					plugin.fire("addingAnnotation");
+				});
+
+				$("#fire-cancel-adding-annotation").on("click", function() {
+					plugin.fire("cancelAddingAnnotation");
+					$("#new-annotation-form").addClass("hidden");
+				});
+
+				$("#fire-new-annotation").on("click", function() {
+					var annotation = {
+						id: 999,
+						range: {
+							start: $("#new-annotation-range-start").val(),
+							end: $("#new-annotation-range-end").val()
+						},
+						shape: {
+							x1: $("#new-annotation-shape-x1").val(),
+							x2: $("#new-annotation-shape-x2").val(),
+							y1: $("#new-annotation-shape-y1").val(),
+							y2: $("#new-annotation-shape-y2").val(),
+						},
+						commentStr: $("#new-comment-body").val()
+					};
+					plugin.fire("newAnnotation", annotation);
+				});
+
+				plugin.on("annotationOpened", function(event) {
 					var id = event.detail.id;
 					$("#annotation-opened-id").html(id);
+				});
+
+				plugin.on("addingAnnotationDataChanged", function(event) {
+					console.log(event.detail);
+				});
+
+				plugin.on("enteredAddingAnnotation", function(event) {
+					var range = event.detail.range;
+					console.log("Starting add annotation process");
+					$("#new-annotation-form").removeClass("hidden");
+					$("#new-annotation-range-start").val(range.start);
+				});
+
+				plugin.on("addingAnnotationDataChanged", function(event) {
+					if(event.detail.shape) {
+						$("#new-annotation-shape-x1").val(event.detail.shape.x1);
+						$("#new-annotation-shape-x2").val(event.detail.shape.x2);
+						$("#new-annotation-shape-y1").val(event.detail.shape.y1);
+						$("#new-annotation-shape-y2").val(event.detail.shape.y2);
+					} else {
+						$("#new-annotation-range-start").val(event.detail.range.start);
+						$("#new-annotation-range-end").val(event.detail.range.end);
+					}
 				});
 			});
 		</script>

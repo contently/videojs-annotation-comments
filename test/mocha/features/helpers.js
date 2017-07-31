@@ -4,6 +4,7 @@ const addVideo             = () => $('#mocha-video-container').html(videoHTML);
 const initVJS              = () => videojs('main_player');
 const firstPlay            = () => $('.vjs-big-play-button').click();
 const toggleAnnotationMode = () => $('.vac-player-btn').click();
+const addingAnnotation     = () => $('.vac-controls .vac-button').click();
 
 var player, plugin;
 

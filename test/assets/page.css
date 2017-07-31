@@ -47,3 +47,7 @@ p {
 	position: fixed;
 	right: 6%;
 }
+
+.hidden {
+	display:none;
+}

@@ -35,7 +35,9 @@ player.on('loadedmetadata', function() {
         // If false, annotations mode will be disabled in fullscreen
         showFullScreen: true,
         // Show or hide the tool tips on marker hover
-        showMarkerTooltips: true
+        showMarkerTooltips: true,
+        // If false, step two of adding annotations (writing and saving the comment) will be disabled
+        internalCommenting: true
     });
 });
 ```
@@ -54,10 +56,26 @@ plugin.fire('openAnnotation', { id: myAnnotationId });
 plugin.fire('closeActiveAnnotation');
 
 // newAnnotation : Adds a new annotation within the player and opens it given comment data
-plugin.fire('newAnnotation', { id: 1, range: { start: 20, end: null }, commentStr: "" });
+plugin.fire('newAnnotation', {
+    id: 1,
+    range: { start: 20, end: null },
+    shape: {
+        x1: null,
+        x2: null,
+        y1: null,
+        y2: null
+    }
+    commentStr: ""
+});
 
 // destroyAnnotation : Removes an annotation and it's marker within the player given comment data
 plugin.fire('destroyAnnotation', { id: 1 });
+
+// addingAnnotation : Plugin enters the adding annotation state
+plugin.fire('addingAnnotation');
+
+// cancelAddingAnnotation : Plugin exists the adding annotation state
+plugin.fire('cancelAddingAnnotation');
 ```
 
 ##### Supported Internally Fired Events:
@@ -67,6 +85,23 @@ plugin.fire('destroyAnnotation', { id: 1 });
 plugin.on('annotationOpened', function(event) {
     var annotationData = event.detail;
     // do something with annotation data
+});
+
+// addingAnnotationDataChanged : Fired from adding annotation state if:
+//  1. the marker is dragged
+//  2. the start of the marker is moved via control buttons
+//  3. the shape is dragged
+plugin.on('addingAnnotationDataChanged', function(event) {
+    var newRange = event.detail.range; // returns range data if range was changed
+    var newShape = event.detail.shape; // returns shape data if shape was changed
+    // do something with the data
+});
+
+// enteredAnnotationMode : Fired when the plugin enters adding annotation mode
+// includes initial range data
+plugin.on('enteredAddingAnnotation', function(event) {
+    var startTime = event.detail.range.start;
+    // do something when adding annotation state begins
 });
 ```
 

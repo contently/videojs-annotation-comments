@@ -56,12 +56,23 @@ const EventRegistry = {
             this.clearActive();
         },
         newAnnotation: function (event) {
+            let controls = this.plugin.components.controls;
+            if(controls.uiState.adding) controls.cancelAddNew();
             this.createAndAddAnnotation(event.detail);
         },
         destroyAnnotation: function (event) {
             let annotationId = event.detail.id;
             let annotation = this.annotations.find((a) => a.id === parseInt(annotationId));
             if (annotation) annotation.destroy();
+        }
+    },
+    Controls: {
+        addingAnnotation: function (event) {
+            if(!this.plugin.active) this.plugin.toggleAnnotations();
+            this.startAddNew();
+        },
+        cancelAddingAnnotation: function (event) {
+            this.cancelAddNew();
         }
     }
 };

@@ -3,6 +3,7 @@
     Component for an annotation, which includes controlling the marker/shape, rendering a commentList, etc
 */
 
+const parseIntObj = require("./../utils.js").parseIntObj;
 const PlayerComponent = require("./player_component").class;
 const CommentList = require("./comment_list").class;
 const Marker = require("./marker").class;
@@ -111,6 +112,8 @@ class Annotation extends PlayerComponent {
     // Build a new annotation instance by passing in data for range, shape, comment, & plugin ref
     static newFromData (range, shape, commentStr, plugin, id=null) {
         let comment = Comment.dataObj(commentStr, plugin);
+        if(range) range = parseIntObj(range);
+        if(shape) shape = parseIntObj(shape);
         let data = {
             id,
             range,

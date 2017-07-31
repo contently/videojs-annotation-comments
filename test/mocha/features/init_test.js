@@ -29,7 +29,8 @@ describe('plugin initialization', () => {
                     showCommentList: true,
                     showControls: true,
                     showFullScreen: true,
-                    showMarkerTooltips: true
+                    showMarkerTooltips: true,
+                    internalCommenting: true
                 });
                 done();
             });
@@ -213,6 +214,36 @@ describe('plugin initialization', () => {
                     player.play().then(() => {
                         toggleAnnotationMode();
                         expect($('.vac-marker').first().find('span.vac-tooltip').length).to.equal(0);
+                        done();
+                    });
+                });
+            });
+        });
+
+        describe('internalCommenting', () => {
+            beforeEach(resetVJS);
+
+            it('has a default of true and allows internal commenting', (done) => {
+                plugin = player.annotationComments({});
+
+                player.on('loadedmetadata', () => {
+                    player.play().then(() => {
+                        toggleAnnotationMode();
+                        addingAnnotation();
+                        expect($('.vac-button').length).to.equal(1);
+                        done();
+                    });
+                });
+            });
+
+            it('can be set to false and does not allow internal commenting', (done) => {
+                plugin = player.annotationComments({ internalCommenting: false });
+
+                player.on('loadedmetadata', () => {
+                    player.play().then(() => {
+                        toggleAnnotationMode();
+                        addingAnnotation();
+                        expect($('.vac-button').length).to.equal(0);
                         done();
                     });
                 });
