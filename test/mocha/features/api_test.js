@@ -251,6 +251,7 @@ describe('external event-based API', () => {
                 // Add listener
                 plugin.on('enteredAddingAnnotation', (event) => {
                     console.log('adding annotation state entered')
+                    expect(event.detail.range.start).to.not.be.undefined;
                     done();
                 });
 

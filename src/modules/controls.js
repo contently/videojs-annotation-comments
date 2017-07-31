@@ -100,7 +100,7 @@ class Controls extends PlayerComponent {
         this.marker = new DraggableMarker(range, this.playerId);
         this.selectableShape = new SelectableShape(this.playerId);
 
-        this.plugin.fire('enteredAddingAnnotation');
+        this.plugin.fire('enteredAddingAnnotation', { range: range });
     }
 
     // User clicked 'next' action - show UI to write comment

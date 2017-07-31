@@ -223,8 +223,10 @@
 				});
 
 				plugin.on("enteredAddingAnnotation", function(event) {
+					var range = event.detail.range;
 					console.log("Starting add annotation process");
 					$("#new-annotation-form").removeClass("hidden");
+					$("#new-annotation-range-start").val(range.start);
 				});
 
 				plugin.on("addingAnnotationDataChanged", function(event) {

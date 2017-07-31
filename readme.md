@@ -98,7 +98,9 @@ plugin.on('addingAnnotationDataChanged', function(event) {
 });
 
 // enteredAnnotationMode : Fired when the plugin enters adding annotation mode
+// includes initial range data
 plugin.on('enteredAddingAnnotation', function(event) {
+    var startTime = event.detail.range.start;
     // do something when adding annotation state begins
 });
 ```
