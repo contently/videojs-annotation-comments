@@ -25,8 +25,10 @@ class Controls extends PlayerComponent {
         this.initAPI(this, 'Controls');
 
         this.internalCommenting = this.plugin.options.internalCommenting;
+        this.showControls = this.plugin.options.showControls;
         this.uiState = cloneObject(BASE_UI_STATE);
         this.bindEvents(bindArrowKeys);
+
         this.draw();
     }
 
@@ -70,7 +72,7 @@ class Controls extends PlayerComponent {
                 showNav: this.plugin.annotationState.annotations.length > 1
             },
             this.uiState,
-            { internalCommenting: this.internalCommenting }
+            { internalCommenting: this.internalCommenting, showControls: this.showControls }
         );
 
         let $ctrls = this.renderTemplate(templateName, data);

@@ -57,13 +57,10 @@
 
         // Draw UI components for interaction
         drawUI () {
-            this.components = { playerButton: new PlayerButton(this.playerId) };
-
-            // initialize Controls if showControls: true
-            if (this.options.showControls) {
-                this.components.controls = new Controls(this.playerId, this.options.bindArrowKeys);
+            this.components = {
+                playerButton: new PlayerButton(this.playerId),
+                controls: new Controls(this.playerId, this.options.bindArrowKeys)
             };
-
             this.components.playerButton.updateNumAnnotations(this.annotationState.annotations.length);
         }
 
@@ -87,7 +84,7 @@
             this.annotationState.enabled = this.active;
 
             // handle control component UI if showControls: true
-            if(this.components.controls){
+            if(this.components.controls && this.options.showControls){
                 if(!this.active){
                     this.components.controls.clear(true);
                 }else{

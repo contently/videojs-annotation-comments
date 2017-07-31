@@ -1,13 +1,15 @@
 {{#unless adding}}
-    <div class="vac-controls vac-control">
-        <button class="vac-button">+ NEW</button>
-        {{#if showNav}}
-            <div class="vac-annotation-nav">
-                <div class="vac-a-prev">Prev</div>
-                <div class="vac-a-next">Next</div>
-            </div>
-        {{/if}}
-    </div>
+    {{#if showControls}}
+        <div class="vac-controls vac-control">
+            <button class="vac-button">+ NEW</button>
+            {{#if showNav}}
+                <div class="vac-annotation-nav">
+                    <div class="vac-a-prev">Prev</div>
+                    <div class="vac-a-next">Next</div>
+                </div>
+            {{/if}}
+        </div>
+    {{/if}}
 {{/unless}}
 
 {{#if adding}}
@@ -15,17 +17,19 @@
         <div class="vac-video-cover-canvas"></div>
     </div>
 
-    <div class="vac-add-controls vac-control">
-        <i>Select shape + range</i>
-        {{#if internalCommenting}}
-            <button class="vac-button">CONTINUE</button>
-            <a>cancel</a>
-        {{/if}}
-        <div class="vac-video-move">
-            <div class="vac-a-prev">-1 sec</div>
-            <div class="vac-a-next">+1 sec</div>
+    {{#if showControls}}
+        <div class="vac-add-controls vac-control">
+            <i>Select shape + range</i>
+            {{#if internalCommenting}}
+                <button class="vac-button">CONTINUE</button>
+                <a>cancel</a>
+            {{/if}}
+            <div class="vac-video-move">
+                <div class="vac-a-prev">-1 sec</div>
+                <div class="vac-a-next">+1 sec</div>
+            </div>
         </div>
-    </div>
+    {{/if}}
 
     {{#if writingComment}}
         <div class="vac-video-write-new-wrap vac-control">

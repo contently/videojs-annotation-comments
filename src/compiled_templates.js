@@ -33,21 +33,31 @@ templates['comment_list.hbs'] = template({"1":function(container,depth0,helpers,
 templates['controls.hbs'] = template({"1":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return "    <div class=\"vac-controls vac-control\">\n        <button class=\"vac-button\">+ NEW</button>\n"
-    + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.showNav : depth0),{"name":"if","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "    </div>\n";
+  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.showControls : depth0),{"name":"if","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
 },"2":function(container,depth0,helpers,partials,data) {
-    return "            <div class=\"vac-annotation-nav\">\n                <div class=\"vac-a-prev\">Prev</div>\n                <div class=\"vac-a-next\">Next</div>\n            </div>\n";
-},"4":function(container,depth0,helpers,partials,data) {
+    var stack1;
+
+  return "        <div class=\"vac-controls vac-control\">\n            <button class=\"vac-button\">+ NEW</button>\n"
+    + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.showNav : depth0),{"name":"if","hash":{},"fn":container.program(3, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "        </div>\n";
+},"3":function(container,depth0,helpers,partials,data) {
+    return "                <div class=\"vac-annotation-nav\">\n                    <div class=\"vac-a-prev\">Prev</div>\n                    <div class=\"vac-a-next\">Next</div>\n                </div>\n";
+},"5":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=depth0 != null ? depth0 : (container.nullContext || {});
 
-  return "    <div class=\"vac-video-cover vac-control\">\n        <div class=\"vac-video-cover-canvas\"></div>\n    </div>\n\n    <div class=\"vac-add-controls vac-control\">\n        <i>Select shape + range</i>\n"
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.internalCommenting : depth0),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
-    + "        <div class=\"vac-video-move\">\n            <div class=\"vac-a-prev\">-1 sec</div>\n            <div class=\"vac-a-next\">+1 sec</div>\n        </div>\n    </div>\n\n"
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.writingComment : depth0),{"name":"if","hash":{},"fn":container.program(7, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
-},"5":function(container,depth0,helpers,partials,data) {
-    return "            <button class=\"vac-button\">CONTINUE</button>\n            <a>cancel</a>\n";
+  return "    <div class=\"vac-video-cover vac-control\">\n        <div class=\"vac-video-cover-canvas\"></div>\n    </div>\n\n"
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.showControls : depth0),{"name":"if","hash":{},"fn":container.program(6, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "\n"
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.writingComment : depth0),{"name":"if","hash":{},"fn":container.program(9, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
+},"6":function(container,depth0,helpers,partials,data) {
+    var stack1;
+
+  return "        <div class=\"vac-add-controls vac-control\">\n            <i>Select shape + range</i>\n"
+    + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.internalCommenting : depth0),{"name":"if","hash":{},"fn":container.program(7, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "            <div class=\"vac-video-move\">\n                <div class=\"vac-a-prev\">-1 sec</div>\n                <div class=\"vac-a-next\">+1 sec</div>\n            </div>\n        </div>\n";
 },"7":function(container,depth0,helpers,partials,data) {
+    return "                <button class=\"vac-button\">CONTINUE</button>\n                <a>cancel</a>\n";
+},"9":function(container,depth0,helpers,partials,data) {
     var helper;
 
   return "        <div class=\"vac-video-write-new-wrap vac-control\">\n            <div class=\"vac-video-write-new vac-is-annotation\">\n                <div>\n                    <h5><b>New Annotation</b> @ "
@@ -58,7 +68,7 @@ templates['controls.hbs'] = template({"1":function(container,depth0,helpers,part
 
   return ((stack1 = helpers.unless.call(alias1,(depth0 != null ? depth0.adding : depth0),{"name":"unless","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "\n"
-    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.adding : depth0),{"name":"if","hash":{},"fn":container.program(4, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
+    + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.adding : depth0),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
 },"useData":true});
 templates['draggable_marker.hbs'] = template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
