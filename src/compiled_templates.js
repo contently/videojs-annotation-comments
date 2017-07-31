@@ -33,7 +33,7 @@ templates['comment_list.hbs'] = template({"1":function(container,depth0,helpers,
 templates['controls.hbs'] = template({"1":function(container,depth0,helpers,partials,data) {
     var stack1;
 
-  return "    <div class=\"vac-controls vac-control\">\n        Annotations\n        <button class=\"vac-button\">+ NEW</button>\n"
+  return "    <div class=\"vac-controls vac-control\">\n        <button class=\"vac-button\">+ NEW</button>\n"
     + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.showNav : depth0),{"name":"if","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "    </div>\n";
 },"2":function(container,depth0,helpers,partials,data) {
@@ -41,7 +41,7 @@ templates['controls.hbs'] = template({"1":function(container,depth0,helpers,part
 },"4":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=depth0 != null ? depth0 : (container.nullContext || {});
 
-  return "    <div class=\"vac-video-cover vac-control\">\n        <div class=\"vac-video-cover-canvas\"></div>\n    </div>\n\n    <div class=\"vac-add-controls vac-control\">\n        New Annotation\n        <i>Select shape + range</i>\n"
+  return "    <div class=\"vac-video-cover vac-control\">\n        <div class=\"vac-video-cover-canvas\"></div>\n    </div>\n\n    <div class=\"vac-add-controls vac-control\">\n        <i>Select shape + range</i>\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.internalCommenting : depth0),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "        <div class=\"vac-video-move\">\n            <div class=\"vac-a-prev\">-1 sec</div>\n            <div class=\"vac-a-next\">+1 sec</div>\n        </div>\n    </div>\n\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.writingComment : depth0),{"name":"if","hash":{},"fn":container.program(7, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");

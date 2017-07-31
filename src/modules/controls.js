@@ -79,6 +79,7 @@ class Controls extends PlayerComponent {
 
     // User clicked to cancel in-progress add - restore to normal state
     cancelAddNew () {
+        if(!(this.uiState.adding || this.uiState.writingComment)) return;
         this.draw(true);
         this.marker.teardown();
         this.marker = null;
