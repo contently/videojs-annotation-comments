@@ -31,6 +31,7 @@ player.on('loadedmetadata', function() {
         // Show or hide the control panel
         showControls: true,
         // Show or hide the comment list when an annotation is active
+        // If false, the text 'Click and drag to select', will follow the cursor during annotation mode
         showCommentList: true,
         // If false, annotations mode will be disabled in fullscreen
         showFullScreen: true,
@@ -110,6 +111,12 @@ plugin.on('addingAnnotationDataChanged', function(event) {
 plugin.on('enteredAddingAnnotation', function(event) {
     var startTime = event.detail.range.start;
     // do something when adding annotation state begins
+});
+
+// playerBoundsChanged : Fired when the player boundaries change due to window resize or fullscreen mode
+plugin.on('playerBoundsChanged', function(event) {
+    var bounds = event.detail;
+    // do something with the new boundaries
 });
 ```
 

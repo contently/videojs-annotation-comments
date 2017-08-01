@@ -46,6 +46,11 @@ class SelectableShape extends AnnotationShape {
 
             // Bind event on doc mousemove to track drag, throttled to once each 250ms
             $(document).on("mousemove.selectableShape", Utils.throttle(this.onDrag.bind(this), 250) );
+
+            // Add drag class to cursor tooltip if available
+            if(!this.plugin.options.showControls) {
+                this.$player.find('.vac-cursor-tool-tip').addClass('vac-cursor-dragging');
+            }
         });
 
         // On mouseup, if during drag cancel drag event listeners
@@ -61,6 +66,11 @@ class SelectableShape extends AnnotationShape {
             }
 
             this.dragging = false;
+
+            // Remove drag class from cursor tooltip if available
+            if(!this.plugin.options.showControls) {
+                this.$player.find('.vac-cursor-tool-tip').removeClass('vac-cursor-dragging');
+            }
         });
     }
 

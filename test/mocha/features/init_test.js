@@ -121,13 +121,17 @@ describe('plugin initialization', () => {
                 });
             });
 
-            it('can be set to false to hide the control UI', (done) => {
+            it('can be set to false to hide the control UI but show cursor help text', (done) => {
                 plugin = player.annotationComments({ showControls: false });
 
                 player.on('loadedmetadata', () => {
                     player.play().then(() => {
                         toggleAnnotationMode();
                         expect($('.vac-controls').length).to.equal(0);
+
+                        plugin.components.controls.startAddNew();
+                        expect($('.vac-cursor-help-text').text()).to.equal('Click and drag to select');
+
                         done();
                     });
                 });

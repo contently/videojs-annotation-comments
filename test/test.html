@@ -116,10 +116,11 @@
 		<script src="/video.js/dist/video.min.js"></script>
 		<script src="/videojs-annotation-comments.js"></script>
 		<script>
-			var player = window.videojs('the_video');
+			var player = window.videojs('the_video'),
+				plugin;
 			player.on('loadedmetadata', function() {
 				player.muted(true);
-				var plugin = player.annotationComments({
+				plugin = player.annotationComments({
 					annotationsObjects: annotations,
 					bindArrowKeys: true,
 					meta: {
@@ -127,7 +128,7 @@
 						user_name: "Evan Carothers"
 					},
 					onStateChanged: function(data){ 
-						console.log(data); 
+						console.log(data);
 					},
 					showControls: true,
 					showCommentList: true,
