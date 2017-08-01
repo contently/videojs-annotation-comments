@@ -5,8 +5,8 @@
 
 const PlayerComponent = require("./player_component").class;
 const Comment = require("./comment").class;
-const commentListTemplateName = 'comment_list.hbs';
-const newCommentTemplateName = 'new_comment.hbs';
+const commentListTemplateName = 'comment_list';
+const newCommentTemplateName = 'new_comment';
 
 class CommentList extends PlayerComponent {
 

@@ -1,8 +1,5 @@
 var Handlebars = require("handlebars/runtime");
-
-(function() {
-  var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
-templates['comment.hbs'] = template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+ exports["comment"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "<div class=\"vac-comment\" data-id=\""
@@ -15,7 +12,7 @@ templates['comment.hbs'] = template({"compiler":[7,">= 4.0.0"],"main":function(c
     + alias4((helpers.breaklines || (depth0 && depth0.breaklines) || alias2).call(alias1,(depth0 != null ? depth0.body : depth0),{"name":"breaklines","hash":{},"data":data}))
     + "\n  </div>\n</div>\n";
 },"useData":true});
-templates['comment_list.hbs'] = template({"1":function(container,depth0,helpers,partials,data,blockParams) {
+exports["comment_list"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data,blockParams) {
     var stack1;
 
   return "      "
@@ -30,7 +27,7 @@ templates['comment_list.hbs'] = template({"1":function(container,depth0,helpers,
     + container.escapeExpression(((helper = (helper = helpers.rangeStr || (depth0 != null ? depth0.rangeStr : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(alias1,{"name":"rangeStr","hash":{},"data":data,"blockParams":blockParams}) : helper)))
     + "</div>\n    <div class=\"vac-control-buttons\">\n      <a class=\"vac-delete-annotation\">DELETE</a> | <a class=\"vac-close-comment-list\">CLOSE</a>\n    </div>\n  </div>\n</div>\n";
 },"useData":true,"useBlockParams":true});
-templates['controls.hbs'] = template({"1":function(container,depth0,helpers,partials,data) {
+exports["controls"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
     var stack1;
 
   return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.showControls : depth0),{"name":"if","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
@@ -70,7 +67,7 @@ templates['controls.hbs'] = template({"1":function(container,depth0,helpers,part
     + "\n"
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.adding : depth0),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
 },"useData":true});
-templates['draggable_marker.hbs'] = template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+exports["draggable_marker"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "<div id=\""
@@ -81,7 +78,7 @@ templates['draggable_marker.hbs'] = template({"compiler":[7,">= 4.0.0"],"main":f
     + alias4(((helper = (helper = helpers.width || (depth0 != null ? depth0.width : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"width","hash":{},"data":data}) : helper)))
     + ";\">\n</div>\n";
 },"useData":true});
-templates['marker.hbs'] = template({"1":function(container,depth0,helpers,partials,data) {
+exports["marker"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
     return "ranged-marker";
 },"3":function(container,depth0,helpers,partials,data) {
     var helper;
@@ -122,7 +119,7 @@ templates['marker.hbs'] = template({"1":function(container,depth0,helpers,partia
     + ((stack1 = helpers["if"].call(alias1,(depth0 != null ? depth0.showTooltip : depth0),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
     + "</div>\n";
 },"useData":true});
-templates['new_comment.hbs'] = template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
+exports["new_comment"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var helper, alias1=depth0 != null ? depth0 : (container.nullContext || {}), alias2=helpers.helperMissing, alias3="function", alias4=container.escapeExpression;
 
   return "<div class=\"vac-video-write-new-wrap vac-new-comment\">\n  <div class=\"vac-video-write-new vac-is-comment\">\n    <div class=\"vac-comment-showbox\" style=\"width:"
@@ -133,4 +130,3 @@ templates['new_comment.hbs'] = template({"compiler":[7,">= 4.0.0"],"main":functi
     + alias4(((helper = (helper = helpers.right || (depth0 != null ? depth0.right : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"right","hash":{},"data":data}) : helper)))
     + "px\">\n      <textarea placeholder=\"Enter comment...\"></textarea>\n      <div>\n        <button class=\"vac-button\">SAVE</button>\n        <a>Cancel</a>\n      </div>\n    </div>\n</div>\n";
 },"useData":true});
-})();

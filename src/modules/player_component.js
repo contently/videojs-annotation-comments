@@ -4,9 +4,9 @@
     the player, the plugin, video state, template rendering, etc)
 */
 
-const EventDispatcher = require("./event_dispatcher").class;
-const Handlebars = require('handlebars/runtime');
-require('./../compiled_templates');
+const EventDispatcher = require("./event_dispatcher").class,
+      Handlebars = require('handlebars/runtime'),
+      Templates = require('./../compiled_templates');
 
 class PlayerComponent {
 
@@ -51,7 +51,7 @@ class PlayerComponent {
 
     // Render a handlebars template with local data passed in via key/val in object
     renderTemplate (templateName, options = {}) {
-        return Handlebars.templates[templateName](options);
+        return Templates[templateName](options);
     }
 
     // Handle escaped breaklines in Handlebars
