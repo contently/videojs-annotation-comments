@@ -3,9 +3,9 @@
     Component main 'annotation toggle' button in the player controls, including notifier for # annotations
 */
 
-const PlayerComponent = require("./player_component").class;
+const PlayerUIComponent = require("./player_ui_component").class;
 
-class PlayerButton extends PlayerComponent {
+class PlayerButton extends PlayerUIComponent {
 
     constructor (playerId) {
         super(playerId);

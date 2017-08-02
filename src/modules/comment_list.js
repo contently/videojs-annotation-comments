@@ -3,12 +3,13 @@
   Component for a list of comments in a visible/active annotation
 */
 
-const PlayerComponent = require("./player_component").class;
-const Comment = require("./comment").class;
-const commentListTemplateName = 'comment_list';
-const newCommentTemplateName = 'new_comment';
+const   PlayerUIComponent = require("./player_ui_component").class,
+        Comment = require("./comment").class,
+        Utils = require("./../utils"),
+        commentListTemplateName = 'comment_list',
+        newCommentTemplateName = 'new_comment';
 
-class CommentList extends PlayerComponent {
+class CommentList extends PlayerUIComponent {
 
     constructor (data, playerId) {
         super(playerId);
@@ -46,7 +47,7 @@ class CommentList extends PlayerComponent {
             commentListTemplateName,
             {
                 commentsHTML: this.comments.map((c) => c.HTML),
-                rangeStr: this.humanTime(this.annotation.range)
+                rangeStr: Utils.humanTime(this.annotation.range)
             }
         ));
 

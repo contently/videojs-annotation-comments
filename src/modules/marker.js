@@ -3,10 +3,11 @@
     Component for a timeline marker with capabilities to draw on timeline, including tooltip for comment
 */
 
-const markerTemplateName = 'marker';
-const PlayerComponent = require("./player_component").class;
+const   Utils = require("./../utils"),
+        PlayerUIComponent = require("./player_ui_component").class,
+        markerTemplateName = 'marker';
 
-class Marker extends PlayerComponent {
+class Marker extends PlayerUIComponent {
 
     constructor (range, comment, playerId) {
         super(playerId);
@@ -76,7 +77,7 @@ class Marker extends PlayerComponent {
             zIndex:       zIndex,
             showTooltip:  this.plugin.options.showMarkerTooltips,
             tooltipRight: left > 50,
-            tooltipTime:  this.humanTime(this.range),
+            tooltipTime:  Utils.humanTime(this.range),
             tooltipBody:  !this.comment ? null : this.comment.body,
             rangeShow:    !!this.range.end,
             id:           this.markerId

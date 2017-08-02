@@ -1,4 +1,4 @@
-const Utils = {
+module.exports = {
     cloneObject: (obj) => Object.assign({}, obj),
     // _throttle from underscore
     throttle: (func, wait, options) => {
@@ -39,11 +39,21 @@ const Utils = {
             }
         });
         return obj;
+    },
+    humanTime: (range) => {
+        function readable(sec){
+            let mins = Math.floor(sec/60),
+            secs = String(sec % 60);
+            return mins + ":" + (secs.length==1 ? "0" : "") + secs;
+        }
+        let time = [readable(range.start)];
+        if(range.end) time.push(readable(range.end));
+        return time.join("-");
+    },
+    guid: () => {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +  s4() + '-' + s4() + s4() + s4();
     }
-}
-
-module.exports = {
-    cloneObject: Utils.cloneObject,
-    throttle: Utils.throttle,
-    parseIntObj: Utils.parseIntObj
-}
+};

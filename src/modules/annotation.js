@@ -3,14 +3,14 @@
     Component for an annotation, which includes controlling the marker/shape, rendering a commentList, etc
 */
 
-const parseIntObj = require("./../utils.js").parseIntObj;
-const PlayerComponent = require("./player_component").class;
-const CommentList = require("./comment_list").class;
-const Marker = require("./marker").class;
-const Comment = require("./comment").class;
-const AnnotationShape = require("./annotation_shape").class;
+const   Utils = require("./../utils.js"),
+        PlayerUIComponent = require("./player_ui_component").class,
+        CommentList = require("./comment_list").class,
+        Marker = require("./marker").class,
+        Comment = require("./comment").class,
+        AnnotationShape = require("./annotation_shape").class;
 
-class Annotation extends PlayerComponent {
+class Annotation extends PlayerUIComponent {
 
     constructor (data, playerId) {
         super(playerId);
@@ -22,6 +22,8 @@ class Annotation extends PlayerComponent {
         this.buildMarker();
         this.buildShape();
         this.bindEvents();
+
+        this.isOpen = false;
     }
 
     buildComments(data) {
@@ -56,6 +58,8 @@ class Annotation extends PlayerComponent {
 
     // Opens the annotation. Handles marker, commentList, shape, Annotation state, and player state
     open (withPause=true, previewOnly=false) {
+        this.isOpen = true;
+
         if(previewOnly || !this.plugin.options.showCommentList) {
             this.marker.setActive(true);
         } else {
@@ -83,6 +87,9 @@ class Annotation extends PlayerComponent {
 
     // Closes the annotation. Handles marker, commendList, shape, and AnnotationState
     close (clearActive=true) {
+        if(!this.isOpen) return;
+        this.isOpen = false;
+
         this.marker.deactivate();
         this.commentList.teardown();
         if(this.annotationShape.$el) this.annotationShape.$el.off("click.annotation");
@@ -118,8 +125,8 @@ class Annotation extends PlayerComponent {
     // Build a new annotation instance by passing in data for range, shape, comment, & plugin ref
     static newFromData (range, shape, commentStr, plugin, id=null) {
         let comment = Comment.dataObj(commentStr, plugin);
-        if(range) range = parseIntObj(range);
-        if(shape) shape = parseIntObj(shape);
+        if(range) range = Utils.parseIntObj(range);
+        if(shape) shape = Utils.parseIntObj(shape);
         let data = {
             id,
             range,

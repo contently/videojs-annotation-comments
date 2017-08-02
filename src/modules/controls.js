@@ -4,12 +4,12 @@
     including all functionality to add new annotations
 */
 
-const cloneObject = require("./../utils").cloneObject;
-const DraggableMarker = require("./draggable_marker.js").class;
-const SelectableShape = require("./selectable_shape.js").class;
-const PlayerComponent = require("./player_component").class;
-const Annotation = require("./annotation").class;
-const templateName = 'controls';
+const   DraggableMarker = require("./draggable_marker.js").class,
+        SelectableShape = require("./selectable_shape.js").class,
+        PlayerUIComponent = require("./player_ui_component").class,
+        Annotation = require("./annotation").class,
+        Utils = require("./../utils"),
+        templateName = 'controls';
 
 // Control uses a "ui state" to determine how UI is rendered - this object is the base state, containing a
 // default value for each item in the state
@@ -18,7 +18,7 @@ const BASE_UI_STATE = Object.freeze({
     writingComment: false   // Are we currently writing the comment for annotation (step 2 of flow)
 });
 
-class Controls extends PlayerComponent {
+class Controls extends PlayerUIComponent {
 
     constructor (playerId, bindArrowKeys) {
         super(playerId);
@@ -26,7 +26,7 @@ class Controls extends PlayerComponent {
 
         this.internalCommenting = this.plugin.options.internalCommenting;
         this.showControls = this.plugin.options.showControls;
-        this.uiState = cloneObject(BASE_UI_STATE);
+        this.uiState = Utils.cloneObject(BASE_UI_STATE);
         this.bindEvents(bindArrowKeys);
 
         this.draw();
@@ -58,7 +58,7 @@ class Controls extends PlayerComponent {
                 this.marker.teardown();
                 this.selectableShape.teardown();
             }
-            this.uiState = cloneObject(BASE_UI_STATE);
+            this.uiState = Utils.cloneObject(BASE_UI_STATE);
         }
         this.$UI.controlElements.remove();
     }
@@ -68,7 +68,7 @@ class Controls extends PlayerComponent {
         this.clear(reset);
         let data = Object.assign(
             {
-                rangeStr: this.marker ? this.humanTime(this.marker.range) : null,
+                rangeStr: this.marker ? Utils.humanTime(this.marker.range) : null,
                 showNav: this.plugin.annotationState.annotations.length > 1
             },
             this.uiState,
