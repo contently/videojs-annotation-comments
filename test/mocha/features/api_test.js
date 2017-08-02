@@ -127,13 +127,14 @@ describe('external event-based API', () => {
         describe('annotationOpened', () => {
             beforeEach(resetVJS);
 
-            it('is triggered when an annotation is opened and includes annotation data', (done) => {
+            it('is triggered when an annotation is opened via click and includes annotation data', (done) => {
                 plugin = simplePluginSetup();
 
                 // Add listener
                 plugin.on('annotationOpened', (event) => {
-                    expect(event.detail.id).to.equal(1);
-                    expect(event.detail.range.end).to.equal(60);
+                    expect(event.detail.triggered_by_timeline).to.equal(false);
+                    expect(event.detail.annotation.id).to.equal(1);
+                    expect(event.detail.annotation.range.end).to.equal(60);
 
                     // remove this listener to play nicely with other tests
                     plugin.off('annotationOpened');
@@ -148,6 +149,29 @@ describe('external event-based API', () => {
                     });
                 });
             });
+
+            it('is triggered when an annotation is opened via timeline and includes annotation data', (done) => {
+                plugin = simplePluginSetup();
+
+                // Add listener
+                plugin.on('annotationOpened', (event) => {
+                    expect(event.detail.triggered_by_timeline).to.equal(true);
+                    expect(event.detail.annotation.id).to.equal(1);
+                    expect(event.detail.annotation.range.end).to.equal(60);
+
+                    // remove this listener to play nicely with other tests
+                    plugin.off('annotationOpened');
+                    done();
+                });
+
+                player.on('loadedmetadata', () => {
+                    player.play().then(() => {
+                        toggleAnnotationMode();
+                        //scrub timeline to where annotation is
+                        player.currentTime(55);
+                    });
+                });
+            }).timeout(4000);
         });
 
         describe('addingAnnotationDataChanged', () => {

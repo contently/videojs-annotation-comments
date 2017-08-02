@@ -163,7 +163,6 @@ class AnnotationState extends PlayerComponent {
 		annotation.open(pause, previewOnly);
 		this.activeAnnotation = annotation;
 		this.lastVideoTime = this.activeAnnotation.range.start;
-		this.plugin.eventDispatcher.fire('annotationOpened', annotation.data);
 	}
 
 	// Finds the next annotation in collection and opens it
