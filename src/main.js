@@ -7,6 +7,7 @@
     const Controls = require("./modules/controls").class;
     const PlayerButton = require("./modules/player_button").class;
     const AnnotationState = require("./modules/annotation_state").class;
+    const EventDispatcher = require("./modules/event_dispatcher").class;
 
     const DEFAULT_OPTIONS = Object.freeze({
         bindArrowKeys:      true,
@@ -30,6 +31,8 @@
             this.player = player;
             this.meta = options.meta;
             this.options = options;
+
+            this.eventDispatcher = new EventDispatcher(this);
 
             // assign reference to this class to player for access later by components where needed
             var self = this;

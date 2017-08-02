@@ -3,9 +3,9 @@
     Component for managing a shape (i.e. box drawn on the player) for an annotation
 */
 
-const PlayerComponent = require("./player_component").class;
+const PlayerUIComponent = require("./player_ui_component").class;
 
-class AnnotationShape extends PlayerComponent {
+class AnnotationShape extends PlayerUIComponent {
 
     constructor (shape, playerId) {
         super(playerId);

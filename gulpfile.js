@@ -81,7 +81,7 @@ gulp.task('sass', () => {
 });
 
 gulp.task('templates:watch', () => {
-    gulp.watch('./src/templates/**/*.hbs', ['compile']);
+    gulp.watch('./src/templates/**/*.hbs', ['templates']);
 });
 
 gulp.task('sass:watch', () => {

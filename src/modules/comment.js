@@ -3,11 +3,12 @@
   Component for an invidual comment
 */
 
-const PlayerComponent = require("./player_component").class;
-const moment = require("moment");
-const templateName = 'comment';
+const   PlayerUIComponent = require("./player_ui_component").class,
+        Utils = require("./../utils"),
+        moment = require("moment"),
+        templateName = 'comment';
 
-class Comment extends PlayerComponent {
+class Comment extends PlayerUIComponent {
 
     constructor (data, playerId) {
         super(playerId);
@@ -57,7 +58,7 @@ class Comment extends PlayerComponent {
             meta:   Object.assign({
                         datetime: moment().toISOString()
                     }, plugin.meta),
-            id:     this.guid(),
+            id:     Utils.guid(),
             body
         };
     }
