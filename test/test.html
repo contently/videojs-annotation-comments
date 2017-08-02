@@ -119,7 +119,7 @@
 		<script>
 			var player = window.videojs('the_video');
 			player.on('loadedmetadata', function() {
-				player.annotationComments({
+				var plugin = player.annotationComments({
 					annotationsObjects: annotations,
 					bindArrowKeys: true,
 					meta: {
@@ -132,6 +132,12 @@
 					showFullScreen: true,
 					showMarkerTooltips: true
 				});
+				plugin.on('annotationOpened', (e) => {
+					console.log("annotationOpened", e.detail);
+				});
+				plugin.on('annotationClosed', (e) => {
+					console.log("annotationClosed", e.detail);
+				})
 			});
 		</script>
 	</BODY>

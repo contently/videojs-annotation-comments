@@ -74,6 +74,11 @@ class Annotation extends PlayerComponent {
             this.player.pause();
             this.player.currentTime(this.range.start);
         }
+
+        this.plugin.fire('annotationOpened', {
+            annotation: this.data,
+            triggered_by_timeline: previewOnly
+        });
     }
 
     // Closes the annotation. Handles marker, commendList, shape, and AnnotationState
@@ -83,6 +88,7 @@ class Annotation extends PlayerComponent {
         if(this.annotationShape.$el) this.annotationShape.$el.off("click.annotation");
         this.annotationShape.teardown();
         if(clearActive) this.plugin.annotationState.clearActive();
+        this.plugin.fire('annotationClosed', this.data);
     }
 
     // For preloading an array of seconds active on initialization

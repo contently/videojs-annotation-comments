@@ -83,8 +83,16 @@ plugin.fire('cancelAddingAnnotation');
 ```javascript
 // annotationOpened : Fired whenever an annotation is opened
 plugin.on('annotationOpened', function(event) {
-    var annotationData = event.detail;
-    // do something with annotation data
+    // event.detail =
+    // {
+    //      annotation: (object) annotation data in format {id:.., comments:..., range:..., shape:...},
+    //      triggered_by_timeline: (boolean) TRUE = the event was triggered via a timeline action (like scrubbing or playing), FALSE = the annotation was opened via marker click, UI button interactions, or API/event input
+    // }
+});
+
+// annotationClosed : Fired whenever an annotation is closed
+plugin.on('annotationClosed', function(event) {
+    // event.detail = annotation (object) in format {id:.., comments:..., range:..., shape:...}
 });
 
 // addingAnnotationDataChanged : Fired from adding annotation state if:
@@ -127,7 +135,7 @@ The `gulp templates` task is used to precompile every template within the `/src/
 
 ##### Feature tests
 
-Feature tests are currently browser-based and run by visiting `http://localhost:3004/test/mocha/features/index.html`. Feature tests can be added as files in the `/test/mocha/features/` directory and then included within the `index.html` file as an external script. In the future, running these tests should be automated through phantomJS and a gulp task.
+Feature tests are currently browser-based and run by visiting `http://localhost:3004/mocha/features/index.html`. Feature tests can be added as files in the `/test/mocha/features/` directory and then included within the `index.html` file as an external script. In the future, running these tests should be automated through phantomJS and a gulp task.
 
 ##### Unit tests
 
