@@ -43,7 +43,7 @@ $ui-class-active: ".vac-active";
 
 	// Generic class to hide elements
 	#{$ui-class-hidden}{
-		display: none;
+		display: none !important;
 	}
 
 	&.vac-disable-fullscreen {

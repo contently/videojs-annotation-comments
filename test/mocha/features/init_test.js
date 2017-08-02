@@ -167,26 +167,26 @@ describe('plugin initialization', () => {
             });
         });
 
-        describe('showPlayerButton', () => {
+        describe('showPlayerButtonAnnotationsNumberBubble', () => {
             beforeEach(resetVJS);
 
-            it('player annotations button is not shown if no annotations exist', (done) => {
+            it('player annotations # bubble is not shown if no annotations exist', (done) => {
                 plugin = player.annotationComments();
 
                 player.on('loadedmetadata', () => {
                     player.play().then(() => {
-                        expect($('.vac-player-btn:visible').length).to.equal(0);
+                        expect($('.vac-player-btn b:visible').length).to.equal(0);
                         done();
                     });
                 });
             });
 
-            it('player annotations button is shown if annotations exist', (done) => {
+            it('player annotations # bubble is shown if annotations exist', (done) => {
                 plugin = player.annotationComments({ annotationsObjects: annotations });
 
                 player.on('loadedmetadata', () => {
                     player.play().then(() => {
-                        expect($('.vac-player-btn:visible').length).to.equal(1);
+                        expect($('.vac-player-btn b:visible').length).to.equal(1);
                         done();
                     });
                 });

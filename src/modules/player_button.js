@@ -30,7 +30,7 @@ class PlayerButton extends PlayerComponent {
         }
 
         $bubble.text(num);
-        num > 0 ? this.$el.removeClass(this.UI_CLASSES.hidden) : this.$el.addClass(this.UI_CLASSES.hidden);
+        num > 0 ? $bubble.removeClass(this.UI_CLASSES.hidden) : $bubble.addClass(this.UI_CLASSES.hidden);
     }
 }
 
