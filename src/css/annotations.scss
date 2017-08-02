@@ -8,6 +8,9 @@ $red: #FF0000;
 $medGray: #dbdcdc;
 $darkGray: #383838;
 
+$ui-class-hidden: ".vac-hidden";
+$ui-class-active: ".vac-active";
+
 // NOTES
 // Videojs standard elements are prefixed with 'vjs-'*
 // Elements added by videojs-annotation-comments are prefixed with 'vac-'*
@@ -19,7 +22,7 @@ $darkGray: #383838;
 .video-js{
 
 	// Applied when annotations are toggled 'on'
-	&.vac-active{
+	&#{$ui-class-active}{
 		// Hide timeline status and large play button
 		.vjs-mouse-display, .vjs-big-play-button{
 			display: none !important;
@@ -36,6 +39,11 @@ $darkGray: #383838;
 		.vac-player-btn span.vjs-icon-placeholder{
 			background-color: $primaryColor !important;
 		}
+	}
+
+	// Generic class to hide elements
+	#{$ui-class-hidden}{
+		display: none;
 	}
 
 	&.vac-disable-fullscreen {
@@ -357,7 +365,7 @@ $darkGray: #383838;
 					}
 				}
 				// When a marker is active, highlight it appropriately
-				&.vac-active {
+				&#{$ui-class-active} {
 					background-color: $secondaryColor;
 					&.ranged-marker {
 						box-shadow: 7px 0 0 0 $secondaryColor inset;
@@ -446,13 +454,13 @@ $darkGray: #383838;
 		box-sizing: border-box;
 		transition: all .15s linear;
 		// When hovering over or interacting with comments list, toggle opacity and slide out
-		&:hover, &.vac-active{
+		&:hover, &#{$ui-class-active}{
 			width: 60%;
 			max-width: 480px;
 			.vac-comments-wrap{
 				opacity: 1;
 			}
-			&.vac-active{
+			&#{$ui-class-active}{
 				// Box used to position 'add new comment' textbox over
 				.vac-add-new-shapebox{
 					display: block;

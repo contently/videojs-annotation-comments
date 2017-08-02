@@ -167,13 +167,40 @@ describe('plugin initialization', () => {
             });
         });
 
+        describe('showPlayerButton', () => {
+            beforeEach(resetVJS);
+
+            it('player annotations button is not shown if no annotations exist', (done) => {
+                plugin = player.annotationComments();
+
+                player.on('loadedmetadata', () => {
+                    player.play().then(() => {
+                        expect($('.vac-player-btn:visible').length).to.equal(0);
+                        done();
+                    });
+                });
+            });
+
+            it('player annotations button is shown if annotations exist', (done) => {
+                plugin = player.annotationComments({ annotationsObjects: annotations });
+
+                player.on('loadedmetadata', () => {
+                    player.play().then(() => {
+                        expect($('.vac-player-btn:visible').length).to.equal(1);
+                        done();
+                    });
+                });
+            })
+        });
+
         describe('showFullScreen', () => {
             beforeEach(resetVJS);
 
             it('adds a class to the player to disable annotation mode', (done) => {
                 // NOTE: Cannot test full screen api due to browser restrictions
                 // testing that adding the class removed the button instead
-                plugin = player.annotationComments({});
+                
+                plugin = player.annotationComments({ annotationsObjects: annotations });
 
                 player.on('loadedmetadata', () => {
                     player.play().then(() => {
@@ -182,7 +209,7 @@ describe('plugin initialization', () => {
 
                         $('.video-js').removeClass('vac-disable-fullscreen');
                         expect($('.vac-player-btn:visible').length).to.equal(1);
-
+                        
                         done();
                     });
                 });

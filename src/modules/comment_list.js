@@ -51,7 +51,7 @@ class CommentList extends PlayerComponent {
         ));
 
         this.$player.append(this.$el);
-        this.$wrap = this.$player.find(".vac-comments-container");
+        this.$wrap = this.$UI.commentsContainer;
         this.bindListEvents();
     }
 
@@ -63,7 +63,7 @@ class CommentList extends PlayerComponent {
 
     // Render new comment form
     addNewComment () {
-        this.$wrap.addClass("vac-active").find(".vac-comments-wrap").scrollTop(999999);
+        this.$wrap.addClass(this.UI_CLASSES.active).find(".vac-comments-wrap").scrollTop(999999);
         var $shapebox = this.$wrap.find(".vac-add-new-shapebox"),
             width = $shapebox.outerWidth(),
             top = $shapebox.position().top + 10,
@@ -76,10 +76,10 @@ class CommentList extends PlayerComponent {
 
     // Save comment from new comment form, update state and re-render UI
     saveNewComment () {
-        this.$wrap.removeClass("vac-active");
+        this.$wrap.removeClass(this.UI_CLASSES.active);
 
         let user_id = 1,
-            body = this.$player.find(".vac-video-write-new textarea").val();
+            body = this.$UI.newCommentTextarea.val();
 
         if(!body) return; // empty comment - TODO add validation / err message
 
@@ -94,7 +94,7 @@ class CommentList extends PlayerComponent {
 
     // Cancel comment adding process
     closeNewComment () {
-        this.$wrap.removeClass("vac-active");
+        this.$wrap.removeClass(this.UI_CLASSES.active);
         if(this.$newCommentForm) this.$newCommentForm.remove();
     }
 

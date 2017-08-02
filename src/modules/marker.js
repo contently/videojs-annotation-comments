@@ -17,12 +17,12 @@ class Marker extends PlayerComponent {
 
     // attribute to get the DOM id for this marker node
     get markerId () {
-        return "vacmarker_" + this.componentId;
+        return `vacmarker_${this.componentId}`;
     }
 
     // Set this marker as active (highlight) and optionally show tooltip also
     setActive (showTooltip=false) {
-        this.$el.addClass("vac-active");
+        this.$el.addClass(this.UI_CLASSES.active);
         if(showTooltip && this.plugin.options.showMarkerTooltips){
             this.$el.addClass('vac-force-tooltip');
         }
@@ -30,12 +30,12 @@ class Marker extends PlayerComponent {
 
     // Deactivate this marker
     deactivate () {
-        this.$el.removeClass("vac-active vac-force-tooltip");
+        this.$el.removeClass(`${this.UI_CLASSES.active} vac-force-tooltip`);
     }
 
     // Draw marker on timeline for this.range;
     draw () {
-        let $timeline = this.$player.find('.vjs-progress-control'),
+        let $timeline = this.$UI.timeline,
             $markerWrap = $timeline.find(".vac-marker-wrap");
 
         // If markerWrap does NOT exist yet, draw it on the timeline and grab it's jquery ref
