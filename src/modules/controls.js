@@ -60,7 +60,7 @@ class Controls extends PlayerComponent {
             }
             this.uiState = cloneObject(BASE_UI_STATE);
         }
-        this.$player.find(".vac-control").remove();
+        this.$UI.controlElements.remove();
     }
 
     // Draw the UI elements (based on uiState)
@@ -113,7 +113,7 @@ class Controls extends PlayerComponent {
 
     // User clicked to save a new annotation/comment during add new flow
     saveNew () {
-        let comment = this.$player.find(".vac-video-write-new textarea").val();
+        let comment = this.$UI.newCommentTextarea.val();
         if(!comment) return; // empty comment - TODO add validation / err message
 
         let a = Annotation.newFromData(this.marker.range, this.selectableShape.shape, comment, this.plugin);

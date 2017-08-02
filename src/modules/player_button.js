@@ -25,12 +25,12 @@ class PlayerButton extends PlayerComponent {
         let $bubble = this.$el.find("b");
 
         if(!$bubble.length){
-                $bubble = $("<b/>");
-                this.$el.append($bubble);
+            $bubble = $("<b/>");
+            this.$el.append($bubble);
         }
 
         $bubble.text(num);
-        num > 0 ? this.$el.addClass('show') : this.$el.addClass('hide');
+        num > 0 ? $bubble.removeClass(this.UI_CLASSES.hidden) : $bubble.addClass(this.UI_CLASSES.hidden);
     }
 }
 

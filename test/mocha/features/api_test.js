@@ -159,7 +159,6 @@ describe('external event-based API', () => {
                 // Add listener
                 plugin.on('addingAnnotationDataChanged', (event) => {
                     expect(event.detail.shape).to.not.be.undefined;
-                    console.log(event.detail.shape);
                     done();
                 });
 
@@ -193,7 +192,6 @@ describe('external event-based API', () => {
                 // Add listener
                 plugin.on('addingAnnotationDataChanged', (event) => {
                     expect(event.detail.range).to.not.be.undefined;
-                    console.log(event.detail.range);
                     done();
                 });
 
@@ -221,7 +219,6 @@ describe('external event-based API', () => {
                 plugin.on('addingAnnotationDataChanged', (event) => {
                     expect(event.detail.range.start).to.equal(9);
                     expect(event.detail.range.end).to.equal(20);
-                    console.log(event.detail.range);
                     done();
                 });
 
@@ -250,7 +247,6 @@ describe('external event-based API', () => {
 
                 // Add listener
                 plugin.on('enteredAddingAnnotation', (event) => {
-                    console.log('adding annotation state entered')
                     expect(event.detail.range.start).to.not.be.undefined;
                     done();
                 });

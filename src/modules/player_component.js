@@ -17,6 +17,27 @@ class PlayerComponent {
         this.registerHandlebarsHelpers(); // TODO: does this need to be inherited for every object init?
     }
 
+    // helpers to get various UI components of the player quickly, keeping commonly reused class names
+    // consolidated in case of need to change in the future (and for quick access)
+    get $UI () {
+        return Object.freeze({
+            commentsContainer:          this.$player.find(".vac-comments-container"),       // outer container for all comments
+            controlElements:            this.$player.find(".vac-control"),                  // Each of multiple control elements in the control bar
+            newCommentTextarea:         this.$player.find(".vac-video-write-new textarea"), // Textarea for writing a new comment
+            timeline:                   this.$player.find('.vjs-progress-control'),         // Timeline element
+            markerCursorHelpText:       this.$player.find('.vac-cursor-help-text'),         // Help text that appears with 'click/drag..' on timeline
+            controlBar:                 this.$player.find('.vjs-control-bar'),              // Conrol bar wrapper for vjs
+        });
+    }
+
+    // utility classes used in various components
+    get UI_CLASSES () {
+        return Object.freeze({
+            hidden: "vac-hidden",
+            active: "vac-active"
+        });
+    }
+
     // attribute to get reference to the main plugin object (main.js instance)
     get plugin () {
         return this.player.annotationComments();
