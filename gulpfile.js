@@ -17,7 +17,11 @@ const gulp          = require('gulp'),
       mocha         = require('gulp-mocha'),
       shell         = require('gulp-shell'),
       jshint        = require('gulp-jshint'),
-      stylish       = require('jshint-stylish');
+      stylish       = require('jshint-stylish'),
+      handlebars    = require('gulp-handlebars'),
+      wrap          = require('gulp-wrap'),
+      concat        = require('gulp-concat'),
+      declare       = require('gulp-declare');
 
 const FILENAME = "videojs-annotation-comments.js",
       PACKAGE = require('./package.json');
@@ -76,17 +80,36 @@ gulp.task('sass', () => {
         .pipe(gulp.dest('./build/css'));
 });
 
+gulp.task('templates:watch', () => {
+    gulp.watch('./src/templates/**/*.hbs', ['compile']);
+});
+
 gulp.task('sass:watch', () => {
     gulp.watch('./src/css/**/*.scss', ['sass']);
 });
 
-// you gotta globally install handlebars bc im tired of shitty handlebars-gulp libs
-gulp.task('templates', shell.task([
-    'handlebars ./src/templates/*.hbs -f ./src/compiled_templates.js',
-    "echo 'var Handlebars = require(\"handlebars/runtime\");\n' | cat - ./src/compiled_templates.js > temp && mv temp ./src/compiled_templates.js"
-]));
+gulp.task('templates',() => {
+    gulp.src('./src/templates/**/*.hbs')
+        .pipe(handlebars({
+            handlebars: require('handlebars')
+        }))
+        .pipe(wrap('Handlebars.template(<%= contents %>)'))
+        .pipe(declare({
+            root: 'exports',
+            noRedeclare: true, // Avoid duplicate declarations
+            processName: function(filePath) {
+                // Allow nesting based on path using gulp-declare's processNameByPath()
+                // You can remove this option completely if you aren't using nested folders
+                // Drop the templates/ folder from the namespace path by removing it from the filePath
+                return declare.processNameByPath(filePath.replace('src/templates/', ''));
+            }
+        }))
+        .pipe(concat('compiled_templates.js'))
+        .pipe(wrap('var Handlebars = require("handlebars/runtime");\n <%= contents %>'))
+        .pipe(gulp.dest('./src'));
+});
 
-gulp.task('build', ['transpile'], (cb) => {
+gulp.task('build', ['templates', 'sass', 'transpile'], (cb) => {
     pump([
         gulp.src('build/videojs-annotation-comments.js'),
         rename(FILENAME.replace(".js",".min.js")),
@@ -103,7 +126,7 @@ gulp.task('test', () => {
 });
 
 gulp.task('tdd', function() {
-    gulp.watch(['src/*.js', 'test/mocha/modules/*.js'], ['test']);
+    gulp.watch(['src/**/*.js', 'src/**/.hbs', 'test/mocha/modules/*.js'], ['test']);
 });
 
 gulp.task('lint', function() {
@@ -114,5 +137,5 @@ gulp.task('lint', function() {
 
 gulp.task('transpile', (cb) => compile(false, cb) );
 gulp.task('bundle_watch', (cb) => compile(true, cb) );
-gulp.task('watch', ['bundle_watch', 'dev_webserver', 'sass', 'sass:watch', 'tdd']);
+gulp.task('watch', ['bundle_watch', 'dev_webserver', 'sass', 'sass:watch', 'templates', 'templates:watch', 'tdd']);
 gulp.task('default', ['watch']);

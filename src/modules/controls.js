@@ -9,7 +9,7 @@ const DraggableMarker = require("./draggable_marker.js").class;
 const SelectableShape = require("./selectable_shape.js").class;
 const PlayerComponent = require("./player_component").class;
 const Annotation = require("./annotation").class;
-const templateName = 'controls.hbs';
+const templateName = 'controls';
 
 // Control uses a "ui state" to determine how UI is rendered - this object is the base state, containing a
 // default value for each item in the state

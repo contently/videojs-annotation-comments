@@ -3,7 +3,7 @@
     Component for a timeline marker with capabilities to draw on timeline, including tooltip for comment
 */
 
-const markerTemplateName = 'marker.hbs';
+const markerTemplateName = 'marker';
 const PlayerComponent = require("./player_component").class;
 
 class Marker extends PlayerComponent {

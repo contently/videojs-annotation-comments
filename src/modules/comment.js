@@ -5,7 +5,7 @@
 
 const PlayerComponent = require("./player_component").class;
 const moment = require("moment");
-const templateName = 'comment.hbs';
+const templateName = 'comment';
 
 class Comment extends PlayerComponent {
 
