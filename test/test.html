@@ -133,13 +133,20 @@
 					showControls: true,
 					showCommentList: true,
 					showFullScreen: true,
-					showMarkerTooltips: true
+					showMarkerTooltips: true,
+					startInAnnotationMode: false
 				});
 				plugin.on('annotationOpened', function(e){
 					console.log("annotationOpened", e.detail);
 				});
 				plugin.on('annotationClosed', function(e){
 					console.log("annotationClosed", e.detail);
+				});
+				plugin.on('annotationModeEnabled', (e) => {
+					console.log("annotationModeEnabled");
+				});
+				plugin.on('annotationModeDisabled', (e) => {
+					console.log("annotationModeDisabled");
 				})
 			});
 		</script>

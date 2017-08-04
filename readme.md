@@ -38,7 +38,9 @@ player.on('loadedmetadata', function() {
         // Show or hide the tool tips on marker hover
         showMarkerTooltips: true,
         // If false, step two of adding annotations (writing and saving the comment) will be disabled
-        internalCommenting: true
+        internalCommenting: true,
+        // If true, toggle the player to annotation mode right after init
+        startInAnnotationMode: false
     });
 });
 ```
@@ -117,6 +119,16 @@ plugin.on('enteredAddingAnnotation', function(event) {
 plugin.on('playerBoundsChanged', function(event) {
     var bounds = event.detail;
     // do something with the new boundaries
+});
+
+// Entering annotation mode (annotation icon was clicked when previously 'off')
+plugin.on('annotationModeEnabled', function(event) {
+    // do something
+});
+
+// Exiting annotation mode (annotation icon was clicked when previously 'on')
+plugin.on('annotationModeDisabled', function(event) {
+    // do something
 });
 ```
 

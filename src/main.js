@@ -12,16 +12,17 @@
     const AnnotationState = require("./modules/annotation_state").class;
     const EventDispatcher = require("./modules/event_dispatcher").class;
 
-    const DEFAULT_OPTIONS = Object.freeze({
-        bindArrowKeys:      true,
-        meta:               { user_id: null, user_name: null },
-        onStateChanged:     null,
-        annotationsObjects: [],
-        showControls:       true,
-        showCommentList:    true,
-        showFullScreen:     true,
-        showMarkerTooltips: true,
-        internalCommenting: true
+    const DEFAULT_OPTIONS =     Object.freeze({
+        bindArrowKeys:          true,
+        meta:                   { user_id: null, user_name: null },
+        onStateChanged:         null,
+        annotationsObjects:     [],
+        showControls:           true,
+        showCommentList:        true,
+        showFullScreen:         true,
+        showMarkerTooltips:     true,
+        internalCommenting:     true,
+        startInAnnotationMode:  false
     });
 
     class Main extends Plugin {
@@ -60,6 +61,7 @@
             this.drawUI();
             this.bindEvents();
             this.setBounds(false);
+            if(options.startInAnnotationMode) this.toggleAnnotations();
         }
 
         // Draw UI components for interaction
@@ -84,7 +86,7 @@
 
         // A wrapper func to make it easier to use EventDispatcher from the client
         // Ex: plugin.fire(type, data);
-        fire (type, data) {
+        fire (type, data={}) {
             this.eventDispatcher.fire(type, data);
         }
 
@@ -93,6 +95,12 @@
             this.active = !this.active;
             this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
             this.annotationState.enabled = this.active;
+
+            if(this.active){
+                this.fire("annotationModeEnabled");
+            }else{
+                this.fire("annotationModeDisabled")
+            }
 
             // handle control component UI if showControls: true
             if(this.options.showControls){

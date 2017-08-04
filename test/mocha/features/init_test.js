@@ -30,7 +30,8 @@ describe('plugin initialization', () => {
                     showControls: true,
                     showFullScreen: true,
                     showMarkerTooltips: true,
-                    internalCommenting: true
+                    internalCommenting: true,
+                    startInAnnotationMode: false
                 });
                 done();
             });

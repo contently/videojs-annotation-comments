@@ -53,7 +53,7 @@ class Annotation extends PlayerUIComponent {
     }
 
     bindEvents () {
-        this.marker.$el.click(() => { this.plugin.annotationState.openAnnotation(this); });
+        this.marker.$el.click((e) => this.plugin.annotationState.openAnnotation(this, true) );;
     }
 
     // Opens the annotation. Handles marker, commentList, shape, Annotation state, and player state
