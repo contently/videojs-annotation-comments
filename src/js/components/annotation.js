@@ -3,8 +3,8 @@
     Component for an annotation, which includes controlling the marker/shape, rendering a commentList, etc
 */
 
-const   Utils = require("./../utils.js"),
-        PlayerUIComponent = require("./player_ui_component").class,
+const   PlayerUIComponent = require("./../lib/player_ui_component").class,
+        Utils = require("./../lib/utils.js"),
         CommentList = require("./comment_list").class,
         Marker = require("./marker").class,
         Comment = require("./comment").class,

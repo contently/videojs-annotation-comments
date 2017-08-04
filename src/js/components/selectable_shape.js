@@ -3,8 +3,8 @@
     Component for a shape that can be drug/sized on top of the video while adding a new annotation
 */
 
-const   Utils = require('./../utils'),
-        AnnotationShape = require("./annotation_shape").class;
+const   AnnotationShape = require("./annotation_shape").class,
+        Utils = require('./../lib/utils');
 
 class SelectableShape extends AnnotationShape {
 

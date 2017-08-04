@@ -4,7 +4,7 @@
 */
 
 
-const PlayerUIComponent = require("./player_ui_component").class,
+const PlayerUIComponent = require("./../lib/player_ui_component").class,
       templateName = "player_button";
 
 class PlayerButton extends PlayerUIComponent {

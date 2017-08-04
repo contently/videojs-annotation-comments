@@ -4,8 +4,8 @@
     as drag occurs
 */
 
-const   Utils = require('./../utils'),
-        Marker = require("./marker").class,
+const   Marker = require("./marker").class,
+        Utils = require('./../lib/utils'),
         markerTemplateName = 'draggable_marker';
 
 class DraggableMarker extends Marker {

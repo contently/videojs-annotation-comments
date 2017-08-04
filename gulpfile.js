@@ -31,15 +31,15 @@ const ATTIBUTION = "/* Version "+PACKAGE.version+" videojs-annotation-comments (
 //compilation function for browserify/bundler/transpilation
 function compile(watch, cb){
     var bundler = watchify(
-        browserify('./src/main.js', { debug: true })
-            .transform(babelify, {presets: ["es2015-script"]})
+        browserify('./src/js/main.js', { debug: true })
+            .transform(babelify)
     );
 
     function rebundle() {
         bundler.bundle()
             .on('log', gutil.log)
             .on('error', gutil.log.bind(gutil.colors.red, 'Browserify Error'))
-            .pipe(source('src/main.js'))
+            .pipe(source('src/js/main.js'))
             .pipe(rename(FILENAME))
             .pipe(buffer())
             .pipe(sourcemaps.init({ loadMaps: true }))
@@ -109,9 +109,9 @@ gulp.task('templates',() => {
                 return declare.processNameByPath(filePath.replace('src/templates/', ''));
             }
         }))
-        .pipe(concat('compiled_templates.js'))
+        .pipe(concat('templates.js'))
         .pipe(wrap('var Handlebars = require("handlebars/runtime");\n <%= contents %>'))
-        .pipe(gulp.dest('./src'));
+        .pipe(gulp.dest('./src/js/compiled/'));
 });
 
 gulp.task('build', ['templates', 'sass', 'transpile'], (cb) => {
@@ -126,12 +126,12 @@ gulp.task('build', ['templates', 'sass', 'transpile'], (cb) => {
 });
 
 gulp.task('test', () => {
-    gulp.src(['test/mocha/modules/*.js'], { read: false })
+    gulp.src(['test/mocha/components/*.js'], { read: false })
         .pipe(mocha({ compilers: ['js:babel-core/register'] }));
 });
 
 gulp.task('tdd', function() {
-    gulp.watch(['src/**/*.js', 'src/**/.hbs', 'test/mocha/modules/*.js'], ['test']);
+    gulp.watch(['src/**/*.js', 'src/**/.hbs', 'test/mocha/components/*.js'], ['test']);
 });
 
 gulp.task('lint', function() {

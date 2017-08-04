@@ -4,8 +4,8 @@
     toggling active states for annotations, navigating annotations forward/back, etc
 */
 
-const   Utils = require('./../utils'),
-        PlayerComponent = require("./player_component").class,
+const   Utils = require('./../lib/utils'),
+        PlayerComponent = require("./../lib/player_component").class,
         Annotation = require("./annotation").class;
 
 class AnnotationState extends PlayerComponent {

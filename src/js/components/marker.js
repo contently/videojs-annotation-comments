@@ -3,8 +3,8 @@
     Component for a timeline marker with capabilities to draw on timeline, including tooltip for comment
 */
 
-const   Utils = require("./../utils"),
-        PlayerUIComponent = require("./player_ui_component").class,
+const   PlayerUIComponent = require("./../lib/player_ui_component").class,
+        Utils = require("./../lib/utils"),
         markerTemplateName = 'marker',
         markerWrapTemplateName = 'marker_wrap';
 

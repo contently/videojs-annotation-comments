@@ -3,9 +3,9 @@
   Component for a list of comments in a visible/active annotation
 */
 
-const   PlayerUIComponent = require("./player_ui_component").class,
+const   PlayerUIComponent = require("./../lib/player_ui_component").class,
+        Utils = require("./../lib/utils"),
         Comment = require("./comment").class,
-        Utils = require("./../utils"),
         commentListTemplateName = 'comment_list',
         newCommentTemplateName = 'new_comment';
 
