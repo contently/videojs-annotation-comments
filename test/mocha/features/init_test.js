@@ -131,7 +131,7 @@ describe('plugin initialization', () => {
                         expect($('.vac-controls').length).to.equal(0);
 
                         plugin.components.controls.startAddNew();
-                        expect($('.vac-cursor-help-text').text()).to.equal('Click and drag to select');
+                        expect($('.vac-cursor-tool-tip').text()).to.equal('Click and drag to select');
 
                         done();
                     });
@@ -204,7 +204,7 @@ describe('plugin initialization', () => {
             it('adds a class to the player to disable annotation mode', (done) => {
                 // NOTE: Cannot test full screen api due to browser restrictions
                 // testing that adding the class removed the button instead
-                
+
                 plugin = player.annotationComments({ annotationsObjects: annotations });
 
                 player.on('loadedmetadata', () => {
@@ -214,7 +214,7 @@ describe('plugin initialization', () => {
 
                         $('.video-js').removeClass('vac-disable-fullscreen');
                         expect($('.vac-player-btn:visible').length).to.equal(1);
-                        
+
                         done();
                     });
                 });
