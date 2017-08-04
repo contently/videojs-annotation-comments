@@ -28,6 +28,13 @@ class DraggableMarker extends Marker {
             this.dragging = true;
             // When mouse moves (with mouse down) call onDrag, throttling to once each 250 ms
             $(document).on("mousemove.draggableMarker", Utils.throttle(this.onDrag.bind(this), 250) );
+
+            // Add drag class to cursor tooltip if available
+            if(!this.plugin.options.showControls) {
+                this.$player.find('.vac-cursor-tool-tip')
+                    .addClass('vac-cursor-dragging')
+                    .removeClass('vac-marker-hover');
+            }
         });
 
         // On mouse up end drag action and unbind mousemove event
@@ -35,7 +42,27 @@ class DraggableMarker extends Marker {
              if(!this.dragging) return;
              $(document).off("mousemove.draggableMarker");
              this.dragging = false;
+
+             // Remove drag class and hover class from cursor tooltip if available
+             if(!this.plugin.options.showControls) {
+                 this.$player.find('.vac-cursor-tool-tip')
+                    .removeClass('vac-cursor-dragging')
+                    .removeClass('vac-marker-hover');
+             }
         });
+
+        // On mouse mouse enter, show cursor tooltip if controls are not shown
+        // This adds the class which is picked up in Controls
+        if(!this.plugin.options.showControls) {
+            var self = this;
+            self.$el
+                .on('mouseenter.vac-cursor-tool-tip', () => {
+                    self.$player.find('.vac-cursor-tool-tip').addClass('vac-marker-hover');
+                })
+                .on('mouseleave.vac-cursor-tool-tip', () => {
+                    self.$player.find('.vac-cursor-tool-tip').removeClass('vac-marker-hover');
+                });
+        };
     }
 
     // On drag action, calculate new range and redraw marker
@@ -71,8 +98,10 @@ class DraggableMarker extends Marker {
     // Remove bound events on destructon
     teardown () {
         super.teardown();
-        $(document).off("mousemove.draggableMarker");
-        $(document).off("mouseup.draggableMarker");
+        $(document).off('mousemove.draggableMarker');
+        $(document).off('mouseup.draggableMarker');
+        this.$el.off('mouseenter.vac-cursor-tool-tip');
+        this.$el.off('mouseleave.vac-cursor-tool-tip')
     }
 
     // Move the video & marker start by some num seconds (pos or neg)

@@ -59,6 +59,10 @@ class Controls extends PlayerUIComponent {
                 this.selectableShape.teardown();
             }
             this.uiState = Utils.cloneObject(BASE_UI_STATE);
+            this.$player.find('.vac-video-cover-canvas')
+                .off('mousedown.vac-cursor-tooltip')
+                .off('mouseup.vac-cursor-tooltip');
+            $(document).off('mousemove.vac-cursor-tooltip');
         }
         this.$UI.controlElements.remove();
     }
@@ -102,6 +106,9 @@ class Controls extends PlayerUIComponent {
         this.marker = new DraggableMarker(this.playerId, range);
         this.selectableShape = new SelectableShape(this.playerId);
 
+        // show cursor help text if controls are hidden
+        if(!this.showControls) this.bindCursorTooltip();
+
         this.plugin.fire('enteredAddingAnnotation', { range: range });
     }
 
@@ -132,6 +139,7 @@ class Controls extends PlayerUIComponent {
     restoreNormalUI () {
         this.plugin.annotationState.enabled = true;
         this.enablePlayingAndControl();
+        $(document).off('mousemove.vac-cursor-tool-tip');
     }
 
     // On arrow key press, navigate to next or prev Annotation
@@ -141,6 +149,53 @@ class Controls extends PlayerUIComponent {
 
         if(keyId == 37) this.plugin.annotationState.prevAnnotation();
         if(keyId == 39) this.plugin.annotationState.nextAnnotation();
+    }
+
+    // Adds help text to cursor during annotation mode
+    bindCursorTooltip () {
+        let self = this,
+            $tooltip = self.$player.find('.vac-cursor-tool-tip'),
+            tooltipArea = Utils.areaOfHiddenEl($tooltip, self.$UI.coverCanvas, self.UI_CLASSES.hidden);
+
+        $(document).on('mousemove.vac-cursor-tool-tip', Utils.throttle((event) => {
+            let x = event.pageX,
+                y = event.pageY,
+                outOfBounds =
+                    (x < this.plugin.bounds.left || x > this.plugin.bounds.right) ||
+                    (y < this.plugin.bounds.top || y > this.plugin.bounds.bottom),
+                withinControls = !outOfBounds && y >= this.plugin.bounds.bottomWithoutControls,
+                markerHovered = $tooltip.hasClass('vac-marker-hover');
+
+            if(outOfBounds) {
+                $tooltip.addClass(self.UI_CLASSES.hidden);
+                return
+            }
+
+            let cursorX      = x - this.plugin.bounds.left,
+                cursorY      = y - this.plugin.bounds.top,
+                margin       = 10,
+                rightEdge    = self.$player.width(),
+                bottomEdge   = self.$player.height() - self.$UI.controlBar.height(),
+                atRightEdge  = (cursorX + tooltipArea.width + margin*2) >= rightEdge,
+                atBottomEdge = (cursorY + tooltipArea.height + margin*2) >= bottomEdge;
+
+            // is the tooltip too close to the right or bottom edge?
+            let posX = atRightEdge ? (rightEdge - tooltipArea.width - margin) : (cursorX + margin),
+                posY = atBottomEdge ? (bottomEdge - tooltipArea.height - margin) : (cursorY + margin);
+
+            // hide if the cursor is over the control bar but not hovering over the draggable marker
+            // also hide if mouse is down
+            if((withinControls && !markerHovered) || $tooltip.hasClass('vac-cursor-dragging')) {
+                $tooltip.addClass(self.UI_CLASSES.hidden);
+            } else {
+                $tooltip.removeClass(self.UI_CLASSES.hidden);
+            }
+
+            $tooltip.css({
+                left: `${posX}px`,
+                top: `${posY}px`
+            });
+        }, 50));
     }
 }
 

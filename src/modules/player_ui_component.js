@@ -25,7 +25,8 @@ class PlayerUIComponent extends PlayerComponent{
             timeline:               this.$player.find('.vjs-progress-control'),         // Timeline element
             markerCursorHelpText:   this.$player.find('.vac-cursor-help-text'),         // Help text that appears with 'click/drag..' on timeline
             controlBar:             this.$player.find('.vjs-control-bar'),              // Conrol bar wrapper for vjs
-            markerWrap:             this.$player.find('.vac-marker-wrap')               // wrapper element to place markers in on timeline 
+            markerWrap:             this.$player.find('.vac-marker-wrap'),               // wrapper element to place markers in on timeline
+            coverCanvas:            this.$player.find('.vac-video-cover-canvas')        // Player cover during adding annotation state
         });
     }
 

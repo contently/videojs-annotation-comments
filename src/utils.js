@@ -55,5 +55,23 @@ module.exports = {
             return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' +  s4() + '-' + s4() + s4() + s4();
+    },
+    // returns the height and width of an element that is not visible
+    // clones el and tricks DOM into rendering it w the correct size
+    // beware the container may be important for scoped styles
+    areaOfHiddenEl: ($el, $container, hideClass='') => {
+        let $clone = $el.clone(),
+            data = {};
+        $clone.css({
+            visibility: 'hidden',
+            display: 'inline-block'
+        });
+        $clone.removeClass(hideClass);
+        $container.append($clone);
+        data.width = $clone.outerWidth();
+        data.height = $clone.outerHeight();
+        $clone.remove();
+
+        return data;
     }
 };

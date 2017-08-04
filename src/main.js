@@ -4,6 +4,7 @@
     require('es6-object-assign').polyfill();
     require('./polyfills');
 
+    const throttle = require('./utils').throttle;
     const cloneObject = require("./utils").cloneObject;
     const Plugin = videojs.getPlugin('plugin');
     const Controls = require("./modules/controls").class;
@@ -58,6 +59,7 @@
 
             this.drawUI();
             this.bindEvents();
+            this.setBounds(false);
         }
 
         // Draw UI components for interaction
@@ -74,6 +76,10 @@
             this.components.playerButton.$el.on('click', () => {
                 this.toggleAnnotations();
             });
+
+            // set player boundaries on window size change or fullscreen change
+            $(window).on('resize.vac-window-resize', throttle(this.setBounds.bind(this), 500));
+            this.player.on('fullscreenchange', throttle(this.setBounds.bind(this), 500));
         }
 
         // A wrapper func to make it easier to use EventDispatcher from the client
@@ -96,6 +102,22 @@
                     this.components.controls.draw();
                 }
             }
+        }
+
+        // Set player UI boundaries
+        setBounds (triggerChange=true) {
+            this.bounds = {};
+            let $player = $(this.player.el()),
+                $ctrls  = $player.find('.vjs-control-bar');
+
+            this.bounds.left = $player.offset().left;
+            this.bounds.top = $player.offset().top;
+            this.bounds.right = this.bounds.left + $player.width();
+            this.bounds.bottom = this.bounds.top + $player.height();
+            this.bounds.bottomWithoutControls = this.bounds.bottom - $ctrls.height();
+
+            // fires an event when bounds have changed during resizing
+            if(triggerChange) this.fire('playerBoundsChanged', this.bounds);
         }
     }
 
