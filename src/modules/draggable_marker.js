@@ -10,13 +10,14 @@ const   Utils = require('./../utils'),
 
 class DraggableMarker extends Marker {
 
-    constructor (range, playerId) {
-        super(range, null, playerId);
+    constructor (playerId, range) {
+        super(playerId, range);                   
+        this.range = range;                       // NOTE - this shouldn't be required and is a HACK for how transpilation works in IE10  
         this.templateName = markerTemplateName;   // Change template from base Marker template
         this.dragging = false;                    // Is a drag action currently occring?
         this.rangePin = range.start;              // What's the original pinned timeline point when marker was added
         this.draw();
-        this.$parent = this.$el.closest(".vac-marker-wrap"); // Set parent as marker wrap
+        this.$parent = this.$UI.markerWrap;       // Set parent as marker wrap
     }
 
     // Bind needed evnets for UI interaction

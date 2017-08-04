@@ -99,7 +99,7 @@ class Controls extends PlayerUIComponent {
             start: parseInt(this.player.currentTime(),10),
             stop: parseInt(this.player.currentTime(),10)
         };
-        this.marker = new DraggableMarker(range, this.playerId);
+        this.marker = new DraggableMarker(this.playerId, range);
         this.selectableShape = new SelectableShape(this.playerId);
 
         this.plugin.fire('enteredAddingAnnotation', { range: range });

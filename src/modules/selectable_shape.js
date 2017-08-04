@@ -9,7 +9,7 @@ const   Utils = require('./../utils'),
 class SelectableShape extends AnnotationShape {
 
     constructor (playerId) {
-        super(null, playerId);
+        super(playerId);
         this.$parent = this.$player.find(".vac-video-cover-canvas");
         this.bindEvents();
         this.dragging = false;

@@ -5,22 +5,28 @@
 
 const   Utils = require("./../utils"),
         PlayerUIComponent = require("./player_ui_component").class,
-        markerTemplateName = 'marker';
+        markerTemplateName = 'marker',
+        markerWrapTemplateName = 'marker_wrap';
 
 class Marker extends PlayerUIComponent {
 
-    constructor (range, comment, playerId) {
+    constructor (playerId, range, comment=null) {
         super(playerId);
         this.range = range;
         this.comment = comment;
         this.templateName = markerTemplateName;
+
+        if(!this.$UI.markerWrap.length){
+            this.$UI.timeline.append(
+                this.renderTemplate(markerWrapTemplateName)
+            );
+        }
     }
 
     // attribute to get the DOM id for this marker node
     get markerId () {
         return `vacmarker_${this.componentId}`;
     }
-
     // Set this marker as active (highlight) and optionally show tooltip also
     setActive (showTooltip=false) {
         this.$el.addClass(this.UI_CLASSES.active);
@@ -36,22 +42,12 @@ class Marker extends PlayerUIComponent {
 
     // Draw marker on timeline for this.range;
     draw () {
-        let $timeline = this.$UI.timeline,
-            $markerWrap = $timeline.find(".vac-marker-wrap");
-
-        // If markerWrap does NOT exist yet, draw it on the timeline and grab it's jquery ref
-        if(!$markerWrap.length){
-            let $outerWrap = $("<div/>").addClass("vac-marker-owrap");
-            $markerWrap = $("<div/>").addClass("vac-marker-wrap");
-            $timeline.append($outerWrap.append($markerWrap));
-        }
-
         // clear existing marker if this one was already drawn
-        $timeline.find("#" + this.markerId).remove();
+        this.$UI.timeline.find(`#${this.markerId}`).remove();
 
         // Bind to local instance var, add to DOM, and setup events
         this.$el = $(this.renderTemplate(this.templateName, this.markerTemplateData));
-        $markerWrap.append(this.$el);
+        this.$UI.markerWrap.append(this.$el);
         this.bindMarkerEvents();
     }
 

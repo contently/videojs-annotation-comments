@@ -36,8 +36,10 @@ $ui-class-active: ".vac-active";
 			z-index: 2;
 		}
 		// Toggle color of annotation enable button in controls
-		.vac-player-btn span.vjs-icon-placeholder{
-			background-color: $primaryColor !important;
+		.vac-player-btn i.vac-player-icon{
+			svg{
+				fill: $primaryColor !important;
+			}
 		}
 	}
 
@@ -288,18 +290,15 @@ $ui-class-active: ".vac-active";
 	// Button added to the control bar, which toggles annotation mode
 	.vac-player-btn{
 		margin-right:8px;
-		// Overwrite normal vjs-icon-placeholder w/ svg 'comment' icon (from Google Material Icons)
-		span.vjs-icon-placeholder{
-			width: 100%;
-			height: 100%;
-			display: block;
-			-webkit-mask: url("data:image/svg+xml;base64,PHN2ZyBmaWxsPSIjMDAwMDAwIiBoZWlnaHQ9IjI0IiB2aWV3Qm94PSIwIDAgMjQgMjQiIHdpZHRoPSIyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICAgIDxwYXRoIGQ9Ik0yMS45OSA0YzAtMS4xLS44OS0yLTEuOTktMkg0Yy0xLjEgMC0yIC45LTIgMnYxMmMwIDEuMS45IDIgMiAyaDE0bDQgNC0uMDEtMTh6TTE4IDE0SDZ2LTJoMTJ2MnptMC0zSDZWOWgxMnYyem0wLTNINlY2aDEydjJ6Ii8+CiAgICA8cGF0aCBkPSJNMCAwaDI0djI0SDB6IiBmaWxsPSJub25lIi8+Cjwvc3ZnPg==") center center no-repeat;
-			background-color: $white;
-			transition: background-color .2s ease-in-out;
-		}
-		&:hover{
-			span.vjs-icon-placeholder{
-				background-color: lighten($primaryColor, 30%);
+		i.vac-player-icon{
+			svg{
+				fill: white;
+				transition: fill .2s ease-in-out;
+			}
+			&:hover{
+				svg{
+					fill: lighten($primaryColor, 30%)
+				}
 			}
 		}
 		cursor: pointer;

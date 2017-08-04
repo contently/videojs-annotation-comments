@@ -34,12 +34,12 @@ class Annotation extends PlayerUIComponent {
     }
 
     buildMarker () {
-        this.marker = new Marker(this.range, this.commentList.comments[0], this.playerId);
+        this.marker = new Marker(this.playerId, this.range, this.commentList.comments[0]);
         this.marker.draw();
     }
 
     buildShape() {
-        this.annotationShape = new AnnotationShape(this.shape, this.playerId);
+        this.annotationShape = new AnnotationShape(this.playerId, this.shape);
     }
 
     // Serialize object
