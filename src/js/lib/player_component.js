@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 /*
     Base class all player components interit from - it includes lots of helper functions (to get reference to
     the player, the plugin, video state, etc)

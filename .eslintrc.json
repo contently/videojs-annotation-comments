@@ -1,0 +1,16 @@
+{
+    "extends": "videojs",
+    "rules": {
+        "indent": ["error", 4],
+        "one-var": "off",
+        "newline-after-var": "off",
+        "curly": ["error", "multi"],
+        "space-before-function-paren": ["error", "always"]
+    },
+    "globals": {
+        "$": true,
+        "document": true,
+        "videojs": true,
+        "CustomEvent": true
+    }
+}

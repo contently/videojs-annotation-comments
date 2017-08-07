@@ -1,13 +1,13 @@
-"use strict";
+'use strict';
 /*
     Component for managing a shape (i.e. box drawn on the player) for an annotation
 */
 
-const PlayerUIComponent = require("./../lib/player_ui_component").class;
+const PlayerUIComponent = require('./../lib/player_ui_component').class;
 
 class Shape extends PlayerUIComponent {
 
-    constructor (playerId, shape=null) {
+    constructor (playerId, shape = null) {
         super(playerId);
         this.shape = shape;
         this.$parent = this.$player;
@@ -15,10 +15,10 @@ class Shape extends PlayerUIComponent {
 
     // Draw the shape element on the $parent
     render () {
-        if(!this.shape) return;
-        if(this.$el) this.$el.remove();
+        if (!this.shape) return;
+        if (this.$el) this.$el.remove();
 
-        this.$el = $("<div/>").addClass("vac-shape");
+        this.$el = $('<div/>').addClass('vac-shape');
         this.setDimsFromShape();
         this.$parent.append(this.$el);
     }
@@ -26,10 +26,10 @@ class Shape extends PlayerUIComponent {
     // Set/update the dimensions of the shape based  on this.shape
     setDimsFromShape () {
         this.$el.css({
-            left:   this.shape.x1 + "%",
-            top:    this.shape.y1 + "%",
-            width:  (this.shape.x2-this.shape.x1) + "%",
-            height: (this.shape.y2-this.shape.y1) + "%"
+            left: this.shape.x1 + '%',
+            top: this.shape.y1 + '%',
+            width: (this.shape.x2 - this.shape.x1) + '%',
+            height: (this.shape.y2 - this.shape.y1) + '%'
         });
     }
 }

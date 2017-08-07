@@ -15,13 +15,13 @@ const gulp          = require('gulp'),
       debug         = require('gulp-debug'),
       pump          = require('pump'),
       mocha         = require('gulp-mocha'),
-      jshint        = require('gulp-jshint'),
-      stylish       = require('jshint-stylish'),
+      eslint        = require('gulp-eslint'),
       handlebars    = require('gulp-handlebars'),
       wrap          = require('gulp-wrap'),
       concat        = require('gulp-concat'),
       declare       = require('gulp-declare'),
-      autoprefixer  = require('gulp-autoprefixer');
+      autoprefixer  = require('gulp-autoprefixer'),
+      autoFixTask   = require('gulp-eslint-auto-fix');
 
 const FILENAME = "videojs-annotation-comments.js",
       PACKAGE = require('./package.json');
@@ -135,12 +135,27 @@ gulp.task('tdd', function() {
 });
 
 gulp.task('lint', function() {
-  return gulp.src('./src/*/*.js')
-    .pipe(jshint('.jshintrc'))
-    .pipe(jshint.reporter(stylish));
+  return gulp.src(['./src/js/*/*.js', '!./src/js/compiled/**'])
+    .pipe(eslint())
+    .pipe(eslint.format());
+    // .pipe(eslint.failAfterError());
 });
+
+autoFixTask('fix-js', [
+    './src/js/*.js',
+    './src/js/*/*.js',
+    '!./src/js/compiled/**'
+]);
 
 gulp.task('transpile', (cb) => compile(false, cb) );
 gulp.task('bundle_watch', (cb) => compile(true, cb) );
-gulp.task('watch', ['bundle_watch', 'dev_webserver', 'sass', 'sass:watch', 'templates', 'templates:watch', 'tdd']);
+gulp.task('watch', [
+    'bundle_watch',
+    'dev_webserver',
+    'sass',
+    'sass:watch',
+    'templates',
+    'templates:watch',
+    'tdd'
+]);
 gulp.task('default', ['watch']);
