@@ -7836,6 +7836,8 @@ module.exports = {
 
 // Array.prototype.find() for IE10+
 require('ie-array-find-polyfill');
+// Object.assing for IE10+
+require('es6-object-assign').polyfill();
 
 // Allow use of object.constructor.staticFunc() in IE
 // Not yet supported by babel
@@ -7917,7 +7919,7 @@ require('ie-array-find-polyfill');
     window.CustomEvent = CustomEvent;
 })();
 
-},{"ie-array-find-polyfill":21}],39:[function(require,module,exports){
+},{"es6-object-assign":1,"ie-array-find-polyfill":21}],39:[function(require,module,exports){
 "use strict";
 /*
     Geneal utility functions, sourced from underscore & scratch built as needed
@@ -8017,7 +8019,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 (function ($, videojs) {
-    require('es6-object-assign').polyfill();
     require('./lib/polyfills');
 
     var Plugin = videojs.getPlugin('plugin'),
@@ -8178,6 +8179,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
     videojs.registerPlugin('annotationComments', Main);
 })(jQuery, window.videojs);
 
-},{"./components/annotation_state":26,"./components/controls":29,"./components/player_button":32,"./lib/event_dispatcher":34,"./lib/polyfills":38,"./lib/utils":39,"es6-object-assign":1}]},{},[40])
+},{"./components/annotation_state":26,"./components/controls":29,"./components/player_button":32,"./lib/event_dispatcher":34,"./lib/polyfills":38,"./lib/utils":39}]},{},[40])
 
 //# sourceMappingURL=videojs-annotation-comments.js.map

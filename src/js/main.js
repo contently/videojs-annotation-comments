@@ -1,7 +1,6 @@
 "use strict";
 
 (($, videojs) => {
-    require('es6-object-assign').polyfill();
     require('./lib/polyfills');
 
     const Plugin = videojs.getPlugin('plugin'),
