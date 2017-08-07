@@ -38,6 +38,7 @@
     "gulp-webserver": "^0.9.1",
     "gulp-wrap": "^0.13.0",
     "handlebars": "^4.0.10",
+    "ie-array-find-polyfill": "^1.1.0",
     "jshint": "^2.9.2",
     "jshint-stylish": "~2.0.1",
     "mocha": "^3.4.2",

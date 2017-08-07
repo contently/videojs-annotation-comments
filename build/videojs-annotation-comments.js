@@ -1177,6 +1177,39 @@ function appendContextPath(contextPath, id) {
 module.exports = require('./dist/cjs/handlebars.runtime')['default'];
 
 },{"./dist/cjs/handlebars.runtime":2}],21:[function(require,module,exports){
+'use strict';
+if (!Array.prototype.find) {
+    Object.defineProperty(Array.prototype, 'find', {
+        value: function (predicate) {
+
+            if (this == null) {
+                throw new TypeError('this is null or not defined');
+            }
+
+            var obj = Object(this);
+            var len = obj.length >>> 0;
+
+            if (typeof predicate !== 'function') {
+                throw new TypeError('predicate must be a function');
+            }
+
+            var thisArg = arguments[1];
+
+            var index = 0;
+
+            while (index < len) {
+                var iValue = obj[index];
+                if (predicate.call(thisArg, iValue, index, obj)) {
+                    return iValue;
+                }
+                index++;
+            }
+
+            return undefined;
+        }
+    });
+}
+},{}],22:[function(require,module,exports){
 //! moment.js
 //! version : 2.18.1
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -5641,7 +5674,7 @@ return hooks;
 
 })));
 
-},{}],22:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var Handlebars = require("handlebars/runtime");
@@ -5753,7 +5786,7 @@ exports["player_button"] = Handlebars.template({ "compiler": [7, ">= 4.0.0"], "m
         return "<b></b>\n<i class=\"vac-player-icon\">\n	<svg height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\">\n	    <path d=\"M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z\"/>\n	    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>\n	</svg>\n</i>";
     }, "useData": true });
 
-},{"handlebars/runtime":20}],23:[function(require,module,exports){
+},{"handlebars/runtime":20}],24:[function(require,module,exports){
 "use strict";
 /*
     Component for an annotation, which includes controlling the marker/shape, rendering a commentList, etc
@@ -5946,7 +5979,7 @@ module.exports = {
     class: Annotation
 };
 
-},{"./../lib/player_ui_component":36,"./../lib/utils.js":38,"./annotation_shape":24,"./comment":26,"./comment_list":27,"./marker":30}],24:[function(require,module,exports){
+},{"./../lib/player_ui_component":37,"./../lib/utils.js":39,"./annotation_shape":25,"./comment":27,"./comment_list":28,"./marker":31}],25:[function(require,module,exports){
 "use strict";
 /*
     Component for managing a shape (i.e. box drawn on the player) for an annotation
@@ -6012,7 +6045,7 @@ module.exports = {
     class: AnnotationShape
 };
 
-},{"./../lib/player_ui_component":36}],25:[function(require,module,exports){
+},{"./../lib/player_ui_component":37}],26:[function(require,module,exports){
 "use strict";
 /*
     Component for managing the state of annotations, including showing active annotation during playback,
@@ -6307,7 +6340,7 @@ module.exports = {
     class: AnnotationState
 };
 
-},{"./../lib/player_component":35,"./../lib/utils":38,"./annotation":23}],26:[function(require,module,exports){
+},{"./../lib/player_component":36,"./../lib/utils":39,"./annotation":24}],27:[function(require,module,exports){
 "use strict";
 /*
   Component for an invidual comment
@@ -6407,7 +6440,7 @@ module.exports = {
     class: Comment
 };
 
-},{"./../lib/player_ui_component":36,"./../lib/utils":38,"moment":21}],27:[function(require,module,exports){
+},{"./../lib/player_ui_component":37,"./../lib/utils":39,"moment":22}],28:[function(require,module,exports){
 "use strict";
 /*
   Component for a list of comments in a visible/active annotation
@@ -6657,7 +6690,7 @@ module.exports = {
     class: CommentList
 };
 
-},{"./../lib/player_ui_component":36,"./../lib/utils":38,"./comment":26}],28:[function(require,module,exports){
+},{"./../lib/player_ui_component":37,"./../lib/utils":39,"./comment":27}],29:[function(require,module,exports){
 "use strict";
 /*
     Component for managing annotation "control box" in upper left of video when in annotation mode,
@@ -6923,7 +6956,7 @@ module.exports = {
     class: Controls
 };
 
-},{"./../lib/player_ui_component":36,"./../lib/utils":38,"./annotation":23,"./draggable_marker.js":29,"./selectable_shape.js":32}],29:[function(require,module,exports){
+},{"./../lib/player_ui_component":37,"./../lib/utils":39,"./annotation":24,"./draggable_marker.js":30,"./selectable_shape.js":33}],30:[function(require,module,exports){
 "use strict";
 /*
     Component for a timeline marker that is draggable when user clicks/drags on it, and rebuilds underlying range
@@ -7079,7 +7112,7 @@ module.exports = {
     class: DraggableMarker
 };
 
-},{"./../lib/utils":38,"./marker":30}],30:[function(require,module,exports){
+},{"./../lib/utils":39,"./marker":31}],31:[function(require,module,exports){
 "use strict";
 /*
     Component for a timeline marker with capabilities to draw on timeline, including tooltip for comment
@@ -7217,7 +7250,7 @@ module.exports = {
     class: Marker
 };
 
-},{"./../lib/player_ui_component":36,"./../lib/utils":38}],31:[function(require,module,exports){
+},{"./../lib/player_ui_component":37,"./../lib/utils":39}],32:[function(require,module,exports){
 "use strict";
 /*
     Component main 'annotation toggle' button in the player controls, including notifier for # annotations
@@ -7276,7 +7309,7 @@ module.exports = {
     class: PlayerButton
 };
 
-},{"./../lib/player_ui_component":36}],32:[function(require,module,exports){
+},{"./../lib/player_ui_component":37}],33:[function(require,module,exports){
 "use strict";
 /*
     Component for a shape that can be drug/sized on top of the video while adding a new annotation
@@ -7441,7 +7474,7 @@ module.exports = {
     class: SelectableShape
 };
 
-},{"./../lib/utils":38,"./annotation_shape":24}],33:[function(require,module,exports){
+},{"./../lib/utils":39,"./annotation_shape":25}],34:[function(require,module,exports){
 'use strict';
 /*
     Classes for registering and handling custom events for external interaction support.
@@ -7560,7 +7593,7 @@ module.exports = {
     registry: EventRegistry
 };
 
-},{"./logger":34}],34:[function(require,module,exports){
+},{"./logger":35}],35:[function(require,module,exports){
 'use strict';
 /*
 	General logging library, checking to see if window.VAC_DEBUG is present and true to enable debugging
@@ -7603,7 +7636,7 @@ module.exports.info = function () {
     console.info.apply(null, buildArgs(args));
 };
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 "use strict";
 /*
     Base class all player components interit from - it includes lots of helper functions (to get reference to
@@ -7662,7 +7695,7 @@ module.exports = {
     class: PlayerComponent
 };
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 "use strict";
 /*
     Base class all player UI components interit from - it includes lots of helper functions (to get reference to
@@ -7796,10 +7829,13 @@ module.exports = {
     class: PlayerUIComponent
 };
 
-},{"./../compiled/templates":22,"./../lib/utils":38,"./player_component":35,"handlebars/runtime":20}],37:[function(require,module,exports){
+},{"./../compiled/templates":23,"./../lib/utils":39,"./player_component":36,"handlebars/runtime":20}],38:[function(require,module,exports){
 /*
     Collection of polyfills neededf or IE10+ support
 */
+
+// Array.prototype.find() for IE10+
+require('ie-array-find-polyfill');
 
 // Allow use of object.constructor.staticFunc() in IE
 // Not yet supported by babel
@@ -7881,7 +7917,7 @@ module.exports = {
     window.CustomEvent = CustomEvent;
 })();
 
-},{}],38:[function(require,module,exports){
+},{"ie-array-find-polyfill":21}],39:[function(require,module,exports){
 "use strict";
 /*
     Geneal utility functions, sourced from underscore & scratch built as needed
@@ -7969,7 +8005,7 @@ module.exports = {
     }
 };
 
-},{}],39:[function(require,module,exports){
+},{}],40:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -8142,6 +8178,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
     videojs.registerPlugin('annotationComments', Main);
 })(jQuery, window.videojs);
 
-},{"./components/annotation_state":25,"./components/controls":28,"./components/player_button":31,"./lib/event_dispatcher":33,"./lib/polyfills":37,"./lib/utils":38,"es6-object-assign":1}]},{},[39])
+},{"./components/annotation_state":26,"./components/controls":29,"./components/player_button":32,"./lib/event_dispatcher":34,"./lib/polyfills":38,"./lib/utils":39,"es6-object-assign":1}]},{},[40])
 
 //# sourceMappingURL=videojs-annotation-comments.js.map
