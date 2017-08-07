@@ -7554,7 +7554,7 @@ var EventRegistry = {
     AnnotationState: {
         openAnnotation: function openAnnotation(event, _this) {
             Logger.log("evt-dispatch-RECEIVE", "openAnnotation", event);
-            _this.openAnnotationById(event.id);
+            _this.openAnnotationById(event.detail.id);
         },
         closeActiveAnnotation: function closeActiveAnnotation(event, _this) {
             Logger.log("evt-dispatch-RECEIVE", "closeActiveAnnotation", event);
