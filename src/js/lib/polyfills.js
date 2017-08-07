@@ -2,6 +2,8 @@
     Collection of polyfills neededf or IE10+ support
 */
 
+// Array.prototype.find() for IE10+
+require('ie-array-find-polyfill');
 
 // Allow use of object.constructor.staticFunc() in IE
 // Not yet supported by babel
