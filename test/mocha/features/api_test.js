@@ -124,6 +124,47 @@ describe('external event-based API', () => {
     });
 
     describe('internally fired events', () => {
+
+        describe('onStateChanged', () => {
+            beforeEach(resetVJS);
+
+            it('is triggered when plugin state is changed', (done) => {
+                plugin = simplePluginSetup();
+
+                plugin.on('onStateChanged', (event) => {
+                    console.log(event.detail);
+                    expect(event.detail[0].id).to.equal(2);
+                    done();
+                });
+
+                let firstAnnotation = plugin.annotationState.annotations[0];
+                    plugin.annotationState.removeAnnotation(firstAnnotation);
+
+            });
+        });
+
+        describe('annotationDeleted', () => {
+            beforeEach(resetVJS);
+
+            it('is triggered when comment is deleted', (done) => {
+                plugin = simplePluginSetup();
+
+                plugin.on('annotationDeleted', (event) => {
+                    expect(event.detail.id).to.equal(2);
+                    done();
+                });
+
+                player.on('loadedmetadata', () => {
+                    player.play().then(() => {
+                        plugin.annotationState.openAnnotationById(2);
+                        $('a.vac-delete-annotation').click();
+                        $('a.vac-delete-confirm').click();
+                    });
+                });
+            });
+        });
+
+
         describe('annotationOpened', () => {
             beforeEach(resetVJS);
 

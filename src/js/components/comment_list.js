@@ -102,6 +102,7 @@ class CommentList extends PlayerUIComponent {
     // Delete a comment. If it is the only comment, delete the annotation
     // Update state and re-render UI
     destroyComment (event) {
+        let annotationId = this.annotation.id;
         if(this.comments.length == 1) {
             this.annotation.destroy();
         } else {
@@ -150,7 +151,7 @@ class CommentList extends PlayerUIComponent {
 
     // Delete the annotation
     handleDeleteAnnotationClick (e) {
-        let $confirmEl = $("<a/>").text("CONFIRM");
+        let $confirmEl = $("<a/>").addClass("vac-delete-confirm").text("CONFIRM");
         $confirmEl.on("click.comment", () => {
             $confirmEl.off("click.comment");
             this.annotation.destroy();

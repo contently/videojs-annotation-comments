@@ -14,7 +14,6 @@
     const DEFAULT_OPTIONS =     Object.freeze({
         bindArrowKeys:          true,
         meta:                   { user_id: null, user_name: null },
-        onStateChanged:         null,
         annotationsObjects:     [],
         showControls:           true,
         showCommentList:        true,
@@ -54,7 +53,7 @@
             }
 
             // setup initial state and draw UI
-            this.annotationState = new AnnotationState(this.playerId, options.onStateChanged);
+            this.annotationState = new AnnotationState(this.playerId);
             this.annotationState.annotations = options.annotationsObjects;
 
             this.drawUI();

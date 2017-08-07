@@ -57,9 +57,7 @@ const EventRegistry = {
     AnnotationState: {
         openAnnotation: (event, _this) => {
             Logger.log("evt-dispatch-RECEIVE", "openAnnotation", event);
-            let annotationId = event.detail.id,
-                annotation = _this.annotations.find((a) => a.id === parseInt(annotationId));
-            if (annotation) _this.openAnnotation(annotation);
+            _this.openAnnotationById(event.id);
         },
         closeActiveAnnotation: (event, _this) => {
             Logger.log("evt-dispatch-RECEIVE", "closeActiveAnnotation", event);

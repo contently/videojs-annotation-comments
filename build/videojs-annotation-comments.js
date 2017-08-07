@@ -6034,14 +6034,12 @@ var Utils = require('./../lib/utils'),
 var AnnotationState = function (_PlayerComponent) {
     _inherits(AnnotationState, _PlayerComponent);
 
-    function AnnotationState(playerId, onStateChanged) {
+    function AnnotationState(playerId) {
         _classCallCheck(this, AnnotationState);
 
         var _this = _possibleConstructorReturn(this, (AnnotationState.__proto__ || Object.getPrototypeOf(AnnotationState)).call(this, playerId));
 
         _this.initAPI(_this, 'AnnotationState');
-
-        _this.onStateChanged = onStateChanged || function () {};
 
         _this.annotations = [];
         _this.annotationTimeMap = {};
@@ -6101,9 +6099,11 @@ var AnnotationState = function (_PlayerComponent) {
     }, {
         key: "removeAnnotation",
         value: function removeAnnotation(annotation) {
-            var i = this._annotations.indexOf(annotation);
+            var id = annotation.id,
+                i = this._annotations.indexOf(annotation);
             this._annotations.splice(i, 1);
             this.stateChanged();
+            this.plugin.fire('annotationDeleted', { id: id });
         }
 
         // Set the live annotation based on current video time
@@ -6188,6 +6188,17 @@ var AnnotationState = function (_PlayerComponent) {
             this.lastVideoTime = this.activeAnnotation.range.start;
         }
 
+        // Open an annotation by ID (if it exists)
+
+    }, {
+        key: "openAnnotationById",
+        value: function openAnnotationById(id) {
+            var annotation = this.annotations.find(function (a) {
+                return a.id == id;
+            });
+            if (annotation) this.openAnnotation(annotation);
+        }
+
         // Finds the next annotation in collection and opens it
 
     }, {
@@ -6232,7 +6243,7 @@ var AnnotationState = function (_PlayerComponent) {
             this.rebuildAnnotationTimeMap();
             this.plugin.components.playerButton.updateNumAnnotations(this._annotations.length);
 
-            this.onStateChanged(this.data);
+            this.plugin.fire('onStateChanged', this.data);
         }
     }, {
         key: "enabled",
@@ -6547,6 +6558,7 @@ var CommentList = function (_PlayerUIComponent) {
     }, {
         key: "destroyComment",
         value: function destroyComment(event) {
+            var annotationId = this.annotation.id;
             if (this.comments.length == 1) {
                 this.annotation.destroy();
             } else {
@@ -6608,7 +6620,7 @@ var CommentList = function (_PlayerUIComponent) {
         value: function handleDeleteAnnotationClick(e) {
             var _this3 = this;
 
-            var $confirmEl = $("<a/>").text("CONFIRM");
+            var $confirmEl = $("<a/>").addClass("vac-delete-confirm").text("CONFIRM");
             $confirmEl.on("click.comment", function () {
                 $confirmEl.off("click.comment");
                 _this3.annotation.destroy();
@@ -7509,11 +7521,7 @@ var EventRegistry = {
     AnnotationState: {
         openAnnotation: function openAnnotation(event, _this) {
             Logger.log("evt-dispatch-RECEIVE", "openAnnotation", event);
-            var annotationId = event.detail.id,
-                annotation = _this.annotations.find(function (a) {
-                return a.id === parseInt(annotationId);
-            });
-            if (annotation) _this.openAnnotation(annotation);
+            _this.openAnnotationById(event.id);
         },
         closeActiveAnnotation: function closeActiveAnnotation(event, _this) {
             Logger.log("evt-dispatch-RECEIVE", "closeActiveAnnotation", event);
@@ -7986,7 +7994,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
     var DEFAULT_OPTIONS = Object.freeze({
         bindArrowKeys: true,
         meta: { user_id: null, user_name: null },
-        onStateChanged: null,
         annotationsObjects: [],
         showControls: true,
         showCommentList: true,
@@ -8032,7 +8039,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
             }
 
             // setup initial state and draw UI
-            _this.annotationState = new AnnotationState(_this.playerId, options.onStateChanged);
+            _this.annotationState = new AnnotationState(_this.playerId);
             _this.annotationState.annotations = options.annotationsObjects;
 
             _this.drawUI();

@@ -10,11 +10,9 @@ const   Utils = require('./../lib/utils'),
 
 class AnnotationState extends PlayerComponent {
 
-    constructor (playerId, onStateChanged) {
+    constructor (playerId) {
         super(playerId);
         this.initAPI(this, 'AnnotationState');
-
-        this.onStateChanged = onStateChanged || (() => {});
 
         this.annotations = [];
         this.annotationTimeMap = {};
@@ -99,9 +97,11 @@ class AnnotationState extends PlayerComponent {
 
     // Remove an annotation
     removeAnnotation (annotation) {
-        var i = this._annotations.indexOf(annotation);
+        let id = annotation.id,
+            i = this._annotations.indexOf(annotation);
         this._annotations.splice(i, 1);
         this.stateChanged();
+        this.plugin.fire('annotationDeleted', {id});
     }
 
     // Set the live annotation based on current video time
@@ -165,6 +165,12 @@ class AnnotationState extends PlayerComponent {
         this.lastVideoTime = this.activeAnnotation.range.start;
     }
 
+    // Open an annotation by ID (if it exists)
+    openAnnotationById (id) {
+        let annotation = this.annotations.find((a) => a.id == id);
+        if (annotation) this.openAnnotation(annotation);
+    }
+
     // Finds the next annotation in collection and opens it
     nextAnnotation () {
         if(this._activeAnnotation){
@@ -200,7 +206,7 @@ class AnnotationState extends PlayerComponent {
         this.rebuildAnnotationTimeMap();
         this.plugin.components.playerButton.updateNumAnnotations(this._annotations.length);
 
-        this.onStateChanged(this.data);
+        this.plugin.fire('onStateChanged', this.data);
     }
 }
 

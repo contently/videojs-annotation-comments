@@ -25,7 +25,6 @@ describe('plugin initialization', () => {
                     annotationsObjects: [],
                     bindArrowKeys: true,
                     meta: { user_id: null, user_name: null },
-                    onStateChanged: null,
                     showCommentList: true,
                     showControls: true,
                     showFullScreen: true,
@@ -80,28 +79,6 @@ describe('plugin initialization', () => {
 
                 player.on('loadedmetadata', () => {
                     expect(plugin.options.meta.testData).to.equal('hi');
-                    done();
-                });
-            });
-        });
-
-        describe('onStateChanged', () => {
-            beforeEach(resetVJS);
-
-            it('sets a callback that will be fired when the plugin state is altered', (done) => {
-                const myCallback = (state) => window.vacState = state;
-
-                plugin = player.annotationComments({
-                    annotationsObjects: annotations,
-                    onStateChanged: myCallback
-                });
-
-                player.on('loadedmetadata', () => {
-                    let firstAnnotation = plugin.annotationState.annotations[0];
-                    plugin.annotationState.removeAnnotation(firstAnnotation);
-
-                    let remainingAnnotations = plugin.annotationState.annotations;
-                    expect(window.vacState[0].id).to.equal(annotations[1].id);
                     done();
                 });
             });
