@@ -3,8 +3,8 @@
   Component for an invidual comment
 */
 
-const   PlayerUIComponent = require("./player_ui_component").class,
-        Utils = require("./../utils"),
+const   PlayerUIComponent = require("./../lib/player_ui_component").class,
+        Utils = require("./../lib/utils"),
         moment = require("moment"),
         templateName = 'comment';
 

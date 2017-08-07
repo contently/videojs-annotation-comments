@@ -1,6 +1,6 @@
 'use strict';
 
-const EventDispatcher = require("../../../src/modules/event_dispatcher").class,
+const EventDispatcher = require("../../../src/js/lib/event_dispatcher").class,
     expect = require('chai').expect;
 
 const MockedPlugin = { on: (type, callback) => {} };
@@ -15,6 +15,7 @@ const MockedEventRegistry = {
 };
 
 describe('EventDispatcher', () => {
+
     describe('constructor', () => {
         it('creates an EventDispatcher instance w a listener cache and a plugin reference', () => {
             let eventDispatcher = new EventDispatcher(MockedPlugin);

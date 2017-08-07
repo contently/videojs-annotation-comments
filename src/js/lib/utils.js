@@ -1,3 +1,8 @@
+"use strict";
+/*
+    Geneal utility functions, sourced from underscore & scratch built as needed
+*/
+
 module.exports = {
     cloneObject: (obj) => Object.assign({}, obj),
     // _throttle from underscore

@@ -26,8 +26,6 @@ player.on('loadedmetadata', function() {
         bindArrowKeys: true,
         // Flexible meta data object. Currently used for user data
         meta: { user_id: null, user_name: null },
-        // Provide a callback func to be fired when the plugin data state changes
-        onStateChanged: null,
         // Show or hide the control panel
         showControls: true,
         // Show or hide the comment list when an annotation is active
@@ -85,7 +83,7 @@ plugin.fire('cancelAddingAnnotation');
 
 ```javascript
 // annotationOpened : Fired whenever an annotation is opened
-plugin.on('annotationOpened', function(event) {
+plugin.on('annotationOpened', (event) => {
     // event.detail =
     // {
     //      annotation: (object) annotation data in format {id:.., comments:..., range:..., shape:...},
@@ -94,7 +92,7 @@ plugin.on('annotationOpened', function(event) {
 });
 
 // annotationClosed : Fired whenever an annotation is closed
-plugin.on('annotationClosed', function(event) {
+plugin.on('annotationClosed', (event) => {
     // event.detail = annotation (object) in format {id:.., comments:..., range:..., shape:...}
 });
 
@@ -102,32 +100,43 @@ plugin.on('annotationClosed', function(event) {
 //  1. the marker is dragged
 //  2. the start of the marker is moved via control buttons
 //  3. the shape is dragged
-plugin.on('addingAnnotationDataChanged', function(event) {
+plugin.on('addingAnnotationDataChanged', (event) => {
     var newRange = event.detail.range; // returns range data if range was changed
     var newShape = event.detail.shape; // returns shape data if shape was changed
     // do something with the data
 });
 
+// annotationDeleted : Fired when an annotation has been deleted via the UI
+plugin.on('annotationDeleted', (event) => {
+    // annotationId = event.detail
+});
+
 // enteredAnnotationMode : Fired when the plugin enters adding annotation mode
 // includes initial range data
-plugin.on('enteredAddingAnnotation', function(event) {
+plugin.on('enteredAddingAnnotation', (event) => {
     var startTime = event.detail.range.start;
     // do something when adding annotation state begins
 });
 
+// onStateChanged: Fired when plugin state has changed (annotation added, removed, etc)
+// This is a way to watch global plugin state, as an alternative to watching various annotation events
+plugin.on('onStateChanged', (event) => {
+    // event.detail = annotation state data
+});
+
 // playerBoundsChanged : Fired when the player boundaries change due to window resize or fullscreen mode
-plugin.on('playerBoundsChanged', function(event) {
+plugin.on('playerBoundsChanged', (event) => {
     var bounds = event.detail;
     // do something with the new boundaries
 });
 
 // Entering annotation mode (annotation icon was clicked when previously 'off')
-plugin.on('annotationModeEnabled', function(event) {
+plugin.on('annotationModeEnabled', (event) => {
     // do something
 });
 
 // Exiting annotation mode (annotation icon was clicked when previously 'on')
-plugin.on('annotationModeDisabled', function(event) {
+plugin.on('annotationModeDisabled', (event) => {
     // do something
 });
 ```

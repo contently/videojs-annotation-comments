@@ -116,6 +116,8 @@
 		<script src="/video.js/dist/video.min.js"></script>
 		<script src="/videojs-annotation-comments.js"></script>
 		<script>
+			window.VAC_DEBUG = true;
+
 			var player = window.videojs('the_video'),
 				plugin;
 			player.on('loadedmetadata', function() {
@@ -136,18 +138,6 @@
 					showMarkerTooltips: true,
 					startInAnnotationMode: false
 				});
-				plugin.on('annotationOpened', function(e){
-					console.log("annotationOpened", e.detail);
-				});
-				plugin.on('annotationClosed', function(e){
-					console.log("annotationClosed", e.detail);
-				});
-				plugin.on('annotationModeEnabled', (e) => {
-					console.log("annotationModeEnabled");
-				});
-				plugin.on('annotationModeDisabled', (e) => {
-					console.log("annotationModeDisabled");
-				})
 			});
 		</script>
 	</BODY>

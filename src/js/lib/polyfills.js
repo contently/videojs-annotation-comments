@@ -1,3 +1,8 @@
+/*
+    Collection of polyfills neededf or IE10+ support
+*/
+
+
 // Allow use of object.constructor.staticFunc() in IE
 // Not yet supported by babel
 // https://gist.github.com/edoardocavazza/47246856759f2273e48b

@@ -4,11 +4,11 @@
     including all functionality to add new annotations
 */
 
-const   DraggableMarker = require("./draggable_marker.js").class,
+const   PlayerUIComponent = require("./../lib/player_ui_component").class,
+        Utils = require("./../lib/utils"),
+        DraggableMarker = require("./draggable_marker.js").class,
         SelectableShape = require("./selectable_shape.js").class,
-        PlayerUIComponent = require("./player_ui_component").class,
         Annotation = require("./annotation").class,
-        Utils = require("./../utils"),
         templateName = 'controls';
 
 // Control uses a "ui state" to determine how UI is rendered - this object is the base state, containing a
@@ -137,7 +137,7 @@ class Controls extends PlayerUIComponent {
 
     // Restore normal UI after add state
     restoreNormalUI () {
-        this.plugin.annotationState.enabled = true;
+        this.plugin.annotationState.enabled = this.plugin.active;
         this.enablePlayingAndControl();
         $(document).off('mousemove.vac-cursor-tool-tip');
     }

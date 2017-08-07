@@ -6,8 +6,8 @@
 
 const PlayerComponent = require("./player_component").class,
       Handlebars = require('handlebars/runtime'),
-      Templates = require('./../compiled_templates'),
-      Utils = require('./../utils');
+      Templates = require('./../compiled/templates'),
+      Utils = require('./../lib/utils');
 
 class PlayerUIComponent extends PlayerComponent{
 
