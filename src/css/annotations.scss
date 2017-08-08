@@ -375,7 +375,7 @@ $ui-class-play-disabled: ".vac-disable-play";
 						display:block ;
 						opacity: 1;
 					}
-					&.ranged-marker{
+					&.vac-ranged-marker{
 						box-shadow: 7px 0 0 0 $secondaryColor inset;
 						background-color: rgba($secondaryColor, 0.65);
 					}
@@ -383,13 +383,13 @@ $ui-class-play-disabled: ".vac-disable-play";
 				// When a marker is active, highlight it appropriately
 				&#{$ui-class-active} {
 					background-color: $secondaryColor;
-					&.ranged-marker {
+					&.vac-ranged-marker {
 						box-shadow: 7px 0 0 0 $secondaryColor inset;
 						background-color: rgba($secondaryColor, 0.65);
 					}
 				}
 				// Range markers have 'tail' drawn with box shadow
-				&.ranged-marker{
+				&.vac-ranged-marker{
 					box-shadow: 7px 0 0 0 $primaryColor inset;
 					background-color: rgba($primaryColor, 0.65);
 				}

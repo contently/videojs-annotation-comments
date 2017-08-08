@@ -5737,10 +5737,10 @@ exports["draggable_marker"] = Handlebars.template({ "compiler": [7, ">= 4.0.0"],
             alias3 = "function",
             alias4 = container.escapeExpression;
 
-        return "<div id=\"" + alias4((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2, (typeof helper === "undefined" ? "undefined" : _typeof(helper)) === alias3 ? helper.call(alias1, { "name": "id", "hash": {}, "data": data }) : helper)) + "\" class=\"vac-marker-draggable ranged-marker\" style=\"left: " + alias4((helper = (helper = helpers.left || (depth0 != null ? depth0.left : depth0)) != null ? helper : alias2, (typeof helper === "undefined" ? "undefined" : _typeof(helper)) === alias3 ? helper.call(alias1, { "name": "left", "hash": {}, "data": data }) : helper)) + "; width:" + alias4((helper = (helper = helpers.width || (depth0 != null ? depth0.width : depth0)) != null ? helper : alias2, (typeof helper === "undefined" ? "undefined" : _typeof(helper)) === alias3 ? helper.call(alias1, { "name": "width", "hash": {}, "data": data }) : helper)) + ";\">\n</div>\n";
+        return "<div id=\"" + alias4((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2, (typeof helper === "undefined" ? "undefined" : _typeof(helper)) === alias3 ? helper.call(alias1, { "name": "id", "hash": {}, "data": data }) : helper)) + "\" class=\"vac-marker-draggable vac-ranged-marker\" style=\"left: " + alias4((helper = (helper = helpers.left || (depth0 != null ? depth0.left : depth0)) != null ? helper : alias2, (typeof helper === "undefined" ? "undefined" : _typeof(helper)) === alias3 ? helper.call(alias1, { "name": "left", "hash": {}, "data": data }) : helper)) + "; width:" + alias4((helper = (helper = helpers.width || (depth0 != null ? depth0.width : depth0)) != null ? helper : alias2, (typeof helper === "undefined" ? "undefined" : _typeof(helper)) === alias3 ? helper.call(alias1, { "name": "width", "hash": {}, "data": data }) : helper)) + ";\">\n</div>\n";
     }, "useData": true });
 exports["marker"] = Handlebars.template({ "1": function _(container, depth0, helpers, partials, data) {
-        return "ranged-marker";
+        return "vac-ranged-marker";
     }, "3": function _(container, depth0, helpers, partials, data) {
         var helper;
 
@@ -6122,8 +6122,21 @@ var AnnotationState = function (_PlayerComponent) {
     }, {
         key: "createAndAddAnnotation",
         value: function createAndAddAnnotation(data) {
+            this.plugin.controls.uiState.adding && this.plugin.controls.cancelAddNew();
+
             var annotation = Annotation.newFromData(data.range, data.shape, data.commentStr || "", this.plugin, data.id);
             this.addNewAnnotation(annotation);
+        }
+
+        // Destroy an existing annotation
+
+    }, {
+        key: "destroyAnnotationById",
+        value: function destroyAnnotationById(id) {
+            var annotation = this.annotations.find(function (a) {
+                return a.id == id;
+            });
+            if (annotation) annotation.destroy();
         }
 
         // Remove an annotation
@@ -6212,7 +6225,7 @@ var AnnotationState = function (_PlayerComponent) {
             var pause = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
             var previewOnly = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
-            if (!this.plugin.active) this.plugin.toggleAnnotations();
+            if (!this.plugin.active) this.plugin.toggleAnnotationMode();
             this.skipLiveCheck = skipLiveCheck;
             this.clearActive();
             annotation.open(pause, previewOnly);
@@ -6273,8 +6286,6 @@ var AnnotationState = function (_PlayerComponent) {
         value: function stateChanged() {
             this.sortAnnotations();
             this.rebuildAnnotationTimeMap();
-            this.plugin.components.playerButton.updateNumAnnotations(this._annotations.length);
-
             this.plugin.fire('onStateChanged', this.data);
         }
     }, {
@@ -6708,6 +6719,7 @@ var PlayerUIComponent = require("./../lib/player_ui_component").class,
     Utils = require("./../lib/utils"),
     DraggableMarker = require("./draggable_marker.js").class,
     SelectableShape = require("./selectable_shape.js").class,
+    PlayerButton = require("./player_button").class,
     Annotation = require("./annotation").class,
     templateName = 'controls';
 
@@ -6732,6 +6744,11 @@ var Controls = function (_PlayerUIComponent) {
         _this.showControls = _this.plugin.options.showControls;
         _this.uiState = Utils.cloneObject(BASE_UI_STATE);
         _this.bindEvents(bindArrowKeys);
+
+        if (_this.showControls) {
+            // create player button in the control bar if controls are shown
+            _this.playerButton = new PlayerButton(_this.playerId);
+        }
 
         _this.draw();
         return _this;
@@ -6806,6 +6823,8 @@ var Controls = function (_PlayerUIComponent) {
 
             var $ctrls = this.renderTemplate(templateName, data);
             this.$player.append($ctrls);
+
+            if (this.playerButton) this.playerButton.updateNumAnnotations();
         }
 
         // User clicked to cancel in-progress add - restore to normal state
@@ -6824,6 +6843,8 @@ var Controls = function (_PlayerUIComponent) {
     }, {
         key: "startAddNew",
         value: function startAddNew() {
+            if (!this.plugin.active) this.plugin.toggleAnnotationMode();
+
             this.player.pause();
             this.setAddingUI();
             this.uiState.adding = true;
@@ -6955,7 +6976,7 @@ module.exports = {
     class: Controls
 };
 
-},{"./../lib/player_ui_component":37,"./../lib/utils":39,"./annotation":24,"./draggable_marker.js":30,"./selectable_shape.js":33}],30:[function(require,module,exports){
+},{"./../lib/player_ui_component":37,"./../lib/utils":39,"./annotation":24,"./draggable_marker.js":30,"./player_button":32,"./selectable_shape.js":33}],30:[function(require,module,exports){
 "use strict";
 /*
     Component for a timeline marker that is draggable when user clicks/drags on it, and rebuilds underlying range
@@ -7274,6 +7295,12 @@ var PlayerButton = function (_PlayerUIComponent) {
         var _this = _possibleConstructorReturn(this, (PlayerButton.__proto__ || Object.getPrototypeOf(PlayerButton)).call(this, playerId));
 
         _this.draw();
+
+        _this.initAPI(_this, 'PlayerButton');
+
+        _this.$el.on('click.vac-player-button', function () {
+            _this.plugin.toggleAnnotationMode();
+        });
         return _this;
     }
 
@@ -7293,8 +7320,9 @@ var PlayerButton = function (_PlayerUIComponent) {
 
     }, {
         key: "updateNumAnnotations",
-        value: function updateNumAnnotations(num) {
-            var $bubble = this.$el.find("b");
+        value: function updateNumAnnotations() {
+            var num = this.plugin.annotationState.annotations.length,
+                $bubble = this.$el.find("b");
             $bubble.text(num);
             num > 0 ? $bubble.removeClass(this.UI_CLASSES.hidden) : $bubble.addClass(this.UI_CLASSES.hidden);
         }
@@ -7551,37 +7579,42 @@ var EventDispatcher = function () {
 var EventRegistry = {
     AnnotationState: {
         openAnnotation: function openAnnotation(event, _this) {
-            Logger.log("evt-dispatch-RECEIVE", "openAnnotation", event);
+            Logger.log("evt-dispatch-RECEIVE", "openAnnotation (AnnotationState)", event);
             _this.openAnnotationById(event.detail.id);
         },
         closeActiveAnnotation: function closeActiveAnnotation(event, _this) {
-            Logger.log("evt-dispatch-RECEIVE", "closeActiveAnnotation", event);
+            Logger.log("evt-dispatch-RECEIVE", "closeActiveAnnotation (AnnotationState)", event);
             _this.clearActive();
         },
         newAnnotation: function newAnnotation(event, _this) {
-            Logger.log("evt-dispatch-RECEIVE", "newAnnotation", event);
-            var controls = _this.plugin.components.controls;
-            if (controls.uiState.adding) controls.cancelAddNew();
+            Logger.log("evt-dispatch-RECEIVE", "newAnnotation (AnnotationState)", event);
             _this.createAndAddAnnotation(event.detail);
         },
         destroyAnnotation: function destroyAnnotation(event, _this) {
-            Logger.log("evt-dispatch-RECEIVE", "destroyAnnotation", event);
-            var annotationId = event.detail.id,
-                annotation = _this.annotations.find(function (a) {
-                return a.id === parseInt(annotationId);
-            });
-            if (annotation) annotation.destroy();
+            Logger.log("evt-dispatch-RECEIVE", "destroyAnnotation (AnnotationState)", event);
+            _this.destroyAnnotationById(event.detail.id);
         }
     },
     Controls: {
         addingAnnotation: function addingAnnotation(event, _this) {
-            Logger.log("evt-dispatch-RECEIVE", "addingAnnotation", event);
-            if (!_this.plugin.active) _this.plugin.toggleAnnotations();
+            Logger.log("evt-dispatch-RECEIVE", "addingAnnotation (Controls)", event);
             _this.startAddNew();
         },
         cancelAddingAnnotation: function cancelAddingAnnotation(event, _this) {
-            Logger.log("evt-dispatch-RECEIVE", "cancelAddingAnnotation", event);
+            Logger.log("evt-dispatch-RECEIVE", "cancelAddingAnnotation (Controls)", event);
             _this.cancelAddNew();
+        }
+    },
+    PlayerButton: {
+        onStateChanged: function onStateChanged(event, _this) {
+            Logger.log("evt-dispatch-RECEIVE", "onStateChanged (PlayerButton)", event);
+            _this.updateNumAnnotations();
+        }
+    },
+    Main: {
+        toggleAnnotationMode: function toggleAnnotationMode(event, _this) {
+            Logger.log("evt-dispatch-RECEIVE", "toggleAnnotationMode (Main)", event);
+            _this.toggleAnnotationMode();
         }
     }
 };
@@ -8039,7 +8072,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
     var Plugin = videojs.getPlugin('plugin'),
         Utils = require('./lib/utils'),
         Controls = require("./components/controls").class,
-        PlayerButton = require("./components/player_button").class,
         AnnotationState = require("./components/annotation_state").class,
         EventDispatcher = require("./lib/event_dispatcher").class;
 
@@ -8071,6 +8103,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
             _this.options = options;
 
             _this.eventDispatcher = new EventDispatcher(_this);
+            _this.eventDispatcher.registerListenersFor(_this, 'Main');
 
             // assign reference to this class to player for access later by components where needed
             var self = _this;
@@ -8082,7 +8115,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
             if (!_this.options.showFullScreen) {
                 player.on('fullscreenchange', function () {
                     if (player.isFullscreen_) {
-                        if (self.active) self.toggleAnnotations();
+                        if (self.active) self.toggleAnnotationMode();
                         $(player.el()).addClass('vac-disable-fullscreen');
                     } else {
                         $(player.el()).removeClass('vac-disable-fullscreen');
@@ -8094,37 +8127,19 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
             _this.annotationState = new AnnotationState(_this.playerId);
             _this.annotationState.annotations = options.annotationsObjects;
 
-            _this.drawUI();
+            _this.controls = new Controls(_this.playerId, _this.options.bindArrowKeys);
             _this.bindEvents();
             _this.setBounds(false);
-            if (options.startInAnnotationMode) _this.toggleAnnotations();
+            if (options.startInAnnotationMode) _this.toggleAnnotationMode();
             return _this;
         }
 
-        // Draw UI components for interaction
+        // Bind needed events for interaction w/ components
 
 
         _createClass(Main, [{
-            key: 'drawUI',
-            value: function drawUI() {
-                this.components = {
-                    playerButton: new PlayerButton(this.playerId),
-                    controls: new Controls(this.playerId, this.options.bindArrowKeys)
-                };
-                this.components.playerButton.updateNumAnnotations(this.annotationState.annotations.length);
-            }
-
-            // Bind needed events for interaction w/ components
-
-        }, {
             key: 'bindEvents',
             value: function bindEvents() {
-                var _this2 = this;
-
-                this.components.playerButton.$el.on('click', function () {
-                    _this2.toggleAnnotations();
-                });
-
                 // set player boundaries on window size change or fullscreen change
                 $(window).on('resize.vac-window-resize', Utils.throttle(this.setBounds.bind(this), 500));
                 this.player.on('fullscreenchange', Utils.throttle(this.setBounds.bind(this), 500));
@@ -8144,8 +8159,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
             // Toggle annotations mode on/off
 
         }, {
-            key: 'toggleAnnotations',
-            value: function toggleAnnotations() {
+            key: 'toggleAnnotationMode',
+            value: function toggleAnnotationMode() {
                 this.active = !this.active;
                 this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
                 this.annotationState.enabled = this.active;
@@ -8159,9 +8174,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                 // handle control component UI if showControls: true
                 if (this.options.showControls) {
                     if (!this.active) {
-                        this.components.controls.clear(true);
+                        this.controls.clear(true);
                     } else {
-                        this.components.controls.draw();
+                        this.controls.draw();
                     }
                 }
             }
@@ -8194,6 +8209,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
     videojs.registerPlugin('annotationComments', Main);
 })(jQuery, window.videojs);
 
-},{"./components/annotation_state":26,"./components/controls":29,"./components/player_button":32,"./lib/event_dispatcher":34,"./lib/polyfills":38,"./lib/utils":39}]},{},[40])
+},{"./components/annotation_state":26,"./components/controls":29,"./lib/event_dispatcher":34,"./lib/polyfills":38,"./lib/utils":39}]},{},[40])
 
 //# sourceMappingURL=videojs-annotation-comments.js.map

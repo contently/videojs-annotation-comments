@@ -13,18 +13,20 @@ body *{
 #test-control-panel{
 	margin: 50px auto;
 	width: 50%;
-	height: 300px;
+	height: auto;
 	background-color: #fff;
 	border: 2px solid #0097b1;
-	padding: 1% 3% 3% 3%;
+	display: flex;
+  	flex-wrap: wrap;
 }
 
 .control-section {
 	width: 26%;
     border: 1px #0097b1 solid;
     padding: 2%;
-    float: left;
-    margin-left: 2%;
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
 }
 
 p {

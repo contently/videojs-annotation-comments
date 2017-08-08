@@ -72,14 +72,14 @@ exports["draggable_marker"] = Handlebars.template({"compiler":[7,">= 4.0.0"],"ma
 
   return "<div id=\""
     + alias4(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"id","hash":{},"data":data}) : helper)))
-    + "\" class=\"vac-marker-draggable ranged-marker\" style=\"left: "
+    + "\" class=\"vac-marker-draggable vac-ranged-marker\" style=\"left: "
     + alias4(((helper = (helper = helpers.left || (depth0 != null ? depth0.left : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"left","hash":{},"data":data}) : helper)))
     + "; width:"
     + alias4(((helper = (helper = helpers.width || (depth0 != null ? depth0.width : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"width","hash":{},"data":data}) : helper)))
     + ";\">\n</div>\n";
 },"useData":true});
 exports["marker"] = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
-    return "ranged-marker";
+    return "vac-ranged-marker";
 },"3":function(container,depth0,helpers,partials,data) {
     var helper;
 

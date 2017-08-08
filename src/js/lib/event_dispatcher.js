@@ -56,35 +56,41 @@ class EventDispatcher {
 const EventRegistry = {
     AnnotationState: {
         openAnnotation: (event, _this) => {
-            Logger.log("evt-dispatch-RECEIVE", "openAnnotation", event);
+            Logger.log("evt-dispatch-RECEIVE", "openAnnotation (AnnotationState)", event);
             _this.openAnnotationById(event.detail.id);
         },
         closeActiveAnnotation: (event, _this) => {
-            Logger.log("evt-dispatch-RECEIVE", "closeActiveAnnotation", event);
+            Logger.log("evt-dispatch-RECEIVE", "closeActiveAnnotation (AnnotationState)", event);
             _this.clearActive();
         },
         newAnnotation: (event, _this) => {
-            Logger.log("evt-dispatch-RECEIVE", "newAnnotation", event);
-            let controls = _this.plugin.components.controls;
-            if(controls.uiState.adding) controls.cancelAddNew();
+            Logger.log("evt-dispatch-RECEIVE", "newAnnotation (AnnotationState)", event);
             _this.createAndAddAnnotation(event.detail);
         },
         destroyAnnotation: (event, _this) => {
-            Logger.log("evt-dispatch-RECEIVE", "destroyAnnotation", event);
-            let annotationId = event.detail.id,
-                annotation = _this.annotations.find((a) => a.id === parseInt(annotationId));
-            if (annotation) annotation.destroy();
-        }
+            Logger.log("evt-dispatch-RECEIVE", "destroyAnnotation (AnnotationState)", event);
+            _this.destroyAnnotationById(event.detail.id);        }
     },
     Controls: {
         addingAnnotation: (event, _this) => {
-            Logger.log("evt-dispatch-RECEIVE", "addingAnnotation", event);
-            if(!_this.plugin.active) _this.plugin.toggleAnnotations();
+            Logger.log("evt-dispatch-RECEIVE", "addingAnnotation (Controls)", event);
             _this.startAddNew();
         },
         cancelAddingAnnotation: (event, _this) => {
-            Logger.log("evt-dispatch-RECEIVE", "cancelAddingAnnotation", event);
+            Logger.log("evt-dispatch-RECEIVE", "cancelAddingAnnotation (Controls)", event);
             _this.cancelAddNew();
+        }
+    },
+    PlayerButton: {
+        onStateChanged: (event, _this) => {
+            Logger.log("evt-dispatch-RECEIVE", "onStateChanged (PlayerButton)", event);
+            _this.updateNumAnnotations();
+        }
+    },
+    Main: {
+        toggleAnnotationMode: (event, _this) => {
+            Logger.log("evt-dispatch-RECEIVE", "toggleAnnotationMode (Main)", event);
+            _this.toggleAnnotationMode();
         }
     }
 };

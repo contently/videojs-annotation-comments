@@ -26,7 +26,7 @@ player.on('loadedmetadata', function() {
         bindArrowKeys: true,
         // Flexible meta data object. Currently used for user data
         meta: { user_id: null, user_name: null },
-        // Show or hide the control panel
+        // Show or hide the control panel and annotation toggle button
         showControls: true,
         // Show or hide the comment list when an annotation is active
         // If false, the text 'Click and drag to select', will follow the cursor during annotation mode
@@ -77,6 +77,9 @@ plugin.fire('addingAnnotation');
 
 // cancelAddingAnnotation : Plugin exists the adding annotation state
 plugin.fire('cancelAddingAnnotation');
+
+// toggleAnnotationMode : toggle annotation mode to alternative on/off value
+plugin.fire('toggleAnnotations');
 ```
 
 ##### Supported Internally Fired Events:
