@@ -11,8 +11,8 @@ const   Marker = require("./marker").class,
 class DraggableMarker extends Marker {
 
     constructor (playerId, range) {
-        super(playerId, range);                   
-        this.range = range;                       // NOTE - this shouldn't be required and is a HACK for how transpilation works in IE10  
+        super(playerId, range);
+        this.range = range;                       // NOTE - this shouldn't be required and is a HACK for how transpilation works in IE10
         this.templateName = markerTemplateName;   // Change template from base Marker template
         this.dragging = false;                    // Is a drag action currently occring?
         this.rangePin = range.start;              // What's the original pinned timeline point when marker was added
@@ -107,8 +107,7 @@ class DraggableMarker extends Marker {
     // Move the video & marker start by some num seconds (pos or neg)
     scrubStart (secondsChanged) {
         let newStart = this.range.start + secondsChanged;
-        this.player.currentTime(newStart);
-
+        this.currentTime = newStart;
         this.range.start = newStart;
         this.rangePin = newStart;
         this.teardown();

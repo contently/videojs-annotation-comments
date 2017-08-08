@@ -80,7 +80,7 @@ class Annotation extends PlayerUIComponent {
         }
 
         if(withPause) this.player.pause();
-        if(snapToStart) this.player.currentTime(this.range.start);
+        if(snapToStart) this.currentTime = this.range.start;
 
         this.plugin.fire('annotationOpened', {
             annotation: this.data,

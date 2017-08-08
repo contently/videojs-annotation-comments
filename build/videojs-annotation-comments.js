@@ -5885,7 +5885,7 @@ var Annotation = function (_PlayerUIComponent) {
             }
 
             if (withPause) this.player.pause();
-            if (snapToStart) this.player.currentTime(this.range.start);
+            if (snapToStart) this.currentTime = this.range.start;
 
             this.plugin.fire('annotationOpened', {
                 annotation: this.data,
@@ -6984,7 +6984,7 @@ var DraggableMarker = function (_Marker) {
 
         var _this = _possibleConstructorReturn(this, (DraggableMarker.__proto__ || Object.getPrototypeOf(DraggableMarker)).call(this, playerId, range));
 
-        _this.range = range; // NOTE - this shouldn't be required and is a HACK for how transpilation works in IE10  
+        _this.range = range; // NOTE - this shouldn't be required and is a HACK for how transpilation works in IE10
         _this.templateName = markerTemplateName; // Change template from base Marker template
         _this.dragging = false; // Is a drag action currently occring?
         _this.rangePin = range.start; // What's the original pinned timeline point when marker was added
@@ -7093,8 +7093,7 @@ var DraggableMarker = function (_Marker) {
         key: "scrubStart",
         value: function scrubStart(secondsChanged) {
             var newStart = this.range.start + secondsChanged;
-            this.player.currentTime(newStart);
-
+            this.currentTime = newStart;
             this.range.start = newStart;
             this.rangePin = newStart;
             this.teardown();
@@ -7692,6 +7691,12 @@ var PlayerComponent = function () {
         key: "currentTime",
         get: function get() {
             return this.player.currentTime();
+        }
+
+        // set current time of player
+        ,
+        set: function set(time) {
+            this.player.currentTime(time);
         }
     }]);
 
