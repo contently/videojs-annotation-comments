@@ -59,6 +59,11 @@ class Annotation extends PlayerUIComponent {
     // Opens the annotation. Handles marker, commentList, shape, Annotation state, and player state
     open (withPause=true, previewOnly=false) {
         this.isOpen = true;
+        const snapToStart = !Utils.isWithinRange(
+            this.range.start,
+            this.range.end,
+            this.player.currentTime()
+        );
 
         if(previewOnly || !this.plugin.options.showCommentList) {
             this.marker.setActive(true);
@@ -74,10 +79,8 @@ class Annotation extends PlayerUIComponent {
             });
         }
 
-        if(withPause) {
-            this.player.pause();
-            this.player.currentTime(this.range.start);
-        }
+        if(withPause) this.player.pause();
+        if(snapToStart) this.player.currentTime(this.range.start);
 
         this.plugin.fire('annotationOpened', {
             annotation: this.data,

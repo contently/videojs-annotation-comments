@@ -5868,6 +5868,7 @@ var Annotation = function (_PlayerUIComponent) {
             var previewOnly = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
             this.isOpen = true;
+            var snapToStart = !Utils.isWithinRange(this.range.start, this.range.end, this.player.currentTime());
 
             if (previewOnly || !this.plugin.options.showCommentList) {
                 this.marker.setActive(true);
@@ -5883,10 +5884,8 @@ var Annotation = function (_PlayerUIComponent) {
                 });
             }
 
-            if (withPause) {
-                this.player.pause();
-                this.player.currentTime(this.range.start);
-            }
+            if (withPause) this.player.pause();
+            if (snapToStart) this.player.currentTime(this.range.start);
 
             this.plugin.fire('annotationOpened', {
                 annotation: this.data,
@@ -8004,6 +8003,9 @@ module.exports = {
         $clone.remove();
 
         return data;
+    },
+    isWithinRange: function isWithinRange(start, end, n) {
+        return n >= start && n <= end;
     }
 };
 

@@ -78,5 +78,6 @@ module.exports = {
         $clone.remove();
 
         return data;
-    }
+    },
+    isWithinRange: (start, end, n) => n >= start && n <= end,
 };
