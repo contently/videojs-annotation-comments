@@ -5868,6 +5868,7 @@ var Annotation = function (_PlayerUIComponent) {
             var previewOnly = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
             this.isOpen = true;
+            var snapToStart = !Utils.isWithinRange(this.range.start, this.range.end, this.currentTime);
 
             if (previewOnly || !this.plugin.options.showCommentList) {
                 this.marker.setActive(true);
@@ -5883,10 +5884,8 @@ var Annotation = function (_PlayerUIComponent) {
                 });
             }
 
-            if (withPause) {
-                this.player.pause();
-                this.player.currentTime(this.range.start);
-            }
+            if (withPause) this.player.pause();
+            if (snapToStart) this.currentTime = this.range.start;
 
             this.plugin.fire('annotationOpened', {
                 annotation: this.data,
@@ -6146,7 +6145,7 @@ var AnnotationState = function (_PlayerComponent) {
         value: function setLiveAnnotation() {
             if (!this.enabled) return;
 
-            var time = Math.floor(this.player.currentTime());
+            var time = Math.floor(this.currentTime);
 
             if (this.skipLiveCheck) {
                 if (time !== this.lastVideoTime) this.skipLiveCheck = false;
@@ -6242,7 +6241,7 @@ var AnnotationState = function (_PlayerComponent) {
                     nextInd = ind === this.annotations.length - 1 ? 0 : ind + 1;
                 return this.openAnnotation(this.annotations[nextInd], true);
             }
-            var time = Math.floor(this.player.currentTime());
+            var time = Math.floor(this.currentTime);
             for (var i = 0; i < this.annotations.length; i++) {
                 if (this.annotations[i].range.start > time) return this.openAnnotation(this.annotations[i], true);
             }
@@ -6259,7 +6258,7 @@ var AnnotationState = function (_PlayerComponent) {
                     nextInd = ind === 0 ? this.annotations.length - 1 : ind - 1;
                 return this.openAnnotation(this.annotations[nextInd], true);
             }
-            var time = Math.floor(this.player.currentTime());
+            var time = Math.floor(this.currentTime);
             for (var i = this.annotations.length - 1; i >= 0; i--) {
                 if (this.annotations[i].range.start < time) return this.openAnnotation(this.annotations[i], true);
             }
@@ -6832,8 +6831,8 @@ var Controls = function (_PlayerUIComponent) {
 
             // construct new range and create marker
             var range = {
-                start: parseInt(this.player.currentTime(), 10),
-                stop: parseInt(this.player.currentTime(), 10)
+                start: parseInt(this.currentTime, 10),
+                stop: parseInt(this.currentTime, 10)
             };
             this.marker = new DraggableMarker(this.playerId, range);
             this.selectableShape = new SelectableShape(this.playerId);
@@ -6985,7 +6984,7 @@ var DraggableMarker = function (_Marker) {
 
         var _this = _possibleConstructorReturn(this, (DraggableMarker.__proto__ || Object.getPrototypeOf(DraggableMarker)).call(this, playerId, range));
 
-        _this.range = range; // NOTE - this shouldn't be required and is a HACK for how transpilation works in IE10  
+        _this.range = range; // NOTE - this shouldn't be required and is a HACK for how transpilation works in IE10
         _this.templateName = markerTemplateName; // Change template from base Marker template
         _this.dragging = false; // Is a drag action currently occring?
         _this.rangePin = range.start; // What's the original pinned timeline point when marker was added
@@ -7094,8 +7093,7 @@ var DraggableMarker = function (_Marker) {
         key: "scrubStart",
         value: function scrubStart(secondsChanged) {
             var newStart = this.range.start + secondsChanged;
-            this.player.currentTime(newStart);
-
+            this.currentTime = newStart;
             this.range.start = newStart;
             this.rangePin = newStart;
             this.teardown();
@@ -7686,6 +7684,20 @@ var PlayerComponent = function () {
         get: function get() {
             return this.player.duration();
         }
+
+        // attribute to get player current time
+
+    }, {
+        key: "currentTime",
+        get: function get() {
+            return this.player.currentTime();
+        }
+
+        // set current time of player
+        ,
+        set: function set(time) {
+            this.player.currentTime(time);
+        }
     }]);
 
     return PlayerComponent;
@@ -8004,6 +8016,9 @@ module.exports = {
         $clone.remove();
 
         return data;
+    },
+    isWithinRange: function isWithinRange(start, end, n) {
+        return n >= start && n <= end;
     }
 };
 

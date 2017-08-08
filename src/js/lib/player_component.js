@@ -25,6 +25,16 @@ class PlayerComponent {
         return this.player.duration();
     }
 
+    // attribute to get player current time
+    get currentTime () {
+        return this.player.currentTime();
+    }
+
+    // set current time of player
+    set currentTime (time) {
+        this.player.currentTime(time);
+    }
+
     // Register all events in the EventRegistry matching this className
     initAPI (obj, className) {
         this.plugin.eventDispatcher.registerListenersFor(obj, className);

@@ -100,8 +100,8 @@ class Controls extends PlayerUIComponent {
 
         // construct new range and create marker
         let range = {
-            start: parseInt(this.player.currentTime(),10),
-            stop: parseInt(this.player.currentTime(),10)
+            start: parseInt(this.currentTime,10),
+            stop: parseInt(this.currentTime,10)
         };
         this.marker = new DraggableMarker(this.playerId, range);
         this.selectableShape = new SelectableShape(this.playerId);

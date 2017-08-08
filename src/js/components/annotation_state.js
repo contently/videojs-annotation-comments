@@ -108,7 +108,7 @@ class AnnotationState extends PlayerComponent {
     setLiveAnnotation () {
         if(!this.enabled) return;
 
-        let time = Math.floor(this.player.currentTime());
+        let time = Math.floor(this.currentTime);
 
         if(this.skipLiveCheck) {
             if(time !== this.lastVideoTime) this.skipLiveCheck = false;
@@ -178,7 +178,7 @@ class AnnotationState extends PlayerComponent {
                 nextInd = (ind === this.annotations.length-1 ? 0 : ind+1);
             return this.openAnnotation(this.annotations[nextInd], true);
         }
-        let time = Math.floor(this.player.currentTime());
+        let time = Math.floor(this.currentTime);
         for(let i=0; i<this.annotations.length; i++){
             if(this.annotations[i].range.start > time) return this.openAnnotation(this.annotations[i], true);
         }
@@ -192,7 +192,7 @@ class AnnotationState extends PlayerComponent {
                     nextInd = (ind === 0 ? this.annotations.length-1 : ind-1);
             return this.openAnnotation(this.annotations[nextInd], true);
         }
-        let time = Math.floor(this.player.currentTime());
+        let time = Math.floor(this.currentTime);
         for(let i=this.annotations.length-1; i>=0; i--){
             if(this.annotations[i].range.start < time) return this.openAnnotation(this.annotations[i], true);
         }
