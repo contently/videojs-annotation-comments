@@ -5868,7 +5868,7 @@ var Annotation = function (_PlayerUIComponent) {
             var previewOnly = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
             this.isOpen = true;
-            var snapToStart = !Utils.isWithinRange(this.range.start, this.range.end, this.player.currentTime());
+            var snapToStart = !Utils.isWithinRange(this.range.start, this.range.end, this.currentTime);
 
             if (previewOnly || !this.plugin.options.showCommentList) {
                 this.marker.setActive(true);
@@ -6145,7 +6145,7 @@ var AnnotationState = function (_PlayerComponent) {
         value: function setLiveAnnotation() {
             if (!this.enabled) return;
 
-            var time = Math.floor(this.player.currentTime());
+            var time = Math.floor(this.currentTime);
 
             if (this.skipLiveCheck) {
                 if (time !== this.lastVideoTime) this.skipLiveCheck = false;
@@ -6241,7 +6241,7 @@ var AnnotationState = function (_PlayerComponent) {
                     nextInd = ind === this.annotations.length - 1 ? 0 : ind + 1;
                 return this.openAnnotation(this.annotations[nextInd], true);
             }
-            var time = Math.floor(this.player.currentTime());
+            var time = Math.floor(this.currentTime);
             for (var i = 0; i < this.annotations.length; i++) {
                 if (this.annotations[i].range.start > time) return this.openAnnotation(this.annotations[i], true);
             }
@@ -6258,7 +6258,7 @@ var AnnotationState = function (_PlayerComponent) {
                     nextInd = ind === 0 ? this.annotations.length - 1 : ind - 1;
                 return this.openAnnotation(this.annotations[nextInd], true);
             }
-            var time = Math.floor(this.player.currentTime());
+            var time = Math.floor(this.currentTime);
             for (var i = this.annotations.length - 1; i >= 0; i--) {
                 if (this.annotations[i].range.start < time) return this.openAnnotation(this.annotations[i], true);
             }
@@ -6831,8 +6831,8 @@ var Controls = function (_PlayerUIComponent) {
 
             // construct new range and create marker
             var range = {
-                start: parseInt(this.player.currentTime(), 10),
-                stop: parseInt(this.player.currentTime(), 10)
+                start: parseInt(this.currentTime, 10),
+                stop: parseInt(this.currentTime, 10)
             };
             this.marker = new DraggableMarker(this.playerId, range);
             this.selectableShape = new SelectableShape(this.playerId);
@@ -7684,6 +7684,14 @@ var PlayerComponent = function () {
         key: "duration",
         get: function get() {
             return this.player.duration();
+        }
+
+        // attribute to get player current time
+
+    }, {
+        key: "currentTime",
+        get: function get() {
+            return this.player.currentTime();
         }
     }]);
 

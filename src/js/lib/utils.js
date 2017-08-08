@@ -79,5 +79,7 @@ module.exports = {
 
         return data;
     },
-    isWithinRange: (start, end, n) => n >= start && n <= end,
+    isWithinRange: (start, end, n) => {
+        return n >= start && n <= end;
+    }
 };

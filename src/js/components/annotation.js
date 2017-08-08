@@ -62,7 +62,7 @@ class Annotation extends PlayerUIComponent {
         const snapToStart = !Utils.isWithinRange(
             this.range.start,
             this.range.end,
-            this.player.currentTime()
+            this.currentTime
         );
 
         if(previewOnly || !this.plugin.options.showCommentList) {
