@@ -6,7 +6,6 @@
     const Plugin = videojs.getPlugin('plugin'),
           Utils = require('./lib/utils'),
           Controls = require("./components/controls").class,
-          PlayerButton = require("./components/player_button").class,
           AnnotationState = require("./components/annotation_state").class,
           EventDispatcher = require("./lib/event_dispatcher").class;
 
@@ -34,6 +33,7 @@
             this.options = options;
 
             this.eventDispatcher = new EventDispatcher(this);
+            this.eventDispatcher.registerListenersFor(this, 'Main');
 
             // assign reference to this class to player for access later by components where needed
             var self = this;
@@ -43,7 +43,7 @@
             if (!this.options.showFullScreen) {
                 player.on('fullscreenchange', () => {
                     if (player.isFullscreen_) {
-                        if(self.active) self.toggleAnnotations();
+                        if(self.active) self.toggleAnnotationMode();
                         $(player.el()).addClass('vac-disable-fullscreen');
                     } else {
                         $(player.el()).removeClass('vac-disable-fullscreen');
@@ -55,27 +55,14 @@
             this.annotationState = new AnnotationState(this.playerId);
             this.annotationState.annotations = options.annotationsObjects;
 
-            this.drawUI();
+            this.controls = new Controls(this.playerId, this.options.bindArrowKeys);
             this.bindEvents();
             this.setBounds(false);
-            if(options.startInAnnotationMode) this.toggleAnnotations();
-        }
-
-        // Draw UI components for interaction
-        drawUI () {
-            this.components = {
-                playerButton: new PlayerButton(this.playerId),
-                controls: new Controls(this.playerId, this.options.bindArrowKeys)
-            };
-            this.components.playerButton.updateNumAnnotations(this.annotationState.annotations.length);
+            if(options.startInAnnotationMode) this.toggleAnnotationMode();
         }
 
         // Bind needed events for interaction w/ components
         bindEvents () {
-            this.components.playerButton.$el.on('click', () => {
-                this.toggleAnnotations();
-            });
-
             // set player boundaries on window size change or fullscreen change
             $(window).on('resize.vac-window-resize', Utils.throttle(this.setBounds.bind(this), 500));
             this.player.on('fullscreenchange', Utils.throttle(this.setBounds.bind(this), 500));
@@ -88,7 +75,7 @@
         }
 
         // Toggle annotations mode on/off
-        toggleAnnotations() {
+        toggleAnnotationMode() {
             this.active = !this.active;
             this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
             this.annotationState.enabled = this.active;
@@ -102,9 +89,9 @@
             // handle control component UI if showControls: true
             if(this.options.showControls){
                 if(!this.active){
-                    this.components.controls.clear(true);
+                    this.controls.clear(true);
                 }else{
-                    this.components.controls.draw();
+                    this.controls.draw();
                 }
             }
         }

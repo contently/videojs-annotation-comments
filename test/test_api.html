@@ -116,8 +116,6 @@
 		</video>
 
         <div id="test-control-panel">
-            <p><strong>AnnotationComments <-> DOM</strong></p>
-
             <div class="control-section">
                 <p class="event-type"><strong>SEND:</strong> Open Annotation Event</p>
                 <label>Annotation ID</label>
@@ -143,6 +141,11 @@
 			<div class="control-section">
 				<p class="event-type"><strong>SEND:</strong> Cancel Adding Annotation Event</p>
 				<button id="fire-cancel-adding-annotation">FIRE</button>
+			</div>
+
+			<div class="control-section">
+				<p class="event-type"><strong>SEND:</strong> Toggle Annotation Mode</p>
+				<button id="fire-toggle-annotation-mode">FIRE</button>
 			</div>
 
 			<div class="control-section hidden" id="new-annotation-form">
@@ -195,6 +198,10 @@
 				$("#fire-cancel-adding-annotation").on("click", function() {
 					plugin.fire("cancelAddingAnnotation");
 					$("#new-annotation-form").addClass("hidden");
+				});
+
+				$("#fire-toggle-annotation-mode").on("click", function(){
+					plugin.fire("toggleAnnotationMode");
 				});
 
 				$("#fire-new-annotation").on("click", function() {

@@ -95,9 +95,9 @@ describe('external event-based API', () => {
 
                 player.on('loadedmetadata', () => {
                     player.play().then(() => {
-                        expect(plugin.components.controls.uiState.adding).to.equal(false);
+                        expect(plugin.controls.uiState.adding).to.equal(false);
                         plugin.fire('addingAnnotation');
-                        expect(plugin.components.controls.uiState.adding).to.equal(true);
+                        expect(plugin.controls.uiState.adding).to.equal(true);
                         done();
                     });
                 })
@@ -112,10 +112,10 @@ describe('external event-based API', () => {
 
                 player.on('loadedmetadata', () => {
                     player.play().then(() => {
-                        plugin.components.controls.startAddNew();
-                        expect(plugin.components.controls.uiState.adding).to.equal(true);
+                        plugin.controls.startAddNew();
+                        expect(plugin.controls.uiState.adding).to.equal(true);
                         plugin.fire('cancelAddingAnnotation');
-                        expect(plugin.components.controls.uiState.adding).to.equal(false);
+                        expect(plugin.controls.uiState.adding).to.equal(false);
                         done();
                     });
                 });
@@ -239,7 +239,7 @@ describe('external event-based API', () => {
                             mockedDragEvent = { pageY: shapeOffsetTop, pageX: shapeOffsetLeft },
                             mockedShape = { x1: null, x2: null, y1: null, y2: null },
                             stubbedSetDims = (()=>{}),
-                            shape = plugin.components.controls.selectableShape;
+                            shape = plugin.controls.selectableShape;
 
                         shape.shape = mockedShape;
                         shape.setDimsFromShape = stubbedSetDims;
@@ -269,7 +269,7 @@ describe('external event-based API', () => {
                         let markerOffsetLeft = $(player.el()).offset().left + 250,
                             mockedDragEvent = { pageX: markerOffsetLeft },
                             mockedRange = { start: null, end: null },
-                            marker = plugin.components.controls.marker;
+                            marker = plugin.controls.marker;
 
                         marker.range = mockedRange;
                         marker.onDrag(mockedDragEvent);
@@ -294,7 +294,7 @@ describe('external event-based API', () => {
 
                         // mock range
                         let mockedRange = { start: 10, end: 20 },
-                            marker = plugin.components.controls.marker;
+                            marker = plugin.controls.marker;
 
                         marker.range = mockedRange;
                         marker.rangePin = 10;

@@ -12,6 +12,12 @@ class PlayerButton extends PlayerUIComponent {
     constructor (playerId) {
         super(playerId);
         this.draw();
+
+        this.initAPI(this, 'PlayerButton');
+        
+        this.$el.on('click.vac-player-button', () => {
+            this.plugin.toggleAnnotationMode();
+        });
     }
 
     // Add button to player
@@ -23,8 +29,9 @@ class PlayerButton extends PlayerUIComponent {
     }
 
     // Update the number of annotations displayed in the bubble
-    updateNumAnnotations (num) {
-        let $bubble = this.$el.find("b");
+    updateNumAnnotations () {
+        let num = this.plugin.annotationState.annotations.length,
+            $bubble = this.$el.find("b");
         $bubble.text(num);
         num > 0 ? $bubble.removeClass(this.UI_CLASSES.hidden) : $bubble.addClass(this.UI_CLASSES.hidden);
     }

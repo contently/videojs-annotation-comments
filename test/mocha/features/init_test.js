@@ -107,7 +107,7 @@ describe('plugin initialization', () => {
                         toggleAnnotationMode();
                         expect($('.vac-controls').length).to.equal(0);
 
-                        plugin.components.controls.startAddNew();
+                        plugin.controls.startAddNew();
                         expect($('.vac-cursor-tool-tip').text()).to.equal('Click and drag to select');
 
                         done();

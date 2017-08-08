@@ -284,17 +284,17 @@
         .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.vac-hovering > div, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.vac-force-tooltip > div, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.vac-hovering > div, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.vac-force-tooltip > div {
           display: block;
           opacity: 1; }
-        .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.vac-hovering.ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.vac-force-tooltip.ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.vac-hovering.ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.vac-force-tooltip.ranged-marker {
+        .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.vac-hovering.vac-ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.vac-force-tooltip.vac-ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.vac-hovering.vac-ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.vac-force-tooltip.vac-ranged-marker {
           -webkit-box-shadow: 7px 0 0 0 #eed428 inset;
           box-shadow: 7px 0 0 0 #eed428 inset;
           background-color: rgba(238, 212, 40, 0.65); }
       .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.vac-active, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.vac-active {
         background-color: #eed428; }
-        .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.vac-active.ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.vac-active.ranged-marker {
+        .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.vac-active.vac-ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.vac-active.vac-ranged-marker {
           -webkit-box-shadow: 7px 0 0 0 #eed428 inset;
           box-shadow: 7px 0 0 0 #eed428 inset;
           background-color: rgba(238, 212, 40, 0.65); }
-      .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.ranged-marker {
+      .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.vac-ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.vac-ranged-marker {
         -webkit-box-shadow: 7px 0 0 0 #00A6C2 inset;
         box-shadow: 7px 0 0 0 #00A6C2 inset;
         background-color: rgba(0, 166, 194, 0.65); }

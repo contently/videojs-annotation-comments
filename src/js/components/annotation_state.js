@@ -85,6 +85,8 @@ class AnnotationState extends PlayerComponent {
 
     // Create and add a annotation
     createAndAddAnnotation (data) {
+        this.plugin.controls.uiState.adding && this.plugin.controls.cancelAddNew();
+
         let annotation = Annotation.newFromData(
             data.range,
             data.shape,
@@ -93,6 +95,12 @@ class AnnotationState extends PlayerComponent {
             data.id
         )
         this.addNewAnnotation(annotation)
+    }
+
+    // Destroy an existing annotation
+    destroyAnnotationById (id) {
+        let annotation = this.annotations.find((a) => a.id == id);
+        if (annotation) annotation.destroy();
     }
 
     // Remove an annotation
@@ -157,7 +165,7 @@ class AnnotationState extends PlayerComponent {
     // Open annotation with options to pause and show preview
     // skipLiveCheck will short circuit setLiveAnnotation()
     openAnnotation (annotation, skipLiveCheck=false, pause=true, previewOnly=false) {
-        if(!this.plugin.active) this.plugin.toggleAnnotations();
+        if(!this.plugin.active) this.plugin.toggleAnnotationMode();
         this.skipLiveCheck = skipLiveCheck;
         this.clearActive();
         annotation.open(pause, previewOnly);
@@ -204,8 +212,6 @@ class AnnotationState extends PlayerComponent {
     stateChanged () {
         this.sortAnnotations();
         this.rebuildAnnotationTimeMap();
-        this.plugin.components.playerButton.updateNumAnnotations(this._annotations.length);
-
         this.plugin.fire('onStateChanged', this.data);
     }
 }

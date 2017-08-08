@@ -8,6 +8,7 @@ const   PlayerUIComponent = require("./../lib/player_ui_component").class,
         Utils = require("./../lib/utils"),
         DraggableMarker = require("./draggable_marker.js").class,
         SelectableShape = require("./selectable_shape.js").class,
+        PlayerButton = require("./player_button").class,
         Annotation = require("./annotation").class,
         templateName = 'controls';
 
@@ -28,6 +29,11 @@ class Controls extends PlayerUIComponent {
         this.showControls = this.plugin.options.showControls;
         this.uiState = Utils.cloneObject(BASE_UI_STATE);
         this.bindEvents(bindArrowKeys);
+
+        if(this.showControls){
+            // create player button in the control bar if controls are shown
+            this.playerButton = new PlayerButton(this.playerId);
+        }
 
         this.draw();
     }
@@ -81,6 +87,8 @@ class Controls extends PlayerUIComponent {
 
         let $ctrls = this.renderTemplate(templateName, data);
         this.$player.append($ctrls);
+
+        if(this.playerButton) this.playerButton.updateNumAnnotations();
     }
 
     // User clicked to cancel in-progress add - restore to normal state
@@ -93,6 +101,8 @@ class Controls extends PlayerUIComponent {
 
     // User clicked 'add' button in the controls - setup UI and marker
     startAddNew () {
+        if(!this.plugin.active) this.plugin.toggleAnnotationMode();
+    
         this.player.pause();
         this.setAddingUI();
         this.uiState.adding = true;
