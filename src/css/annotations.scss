@@ -16,9 +16,6 @@ $ui-class-play-disabled: ".vac-disable-play";
 // Videojs standard elements are prefixed with 'vjs-'*
 // Elements added by videojs-annotation-comments are prefixed with 'vac-'*
 
-// TODO
-// Change browser specific stuff (box-shadow, -webkit-*, etc) to mixins
-
 // Scope to video-js player element
 .video-js{
 
