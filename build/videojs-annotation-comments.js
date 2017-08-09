@@ -8106,21 +8106,25 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
             _this.eventDispatcher.registerListenersFor(_this, 'Main');
 
             // assign reference to this class to player for access later by components where needed
-            var self = _this;
             player.annotationComments = function () {
-                return self;
-            };
+                return _this;
+            }.bind(_this);
 
             // remove annotation features on fullscreen if showFullScreen: false
             if (!_this.options.showFullScreen) {
                 player.on('fullscreenchange', function () {
                     if (player.isFullscreen_) {
-                        if (self.active) self.toggleAnnotationMode();
+                        _this.preFullscreenAnnotationsEnabled = _this.active;
                         $(player.el()).addClass('vac-disable-fullscreen');
                     } else {
                         $(player.el()).removeClass('vac-disable-fullscreen');
                     }
-                });
+                    if (_this.preFullscreenAnnotationsEnabled) {
+                        // if we were previously in annotation mode (pre-fullscreen) or entering fullscreeen and are 
+                        // in annotation mode, toggle the mode
+                        _this.toggleAnnotationMode();
+                    }
+                }.bind(_this));
             }
 
             // setup initial state and draw UI
