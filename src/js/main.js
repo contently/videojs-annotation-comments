@@ -36,19 +36,23 @@
             this.eventDispatcher.registerListenersFor(this, 'Main');
 
             // assign reference to this class to player for access later by components where needed
-            var self = this;
-            player.annotationComments = () => { return self };
+            player.annotationComments = (() => { return this }).bind(this);
 
             // remove annotation features on fullscreen if showFullScreen: false
             if (!this.options.showFullScreen) {
-                player.on('fullscreenchange', () => {
+                player.on('fullscreenchange', (() => {
                     if (player.isFullscreen_) {
-                        if(self.active) self.toggleAnnotationMode();
+                        this.preFullscreenAnnotationsEnabled = this.active;
                         $(player.el()).addClass('vac-disable-fullscreen');
                     } else {
                         $(player.el()).removeClass('vac-disable-fullscreen');
                     }
-                });
+                    if(this.preFullscreenAnnotationsEnabled){
+                        // if we were previously in annotation mode (pre-fullscreen) or entering fullscreeen and are 
+                        // in annotation mode, toggle the mode
+                        this.toggleAnnotationMode();
+                    }
+                }).bind(this));
             }
 
             // setup initial state and draw UI
