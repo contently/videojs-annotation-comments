@@ -6,8 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Evan Carothers <evan.carothers@gmail.com> (https://github.com/ecaroth)",
-  "license": "ISC",
+  "author": "Evan Carothers (@ecaroth) & Jack Pope (@jackpope)",
+  "copyright": "Copyright Contently, Inc. <https://www.contently.com/>",
+  "license": "Apache-2.0",
   "devDependencies": {
     "babel-core": "^6.14.0",
     "babel-preset-es2015": "^6.24.1",

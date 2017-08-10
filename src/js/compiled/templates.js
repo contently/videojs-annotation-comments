@@ -8,7 +8,7 @@ var Handlebars = require("handlebars/runtime");
     + alias4(container.lambda(((stack1 = (depth0 != null ? depth0.meta : depth0)) != null ? stack1.user_name : stack1), depth0))
     + "</div>\n    <div class=\"vac-timestamp\">"
     + alias4(((helper = (helper = helpers.timeSince || (depth0 != null ? depth0.timeSince : depth0)) != null ? helper : alias2),(typeof helper === alias3 ? helper.call(alias1,{"name":"timeSince","hash":{},"data":data}) : helper)))
-    + " ago\n      <span class=\"vac-delete-comment\">&nbsp;&nbsp;X</span>\n    </div>\n  </div>\n  <div class=\"vac-comment-body\">\n    "
+    + "\n      <span class=\"vac-delete-comment\">&nbsp;&nbsp;X</span>\n    </div>\n  </div>\n  <div class=\"vac-comment-body\">\n    "
     + alias4((helpers.breaklines || (depth0 && depth0.breaklines) || alias2).call(alias1,(depth0 != null ? depth0.body : depth0),{"name":"breaklines","hash":{},"data":data}))
     + "\n  </div>\n</div>\n";
 },"useData":true});
