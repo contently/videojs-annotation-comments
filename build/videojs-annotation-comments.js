@@ -5868,7 +5868,7 @@ var Annotation = function (_PlayerUIComponent) {
             var previewOnly = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
             this.isOpen = true;
-            var snapToStart = !Utils.isWithinRange(this.range.start, this.range.end, this.currentTime);
+            var snapToStart = !Utils.isWithinRange(this.range.start, this.range.end, Math.floor(this.currentTime));
 
             if (previewOnly || !this.plugin.options.showCommentList) {
                 this.marker.setActive(true);
@@ -6089,7 +6089,7 @@ var AnnotationState = function (_PlayerComponent) {
 
         // Bind events for setting liveAnnotation on video time change
         value: function bindEvents() {
-            this.player.on("timeupdate", Utils.throttle(this.setLiveAnnotation.bind(this), 1000));
+            this.player.on("timeupdate", Utils.throttle(this.setLiveAnnotation.bind(this), 100));
         }
 
         // Sort annotations by range.start
@@ -6152,7 +6152,6 @@ var AnnotationState = function (_PlayerComponent) {
         key: "setLiveAnnotation",
         value: function setLiveAnnotation() {
             if (!this.enabled) return;
-
             var time = Math.floor(this.currentTime);
 
             if (this.skipLiveCheck) {
@@ -7449,8 +7448,8 @@ var SelectableShape = function (_AnnotationShape) {
                 _this2.dragging = true;
                 _this2.dragMoved = false; // used to determine if user actually dragged or just clicked
 
-                // Bind event on doc mousemove to track drag, throttled to once each 250ms
-                $(document).on("mousemove.vac-selectable-shape", Utils.throttle(_this2.onDrag.bind(_this2), 250));
+                // Bind event on doc mousemove to track drag, throttled to once each 100ms
+                $(document).on("mousemove.vac-selectable-shape", Utils.throttle(_this2.onDrag.bind(_this2), 100));
 
                 // Add drag class to cursor tooltip if available
                 if (!_this2.plugin.options.showControls) {

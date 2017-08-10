@@ -44,8 +44,8 @@ class SelectableShape extends AnnotationShape {
             this.dragging = true;
             this.dragMoved = false; // used to determine if user actually dragged or just clicked
 
-            // Bind event on doc mousemove to track drag, throttled to once each 250ms
-            $(document).on("mousemove.vac-selectable-shape", Utils.throttle(this.onDrag.bind(this), 250) );
+            // Bind event on doc mousemove to track drag, throttled to once each 100ms
+            $(document).on("mousemove.vac-selectable-shape", Utils.throttle(this.onDrag.bind(this), 100) );
 
             // Add drag class to cursor tooltip if available
             if(!this.plugin.options.showControls) {

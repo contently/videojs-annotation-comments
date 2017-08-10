@@ -58,7 +58,7 @@ class AnnotationState extends PlayerComponent {
 
     // Bind events for setting liveAnnotation on video time change
     bindEvents () {
-        this.player.on("timeupdate", Utils.throttle(this.setLiveAnnotation.bind(this), 1000));
+        this.player.on("timeupdate", Utils.throttle(this.setLiveAnnotation.bind(this), 100));
     }
 
     // Sort annotations by range.start
@@ -107,7 +107,6 @@ class AnnotationState extends PlayerComponent {
     // Set the live annotation based on current video time
     setLiveAnnotation () {
         if(!this.enabled) return;
-
         let time = Math.floor(this.currentTime);
 
         if(this.skipLiveCheck) {
