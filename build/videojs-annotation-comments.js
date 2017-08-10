@@ -8129,6 +8129,8 @@ module.exports = {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -8179,47 +8181,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                 return _this;
             }.bind(_this);
 
-<<<<<<< HEAD
             // assert that components are initialized AFTER metadata is loaded so we metadata/duration
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-            // assert that components are initialized AFTER metadata is loaded so we metadata/duration
-=======
-            // remove annotation features on fullscreen if showFullScreen: false
-            if (!_this.options.showFullScreen) {
-                player.on('fullscreenchange', function () {
-                    if (player.isFullscreen_) {
-                        _this.preFullscreenAnnotationsEnabled = _this.active;
-                        $(player.el()).addClass('vac-disable-fullscreen');
-                    } else {
-                        $(player.el()).removeClass('vac-disable-fullscreen');
-                    }
-                    if (_this.preFullscreenAnnotationsEnabled) {
-                        // if we were previously in annotation mode (pre-fullscreen) or entering fullscreeen and are
-                        // in annotation mode, toggle the mode
-                        _this.toggleAnnotationMode();
-                    }
-                }.bind(_this));
-            }
-
-=======
->>>>>>> 2ce1f57... more teardowns
-            // setup initial state and draw UI
-            _this.annotationState = new AnnotationState(_this.playerId);
-            _this.annotationState.annotations = options.annotationsObjects;
->>>>>>> 3891003... lots of stuff
->>>>>>> 7e3029a... plugin.dispose() with cascading teardowns
 
             // NOTE - this check is required because player loadedmetadata doesn't always fire if readystate is > 2
             if (player.readyState() >= 2) {
                 _this.postMetadataConstructor();
             } else {
-<<<<<<< HEAD
                 player.on('loadedmetadata', _this.postMetadataConstructor.bind(_this));
-=======
-                player.on('loadedmetadata', _this.postMetadataConstructor().bind(_this));
->>>>>>> 7e3029a... plugin.dispose() with cascading teardowns
             }
             return _this;
         }
@@ -8260,15 +8228,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                             $(_this2.player.el()).removeClass('vac-disable-fullscreen');
                         }
                         if (_this2.preFullscreenAnnotationsEnabled) {
-<<<<<<< HEAD
-                            // if we were previously in annotation mode (pre-fullscreen) or entering fullscreeen and are 
-=======
-<<<<<<< HEAD
-                            // if we were previously in annotation mode (pre-fullscreen) or entering fullscreeen and are 
-=======
                             // if we were previously in annotation mode (pre-fullscreen) or entering fullscreeen and are
->>>>>>> 2ce1f57... more teardowns
->>>>>>> 7e3029a... plugin.dispose() with cascading teardowns
                             // in annotation mode, toggle the mode
                             _this2.toggleAnnotationMode();
                         }
@@ -8342,6 +8302,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                 this.controls.teardown();
                 this.eventDispatcher.teardown();
                 this.teardown();
+                _get(Main.prototype.__proto__ || Object.getPrototypeOf(Main.prototype), 'dispose', this).call(this);
             }
         }, {
             key: 'teardown',
