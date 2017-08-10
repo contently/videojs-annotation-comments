@@ -120,23 +120,21 @@
 
 			var playerOptions = { controlBar: { volumePanel: { inline: false } } },
 				player = window.videojs('the_video', playerOptions),
-				plugin;
-			player.on('loadedmetadata', function() {
-				player.muted(true);
 				plugin = player.annotationComments({
 					annotationsObjects: annotations,
 					bindArrowKeys: true,
 					meta: {
 						user_id: 2,
 						user_name: "Evan Carothers"
-					}
+					},
 					showControls: true,
 					showCommentList: true,
 					showFullScreen: true,
 					showMarkerTooltips: true,
 					startInAnnotationMode: false
 				});
-			});
+			
+			player.muted(true);
 		</script>
 	</BODY>
 </HTML>
