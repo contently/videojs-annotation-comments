@@ -14,7 +14,7 @@ class PlayerButton extends PlayerUIComponent {
         this.draw();
 
         this.initAPI(this, 'PlayerButton');
-        
+
         this.$el.on('click.vac-player-button', () => {
             this.plugin.toggleAnnotationMode();
         });
@@ -34,6 +34,12 @@ class PlayerButton extends PlayerUIComponent {
             $bubble = this.$el.find("b");
         $bubble.text(num);
         num > 0 ? $bubble.removeClass(this.UI_CLASSES.hidden) : $bubble.addClass(this.UI_CLASSES.hidden);
+    }
+
+    // Unbind event listeners on teardown and remove DOM nodes
+    teardown () {
+        this.$el.off('click.vac-player-button');
+        super.teardown();
     }
 }
 

@@ -77,7 +77,7 @@
                         $(this.player.el()).removeClass('vac-disable-fullscreen');
                     }
                     if(this.preFullscreenAnnotationsEnabled){
-                        // if we were previously in annotation mode (pre-fullscreen) or entering fullscreeen and are 
+                        // if we were previously in annotation mode (pre-fullscreen) or entering fullscreeen and are
                         // in annotation mode, toggle the mode
                         this.toggleAnnotationMode();
                     }
@@ -127,6 +127,20 @@
 
             // fires an event when bounds have changed during resizing
             if(triggerChange) this.fire('playerBoundsChanged', this.bounds);
+        }
+
+        // teardown all components, remove all listeners, and remove elements from DOM
+        dispose () {
+            this.annotationState.teardown();
+            this.controls.teardown();
+            this.eventDispatcher.teardown();
+            this.teardown();
+            super.dispose();
+        }
+
+        teardown () {
+            this.player.off('fullscreenchange');
+            $(window).off('resize.vac-window-resize');
         }
     }
 

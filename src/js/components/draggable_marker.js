@@ -101,7 +101,8 @@ class DraggableMarker extends Marker {
         $(document).off('mousemove.draggableMarker');
         $(document).off('mouseup.draggableMarker');
         this.$el.off('mouseenter.vac-cursor-tool-tip');
-        this.$el.off('mouseleave.vac-cursor-tool-tip')
+        this.$el.off('mouseleave.vac-cursor-tool-tip');
+        this.$el.off('mousedown');
     }
 
     // Move the video & marker start by some num seconds (pos or neg)

@@ -27,18 +27,18 @@ class CommentList extends PlayerUIComponent {
     // Bind all events needed for the comment list
     bindListEvents () {
         this.$el
-            .on("click.comment", ".vac-close-comment-list", () => this.annotation.close()) // Hide CommentList UI with close button
-            .on("click.comment", ".vac-reply-btn", () => this.addNewComment()) // Open new reply UI with reply button
-            .on("click.comment", ".vac-delete-annotation", (e) => this.handleDeleteAnnotationClick(e)) // Delete annotation with main delete button
-            .on("click.comment", ".vac-delete-comment", (e) => this.destroyComment(e)) // Delete comment with delete comment button
-            .on("mousewheel.comment DOMMouseScroll.comment", ".vac-comments-wrap", this.disablePageScroll); // Prevent outer page scroll when scrolling inside of the CommentList UI
+            .on("click.vac-comment", ".vac-close-comment-list", () => this.annotation.close()) // Hide CommentList UI with close button
+            .on("click.vac-comment", ".vac-reply-btn", () => this.addNewComment()) // Open new reply UI with reply button
+            .on("click.vac-comment", ".vac-delete-annotation", (e) => this.handleDeleteAnnotationClick(e)) // Delete annotation with main delete button
+            .on("click.vac-comment", ".vac-delete-comment", (e) => this.destroyComment(e)) // Delete comment with delete comment button
+            .on("mousewheel.vac-comment DOMMouseScroll.vac-comment", ".vac-comments-wrap", this.disablePageScroll); // Prevent outer page scroll when scrolling inside of the CommentList UI
     }
 
     // Bind event listeners for new comments form
     bindCommentFormEvents () {
         this.$newCommentForm
-            .on("click.comment", ".vac-add-controls a, .vac-video-write-new.vac-is-comment a", this.closeNewComment.bind(this)) // Cancel new comment creation with cancel link
-            .on("click.comment", ".vac-video-write-new.vac-is-comment button", this.saveNewComment.bind(this)); // Save new comment with save button
+            .on("click.vac-comment", ".vac-add-controls a, .vac-video-write-new.vac-is-comment a", this.closeNewComment.bind(this)) // Cancel new comment creation with cancel link
+            .on("click.vac-comment", ".vac-video-write-new.vac-is-comment button", this.saveNewComment.bind(this)); // Save new comment with save button
     }
 
     // Render CommentList UI with all comments using template
@@ -104,7 +104,7 @@ class CommentList extends PlayerUIComponent {
     destroyComment (event) {
         let annotationId = this.annotation.id;
         if(this.comments.length == 1) {
-            this.annotation.destroy();
+            this.annotation.teardown();
         } else {
             let $comment   = $(event.target).closest(".vac-comment"),
                 commentId  = $comment.data('id'),
@@ -154,27 +154,28 @@ class CommentList extends PlayerUIComponent {
         let $confirmEl = $("<a/>").addClass("vac-delete-confirm").text("CONFIRM");
         $confirmEl.on("click.comment", () => {
             $confirmEl.off("click.comment");
-            this.annotation.destroy();
+            this.annotation.teardown();
         });
         $(e.target).replaceWith($confirmEl);
     }
 
     // Teardown CommentList UI, unbind events
     teardown () {
-        super.teardown();
         if(this.$el) {
             this.$el
-                .off("click.comment", ".vac-close-comment-list")
-                .off("click.comment", ".vac-reply-btn")
-                .off("click.comment", ".vac-delete-annotation")
-                .off("click.comment", ".vac-delete-comment")
-                .off("mousewheel.comment DOMMouseScroll.comment", ".vac-comments-wrap");
+                .off("click.vac-comment", ".vac-close-comment-list")
+                .off("click.vac-comment", ".vac-reply-btn")
+                .off("click.vac-comment", ".vac-delete-annotation")
+                .off("click.vac-comment", ".vac-delete-comment")
+                .off("mousewheel.vac-comment DOMMouseScroll.vac-comment", ".vac-comments-wrap");
         }
         if(this.$newCommentForm){
             this.$newCommentForm
-                .off("click.comment", ".vac-add-controls a, .vac-video-write-new.vac-comment a")
-                .off("click.comment", ".vac-video-write-new.vac-comment button");
+                .off("click.vac-comment", ".vac-add-controls a, .vac-video-write-new.vac-comment a")
+                .off("click.vac-comment", ".vac-video-write-new.vac-comment button");
         }
+        this.comments.forEach((c) => c.teardown());
+        super.teardown();
     }
 }
 

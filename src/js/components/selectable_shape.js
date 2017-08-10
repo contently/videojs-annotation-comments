@@ -18,7 +18,7 @@ class SelectableShape extends AnnotationShape {
     // Bind all needed events for drag action
     bindEvents () {
         // On mousedown initialize drag
-        this.$parent.on("mousedown.selectableShape", (e) => {
+        this.$parent.on("mousedown.vac-selectable-shape", (e) => {
             // Check a few conditions to see if we should *not* start drag
             if( !($(e.target).hasClass('vac-video-cover-canvas')) ) return; //didn't click on overlay
             if( $(e.target).hasClass('vac-shape') ) return; //user clicked on annotation
@@ -45,7 +45,7 @@ class SelectableShape extends AnnotationShape {
             this.dragMoved = false; // used to determine if user actually dragged or just clicked
 
             // Bind event on doc mousemove to track drag, throttled to once each 250ms
-            $(document).on("mousemove.selectableShape", Utils.throttle(this.onDrag.bind(this), 250) );
+            $(document).on("mousemove.vac-selectable-shape", Utils.throttle(this.onDrag.bind(this), 250) );
 
             // Add drag class to cursor tooltip if available
             if(!this.plugin.options.showControls) {
@@ -54,10 +54,10 @@ class SelectableShape extends AnnotationShape {
         });
 
         // On mouseup, if during drag cancel drag event listeners
-        $(document).on("mouseup.selectableShape", (e) => {
+        $(document).on("mouseup.vac-selectable-shape", (e) => {
             if(!this.dragging) return;
 
-            $(document).off("mousemove.selectableShape");
+            $(document).off("mousemove.vac-selectable-shape");
 
             if(!this.dragMoved){
                 //clear shape if it's just a click (and not a drag)
@@ -116,8 +116,8 @@ class SelectableShape extends AnnotationShape {
 
     // Unbind events and remove element
     teardown () {
-        this.$parent.off("mousedown.selectableShape");
-        $(document).off("mouseup.selectableShape");
+        this.$parent.off('mousedown.vac-selectable-shape');
+        $(document).off('mouseup.vac-selectable-shape');
         super.teardown();
     }
 }

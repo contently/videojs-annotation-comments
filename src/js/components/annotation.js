@@ -53,7 +53,7 @@ class Annotation extends PlayerUIComponent {
     }
 
     bindEvents () {
-        this.marker.$el.click((e) => this.plugin.annotationState.openAnnotation(this, true) );;
+        this.marker.$el.on('click.vac-marker', (e) => this.plugin.annotationState.openAnnotation(this, true));
     }
 
     // Opens the annotation. Handles marker, commentList, shape, Annotation state, and player state
@@ -74,7 +74,7 @@ class Annotation extends PlayerUIComponent {
 
         this.annotationShape.draw();
         if(this.shape) {
-            this.annotationShape.$el.on("click.annotation", () => {
+            this.annotationShape.$el.on("click.vac-annotation", () => {
                 this.plugin.annotationState.openAnnotation(this, false, false, false);
             });
         }
@@ -92,10 +92,9 @@ class Annotation extends PlayerUIComponent {
     close (clearActive=true) {
         if(!this.isOpen) return;
         this.isOpen = false;
-
         this.marker.deactivate();
         this.commentList.teardown();
-        if(this.annotationShape.$el) this.annotationShape.$el.off("click.annotation");
+        if(this.annotationShape.$el) this.annotationShape.$el.off("click.vac-annotation");
         this.annotationShape.teardown();
         if(clearActive) this.plugin.annotationState.clearActive();
         this.plugin.fire('annotationClosed', this.data);
@@ -119,10 +118,12 @@ class Annotation extends PlayerUIComponent {
     }
 
     // Tearsdown annotation and marker, removes object from AnnotationState
-    destroy () {
+    teardown (removeFromCollection=true) {
         this.close(true);
-        this.plugin.annotationState.removeAnnotation(this);
         this.marker.teardown();
+        if(removeFromCollection) this.plugin.annotationState.removeAnnotation(this);
+        if(this.annotationShape) this.annotationShape.teardown();
+        if(this.commentList) this.commentList.teardown();
     }
 
     // Build a new annotation instance by passing in data for range, shape, comment, & plugin ref

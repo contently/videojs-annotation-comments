@@ -39,12 +39,23 @@ class EventDispatcher {
         this.registeredListeners.push(type);
     }
 
+    // Unbind a listener from the plugin
+    unregisterListener (type) {
+        this.plugin.off(type);
+        let i = this.registeredListeners.indexOf(type);
+        this.registeredListeners.splice(i, 1);
+    }
+
     // Trigger an event on the plugin
     fire (type, data) {
         Logger.log("evt-dispatch-FIRE", type, data);
         if(type === "pluginReady") this.pluginReady = true;
         let evt = new CustomEvent(type, { 'detail': data });
         this.plugin.trigger(evt);
+    }
+
+    teardown () {
+        this.registeredListeners.forEach((type) => { this.unregisterListener(type) });
     }
 }
 
@@ -73,7 +84,8 @@ const EventRegistry = {
         },
         destroyAnnotation: (event, _this) => {
             Logger.log("evt-dispatch-RECEIVE", "destroyAnnotation (AnnotationState)", event);
-            _this.destroyAnnotationById(event.detail.id);        }
+            _this.destroyAnnotationById(event.detail.id);
+        }
     },
     Controls: {
         addingAnnotation: (event, _this) => {
