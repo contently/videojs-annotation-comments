@@ -23,7 +23,7 @@
 
     class Main extends Plugin {
 
-        constructor (player, options){
+        constructor (player, options) {
             options = Object.assign(Utils.cloneObject(DEFAULT_OPTIONS), options);
             super(player, options);
 
@@ -131,10 +131,13 @@
 
         // teardown all components, remove all listeners, and remove elements from DOM
         dispose () {
-            this.annotationState.teardown();
-            this.controls.teardown();
-            this.eventDispatcher.teardown();
+            this.annotationState = this.annotationState.teardown();
+            this.controls = this.controls.teardown();
+            this.eventDispatcher = this.eventDispatcher.teardown();
             this.teardown();
+            player.annotationComments = null;
+            $(player.el()).removeClass('vac-active');
+            $(player.el()).find("[class^='vac-']").remove();
             super.dispose();
         }
 

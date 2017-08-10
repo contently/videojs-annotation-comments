@@ -8298,10 +8298,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
         }, {
             key: 'dispose',
             value: function dispose() {
-                this.annotationState.teardown();
-                this.controls.teardown();
-                this.eventDispatcher.teardown();
+                this.annotationState = this.annotationState.teardown();
+                this.controls = this.controls.teardown();
+                this.eventDispatcher = this.eventDispatcher.teardown();
                 this.teardown();
+                player.annotationComments = null;
+                $(player.el()).removeClass('vac-active');
+                $(player.el()).find("[class^='vac-']").remove();
                 _get(Main.prototype.__proto__ || Object.getPrototypeOf(Main.prototype), 'dispose', this).call(this);
             }
         }, {
