@@ -168,6 +168,8 @@ class Controls extends PlayerUIComponent {
             tooltipArea = Utils.areaOfHiddenEl($tooltip, self.$UI.coverCanvas, self.UI_CLASSES.hidden);
 
         $(document).on('mousemove.vac-cursor-tool-tip', Utils.throttle((event) => {
+            if(!this.plugin.bounds) return;
+
             let x = event.pageX,
                 y = event.pageY,
                 outOfBounds =

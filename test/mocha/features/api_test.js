@@ -9,7 +9,7 @@ describe('external event-based API', () => {
             it('activates an annotation when triggered', (done) => {
                 plugin = simplePluginSetup();
 
-                player.on('loadedmetadata', () => {
+                plugin.on('pluginReady', () => {
                     player.play().then(() => {
                         toggleAnnotationMode();
                         let openId = plugin.annotationState.annotations[0].id;
@@ -27,7 +27,7 @@ describe('external event-based API', () => {
             it('closes the active annotation', (done) => {
                 plugin = simplePluginSetup();
 
-                player.on('loadedmetadata', () => {
+                plugin.on('pluginReady', () => {
                     player.play().then(() => {
                         toggleAnnotationMode();
                         $('.vac-marker').first().click();
@@ -48,7 +48,7 @@ describe('external event-based API', () => {
             it('activates an annotation when triggered', (done) => {
                 plugin = simplePluginSetup();
 
-                player.on('loadedmetadata', () => {
+                plugin.on('pluginReady', () => {
                     player.play().then(() => {
                         let startingLength = plugin.annotationState.annotations.length
                         plugin.fire('newAnnotation', { id: 1, range: { start: 20, end: null }, commentStr: "yeoooop" });
@@ -73,7 +73,7 @@ describe('external event-based API', () => {
             it('removes an annotation when triggered', (done) => {
                 plugin = simplePluginSetup();
 
-                player.on('loadedmetadata', () => {
+                plugin.on('pluginReady', () => {
                     player.play().then(() => {
                         toggleAnnotationMode();
                         let startingLength = plugin.annotationState.annotations.length
@@ -93,7 +93,7 @@ describe('external event-based API', () => {
             it('enters the adding mode for Controls', (done) => {
                 plugin = simplePluginSetup();
 
-                player.on('loadedmetadata', () => {
+                plugin.on('pluginReady', () => {
                     player.play().then(() => {
                         expect(plugin.controls.uiState.adding).to.equal(false);
                         plugin.fire('addingAnnotation');
@@ -110,7 +110,7 @@ describe('external event-based API', () => {
             it('cancels the adding mode for Controls', (done) => {
                 plugin = simplePluginSetup();
 
-                player.on('loadedmetadata', () => {
+                plugin.on('pluginReady', () => {
                     player.play().then(() => {
                         plugin.controls.startAddNew();
                         expect(plugin.controls.uiState.adding).to.equal(true);
@@ -132,13 +132,14 @@ describe('external event-based API', () => {
                 plugin = simplePluginSetup();
 
                 plugin.on('onStateChanged', (event) => {
-                    console.log(event.detail);
                     expect(event.detail[0].id).to.equal(2);
                     done();
                 });
 
-                let firstAnnotation = plugin.annotationState.annotations[0];
-                    plugin.annotationState.removeAnnotation(firstAnnotation);
+                plugin.on('pluginReady', () => {
+                    let firstAnnotation = plugin.annotationState.annotations[0];
+                        plugin.annotationState.removeAnnotation(firstAnnotation);
+                });
 
             });
         });
@@ -154,7 +155,7 @@ describe('external event-based API', () => {
                     done();
                 });
 
-                player.on('loadedmetadata', () => {
+                plugin.on('pluginReady', () => {
                     player.play().then(() => {
                         plugin.annotationState.openAnnotationById(2);
                         $('a.vac-delete-annotation').click();
@@ -182,7 +183,7 @@ describe('external event-based API', () => {
                     done();
                 });
 
-                player.on('loadedmetadata', () => {
+                plugin.on('pluginReady', () => {
                     player.play().then(() => {
                         toggleAnnotationMode();
                         // Marker click triggers annotationOpened
@@ -205,7 +206,7 @@ describe('external event-based API', () => {
                     done();
                 });
 
-                player.on('loadedmetadata', () => {
+                plugin.on('pluginReady', () => {
                     player.play().then(() => {
                         toggleAnnotationMode();
                         //scrub timeline to where annotation is
@@ -227,7 +228,7 @@ describe('external event-based API', () => {
                     done();
                 });
 
-                player.on('loadedmetadata', () => {
+                plugin.on('pluginReady', () => {
                     player.play().then(() => {
                         toggleAnnotationMode();
                         addingAnnotation();
@@ -260,7 +261,7 @@ describe('external event-based API', () => {
                     done();
                 });
 
-                player.on('loadedmetadata', () => {
+                plugin.on('pluginReady', () => {
                     player.play().then(() => {
                         toggleAnnotationMode();
                         addingAnnotation();
@@ -287,7 +288,7 @@ describe('external event-based API', () => {
                     done();
                 });
 
-                player.on('loadedmetadata', () => {
+                plugin.on('pluginReady', () => {
                     player.play().then(() => {
                         toggleAnnotationMode();
                         addingAnnotation();
@@ -316,7 +317,7 @@ describe('external event-based API', () => {
                     done();
                 });
 
-                player.on('loadedmetadata', () => {
+                plugin.on('pluginReady', () => {
                     player.play().then(() => {
                         toggleAnnotationMode();
                         addingAnnotation();

@@ -16,30 +16,26 @@
 // Initialize VideoJS
 var player = videojs('video-id');
 
-// Add plugin after video meta data is finished
-// Options here are set to defaults
-player.on('loadedmetadata', function() {
-    player.annotationComments({
-        // Collection of annotation data to initialize
-        annotationObjects: [],
-        // Use arrow keys to move through annotations when Annotation mode is active
-        bindArrowKeys: true,
-        // Flexible meta data object. Currently used for user data
-        meta: { user_id: null, user_name: null },
-        // Show or hide the control panel and annotation toggle button
-        showControls: true,
-        // Show or hide the comment list when an annotation is active
-        // If false, the text 'Click and drag to select', will follow the cursor during annotation mode
-        showCommentList: true,
-        // If false, annotations mode will be disabled in fullscreen
-        showFullScreen: true,
-        // Show or hide the tool tips on marker hover
-        showMarkerTooltips: true,
-        // If false, step two of adding annotations (writing and saving the comment) will be disabled
-        internalCommenting: true,
-        // If true, toggle the player to annotation mode right after init
-        startInAnnotationMode: false
-    });
+player.annotationComments({
+    // Collection of annotation data to initialize
+    annotationObjects: [],
+    // Use arrow keys to move through annotations when Annotation mode is active
+    bindArrowKeys: true,
+    // Flexible meta data object. Currently used for user data
+    meta: { user_id: null, user_name: null },
+    // Show or hide the control panel and annotation toggle button
+    showControls: true,
+    // Show or hide the comment list when an annotation is active
+    // If false, the text 'Click and drag to select', will follow the cursor during annotation mode
+    showCommentList: true,
+    // If false, annotations mode will be disabled in fullscreen
+    showFullScreen: true,
+    // Show or hide the tool tips on marker hover
+    showMarkerTooltips: true,
+    // If false, step two of adding annotations (writing and saving the comment) will be disabled
+    internalCommenting: true,
+    // If true, toggle the player to annotation mode right after init
+    startInAnnotationMode: false
 });
 ```
 
@@ -48,6 +44,7 @@ player.on('loadedmetadata', function() {
 If you'd like to drive the plugin or render plugin data through external UI elements, you can configure the plugin to hide the internal components and pass data through custom events. There are two kinds of AnnotationComments API events, _externally fired_ and _internally fired_.
 
 ##### Supported Externally Fired Events:
+*NOTE* - you need to wait until `plugin.on('puginReady')` event is triggered to fire events to the plugin. Any events fired _before_ the plugin is ready will be ignored.
 
 ```javascript
 // openAnnotation : Opens an annotation within the player given an ID
@@ -85,6 +82,12 @@ plugin.fire('toggleAnnotations');
 ##### Supported Internally Fired Events:
 
 ```javascript
+// pluginReady : Plugin has been initialized and is ready to receive  events
+// NOTE - you should wait for this event before sending any events into the plugin - all events before this one fires will be ignored!
+plugin.on('pluginReady', (event) = {
+    // do something
+});
+
 // annotationOpened : Fired whenever an annotation is opened
 plugin.on('annotationOpened', (event) => {
     // event.detail =

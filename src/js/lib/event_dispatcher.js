@@ -10,6 +10,8 @@ class EventDispatcher {
 
     constructor (plugin) {
         this.plugin = plugin;
+        this.pluginReady = false;
+        this.pendingEvts = [];
         this.registeredListeners = [];
         this.eventRegistry = EventRegistry;
     }
@@ -22,9 +24,10 @@ class EventDispatcher {
                 // Don't register again if already in cached collection
                 if (!~this.registeredListeners.indexOf(key)) {
                     let callback = matchingEvents[key].bind(obj);
-                    this.registerListener(key, (evt) => {
+                    this.registerListener(key, ((evt) => {
+                        if(!this.pluginReady) return;
                         callback(evt, obj);
-                    });
+                    }).bind(this));
                 }
             });
         }
@@ -39,6 +42,7 @@ class EventDispatcher {
     // Trigger an event on the plugin
     fire (type, data) {
         Logger.log("evt-dispatch-FIRE", type, data);
+        if(type === "pluginReady") this.pluginReady = true;
         let evt = new CustomEvent(type, { 'detail': data });
         this.plugin.trigger(evt);
     }

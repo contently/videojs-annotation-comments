@@ -6930,6 +6930,8 @@ var Controls = function (_PlayerUIComponent) {
                 tooltipArea = Utils.areaOfHiddenEl($tooltip, self.$UI.coverCanvas, self.UI_CLASSES.hidden);
 
             $(document).on('mousemove.vac-cursor-tool-tip', Utils.throttle(function (event) {
+                if (!_this3.plugin.bounds) return;
+
                 var x = event.pageX,
                     y = event.pageY,
                     outOfBounds = x < _this3.plugin.bounds.left || x > _this3.plugin.bounds.right || y < _this3.plugin.bounds.top || y > _this3.plugin.bounds.bottom,
@@ -7518,6 +7520,8 @@ var EventDispatcher = function () {
         _classCallCheck(this, EventDispatcher);
 
         this.plugin = plugin;
+        this.pluginReady = false;
+        this.pendingEvts = [];
         this.registeredListeners = [];
         this.eventRegistry = EventRegistry;
     }
@@ -7537,8 +7541,9 @@ var EventDispatcher = function () {
                     if (!~_this2.registeredListeners.indexOf(key)) {
                         var callback = matchingEvents[key].bind(obj);
                         _this2.registerListener(key, function (evt) {
+                            if (!_this2.pluginReady) return;
                             callback(evt, obj);
-                        });
+                        }.bind(_this2));
                     }
                 });
             }
@@ -7559,6 +7564,7 @@ var EventDispatcher = function () {
         key: "fire",
         value: function fire(type, data) {
             Logger.log("evt-dispatch-FIRE", type, data);
+            if (type === "pluginReady") this.pluginReady = true;
             var evt = new CustomEvent(type, { 'detail': data });
             this.plugin.trigger(evt);
         }
@@ -8097,56 +8103,72 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
             var _this = _possibleConstructorReturn(this, (Main.__proto__ || Object.getPrototypeOf(Main)).call(this, player, options));
 
+            _this.eventDispatcher = new EventDispatcher(_this);
+            _this.eventDispatcher.registerListenersFor(_this, 'Main');
+
             _this.playerId = $(player.el()).attr('id');
             _this.player = player;
             _this.meta = options.meta;
             _this.options = options;
-
-            _this.eventDispatcher = new EventDispatcher(_this);
-            _this.eventDispatcher.registerListenersFor(_this, 'Main');
 
             // assign reference to this class to player for access later by components where needed
             player.annotationComments = function () {
                 return _this;
             }.bind(_this);
 
-            // remove annotation features on fullscreen if showFullScreen: false
-            if (!_this.options.showFullScreen) {
-                player.on('fullscreenchange', function () {
-                    if (player.isFullscreen_) {
-                        _this.preFullscreenAnnotationsEnabled = _this.active;
-                        $(player.el()).addClass('vac-disable-fullscreen');
-                    } else {
-                        $(player.el()).removeClass('vac-disable-fullscreen');
-                    }
-                    if (_this.preFullscreenAnnotationsEnabled) {
-                        // if we were previously in annotation mode (pre-fullscreen) or entering fullscreeen and are 
-                        // in annotation mode, toggle the mode
-                        _this.toggleAnnotationMode();
-                    }
-                }.bind(_this));
+            // assert that components are initialized AFTER metadata is loaded so we metadata/duration
+
+            // NOTE - this check is required because player loadedmetadata doesn't always fire if readystate is > 2
+            if (player.readyState() >= 2) {
+                _this.postMetadataConstructor();
+            } else {
+                player.on('loadedmetadata', _this.postMetadataConstructor.bind(_this));
             }
-
-            // setup initial state and draw UI
-            _this.annotationState = new AnnotationState(_this.playerId);
-            _this.annotationState.annotations = options.annotationsObjects;
-
-            _this.controls = new Controls(_this.playerId, _this.options.bindArrowKeys);
-            _this.bindEvents();
-            _this.setBounds(false);
-            if (options.startInAnnotationMode) _this.toggleAnnotationMode();
             return _this;
         }
 
-        // Bind needed events for interaction w/ components
-
-
         _createClass(Main, [{
+            key: 'postMetadataConstructor',
+            value: function postMetadataConstructor() {
+                // setup initial state and draw UI
+                this.annotationState = new AnnotationState(this.playerId);
+                this.annotationState.annotations = this.options.annotationsObjects;
+
+                this.controls = new Controls(this.playerId, this.options.bindArrowKeys);
+                this.bindEvents();
+                this.setBounds(false);
+                if (this.options.startInAnnotationMode) this.toggleAnnotationMode();
+
+                this.fire('pluginReady');
+            }
+
+            // Bind needed events for interaction w/ components
+
+        }, {
             key: 'bindEvents',
             value: function bindEvents() {
+                var _this2 = this;
+
                 // set player boundaries on window size change or fullscreen change
                 $(window).on('resize.vac-window-resize', Utils.throttle(this.setBounds.bind(this), 500));
                 this.player.on('fullscreenchange', Utils.throttle(this.setBounds.bind(this), 500));
+
+                // remove annotation features on fullscreen if showFullScreen: false
+                if (!this.options.showFullScreen) {
+                    this.player.on('fullscreenchange', function () {
+                        if (_this2.player.isFullscreen_) {
+                            _this2.preFullscreenAnnotationsEnabled = _this2.active;
+                            $(_this2.player.el()).addClass('vac-disable-fullscreen');
+                        } else {
+                            $(_this2.player.el()).removeClass('vac-disable-fullscreen');
+                        }
+                        if (_this2.preFullscreenAnnotationsEnabled) {
+                            // if we were previously in annotation mode (pre-fullscreen) or entering fullscreeen and are 
+                            // in annotation mode, toggle the mode
+                            _this2.toggleAnnotationMode();
+                        }
+                    }.bind(this));
+                }
             }
 
             // A wrapper func to make it easier to use EventDispatcher from the client

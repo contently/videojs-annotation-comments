@@ -23,29 +23,58 @@
 
     class Main extends Plugin {
 
-        constructor(player, options) {
+        constructor (player, options){
             options = Object.assign(Utils.cloneObject(DEFAULT_OPTIONS), options);
             super(player, options);
+
+            this.eventDispatcher = new EventDispatcher(this);
+            this.eventDispatcher.registerListenersFor(this, 'Main');
 
             this.playerId = $(player.el()).attr('id');
             this.player = player;
             this.meta = options.meta;
             this.options = options;
 
-            this.eventDispatcher = new EventDispatcher(this);
-            this.eventDispatcher.registerListenersFor(this, 'Main');
-
             // assign reference to this class to player for access later by components where needed
             player.annotationComments = (() => { return this }).bind(this);
 
+            // assert that components are initialized AFTER metadata is loaded so we metadata/duration
+
+            // NOTE - this check is required because player loadedmetadata doesn't always fire if readystate is > 2
+            if(player.readyState() >= 2){
+                this.postMetadataConstructor();
+            }else{
+                player.on('loadedmetadata', this.postMetadataConstructor.bind(this));
+            }
+        }
+
+        postMetadataConstructor () {
+            // setup initial state and draw UI
+            this.annotationState = new AnnotationState(this.playerId);
+            this.annotationState.annotations = this.options.annotationsObjects;
+
+            this.controls = new Controls(this.playerId, this.options.bindArrowKeys);
+            this.bindEvents();
+            this.setBounds(false);
+            if(this.options.startInAnnotationMode) this.toggleAnnotationMode();
+
+            this.fire('pluginReady');
+        }
+
+        // Bind needed events for interaction w/ components
+        bindEvents () {
+            // set player boundaries on window size change or fullscreen change
+            $(window).on('resize.vac-window-resize', Utils.throttle(this.setBounds.bind(this), 500));
+            this.player.on('fullscreenchange', Utils.throttle(this.setBounds.bind(this), 500));
+
             // remove annotation features on fullscreen if showFullScreen: false
             if (!this.options.showFullScreen) {
-                player.on('fullscreenchange', (() => {
-                    if (player.isFullscreen_) {
+                this.player.on('fullscreenchange', (() => {
+                    if (this.player.isFullscreen_) {
                         this.preFullscreenAnnotationsEnabled = this.active;
-                        $(player.el()).addClass('vac-disable-fullscreen');
+                        $(this.player.el()).addClass('vac-disable-fullscreen');
                     } else {
-                        $(player.el()).removeClass('vac-disable-fullscreen');
+                        $(this.player.el()).removeClass('vac-disable-fullscreen');
                     }
                     if(this.preFullscreenAnnotationsEnabled){
                         // if we were previously in annotation mode (pre-fullscreen) or entering fullscreeen and are 
@@ -54,22 +83,6 @@
                     }
                 }).bind(this));
             }
-
-            // setup initial state and draw UI
-            this.annotationState = new AnnotationState(this.playerId);
-            this.annotationState.annotations = options.annotationsObjects;
-
-            this.controls = new Controls(this.playerId, this.options.bindArrowKeys);
-            this.bindEvents();
-            this.setBounds(false);
-            if(options.startInAnnotationMode) this.toggleAnnotationMode();
-        }
-
-        // Bind needed events for interaction w/ components
-        bindEvents () {
-            // set player boundaries on window size change or fullscreen change
-            $(window).on('resize.vac-window-resize', Utils.throttle(this.setBounds.bind(this), 500));
-            this.player.on('fullscreenchange', Utils.throttle(this.setBounds.bind(this), 500));
         }
 
         // A wrapper func to make it easier to use EventDispatcher from the client
