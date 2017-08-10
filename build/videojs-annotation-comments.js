@@ -6700,9 +6700,9 @@ var CommentList = function (_PlayerUIComponent) {
             if (this.$newCommentForm) {
                 this.$newCommentForm.off("click.vac-comment", ".vac-add-controls a, .vac-video-write-new.vac-comment a").off("click.vac-comment", ".vac-video-write-new.vac-comment button");
             }
-            this.comments.forEach(function (c) {
-                return c.teardown();
-            });
+            while (this.comments.length) {
+                this.comments.pop().teardown();
+            }
             _get(CommentList.prototype.__proto__ || Object.getPrototypeOf(CommentList.prototype), "teardown", this).call(this);
         }
     }, {
@@ -7056,11 +7056,11 @@ var DraggableMarker = function (_Marker) {
             var _this2 = this;
 
             // On mouse down init drag
-            this.$el.mousedown(function (e) {
+            this.$el.on('mousedown.vac-marker', function (e) {
                 e.preventDefault();
                 _this2.dragging = true;
                 // When mouse moves (with mouse down) call onDrag, throttling to once each 250 ms
-                $(document).on("mousemove.draggableMarker", Utils.throttle(_this2.onDrag.bind(_this2), 250));
+                $(document).on("mousemove.vac-marker", Utils.throttle(_this2.onDrag.bind(_this2), 250));
 
                 // Add drag class to cursor tooltip if available
                 if (!_this2.plugin.options.showControls) {
@@ -7069,9 +7069,9 @@ var DraggableMarker = function (_Marker) {
             });
 
             // On mouse up end drag action and unbind mousemove event
-            $(document).on("mouseup.draggableMarker", function (e) {
+            $(document).on("mouseup.vac-marker", function (e) {
                 if (!_this2.dragging) return;
-                $(document).off("mousemove.draggableMarker");
+                $(document).off("mousemove.vac-marker");
                 _this2.dragging = false;
 
                 // Remove drag class and hover class from cursor tooltip if available
@@ -7135,11 +7135,11 @@ var DraggableMarker = function (_Marker) {
         key: "teardown",
         value: function teardown() {
             _get(DraggableMarker.prototype.__proto__ || Object.getPrototypeOf(DraggableMarker.prototype), "teardown", this).call(this);
-            $(document).off('mousemove.draggableMarker');
-            $(document).off('mouseup.draggableMarker');
+            $(document).off('mousemove.vac-marker');
+            $(document).off('mouseup.vac-marker');
             this.$el.off('mouseenter.vac-cursor-tool-tip');
             this.$el.off('mouseleave.vac-cursor-tool-tip');
-            this.$el.off('mousedown');
+            this.$el.off('mousedown.vac-marker');
         }
 
         // Move the video & marker start by some num seconds (pos or neg)

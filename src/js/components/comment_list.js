@@ -174,7 +174,9 @@ class CommentList extends PlayerUIComponent {
                 .off("click.vac-comment", ".vac-add-controls a, .vac-video-write-new.vac-comment a")
                 .off("click.vac-comment", ".vac-video-write-new.vac-comment button");
         }
-        this.comments.forEach((c) => c.teardown());
+        while(this.comments.length) {
+            this.comments.pop().teardown();
+        }
         super.teardown();
     }
 }
