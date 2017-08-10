@@ -131,8 +131,8 @@
 
         // teardown all components, remove all listeners, and remove elements from DOM
         dispose () {
-            this.annotationState = this.annotationState.teardown();
             this.controls = this.controls.teardown();
+            this.annotationState = this.annotationState.teardown();
             this.eventDispatcher = this.eventDispatcher.teardown();
             this.teardown();
             player.annotationComments = null;

@@ -8297,8 +8297,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
         }, {
             key: 'dispose',
             value: function dispose() {
-                this.annotationState = this.annotationState.teardown();
                 this.controls = this.controls.teardown();
+                this.annotationState = this.annotationState.teardown();
                 this.eventDispatcher = this.eventDispatcher.teardown();
                 this.teardown();
                 player.annotationComments = null;
