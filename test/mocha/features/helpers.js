@@ -9,6 +9,7 @@ const addingAnnotation     = () => $('.vac-controls .vac-button').click();
 var player, plugin;
 
 const resetVJS = () => {
+    if(plugin) plugin.dispose();
     if(player) player.dispose();
     player = null;
     plugin = null;
