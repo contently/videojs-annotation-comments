@@ -57,9 +57,9 @@ class Annotation extends PlayerUIComponent {
     }
 
     // Opens the annotation. Handles marker, commentList, shape, Annotation state, and player state
-    open (withPause=true, previewOnly=false) {
+    open (withPause=true, previewOnly=false, forceSnapToStart=false) {
         this.isOpen = true;
-        const snapToStart = !Utils.isWithinRange(
+        const snapToStart = forceSnapToStart || !Utils.isWithinRange(
             this.range.start,
             this.range.end,
             Math.floor(this.currentTime)

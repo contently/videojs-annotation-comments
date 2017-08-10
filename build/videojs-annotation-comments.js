@@ -5862,13 +5862,15 @@ var Annotation = function (_PlayerUIComponent) {
     }, {
         key: "open",
         value: function open() {
+            var withPause = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
             var _this3 = this;
 
-            var withPause = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
             var previewOnly = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+            var forceSnapToStart = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
             this.isOpen = true;
-            var snapToStart = !Utils.isWithinRange(this.range.start, this.range.end, Math.floor(this.currentTime));
+            var snapToStart = forceSnapToStart || !Utils.isWithinRange(this.range.start, this.range.end, Math.floor(this.currentTime));
 
             if (previewOnly || !this.plugin.options.showCommentList) {
                 this.marker.setActive(true);
@@ -6108,7 +6110,7 @@ var AnnotationState = function (_PlayerComponent) {
         key: "addNewAnnotation",
         value: function addNewAnnotation(annotation) {
             this._annotations.push(annotation);
-            this.openAnnotation(annotation, true);
+            this.openAnnotation(annotation, true, true, false, true);
             this.stateChanged();
         }
 
@@ -6218,11 +6220,12 @@ var AnnotationState = function (_PlayerComponent) {
             var skipLiveCheck = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
             var pause = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
             var previewOnly = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+            var forceSnapToStart = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
 
             if (!this.plugin.active) this.plugin.toggleAnnotationMode();
             this.skipLiveCheck = skipLiveCheck;
             this.clearActive();
-            annotation.open(pause, previewOnly);
+            annotation.open(pause, previewOnly, forceSnapToStart);
             this.activeAnnotation = annotation;
             this.lastVideoTime = this.activeAnnotation.range.start;
         }
