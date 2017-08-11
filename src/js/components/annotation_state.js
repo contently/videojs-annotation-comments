@@ -71,7 +71,7 @@ class AnnotationState extends PlayerComponent {
     // Add a new annotation
     addNewAnnotation (annotation) {
         this._annotations.push(annotation);
-        this.openAnnotation(annotation, true);
+        this.openAnnotation(annotation, true, true, false, true);
         this.stateChanged();
     }
 
@@ -155,11 +155,11 @@ class AnnotationState extends PlayerComponent {
 
     // Open annotation with options to pause and show preview
     // skipLiveCheck will short circuit setLiveAnnotation()
-    openAnnotation (annotation, skipLiveCheck=false, pause=true, previewOnly=false) {
+    openAnnotation (annotation, skipLiveCheck=false, pause=true, previewOnly=false, forceSnapToStart=false) {
         if(!this.plugin.active) this.plugin.toggleAnnotationMode();
         this.skipLiveCheck = skipLiveCheck;
         this.clearActive();
-        annotation.open(pause, previewOnly);
+        annotation.open(pause, previewOnly, forceSnapToStart);
         this.activeAnnotation = annotation;
         this.lastVideoTime = this.activeAnnotation.range.start;
     }
