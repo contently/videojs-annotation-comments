@@ -8304,15 +8304,17 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                 this.annotationState = this.annotationState.teardown();
                 this.eventDispatcher = this.eventDispatcher.teardown();
                 this.teardown();
-                player.annotationComments = null;
-                $(player.el()).removeClass('vac-active');
-                $(player.el()).find("[class^='vac-']").remove();
+                if (this.player) {
+                    this.player.annotationComments = null;
+                    $(this.player.el()).removeClass('vac-active');
+                    $(this.player.el()).find("[class^='vac-']").remove();
+                }
                 _get(Main.prototype.__proto__ || Object.getPrototypeOf(Main.prototype), 'dispose', this).call(this);
             }
         }, {
             key: 'teardown',
             value: function teardown() {
-                this.player.off('fullscreenchange');
+                if (this.player) this.player.off('fullscreenchange');
                 $(window).off('resize.vac-window-resize');
             }
         }]);
