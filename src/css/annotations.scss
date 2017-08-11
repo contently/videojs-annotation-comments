@@ -39,6 +39,13 @@ $ui-class-play-disabled: ".vac-disable-play";
 				fill: $primaryColor !important;
 			}
 		}
+
+		// Only display annotation shapes when controlbar is shown (vjs has started)
+		&.vjs-has-started {
+			.vac-shape {
+				display: block;
+			}
+		}
 	}
 
 	// Applied during adding annotations state
@@ -204,6 +211,7 @@ $ui-class-play-disabled: ".vac-disable-play";
 		z-index: 1;
 		background-color: rgba($activeColor, 0.65);
 		border: 2px dotted $activeColor;
+		display: none;
 	}
 
 	// Control elements ('Add new box', etc)

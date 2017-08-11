@@ -10,6 +10,9 @@
 .video-js.vac-active .vac-player-btn i.vac-player-icon svg {
   fill: #00A6C2 !important; }
 
+.video-js.vac-active.vjs-has-started .vac-shape {
+  display: block; }
+
 .video-js.vac-disable-play .vjs-control {
   cursor: default; }
 
@@ -140,7 +143,8 @@
   position: absolute;
   z-index: 1;
   background-color: rgba(238, 152, 40, 0.65);
-  border: 2px dotted #ee9828; }
+  border: 2px dotted #ee9828;
+  display: none; }
 
 .video-js .vac-controls, .video-js .vac-add-controls {
   z-index: 3;
