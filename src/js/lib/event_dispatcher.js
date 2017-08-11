@@ -48,8 +48,8 @@ class EventDispatcher {
 
     // Trigger an event on the plugin
     fire (type, data) {
+        if(!this.pluginReady) return;
         Logger.log("evt-dispatch-FIRE", type, data);
-        if(type === "pluginReady") this.pluginReady = true;
         let evt = new CustomEvent(type, { 'detail': data });
         this.plugin.trigger(evt);
     }

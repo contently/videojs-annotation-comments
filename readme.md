@@ -85,11 +85,19 @@ const annotationsObjects = [
 
 If you'd like to drive the plugin or render plugin data through external UI elements, you can configure the plugin to hide the internal components and pass data through custom events. There are two kinds of AnnotationComments API events, _externally fired_ and _internally fired_.
 
+##### Waiting for Plugin Ready
+
+Before triggering any events on the plugin, you must wait for it to be ready. You can use the `onReady` function on the plugin:
+
+```javascript
+plugin.onReady(() => {
+    // do stuff with the plugin, such as fire events or setup listeners
+}));
+```
+
 ##### Supported Externally Fired Events:
 
 These events are external actions that can be called from your scripts to trigger events within the plugin:
-
-*NOTE* - you need to wait until `plugin.on('puginReady')` event is triggered to fire events to the plugin. Any events fired _before_ the plugin is ready will be ignored.
 
 ```javascript
 // openAnnotation : Opens an annotation within the player given an ID
@@ -128,12 +136,6 @@ plugin.fire('toggleAnnotations');
 These are events that are triggered from within the running plugin and can be listened for by binding to `plugin.on` within your scripts:
 
 ```javascript
-// pluginReady : Plugin has been initialized and is ready to receive  events
-// NOTE - you should wait for this event before sending any events into the plugin - all events before this one fires will be ignored!
-plugin.on('pluginReady', (event) = {
-    // do something
-});
-
 // annotationOpened : Fired whenever an annotation is opened
 plugin.on('annotationOpened', (event) => {
     // event.detail =

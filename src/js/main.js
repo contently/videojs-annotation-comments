@@ -35,6 +35,8 @@
             this.meta = options.meta;
             this.options = options;
 
+            this._readyCallbacks = [];
+
             // assign reference to this class to player for access later by components where needed
             player.annotationComments = (() => { return this }).bind(this);
 
@@ -58,7 +60,7 @@
             this.setBounds(false);
             if(this.options.startInAnnotationMode) this.toggleAnnotationMode();
 
-            this.fire('pluginReady');
+            this._pluginReady();
         }
 
         // Bind needed events for interaction w/ components
@@ -127,6 +129,22 @@
 
             // fires an event when bounds have changed during resizing
             if(triggerChange) this.fire('playerBoundsChanged', this.bounds);
+        }
+
+        // Public function to register a callback for when plugin is ready
+        onReady (callback) {
+            if(this.eventDispatcher.pluginReady){
+                return callback();
+            }
+            this._readyCallbacks.push(callback);
+        }
+
+        // Internal fn to mark plugin as ready and fire any pending callbacks
+        _pluginReady () {
+            this.eventDispatcher.pluginReady = true;
+            while(this._readyCallbacks.length){
+                this._readyCallbacks.pop()();
+            }
         }
 
         // teardown all components, remove all listeners, and remove elements from DOM

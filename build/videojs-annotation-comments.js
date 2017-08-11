@@ -7619,8 +7619,8 @@ var EventDispatcher = function () {
     }, {
         key: "fire",
         value: function fire(type, data) {
+            if (!this.pluginReady) return;
             Logger.log("evt-dispatch-FIRE", type, data);
-            if (type === "pluginReady") this.pluginReady = true;
             var evt = new CustomEvent(type, { 'detail': data });
             this.plugin.trigger(evt);
         }
@@ -8178,6 +8178,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
             _this.meta = options.meta;
             _this.options = options;
 
+            _this._readyCallbacks = [];
+
             // assign reference to this class to player for access later by components where needed
             player.annotationComments = function () {
                 return _this;
@@ -8206,7 +8208,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                 this.setBounds(false);
                 if (this.options.startInAnnotationMode) this.toggleAnnotationMode();
 
-                this.fire('pluginReady');
+                this._pluginReady();
             }
 
             // Bind needed events for interaction w/ components
@@ -8293,6 +8295,28 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
                 // fires an event when bounds have changed during resizing
                 if (triggerChange) this.fire('playerBoundsChanged', this.bounds);
+            }
+
+            // Public function to register a callback for when plugin is ready
+
+        }, {
+            key: 'onReady',
+            value: function onReady(callback) {
+                if (this.eventDispatcher.pluginReady) {
+                    return callback();
+                }
+                this._readyCallbacks.push(callback);
+            }
+
+            // Internal fn to mark plugin as ready and fire any pending callbacks
+
+        }, {
+            key: '_pluginReady',
+            value: function _pluginReady() {
+                this.eventDispatcher.pluginReady = true;
+                while (this._readyCallbacks.length) {
+                    this._readyCallbacks.pop()();
+                }
             }
 
             // teardown all components, remove all listeners, and remove elements from DOM
