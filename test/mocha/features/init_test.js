@@ -9,7 +9,7 @@ describe('plugin initialization', () => {
         plugin = player.annotationComments({});
         expect(player.activePlugins_.annotationComments).to.equal(true);
 
-        plugin.on('pluginReady', () => {
+        plugin.onReady(() => {
             expect(plugin.annotationState).to.not.be.undefined;
             done();
         });
@@ -20,7 +20,7 @@ describe('plugin initialization', () => {
 
         it('initializes with default configuration', (done) => {
             plugin = player.annotationComments({});
-            plugin.on('pluginReady', () => {
+            plugin.onReady(() => {
                 expect(plugin.options).to.deep.equal({
                     annotationsObjects: [],
                     bindArrowKeys: true,
@@ -42,7 +42,7 @@ describe('plugin initialization', () => {
             it('can be initialized without annnotationObjects', (done) => {
                 plugin = player.annotationComments({ annotationsObjects: [] });
 
-                plugin.on('pluginReady', () => {
+                plugin.onReady(() => {
                     expect(plugin.annotationState.annotations.length).to.equal(0);
                     done();
                 });
@@ -51,7 +51,7 @@ describe('plugin initialization', () => {
             it('can be initialized with annotationObjects', (done) => {
                 plugin = player.annotationComments({ annotationsObjects: annotations });
 
-                plugin.on('pluginReady', () => {
+                plugin.onReady(() => {
                     expect(plugin.annotationState.annotations.length).to.equal(2);
                     done();
                 });
@@ -64,7 +64,7 @@ describe('plugin initialization', () => {
             it('sets the plugin options', (done) => {
                 plugin = player.annotationComments({ bindArrowKeys: false });
 
-                plugin.on('pluginReady', () => {
+                plugin.onReady(() => {
                     expect(plugin.options.bindArrowKeys).to.equal(false);
                     done();
                 });
@@ -77,7 +77,7 @@ describe('plugin initialization', () => {
             it('sets the plugin options with flexible data', (done) => {
                 plugin = player.annotationComments({ meta: { testData: 'hi' } });
 
-                plugin.on('pluginReady', () => {
+                plugin.onReady(() => {
                     expect(plugin.options.meta.testData).to.equal('hi');
                     done();
                 });
@@ -90,7 +90,7 @@ describe('plugin initialization', () => {
             it('has a default of true and shows the control UI', (done) => {
                 plugin = player.annotationComments({});
 
-                plugin.on('pluginReady', () => {
+                plugin.onReady(() => {
                     player.play().then(() => {
                         toggleAnnotationMode();
                         expect($('.vac-controls').length).to.equal(1);
@@ -102,7 +102,7 @@ describe('plugin initialization', () => {
             it('can be set to false to hide the control UI but show cursor help text', (done) => {
                 plugin = player.annotationComments({ showControls: false });
 
-                plugin.on('pluginReady', () => {
+                plugin.onReady(() => {
                     player.play().then(() => {
                         toggleAnnotationMode();
                         expect($('.vac-controls').length).to.equal(0);
@@ -122,7 +122,7 @@ describe('plugin initialization', () => {
             it('has a default of true and shows the comment list UI', (done) => {
                 plugin = player.annotationComments({ annotationsObjects: annotations });
 
-                plugin.on('pluginReady', () => {
+                plugin.onReady(() => {
                     player.play().then(() => {
                         toggleAnnotationMode();
                         $('.vac-marker').first().click();
@@ -138,7 +138,7 @@ describe('plugin initialization', () => {
                     showCommentList: false
                 });
 
-                plugin.on('pluginReady', () => {
+                plugin.onReady(() => {
                     player.play().then(() => {
                         toggleAnnotationMode();
                         $('.vac-marker').click();
@@ -155,7 +155,7 @@ describe('plugin initialization', () => {
             it('player annotations # bubble is not shown if no annotations exist', (done) => {
                 plugin = player.annotationComments();
 
-                plugin.on('pluginReady', () => {
+                plugin.onReady(() => {
                     player.play().then(() => {
                         expect($('.vac-player-btn b:visible').length).to.equal(0);
                         done();
@@ -166,7 +166,7 @@ describe('plugin initialization', () => {
             it('player annotations # bubble is shown if annotations exist', (done) => {
                 plugin = player.annotationComments({ annotationsObjects: annotations });
 
-                plugin.on('pluginReady', () => {
+                plugin.onReady(() => {
                     player.play().then(() => {
                         expect($('.vac-player-btn b:visible').length).to.equal(1);
                         done();
@@ -184,7 +184,7 @@ describe('plugin initialization', () => {
 
                 plugin = player.annotationComments({ annotationsObjects: annotations });
 
-                plugin.on('pluginReady', () => {
+                plugin.onReady(() => {
                     player.play().then(() => {
                         $('.video-js').addClass('vac-disable-fullscreen');
                         expect($('.vac-player-btn:visible').length).to.equal(0);
@@ -204,7 +204,7 @@ describe('plugin initialization', () => {
             it('has a default of true and shows tooltips', (done) => {
                 plugin = player.annotationComments({ annotationsObjects: annotations });
 
-                plugin.on('pluginReady', () => {
+                plugin.onReady(() => {
                     player.play().then(() => {
                         toggleAnnotationMode();
                         expect($('.vac-marker').first().find('span.vac-tooltip').length).to.equal(1);
@@ -219,7 +219,7 @@ describe('plugin initialization', () => {
                     showMarkerTooltips: false
                 });
 
-                plugin.on('pluginReady', () => {
+                plugin.onReady(() => {
                     player.play().then(() => {
                         toggleAnnotationMode();
                         expect($('.vac-marker').first().find('span.vac-tooltip').length).to.equal(0);
@@ -235,7 +235,7 @@ describe('plugin initialization', () => {
             it('has a default of true and allows internal commenting', (done) => {
                 plugin = player.annotationComments({});
 
-                plugin.on('pluginReady', () => {
+                plugin.onReady(() => {
                     player.play().then(() => {
                         toggleAnnotationMode();
                         addingAnnotation();
@@ -248,7 +248,7 @@ describe('plugin initialization', () => {
             it('can be set to false and does not allow internal commenting', (done) => {
                 plugin = player.annotationComments({ internalCommenting: false });
 
-                plugin.on('pluginReady', () => {
+                plugin.onReady(() => {
                     player.play().then(() => {
                         toggleAnnotationMode();
                         addingAnnotation();
