@@ -13,15 +13,7 @@ class AnnotationState extends PlayerComponent {
     constructor (playerId) {
         super(playerId);
         this.initAPI(this, 'AnnotationState');
-
-        this.annotations = [];
-        this.annotationTimeMap = {};
-        this.activeAnnotation = null;
-        this.enabled = false;
-        this.skipNextTimeCheck = false;
-
-        this.lastVideoTime = 0;
-
+        this.resetData();
         this.bindEvents();
     }
 
@@ -66,7 +58,7 @@ class AnnotationState extends PlayerComponent {
 
     // Bind events for setting liveAnnotation on video time change
     bindEvents () {
-        this.player.on("timeupdate", Utils.throttle(this.setLiveAnnotation.bind(this), 1000));
+        this.player.on("timeupdate", Utils.throttle(this.setLiveAnnotation.bind(this), 100));
     }
 
     // Sort annotations by range.start
@@ -100,7 +92,7 @@ class AnnotationState extends PlayerComponent {
     // Destroy an existing annotation
     destroyAnnotationById (id) {
         let annotation = this.annotations.find((a) => a.id == id);
-        if (annotation) annotation.destroy();
+        if (annotation) annotation.teardown();
     }
 
     // Remove an annotation
@@ -115,7 +107,6 @@ class AnnotationState extends PlayerComponent {
     // Set the live annotation based on current video time
     setLiveAnnotation () {
         if(!this.enabled) return;
-
         let time = Math.floor(this.currentTime);
 
         if(this.skipLiveCheck) {
@@ -213,6 +204,22 @@ class AnnotationState extends PlayerComponent {
         this.sortAnnotations();
         this.rebuildAnnotationTimeMap();
         this.plugin.fire('onStateChanged', this.data);
+    }
+
+    // Reset internal state properties
+    resetData () {
+        this.annotations       = [];
+        this.annotationTimeMap = {};
+        this.activeAnnotation  = null;
+        this.enabled           = false;
+        this.skipNextTimeCheck = false;
+        this.lastVideoTime     = 0;
+    }
+
+    // Remove UI and unbind events for this and child components
+    teardown() {
+        this.annotations.forEach((annotation) => { annotation.teardown(false); });
+        this.resetData();
     }
 }
 

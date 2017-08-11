@@ -23,11 +23,11 @@ class DraggableMarker extends Marker {
     // Bind needed evnets for UI interaction
     bindMarkerEvents () {
         // On mouse down init drag
-        this.$el.mousedown((e) => {
+        this.$el.on('mousedown.vac-marker', (e) => {
             e.preventDefault();
             this.dragging = true;
             // When mouse moves (with mouse down) call onDrag, throttling to once each 250 ms
-            $(document).on("mousemove.draggableMarker", Utils.throttle(this.onDrag.bind(this), 250) );
+            $(document).on("mousemove.vac-marker", Utils.throttle(this.onDrag.bind(this), 250) );
 
             // Add drag class to cursor tooltip if available
             if(!this.plugin.options.showControls) {
@@ -38,9 +38,9 @@ class DraggableMarker extends Marker {
         });
 
         // On mouse up end drag action and unbind mousemove event
-        $(document).on("mouseup.draggableMarker", (e) => {
+        $(document).on("mouseup.vac-marker", (e) => {
              if(!this.dragging) return;
-             $(document).off("mousemove.draggableMarker");
+             $(document).off("mousemove.vac-marker");
              this.dragging = false;
 
              // Remove drag class and hover class from cursor tooltip if available
@@ -98,10 +98,11 @@ class DraggableMarker extends Marker {
     // Remove bound events on destructon
     teardown () {
         super.teardown();
-        $(document).off('mousemove.draggableMarker');
-        $(document).off('mouseup.draggableMarker');
+        $(document).off('mousemove.vac-marker');
+        $(document).off('mouseup.vac-marker');
         this.$el.off('mouseenter.vac-cursor-tool-tip');
-        this.$el.off('mouseleave.vac-cursor-tool-tip')
+        this.$el.off('mouseleave.vac-cursor-tool-tip');
+        this.$el.off('mousedown.vac-marker');
     }
 
     // Move the video & marker start by some num seconds (pos or neg)

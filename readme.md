@@ -24,9 +24,9 @@ var player = videojs('video-id');
 var plugin = player.annotationComments(pluginOptions)
 ```
 
-### Plugin options / confugration
+### Plugin options / configuration
 
-When intializing the plugin, you can pass in an options array to override default options. Any excluded options are set to their default values, listed below:
+When initializing the plugin, you can pass in an options array to override default options. Any excluded options are set to their default values, listed below:
 
 ```javascript
 const pluginOptions = {
@@ -96,6 +96,7 @@ plugin.onReady(() => {
 ```
 
 ##### Supported Externally Fired Events:
+
 These events are external actions that can be called from your scripts to trigger events within the plugin:
 
 ```javascript
@@ -215,7 +216,7 @@ The `gulp templates` task is used to precompile every template to `/src/js/compi
 
 #### UI / CSS Customization
 
-The plugin uses SASS and all styles are defined in [annotaitons.scss](src/css/annotations.scss). There is extenssive commenting on classes and styles in the file. The plugin uses a deep level of specificity to prevent styles from polluting elements on the page, and all classes are prefixed with `vac-` to prevent classname collisions in the global namespace. 
+The plugin uses SASS and all styles are defined in [annotaitons.scss](src/css/annotations.scss). There is extenssive commenting on classes and styles in the file. The plugin uses a deep level of specificity to prevent styles from polluting elements on the page, and all classes are prefixed with `vac-` to prevent classname collisions in the global namespace.
 
 You can extend/modify colors and elements quite easily by writing an overrides stylesheet to address the specific elements that you wish to modify. You can also change the variable colors in the stylesheet and compile yourself for more customization.
 
