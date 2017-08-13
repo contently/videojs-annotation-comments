@@ -18,7 +18,7 @@ describe('external event-based API', () => {
                         done();
                     });
                 });
-            })
+            });
         });
 
         describe('closeActiveAnnotation', () => {
@@ -45,7 +45,7 @@ describe('external event-based API', () => {
         describe('newAnnotation', () => {
             beforeEach(resetVJS);
 
-            it('activates an annotation when triggered', (done) => {
+            it('adds an annotation when triggered', (done) => {
                 plugin = simplePluginSetup();
 
                 plugin.onReady(() => {
@@ -116,6 +116,51 @@ describe('external event-based API', () => {
                         expect(plugin.controls.uiState.adding).to.equal(true);
                         plugin.fire('cancelAddingAnnotation');
                         expect(plugin.controls.uiState.adding).to.equal(false);
+                        done();
+                    });
+                });
+            });
+        });
+
+        describe('newComment', () => {
+            beforeEach(resetVJS)
+
+            it('adds a new comment to an Annotation', (done) => {
+                plugin = simplePluginSetup();
+
+                plugin.onReady(() => {
+                    player.play().then(() => {
+                        let annotation = plugin.annotationState.annotations[0],
+                            commentList = annotation.commentList,
+                            startingLength = commentList.comments.length
+                        plugin.fire('newComment', { annotationId: annotation.id, body: 'My new comment' });
+
+                        expect(commentList.comments.length).to.equal(startingLength + 1);
+                        expect(commentList.comments[commentList.comments.length - 1].body).to.equal('My new comment');
+
+                        done();
+                    });
+                });
+            });
+        });
+
+        describe('destroyComment', () => {
+            beforeEach(resetVJS)
+
+            it('removes a comment by id', (done) => {
+                plugin = simplePluginSetup();
+
+                plugin.onReady(() => {
+                    player.play().then(() => {
+                        let annotation = plugin.annotationState.annotations[0],
+                            commentList = annotation.commentList,
+                            startingLength = commentList.comments.length,
+                            commentId = commentList.comments[0].id
+                        plugin.fire('destroyComment', { id: commentId });
+
+                        expect(commentList.comments.length).to.equal(startingLength - 1);
+                        expect(plugin.annotationState.findComment(commentId)).to.be.undefined;
+
                         done();
                     });
                 });

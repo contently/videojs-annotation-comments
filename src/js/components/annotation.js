@@ -95,7 +95,7 @@ class Annotation extends PlayerUIComponent {
         if(!this.isOpen) return;
         this.isOpen = false;
         this.marker.deactivate();
-        this.commentList.removeUI();
+        this.commentList.teardown(false);
         if(this.annotationShape.$el) this.annotationShape.$el.off("click.vac-annotation");
         this.annotationShape.teardown();
         if(clearActive) this.plugin.annotationState.clearActive();
@@ -122,9 +122,9 @@ class Annotation extends PlayerUIComponent {
     teardown (removeFromCollection=true) {
         this.close(true);
         this.marker.teardown();
+        if(this.commentList) this.commentList.teardown(removeFromCollection);
         if(removeFromCollection) this.plugin.annotationState.removeAnnotation(this);
         if(this.annotationShape) this.annotationShape.teardown();
-        if(this.commentList) this.commentList.teardown();
     }
 
     // Build a new annotation instance by passing in data for range, shape, comment, & plugin ref
@@ -139,6 +139,10 @@ class Annotation extends PlayerUIComponent {
             comments: [comment]
         };
         return new Annotation(data, plugin.playerId);
+    }
+
+    get isActive () {
+        return this.plugin.annotationState.activeAnnotation === this;
     }
 }
 

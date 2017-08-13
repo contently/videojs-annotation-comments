@@ -26,6 +26,7 @@ class EventDispatcher {
                     let callback = matchingEvents[key].bind(obj);
                     this.registerListener(key, ((evt) => {
                         if(!this.pluginReady) return;
+                        this.logCallback(key, className, evt);
                         callback(evt, obj);
                     }).bind(this));
                 }
@@ -57,6 +58,10 @@ class EventDispatcher {
     teardown () {
         this.registeredListeners.forEach((type) => { this.unregisterListener(type) });
     }
+
+    logCallback (eventName, className, event) {
+        Logger.log("evt-dispatch-RECEIVE", `${eventName} (${className})`, event);
+    }
 }
 
 /*
@@ -71,41 +76,41 @@ class EventDispatcher {
 const EventRegistry = {
     AnnotationState: {
         openAnnotation: (event, _this) => {
-            Logger.log("evt-dispatch-RECEIVE", "openAnnotation (AnnotationState)", event);
             _this.openAnnotationById(event.detail.id);
         },
         closeActiveAnnotation: (event, _this) => {
-            Logger.log("evt-dispatch-RECEIVE", "closeActiveAnnotation (AnnotationState)", event);
             _this.clearActive();
         },
         newAnnotation: (event, _this) => {
-            Logger.log("evt-dispatch-RECEIVE", "newAnnotation (AnnotationState)", event);
             _this.createAndAddAnnotation(event.detail);
         },
         destroyAnnotation: (event, _this) => {
-            Logger.log("evt-dispatch-RECEIVE", "destroyAnnotation (AnnotationState)", event);
             _this.destroyAnnotationById(event.detail.id);
+        },
+        newComment: (event, _this) => {
+            let annotation = _this.findAnnotation(event.detail.annotationId);
+            if(annotation) annotation.commentList.createComment(event.detail.body);
+        },
+        destroyComment: (event, _this) => {
+            let comment = _this.findComment(event.detail.id);
+            if(comment) comment.commentList.destroyComment(event);
         }
     },
     Controls: {
         addingAnnotation: (event, _this) => {
-            Logger.log("evt-dispatch-RECEIVE", "addingAnnotation (Controls)", event);
             _this.startAddNew();
         },
         cancelAddingAnnotation: (event, _this) => {
-            Logger.log("evt-dispatch-RECEIVE", "cancelAddingAnnotation (Controls)", event);
             _this.cancelAddNew();
         }
     },
     PlayerButton: {
         onStateChanged: (event, _this) => {
-            Logger.log("evt-dispatch-RECEIVE", "onStateChanged (PlayerButton)", event);
             _this.updateNumAnnotations();
         }
     },
     Main: {
         toggleAnnotationMode: (event, _this) => {
-            Logger.log("evt-dispatch-RECEIVE", "toggleAnnotationMode (Main)", event);
             _this.toggleAnnotationMode();
         }
     }

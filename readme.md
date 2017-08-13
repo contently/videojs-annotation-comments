@@ -122,6 +122,12 @@ plugin.fire('newAnnotation', {
 // destroyAnnotation : Removes an annotation and it's marker within the player given comment data
 plugin.fire('destroyAnnotation', { id: 1 });
 
+// newComment : Adds a new comment to an Annotation given an Annotation ID and a body
+plugin.fire('newComment', { annotationId: 1, body: "My comment string" });
+
+// destroyComment : Removes a comment from an Annotation given a Comment ID
+plugin.fire('destroyComment', { id: 1 });
+
 // addingAnnotation : Plugin enters the adding annotation state (adding an annotation at the current player timestamp)
 plugin.fire('addingAnnotation');
 

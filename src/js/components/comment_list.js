@@ -15,7 +15,10 @@ class CommentList extends PlayerUIComponent {
         super(playerId);
 
         this.annotation = data.annotation;
-        this.comments = data.comments.map((c) => new Comment(c, playerId));
+        this.comments = data.comments.map((commentData) => {
+            commentData.commentList = this;
+            return new Comment(commentData, playerId);
+        });
         this.sortComments();
     }
 
@@ -56,6 +59,12 @@ class CommentList extends PlayerUIComponent {
         this.bindListEvents();
     }
 
+    // Re-render UI on state change
+    reRender () {
+        this.teardown(false);
+        this.render();
+    }
+
     // Render new comment form
     addNewComment () {
         this.$wrap.addClass(this.UI_CLASSES.active).find(".vac-comments-wrap").scrollTop(999999);
@@ -77,12 +86,19 @@ class CommentList extends PlayerUIComponent {
             body = this.$UI.newCommentTextarea.val();
 
         if(!body) return; // empty comment - TODO add validation / err message
+        this.createComment(body);
+    }
 
-        let comment = Comment.newFromData(body, this.plugin);
+    createComment (body) {
+        let comment = Comment.newFromData(body, this, this.plugin);
         this.comments.push(comment);
         this.sortComments();
-        this.closeNewComment();
-        this.render();
+
+        // Don't mutate UI if comment is being created for an inactive annotation (via API)
+        if(this.annotation.isActive) {
+            this.reRender(false);
+            this.closeNewComment();
+        }
 
         this.plugin.annotationState.stateChanged();
     }
@@ -101,15 +117,21 @@ class CommentList extends PlayerUIComponent {
         if(this.comments.length == 1) {
             this.annotation.teardown();
         } else {
-            let $comment   = $(event.target).closest(".vac-comment"),
-                commentId  = $comment.data('id'),
-                commentObj = this.comments.find((c) => c.id == commentId),
-                i = this.comments.indexOf(commentObj);
+            let commentId  = this.findCommentId(event),
+                comment = this.comments.find((c) => c.id == commentId),
+                i = this.comments.indexOf(comment);
             this.comments.splice(i, 1);
-            this.render();
+            this.reRender();
         }
 
         this.plugin.annotationState.stateChanged();
+    }
+
+    findCommentId (event) {
+        let id = typeof event.detail.id === 'undefined' ?
+            $(event.target).closest('.vac-comment').data('id') :
+            event.detail.id;
+        return id;
     }
 
     // Prevents outer page scroll when at the top or bottom of CommentList UI
@@ -159,21 +181,13 @@ class CommentList extends PlayerUIComponent {
         if(this.$newCommentForm) this.$newCommentForm.off("click.vac-comment");
     }
 
-    removeUI () {
-        this.closeNewComment();
-        if(this.$el) this.$el.remove();
-    }
-
     // Teardown CommentList UI, unbind events
-    teardown () {
+    teardown (destroyComments=true) {
         if(this.$el) {
             this.$el.off("click.vac-comment mousewheel.vac-comment DOMMouseScroll.vac-comment");
         }
-        this.unbindCommentFormEvents();
-
-        while(this.comments.length) {
-            this.comments.pop().teardown();
-        }
+        this.comments.forEach((c) => c.teardown());
+        if(destroyComments) this.comments = [];
         super.teardown();
     }
 }
