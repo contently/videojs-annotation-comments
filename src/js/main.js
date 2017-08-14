@@ -10,15 +10,15 @@
           EventDispatcher = require("./lib/event_dispatcher").class;
 
     const DEFAULT_OPTIONS =     Object.freeze({
-        bindArrowKeys:          true,
-        meta:                   { user_id: null, user_name: null },
-        annotationsObjects:     [],
-        showControls:           true,
-        showCommentList:        true,
-        showFullScreen:         true,
-        showMarkerTooltips:     true,
-        internalCommenting:     true,
-        startInAnnotationMode:  false
+        bindArrowKeys:              true,
+        meta:                       { user_id: null, user_name: null },
+        annotationsObjects:         [],
+        showControls:               true,
+        showCommentList:            true,
+        showFullScreen:             true,
+        showMarkerShapeAndTooltips: true,
+        internalCommenting:         true,
+        startInAnnotationMode:      false
     });
 
     class Main extends Plugin {

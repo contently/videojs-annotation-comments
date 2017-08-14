@@ -80,6 +80,7 @@ module.exports = {
         return data;
     },
     isWithinRange: (start, end, n) => {
+        end = end || start + 1; // for ranges with NO end defined, assume a 1s range
         return n >= start && n <= end;
     }
 };
