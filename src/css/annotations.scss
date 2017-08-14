@@ -364,7 +364,7 @@ $ui-class-play-disabled: ".vac-disable-play";
 			.vac-marker, .vac-marker-draggable{
 				position: absolute;
 				width: 7px;
-				margin-left: -3.5px;
+				margin-left: 0px;
 				height: 30px;
 				bottom: 6px;
 				background: $primaryColor;
