@@ -28,7 +28,7 @@ describe('plugin initialization', () => {
                     showCommentList: true,
                     showControls: true,
                     showFullScreen: true,
-                    showMarkerTooltips: true,
+                    showMarkerShapeAndTooltips: true,
                     internalCommenting: true,
                     startInAnnotationMode: false
                 });
@@ -198,7 +198,7 @@ describe('plugin initialization', () => {
             });
         });
 
-        describe('showMarkerTooltips', () => {
+        describe('showMarkerShapeAndTooltips', () => {
             beforeEach(resetVJS);
 
             it('has a default of true and shows tooltips', (done) => {
@@ -216,7 +216,7 @@ describe('plugin initialization', () => {
             it('can be set to false to hide the tooltips', (done) => {
                 plugin = player.annotationComments({
                     annotationsObjects: annotations,
-                    showMarkerTooltips: false
+                    showMarkerShapeAndTooltips: false
                 });
 
                 plugin.onReady(() => {

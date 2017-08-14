@@ -42,8 +42,8 @@ const pluginOptions = {
         showCommentList: true,
         // If false, annotations mode will be disabled in fullscreen
         showFullScreen: true,
-        // Show or hide the tooltips with comment preview on marker hover
-        showMarkerTooltips: true,
+        // Show or hide the tooltips with comment preview, and annotation shape, on marker hover or timeline activate
+        showMarkerShapeAndTooltips: true,
         // If false, step two of adding annotations (writing and saving the comment) will be disabled
         internalCommenting: true,
         // If true, toggle the player to annotation mode immediately after init. (NOTE - "annotationModeEnabled" event is not fired for this initial state)

@@ -5872,18 +5872,20 @@ var Annotation = function (_PlayerUIComponent) {
             this.isOpen = true;
             var snapToStart = forceSnapToStart || !Utils.isWithinRange(this.range.start, this.range.end, Math.floor(this.currentTime));
 
-            if (previewOnly || !this.plugin.options.showCommentList) {
-                this.marker.setActive(true);
-            } else {
+            var showTooltip = previewOnly && this.plugin.options.showMarkerShapeAndTooltips;
+            this.marker.setActive(showTooltip);
+            if (!previewOnly && this.plugin.options.showCommentList) {
                 this.commentList.render();
-                this.marker.setActive(false);
             }
 
-            this.annotationShape.draw();
-            if (this.shape) {
-                this.annotationShape.$el.on("click.vac-annotation", function () {
-                    _this3.plugin.annotationState.openAnnotation(_this3, false, false, false);
-                });
+            if (!previewOnly || previewOnly && this.plugin.options.showMarkerShapeAndTooltips) {
+                this.annotationShape.draw();
+
+                if (this.shape) {
+                    this.annotationShape.$el.on("click.vac-annotation", function () {
+                        _this3.plugin.annotationState.openAnnotation(_this3, false, false, false);
+                    });
+                }
             }
 
             if (withPause) this.player.pause();
@@ -5925,7 +5927,6 @@ var Annotation = function (_PlayerUIComponent) {
                 }
             } else {
                 var start = this.range.start;
-                if (start > 0) seconds.push(start - 1);
                 seconds.push(start);
                 if (start < this.duration) seconds.push(start + 1);
             }
@@ -7220,9 +7221,7 @@ var Marker = function (_PlayerUIComponent) {
             var showTooltip = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
             this.$el.addClass(this.UI_CLASSES.active);
-            if (showTooltip && this.plugin.options.showMarkerTooltips) {
-                this.$el.addClass('vac-force-tooltip');
-            }
+            if (showTooltip) this.$el.addClass('vac-force-tooltip');
         }
 
         // Deactivate this marker
@@ -7289,7 +7288,7 @@ var Marker = function (_PlayerUIComponent) {
                 left: left + '%',
                 width: width + '%',
                 zIndex: zIndex,
-                showTooltip: this.plugin.options.showMarkerTooltips,
+                showTooltip: this.plugin.options.showMarkerShapeAndTooltips,
                 tooltipRight: left > 50,
                 tooltipTime: Utils.humanTime(this.range),
                 tooltipBody: !this.comment ? null : this.comment.body,
@@ -8122,6 +8121,7 @@ module.exports = {
         return data;
     },
     isWithinRange: function isWithinRange(start, end, n) {
+        end = end || start + 1; // for ranges with NO end defined, assume a 1s range
         return n >= start && n <= end;
     }
 };
@@ -8155,7 +8155,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
         showControls: true,
         showCommentList: true,
         showFullScreen: true,
-        showMarkerTooltips: true,
+        showMarkerShapeAndTooltips: true,
         internalCommenting: true,
         startInAnnotationMode: false
     });

@@ -30,9 +30,7 @@ class Marker extends PlayerUIComponent {
     // Set this marker as active (highlight) and optionally show tooltip also
     setActive (showTooltip=false) {
         this.$el.addClass(this.UI_CLASSES.active);
-        if(showTooltip && this.plugin.options.showMarkerTooltips){
-            this.$el.addClass('vac-force-tooltip');
-        }
+        if(showTooltip) this.$el.addClass('vac-force-tooltip');
     }
 
     // Deactivate this marker
@@ -71,7 +69,7 @@ class Marker extends PlayerUIComponent {
             left:         left + '%',
             width:        width + '%',
             zIndex:       zIndex,
-            showTooltip:  this.plugin.options.showMarkerTooltips,
+            showTooltip:  this.plugin.options.showMarkerShapeAndTooltips,
             tooltipRight: left > 50,
             tooltipTime:  Utils.humanTime(this.range),
             tooltipBody:  !this.comment ? null : this.comment.body,

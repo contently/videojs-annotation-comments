@@ -65,18 +65,20 @@ class Annotation extends PlayerUIComponent {
             Math.floor(this.currentTime)
         );
 
-        if(previewOnly || !this.plugin.options.showCommentList) {
-            this.marker.setActive(true);
-        } else {
+        let showTooltip = previewOnly && this.plugin.options.showMarkerShapeAndTooltips;
+        this.marker.setActive(showTooltip);
+        if(!previewOnly && this.plugin.options.showCommentList){
             this.commentList.render();
-            this.marker.setActive(false);
         }
 
-        this.annotationShape.draw();
-        if(this.shape) {
-            this.annotationShape.$el.on("click.vac-annotation", () => {
-                this.plugin.annotationState.openAnnotation(this, false, false, false);
-            });
+        if(!previewOnly || (previewOnly && this.plugin.options.showMarkerShapeAndTooltips)){
+            this.annotationShape.draw();
+
+            if(this.shape) {
+                this.annotationShape.$el.on("click.vac-annotation", () => {
+                    this.plugin.annotationState.openAnnotation(this, false, false, false);
+                });
+            }
         }
 
         if(withPause) this.player.pause();
@@ -110,7 +112,6 @@ class Annotation extends PlayerUIComponent {
             }
         } else {
             let start = this.range.start;
-            if(start > 0) seconds.push(start-1);
             seconds.push(start);
             if(start < this.duration) seconds.push(start+1);
         }
