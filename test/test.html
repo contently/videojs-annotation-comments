@@ -104,13 +104,9 @@
 
 	</HEAD>
 	<BODY>
-		<video id="the_video" class="video-js" controls preload="auto" width="720" height="405" poster="MY_VIDEO_POSTER.jpg" data-setup="{}">
-		    <source src="contently-platform-overview.mp4" type='video/mp4'>
-		    <p class="vjs-no-js">
-		    	To view this video please enable JavaScript, and consider upgrading to a web browser that
-		    	<a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-		    </p>
-		</video>
+		<div id="video_wrap">
+		
+		</div>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 		<script src="/video.js/dist/video.min.js"></script>
@@ -118,8 +114,28 @@
 		<script>
 			window.VAC_DEBUG = true;
 
+
 			var playerOptions = { controlBar: { volumePanel: { inline: false } } },
-				player = window.videojs('the_video', playerOptions),
+				player = null,
+				plugin = null;
+
+
+			function add_video(){
+				var h ='<video id="the_video" class="video-js" controls preload="auto" width="720" height="405" poster="MY_VIDEO_POSTER.jpg" data-setup="{}">'
+		    	h += '<source src="contently-platform-overview.mp4" type="video/mp4"></video>';
+		    	$("#video_wrap").html(h);
+		    	player = window.videojs('the_video', playerOptions);
+			}
+
+			function destroy_plugin(){
+				plugin = plugin.dispose();
+				player.dispose();
+				$('#video_wrap').html();
+			}
+			
+			function new_plugin(){
+				add_video();
+
 				plugin = player.annotationComments({
 					annotationsObjects: annotations,
 					bindArrowKeys: true,
@@ -133,6 +149,12 @@
 					showMarkerTooltips: true,
 					startInAnnotationMode: false
 				});
+
+				plugin.onReady(function(){
+					console.log("PLUGIN IS READY!");
+				})
+			}
+			new_plugin();
 			
 			player.muted(true);
 		</script>
