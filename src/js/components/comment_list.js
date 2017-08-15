@@ -27,11 +27,11 @@ class CommentList extends PlayerUIComponent {
     // Bind all events needed for the comment list
     bindListEvents () {
         this.$el
-            .on("click.vac-comment", ".vac-close-comment-list", () => this.annotation.close()) // Hide CommentList UI with close button
-            .on("click.vac-comment", ".vac-reply-btn", () => this.addNewComment()) // Open new reply UI with reply button
-            .on("click.vac-comment", ".vac-delete-annotation", (e) => this.handleDeleteAnnotationClick(e)) // Delete annotation with main delete button
-            .on("click.vac-comment", ".vac-delete-comment", (e) => this.destroyComment(e)) // Delete comment with delete comment button
-            .on("mousewheel.vac-comment DOMMouseScroll.vac-comment", ".vac-comments-wrap", this.disablePageScroll); // Prevent outer page scroll when scrolling inside of the CommentList UI
+            .on("click.vac-comment", ".vac-close-comment-list", (() => this.annotation.close()).bind(this)) // Hide CommentList UI with close button
+            .on("click.vac-comment", ".vac-reply-btn", this.addNewComment.bind(this)) // Open new reply UI with reply button
+            .on("click.vac-comment", ".vac-delete-annotation", this.handleDeleteAnnotationClick.bind(this)) // Delete annotation with main delete button
+            .on("click.vac-comment", ".vac-delete-comment", this.destroyComment.bind(this)) // Delete comment with delete comment button
+            .on("mousewheel.vac-comment DOMMouseScroll.vac-comment", ".vac-comments-wrap", this.disablePageScroll.bind(this)); // Prevent outer page scroll when scrolling inside of the CommentList UI
     }
 
     // Bind event listeners for new comments form
@@ -54,12 +54,6 @@ class CommentList extends PlayerUIComponent {
         this.$player.append(this.$el);
         this.$wrap = this.$UI.commentsContainer;
         this.bindListEvents();
-    }
-
-    // Re-render UI on state change
-    reRender () {
-        this.teardown();
-        this.render();
     }
 
     // Render new comment form
@@ -88,14 +82,15 @@ class CommentList extends PlayerUIComponent {
         this.comments.push(comment);
         this.sortComments();
         this.closeNewComment();
-        this.reRender();
+        this.render();
 
         this.plugin.annotationState.stateChanged();
     }
 
     // Cancel comment adding process
     closeNewComment () {
-        this.$wrap.removeClass(this.UI_CLASSES.active);
+        this.unbindCommentFormEvents();
+        if(this.$wrap) this.$wrap.removeClass(this.UI_CLASSES.active);
         if(this.$newCommentForm) this.$newCommentForm.remove();
     }
 
@@ -111,7 +106,7 @@ class CommentList extends PlayerUIComponent {
                 commentObj = this.comments.find((c) => c.id == commentId),
                 i = this.comments.indexOf(commentObj);
             this.comments.splice(i, 1);
-            this.reRender();
+            this.render();
         }
 
         this.plugin.annotationState.stateChanged();
@@ -159,21 +154,23 @@ class CommentList extends PlayerUIComponent {
         $(e.target).replaceWith($confirmEl);
     }
 
+    // Unbind listeners for new comments form
+    unbindCommentFormEvents () {
+        if(this.$newCommentForm) this.$newCommentForm.off("click.vac-comment");
+    }
+
+    removeUI () {
+        this.closeNewComment();
+        if(this.$el) this.$el.remove();
+    }
+
     // Teardown CommentList UI, unbind events
     teardown () {
         if(this.$el) {
-            this.$el
-                .off("click.vac-comment", ".vac-close-comment-list")
-                .off("click.vac-comment", ".vac-reply-btn")
-                .off("click.vac-comment", ".vac-delete-annotation")
-                .off("click.vac-comment", ".vac-delete-comment")
-                .off("mousewheel.vac-comment DOMMouseScroll.vac-comment", ".vac-comments-wrap");
+            this.$el.off("click.vac-comment mousewheel.vac-comment DOMMouseScroll.vac-comment");
         }
-        if(this.$newCommentForm){
-            this.$newCommentForm
-                .off("click.vac-comment", ".vac-add-controls a, .vac-video-write-new.vac-comment a")
-                .off("click.vac-comment", ".vac-video-write-new.vac-comment button");
-        }
+        this.unbindCommentFormEvents();
+
         while(this.comments.length) {
             this.comments.pop().teardown();
         }

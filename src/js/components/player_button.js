@@ -3,7 +3,6 @@
     Component main 'annotation toggle' button in the player controls, including notifier for # annotations
 */
 
-
 const PlayerUIComponent = require("./../lib/player_ui_component").class,
       templateName = "player_button";
 
@@ -11,7 +10,7 @@ class PlayerButton extends PlayerUIComponent {
 
     constructor (playerId) {
         super(playerId);
-        this.draw();
+        this.render();
 
         this.initAPI(this, 'PlayerButton');
 
@@ -21,7 +20,7 @@ class PlayerButton extends PlayerUIComponent {
     }
 
     // Add button to player
-    draw () {
+    render () {
         let btn = this.player.getChild('controlBar').addChild('button', {});
         btn.controlText("Toggle Animations");
         this.$el = $(btn.el());

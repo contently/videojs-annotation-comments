@@ -3,10 +3,10 @@
     Component for a shape that can be drug/sized on top of the video while adding a new annotation
 */
 
-const   AnnotationShape = require("./annotation_shape").class,
+const   Shape = require("./shape").class,
         Utils = require('./../lib/utils');
 
-class SelectableShape extends AnnotationShape {
+class SelectableShape extends Shape {
 
     constructor (playerId) {
         super(playerId);
@@ -40,12 +40,12 @@ class SelectableShape extends AnnotationShape {
             this.originY = shape.y1;
 
             // Draw shape and start drag state
-            this.draw();
+            this.render();
             this.dragging = true;
             this.dragMoved = false; // used to determine if user actually dragged or just clicked
 
             // Bind event on doc mousemove to track drag, throttled to once each 100ms
-            $(document).on("mousemove.vac-selectable-shape", Utils.throttle(this.onDrag.bind(this), 100) );
+            $(document).on(`mousemove.vac-sshape-${this.playerId}`, Utils.throttle(this.onDrag.bind(this), 100) );
 
             // Add drag class to cursor tooltip if available
             if(!this.plugin.options.showControls) {
@@ -54,10 +54,10 @@ class SelectableShape extends AnnotationShape {
         });
 
         // On mouseup, if during drag cancel drag event listeners
-        $(document).on("mouseup.vac-selectable-shape", (e) => {
+        $(document).on(`mouseup.vac-sshape-${this.playerId}`, (e) => {
             if(!this.dragging) return;
 
-            $(document).off("mousemove.vac-selectable-shape");
+            $(document).off(`mousemove.vac-sshape-${this.playerId}`);
 
             if(!this.dragMoved){
                 //clear shape if it's just a click (and not a drag)
@@ -117,7 +117,7 @@ class SelectableShape extends AnnotationShape {
     // Unbind events and remove element
     teardown () {
         this.$parent.off('mousedown.vac-selectable-shape');
-        $(document).off('mouseup.vac-selectable-shape');
+        $(document).off(`mouseup.vac-sshape-${this.playerId} mousemove.vac-sshape-${this.playerId}`);
         super.teardown();
     }
 }

@@ -37,20 +37,21 @@
 
             this._readyCallbacks = [];
 
-            // assign reference to this class to player for access later by components where needed
+            // Assign reference to this class to player for access later by components where needed
             player.annotationComments = (() => { return this }).bind(this);
 
-            // assert that components are initialized AFTER metadata is loaded so we metadata/duration
-            // NOTE - this check is required because player loadedmetadata doesn't always fire if readystate is > 2
+            // Assert that components are initialized AFTER metadata + play data is loaded so we metadata/duration
+            // NOTE - this check is required because player loadeddata doesn't always fire if readystate is > 3
             if(player.readyState() >= 3){
                 this.postMetadataConstructor();
             }else{
-                player.on('loadeddata', this.postMetadataConstructor.bind(this));
+                player.on('loadeddata', this.postLoadDataConstructor.bind(this));
             }
         }
 
-        postMetadataConstructor () {
-            // setup initial state and draw UI
+        // Additional init/setup after video data + metadata is available
+        postLoadDataConstructor () {
+            // setup initial state and render UI
             this.annotationState = new AnnotationState(this.playerId);
             this.annotationState.annotations = this.options.annotationsObjects;
 
@@ -59,16 +60,16 @@
             this.setBounds(false);
             if(this.options.startInAnnotationMode) this.toggleAnnotationMode();
 
-            this._pluginReady();
+            this.pluginReady();
         }
 
         // Bind needed events for interaction w/ components
         bindEvents () {
-            // set player boundaries on window size change or fullscreen change
+            // Set player boundaries on window size change or fullscreen change
             $(window).on('resize.vac-window-resize', Utils.throttle(this.setBounds.bind(this), 500));
             this.player.on('fullscreenchange', Utils.throttle(this.setBounds.bind(this), 500));
 
-            // remove annotation features on fullscreen if showFullScreen: false
+            // Remove annotation features on fullscreen if showFullScreen: false
             if (!this.options.showFullScreen) {
                 this.player.on('fullscreenchange', (() => {
                     if (this.player.isFullscreen_) {
@@ -78,7 +79,7 @@
                         $(this.player.el()).removeClass('vac-disable-fullscreen');
                     }
                     if(this.preFullscreenAnnotationsEnabled){
-                        // if we were previously in annotation mode (pre-fullscreen) or entering fullscreeen and are
+                        // If we were previously in annotation mode (pre-fullscreen) or entering fullscreeen and are
                         // in annotation mode, toggle the mode
                         this.toggleAnnotationMode();
                     }
@@ -104,12 +105,12 @@
                 this.fire("annotationModeDisabled")
             }
 
-            // handle control component UI if showControls: true
+            // Handle control component UI if showControls: true
             if(this.options.showControls){
                 if(!this.active){
                     this.controls.clear(true);
                 }else{
-                    this.controls.draw();
+                    this.controls.render();
                 }
             }
         }
@@ -138,15 +139,15 @@
             this._readyCallbacks.push(callback);
         }
 
-        // Internal fn to mark plugin as ready and fire any pending callbacks
-        _pluginReady () {
+        // Mark plugin as ready and fire any pending callbacks
+        pluginReady () {
             this.eventDispatcher.pluginReady = true;
             while(this._readyCallbacks.length){
                 this._readyCallbacks.pop()();
             }
         }
 
-        // teardown all components, remove all listeners, and remove elements from DOM
+        // Teardown all components, remove all listeners, and remove elements from DOM
         dispose () {
             this.controls = this.controls.teardown();
             this.annotationState = this.annotationState.teardown();
