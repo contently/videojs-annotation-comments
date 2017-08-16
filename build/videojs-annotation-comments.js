@@ -8206,7 +8206,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
             // Assert that components are initialized AFTER metadata + play data is loaded so we metadata/duration
             // NOTE - this check is required because player loadeddata doesn't always fire if readystate is > 3
             if (player.readyState() >= 3) {
-                _this.postMetadataConstructor();
+                _this.postLoadDataConstructor();
             } else {
                 player.on('loadeddata', _this.postLoadDataConstructor.bind(_this));
             }
