@@ -105,43 +105,24 @@
 	</HEAD>
 	<BODY>
 		<div id="video_wrap">
-		
+			
+			<div><button onclick="ADD()" style="margin-top:20px">+ ADD VIDEO</button></div>
 		</div>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 		<script src="/video.js/dist/video.min.js"></script>
 		<script src="/videojs-annotation-comments.js"></script>
 		<script>
-			window.VAC_DEBUG = true;
+			//window.VAC_DEBUG = true;
 
-
-			var playerOptions = { controlBar: { volumePanel: { inline: false } } },
-				player = null,
-				plugin = null;
-
-
-			function add_video(){
-				var h ='<video id="the_video" class="video-js" controls preload="auto" width="720" height="405" poster="MY_VIDEO_POSTER.jpg" data-setup="{}">'
-		    	h += '<source src="contently-platform-overview.mp4" type="video/mp4"></video>';
-		    	$("#video_wrap").html(h);
-		    	player = window.videojs('the_video', playerOptions);
-			}
-
-			function destroy_plugin(){
-				plugin = plugin.dispose();
-				player.dispose();
-				$('#video_wrap').html();
-			}
-			
-			function new_plugin(){
-				add_video();
-
-				plugin = player.annotationComments({
+			var videos = [],
+				playerOptions = { controlBar: { volumePanel: { inline: false } } },
+				pluginOptions = {
 					annotationsObjects: annotations,
 					bindArrowKeys: true,
 					meta: {
 						user_id: 2,
-						user_name: "Evan Carothers"
+						user_name: "John Smith"
 					},
 					showControls: true,
 					showCommentList: true,
@@ -149,15 +130,56 @@
 					showMarkerTooltips: true,
 					startInAnnotationMode: false,
 					showMarkerShapeAndTooltips: true
-				});
-				
-				plugin.onReady(function(){
-					console.log("PLUGIN IS READY!");
-				})
+				}
+
+			function ADD(){
+				var id = (new Date().getTime());
+
+				var html = '<div id="wrap-'+id+'" class="vwrap">';
+				html += '<video id="vid-'+id+'" class="video-js" controls preload="auto" width="720" height="405" data-setup="{}">'
+		    	html += '<source src="contently-platform-overview.mp4" type="video/mp4"></video>';
+		    	html += '<div><button onclick="REMOVE('+id+')">- REMOVE VIDEO</button></div>'
+		    	html += '</div>';
+
+		    	var $lastVid = $(".vwrap:last");
+		    	if($lastVid.length){
+		    		$lastVid.after(html);
+		    	}else{	
+		    		$("#video_wrap").prepend(html);
+		    	}
+
+		    	var player = window.videojs('vid-'+id, playerOptions);
+
+		    	player.ready(function(){
+		    		var plugin = player.annotationComments(pluginOptions);
+
+					plugin.onReady(function(){
+						console.log("PLUGIN IS READY!", id);
+					});
+			    	player.muted(true);
+
+			    	videos.push({
+			    		id: id,
+			    		player: player,
+			    		plugin: plugin
+			    	});
+			    	console.log("::ADDING:: ", videos[videos.length-1]);
+		    	});
 			}
-			new_plugin();
-			
-			player.muted(true);
+
+			function REMOVE(id){
+				var video = videos.find(function(v){
+					return v.id == id;
+				})
+				console.log("::REMOVING:: ", video);
+				video.plugin = video.plugin.dispose();
+				video.player.dispose();
+				$('#wrap-'+video.id).remove();
+			}
+
+			// Add initial video
+			ADD();
+
 		</script>
 	</BODY>
 </HTML>

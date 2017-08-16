@@ -5,7 +5,7 @@
 
 const PlayerUIComponent = require("./../lib/player_ui_component").class;
 
-class AnnotationShape extends PlayerUIComponent {
+class Shape extends PlayerUIComponent {
 
     constructor (playerId, shape=null) {
         super(playerId);
@@ -14,7 +14,7 @@ class AnnotationShape extends PlayerUIComponent {
     }
 
     // Draw the shape element on the $parent
-    draw () {
+    render () {
         if(!this.shape) return;
         if(this.$el) this.$el.remove();
 
@@ -35,5 +35,5 @@ class AnnotationShape extends PlayerUIComponent {
 }
 
 module.exports = {
-    class: AnnotationShape
+    class: Shape
 };

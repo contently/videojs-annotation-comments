@@ -4,7 +4,10 @@
 */
 
 module.exports = {
+
+    // Clone an object
     cloneObject: (obj) => Object.assign({}, obj),
+
     // _throttle from underscore
     throttle: (func, wait, options) => {
         var context, args, result;
@@ -37,6 +40,8 @@ module.exports = {
           return result;
         };
     },
+
+    // Parse all keys of an object to int
     parseIntObj: (obj) => {
         Object.keys(obj).forEach((key) => {
             if(parseInt(obj[key])) {
@@ -45,6 +50,8 @@ module.exports = {
         });
         return obj;
     },
+
+    // Convert a range {start: int, (optional) end: int} to human readable time
     humanTime: (range) => {
         function readable(sec){
             let mins = Math.floor(sec/60),
@@ -55,13 +62,16 @@ module.exports = {
         if(range.end) time.push(readable(range.end));
         return time.join("-");
     },
+
+    // Pseduo-random guid generator
     guid: () => {
         function s4() {
             return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
         }
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' +  s4() + '-' + s4() + s4() + s4();
     },
-    // returns the height and width of an element that is not visible
+
+    // Returns the height and width of an element that is not visible
     // clones el and tricks DOM into rendering it w the correct size
     // beware the container may be important for scoped styles
     areaOfHiddenEl: ($el, $container, hideClass='') => {
@@ -79,6 +89,8 @@ module.exports = {
 
         return data;
     },
+
+    // Determine if a value (n) is within a range (start <= n <= end)
     isWithinRange: (start, end, n) => {
         end = end || start + 1; // for ranges with NO end defined, assume a 1s range
         return n >= start && n <= end;

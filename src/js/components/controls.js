@@ -35,7 +35,7 @@ class Controls extends PlayerUIComponent {
             this.playerButton = new PlayerButton(this.playerId);
         }
 
-        this.draw();
+        this.render();
     }
 
     // Bind all the events we need for UI interaction
@@ -52,7 +52,7 @@ class Controls extends PlayerUIComponent {
                 .on("click.vac-controls", ".vac-add-controls a, .vac-video-write-new.vac-is-annotation a", this.cancelAddNew.bind(this)) // Cancel link click
         }
         if(bindArrowKeys){
-            $(document).on("keyup.vac-nav", (e) => this.handleArrowKeys(e)); // Use arrow keys to navigate annotations
+            $(document).on(`keyup.vac-nav-${this.playerId}`, (e) => this.handleArrowKeys(e)); // Use arrow keys to navigate annotations
         }
     }
 
@@ -60,6 +60,7 @@ class Controls extends PlayerUIComponent {
     teardown () {
         this.clear(true);
         this.$player.off('click.vac-controls');
+        $(document).off(`keyup.vac-nav-${this.playerId} mousemove.vac-tooltip-${this.playerId}`);
         if(this.playerButton) this.playerButton.teardown();
     }
 
@@ -75,13 +76,12 @@ class Controls extends PlayerUIComponent {
             this.$player.find('.vac-video-cover-canvas')
                 .off('mousedown.vac-cursor-tooltip')
                 .off('mouseup.vac-cursor-tooltip');
-            $(document).off('mousemove.vac-cursor-tooltip');
         }
         this.$UI.controlElements.remove();
     }
 
-    // Draw the UI elements (based on uiState)
-    draw (reset=false) {
+    // Render the UI elements (based on uiState)
+    render (reset=false) {
         this.clear(reset);
         let data = Object.assign(
             {
@@ -101,7 +101,7 @@ class Controls extends PlayerUIComponent {
     // User clicked to cancel in-progress add - restore to normal state
     cancelAddNew () {
         if(!(this.uiState.adding || this.uiState.writingComment)) return;
-        this.draw(true);
+        this.render(true);
         this.marker.teardown();
         this.marker = null;
     }
@@ -113,7 +113,7 @@ class Controls extends PlayerUIComponent {
         this.player.pause();
         this.setAddingUI();
         this.uiState.adding = true;
-        this.draw();
+        this.render();
 
         // construct new range and create marker
         let range = {
@@ -132,7 +132,7 @@ class Controls extends PlayerUIComponent {
     // User clicked 'next' action - show UI to write comment
     writeComment () {
         this.uiState.writingComment = true;
-        this.draw();
+        this.render();
     }
 
     // User clicked to save a new annotation/comment during add new flow
@@ -156,7 +156,7 @@ class Controls extends PlayerUIComponent {
     restoreNormalUI () {
         this.plugin.annotationState.enabled = this.plugin.active;
         this.enablePlayingAndControl();
-        $(document).off('mousemove.vac-cursor-tool-tip');
+        $(document).off(`mousemove.vac-tooltip-${this.playerId}`);
     }
 
     // On arrow key press, navigate to next or prev Annotation
@@ -170,11 +170,12 @@ class Controls extends PlayerUIComponent {
 
     // Adds help text to cursor during annotation mode
     bindCursorTooltip () {
-        let self = this,
-            $tooltip = self.$player.find('.vac-cursor-tool-tip'),
-            tooltipArea = Utils.areaOfHiddenEl($tooltip, self.$UI.coverCanvas, self.UI_CLASSES.hidden);
+        this.tooltipArea = Utils.areaOfHiddenEl(this.$tooltip, this.$UI.coverCanvas, this.UI_CLASSES.hidden);
 
-        $(document).on('mousemove.vac-cursor-tool-tip', Utils.throttle((event) => {
+        // Assert bounds are updated in plugin in case page was modified since creation, so tooltip math is correct
+        this.plugin.setBounds(false);
+
+        $(document).on(`mousemove.vac-tooltip-${this.playerId}`, Utils.throttle(((event) => {
             if(!this.plugin.bounds) return;
 
             let x = event.pageX,
@@ -183,38 +184,43 @@ class Controls extends PlayerUIComponent {
                     (x < this.plugin.bounds.left || x > this.plugin.bounds.right) ||
                     (y < this.plugin.bounds.top || y > this.plugin.bounds.bottom),
                 withinControls = !outOfBounds && y >= this.plugin.bounds.bottomWithoutControls,
-                markerHovered = $tooltip.hasClass('vac-marker-hover');
+                markerHovered = this.$tooltip.hasClass('vac-marker-hover');
 
             if(outOfBounds) {
-                $tooltip.addClass(self.UI_CLASSES.hidden);
+                this.$tooltip.addClass(this.UI_CLASSES.hidden);
                 return
             }
 
             let cursorX      = x - this.plugin.bounds.left,
                 cursorY      = y - this.plugin.bounds.top,
                 margin       = 10,
-                rightEdge    = self.$player.width(),
-                bottomEdge   = self.$player.height() - self.$UI.controlBar.height(),
-                atRightEdge  = (cursorX + tooltipArea.width + margin*2) >= rightEdge,
-                atBottomEdge = (cursorY + tooltipArea.height + margin*2) >= bottomEdge;
+                rightEdge    = this.$player.width(),
+                bottomEdge   = this.$player.height() - this.$UI.controlBar.height(),
+                atRightEdge  = (cursorX + this.tooltipArea.width + margin*2) >= rightEdge,
+                atBottomEdge = (cursorY + this.tooltipArea.height + margin*2) >= bottomEdge;
 
             // is the tooltip too close to the right or bottom edge?
-            let posX = atRightEdge ? (rightEdge - tooltipArea.width - margin) : (cursorX + margin),
-                posY = atBottomEdge ? (bottomEdge - tooltipArea.height - margin) : (cursorY + margin);
+            let posX = atRightEdge ? (rightEdge - this.tooltipArea.width - margin) : (cursorX + margin),
+                posY = atBottomEdge ? (bottomEdge - this.tooltipArea.height - margin) : (cursorY + margin);
 
             // hide if the cursor is over the control bar but not hovering over the draggable marker
             // also hide if mouse is down
-            if((withinControls && !markerHovered) || $tooltip.hasClass('vac-cursor-dragging')) {
-                $tooltip.addClass(self.UI_CLASSES.hidden);
+            if((withinControls && !markerHovered) || this.$tooltip.hasClass('vac-cursor-dragging')) {
+                this.$tooltip.addClass(this.UI_CLASSES.hidden);
             } else {
-                $tooltip.removeClass(self.UI_CLASSES.hidden);
+                this.$tooltip.removeClass(this.UI_CLASSES.hidden);
             }
 
-            $tooltip.css({
+            this.$tooltip.css({
                 left: `${posX}px`,
                 top: `${posY}px`
             });
-        }, 50));
+        }).bind(this), 50));
+    }
+
+    get $tooltip () {
+        this.$tooltip_ = this.$tooltip_ || this.$player.find('.vac-cursor-tool-tip');
+        return this.$tooltip_;
     }
 }
 

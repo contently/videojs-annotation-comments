@@ -25,7 +25,7 @@ class PlayerUIComponent extends PlayerComponent{
             timeline:               this.$player.find('.vjs-progress-control'),         // Timeline element
             markerCursorHelpText:   this.$player.find('.vac-cursor-help-text'),         // Help text that appears with 'click/drag..' on timeline
             controlBar:             this.$player.find('.vjs-control-bar'),              // Conrol bar wrapper for vjs
-            markerWrap:             this.$player.find('.vac-marker-wrap'),               // wrapper element to place markers in on timeline
+            markerWrap:             this.$player.find('.vac-marker-wrap'),              // wrapper element to place markers in on timeline
             coverCanvas:            this.$player.find('.vac-video-cover-canvas')        // Player cover during adding annotation state
         });
     }
@@ -45,8 +45,8 @@ class PlayerUIComponent extends PlayerComponent{
 
         // Generate a pseudo-guid ID for this component, to use as an ID in the DOM
     get componentId () {
-        this._id = this._id || Utils.guid()
-        return this._id;
+        this.cid_ = this.cid_ || Utils.guid()
+        return this.cid_;
     }
 
     // Disable play/control actions on the current player
@@ -70,6 +70,7 @@ class PlayerUIComponent extends PlayerComponent{
     // Handle escaped breaklines in Handlebars
     registerHandlebarsHelpers () {
         if('breaklines' in Handlebars.helpers) return;
+
         Handlebars.registerHelper('breaklines', (text) => {
             text = Handlebars.Utils.escapeExpression(text);
             text = text.replace(/(\r\n|\n|\r)/gm, '<br>');

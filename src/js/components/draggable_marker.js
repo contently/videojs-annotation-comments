@@ -16,7 +16,7 @@ class DraggableMarker extends Marker {
         this.templateName = markerTemplateName;   // Change template from base Marker template
         this.dragging = false;                    // Is a drag action currently occring?
         this.rangePin = range.start;              // What's the original pinned timeline point when marker was added
-        this.draw();
+        this.render();
         this.$parent = this.$UI.markerWrap;       // Set parent as marker wrap
     }
 
@@ -27,7 +27,7 @@ class DraggableMarker extends Marker {
             e.preventDefault();
             this.dragging = true;
             // When mouse moves (with mouse down) call onDrag, throttling to once each 250 ms
-            $(document).on("mousemove.vac-marker", Utils.throttle(this.onDrag.bind(this), 250) );
+            $(document).on(`mousemove.vac-dmarker-${this.playerId}`, Utils.throttle(this.onDrag.bind(this), 250) );
 
             // Add drag class to cursor tooltip if available
             if(!this.plugin.options.showControls) {
@@ -38,9 +38,9 @@ class DraggableMarker extends Marker {
         });
 
         // On mouse up end drag action and unbind mousemove event
-        $(document).on("mouseup.vac-marker", (e) => {
+        $(document).on(`mouseup.vac-dmarker-${this.playerId}`, (e) => {
              if(!this.dragging) return;
-             $(document).off("mousemove.vac-marker");
+             $(document).off(`mousemove.vac-dmarker-${this.playerId}`);
              this.dragging = false;
 
              // Remove drag class and hover class from cursor tooltip if available
@@ -65,7 +65,7 @@ class DraggableMarker extends Marker {
         };
     }
 
-    // On drag action, calculate new range and redraw marker
+    // On drag action, calculate new range and re-render marker
     onDrag (e) {
         var dragPercent = this.percentValFromXpos(e.pageX),
             secVal = parseInt(this.duration * dragPercent);
@@ -81,7 +81,7 @@ class DraggableMarker extends Marker {
                 end:    this.rangePin
             };
         }
-        this.draw();
+        this.render();
         this.plugin.fire('addingAnnotationDataChanged', { range: this.range });
     }
 
@@ -98,8 +98,7 @@ class DraggableMarker extends Marker {
     // Remove bound events on destructon
     teardown () {
         super.teardown();
-        $(document).off('mousemove.vac-marker');
-        $(document).off('mouseup.vac-marker');
+        $(document).off(`mousemove.vac-dmarker-${this.playerId} mouseup.vac-dmarker-${this.playerId}`);
         this.$el.off('mouseenter.vac-cursor-tool-tip');
         this.$el.off('mouseleave.vac-cursor-tool-tip');
         this.$el.off('mousedown.vac-marker');
@@ -112,7 +111,7 @@ class DraggableMarker extends Marker {
         this.range.start = newStart;
         this.rangePin = newStart;
         this.teardown();
-        this.draw();
+        this.render();
 
         this.plugin.fire('addingAnnotationDataChanged', { range: this.range });
     }

@@ -8,7 +8,7 @@ const   PlayerUIComponent = require("./../lib/player_ui_component").class,
         CommentList = require("./comment_list").class,
         Marker = require("./marker").class,
         Comment = require("./comment").class,
-        AnnotationShape = require("./annotation_shape").class;
+        Shape = require("./shape").class;
 
 class Annotation extends PlayerUIComponent {
 
@@ -35,11 +35,11 @@ class Annotation extends PlayerUIComponent {
 
     buildMarker () {
         this.marker = new Marker(this.playerId, this.range, this.commentList.comments[0]);
-        this.marker.draw();
+        this.marker.render();
     }
 
     buildShape() {
-        this.annotationShape = new AnnotationShape(this.playerId, this.shape);
+        this.annotationShape = new Shape(this.playerId, this.shape);
     }
 
     // Serialize object
@@ -72,7 +72,7 @@ class Annotation extends PlayerUIComponent {
         }
 
         if(!previewOnly || (previewOnly && this.plugin.options.showMarkerShapeAndTooltips)){
-            this.annotationShape.draw();
+            this.annotationShape.render();
 
             if(this.shape) {
                 this.annotationShape.$el.on("click.vac-annotation", () => {
@@ -95,7 +95,7 @@ class Annotation extends PlayerUIComponent {
         if(!this.isOpen) return;
         this.isOpen = false;
         this.marker.deactivate();
-        this.commentList.teardown();
+        this.commentList.removeUI();
         if(this.annotationShape.$el) this.annotationShape.$el.off("click.vac-annotation");
         this.annotationShape.teardown();
         if(clearActive) this.plugin.annotationState.clearActive();
