@@ -77,6 +77,7 @@ class Controls extends PlayerUIComponent {
                 .off('mousedown.vac-cursor-tooltip')
                 .off('mouseup.vac-cursor-tooltip');
         }
+        this.$tooltip_ = null;
         this.$UI.controlElements.remove();
     }
 
@@ -174,7 +175,6 @@ class Controls extends PlayerUIComponent {
 
         // Assert bounds are updated in plugin in case page was modified since creation, so tooltip math is correct
         this.plugin.setBounds(false);
-
         $(document).on(`mousemove.vac-tooltip-${this.playerId}`, Utils.throttle(((event) => {
             if(!this.plugin.bounds) return;
 

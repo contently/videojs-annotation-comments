@@ -6773,6 +6773,7 @@ var Controls = function (_PlayerUIComponent) {
                 this.uiState = Utils.cloneObject(BASE_UI_STATE);
                 this.$player.find('.vac-video-cover-canvas').off('mousedown.vac-cursor-tooltip').off('mouseup.vac-cursor-tooltip');
             }
+            this.$tooltip_ = null;
             this.$UI.controlElements.remove();
         }
 
@@ -6897,7 +6898,6 @@ var Controls = function (_PlayerUIComponent) {
 
             // Assert bounds are updated in plugin in case page was modified since creation, so tooltip math is correct
             this.plugin.setBounds(false);
-
             $(document).on("mousemove.vac-tooltip-" + this.playerId, Utils.throttle(function (event) {
                 if (!_this3.plugin.bounds) return;
 
@@ -6926,6 +6926,7 @@ var Controls = function (_PlayerUIComponent) {
 
                 // hide if the cursor is over the control bar but not hovering over the draggable marker
                 // also hide if mouse is down
+                console.log('show or hide tooltip');
                 if (withinControls && !markerHovered || _this3.$tooltip.hasClass('vac-cursor-dragging')) {
                     _this3.$tooltip.addClass(_this3.UI_CLASSES.hidden);
                 } else {
