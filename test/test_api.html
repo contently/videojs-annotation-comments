@@ -151,7 +151,7 @@
 			<div class="control-section hidden" id="new-annotation-form">
 				<p class="event-type"><strong>SEND:</strong> New Annotation Event</p>
 				<label>Comment body</label>
-				<textarea id="new-comment-body"></textarea>
+				<textarea id="new-annotation-comment-body"></textarea>
 				<input type="hidden" id="new-annotation-range-start"></input>
 				<input type="hidden" id="new-annotation-range-end"></input>
 				<input type="hidden" id="new-annotation-shape-x1"></input>
@@ -160,12 +160,29 @@
 				<input type="hidden" id="new-annotation-shape-y2"></input>
 				<button id="fire-new-annotation">Save</button>
 			</div>
+
+			<div class="control-section" id="new-comment-form">
+				<p class="event-type"><strong>SEND:</strong> New Comment Event</p>
+				<label>Annotation ID</label>
+				<input id="new-comment-annotation-id"></input>
+				<label>Comment Body</label>
+				<textarea id="new-comment-body"></textarea>
+				<button id="fire-new-comment">Save</button>
+			</div>
+
+			<div class="control-section" id="destroy-comment-form">
+				<p class="event-type"><strong>SEND:</strong> Destroy Comment Event</p>
+				<label>Comment ID</label>
+				<input id="destroy-comment-id"></input>
+				<button id="fire-destroy-comment">FIRE</button>
+			</div>
         </div>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 		<script src="/video.js/dist/video.min.js"></script>
 		<script src="/videojs-annotation-comments.js"></script>
 		<script>
+			window.VAC_DEBUG = true;
 			var player = videojs('the_video');
 			window.plugin = player.annotationComments({
 				annotationsObjects: annotations,
@@ -176,7 +193,6 @@
 				},
 				onStateChanged: function(data){ console.log(data); },
 				internalCommenting: false,
-				showCommentList: false,
 				showControls: false,
 				showMarkerTooltips: false,
 				startInAnnotationMode: true
@@ -217,13 +233,27 @@
 						y1: $("#new-annotation-shape-y1").val(),
 						y2: $("#new-annotation-shape-y2").val(),
 					},
-					commentStr: $("#new-comment-body").val()
+					commentStr: $("#new-annotation-comment-body").val()
 				};
 				plugin.fire("newAnnotation", annotation);
 			});
 
+			$("#fire-new-comment").on("click", function() {
+				var data = {
+					annotationId: $("#new-comment-annotation-id").val(),
+					body: $("#new-comment-body").val()
+				}
+
+				plugin.fire("newComment", data);
+			});
+
+			$("#fire-destroy-comment").on("click", function() {
+				var id = $("#destroy-comment-id").val();
+				plugin.fire("destroyComment", {id: id});
+			});
+
 			plugin.on("annotationOpened", function(event) {
-				var id = event.detail.id;
+				var id = event.detail.annotation.id;
 				$("#annotation-opened-id").html(id);
 			});
 

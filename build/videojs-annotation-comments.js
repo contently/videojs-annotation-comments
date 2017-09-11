@@ -5907,7 +5907,7 @@ var Annotation = function (_PlayerUIComponent) {
             if (!this.isOpen) return;
             this.isOpen = false;
             this.marker.deactivate();
-            this.commentList.removeUI();
+            this.commentList.teardown(false);
             if (this.annotationShape.$el) this.annotationShape.$el.off("click.vac-annotation");
             this.annotationShape.teardown();
             if (clearActive) this.plugin.annotationState.clearActive();
@@ -5942,9 +5942,9 @@ var Annotation = function (_PlayerUIComponent) {
 
             this.close(true);
             this.marker.teardown();
+            if (this.commentList) this.commentList.teardown(removeFromCollection);
             if (removeFromCollection) this.plugin.annotationState.removeAnnotation(this);
             if (this.annotationShape) this.annotationShape.teardown();
-            if (this.commentList) this.commentList.teardown();
         }
 
         // Build a new annotation instance by passing in data for range, shape, comment, & plugin ref
@@ -5958,6 +5958,11 @@ var Annotation = function (_PlayerUIComponent) {
                 shape: this.shape,
                 comments: this.commentList.data
             };
+        }
+    }, {
+        key: "isActive",
+        get: function get() {
+            return this.plugin.annotationState.activeAnnotation === this;
         }
     }], [{
         key: "newFromData",
@@ -5992,6 +5997,8 @@ module.exports = {
 */
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -6065,9 +6072,7 @@ var AnnotationState = function (_PlayerComponent) {
     }, {
         key: "destroyAnnotationById",
         value: function destroyAnnotationById(id) {
-            var annotation = this.annotations.find(function (a) {
-                return a.id == id;
-            });
+            var annotation = this.findAnnotation(id);
             if (annotation) annotation.teardown();
         }
 
@@ -6170,10 +6175,34 @@ var AnnotationState = function (_PlayerComponent) {
     }, {
         key: "openAnnotationById",
         value: function openAnnotationById(id) {
-            var annotation = this.annotations.find(function (a) {
+            var annotation = this.findAnnotation(id);
+            if (annotation) this.openAnnotation(annotation);
+        }
+
+        // Returns annotation object given ID
+
+    }, {
+        key: "findAnnotation",
+        value: function findAnnotation(id) {
+            return this.annotations.find(function (a) {
                 return a.id == id;
             });
-            if (annotation) this.openAnnotation(annotation);
+        }
+
+        // Returns comment object given ID
+
+    }, {
+        key: "findComment",
+        value: function findComment(id) {
+            var _ref;
+
+            var comments = this.annotations.map(function (a) {
+                return a.commentList.comments;
+            });
+            comments = (_ref = []).concat.apply(_ref, _toConsumableArray(comments)); // flatten 2d array
+            return comments.find(function (c) {
+                return c.id == id;
+            });
         }
 
         // Finds the next annotation in collection and opens it
@@ -6333,11 +6362,14 @@ var Comment = function (_PlayerUIComponent) {
 
         var _this = _possibleConstructorReturn(this, (Comment.__proto__ || Object.getPrototypeOf(Comment)).call(this, playerId));
 
+        _this.commentList = data.commentList;
         _this.id = data.id || _this.componentId;
         _this.meta = data.meta;
         _this.body = data.body;
         _this.timestamp = moment(data.meta.datetime).unix();
         _this.timeSince = _this.timeSince();
+
+        _this.$el = $(_this.render());
         return _this;
     }
 
@@ -6345,10 +6377,20 @@ var Comment = function (_PlayerUIComponent) {
 
 
     _createClass(Comment, [{
-        key: "timeSince",
-
+        key: "render",
+        value: function render() {
+            return this.renderTemplate(templateName, {
+                id: this.id,
+                body: this.body,
+                meta: this.meta,
+                timeSince: this.timeSince
+            });
+        }
 
         // Return time since comment timestamp
+
+    }, {
+        key: "timeSince",
         value: function timeSince() {
             return moment(this.meta.datetime).fromNow();
         }
@@ -6364,22 +6406,14 @@ var Comment = function (_PlayerUIComponent) {
                 body: this.body
             };
         }
-
-        // Render HTML for this comment
-
     }, {
         key: "HTML",
         get: function get() {
-            return this.renderTemplate(templateName, {
-                id: this.id,
-                body: this.body,
-                meta: this.meta,
-                timeSince: this.timeSince
-            });
+            return this.$el[0].outerHTML;
         }
     }], [{
         key: "newFromData",
-        value: function newFromData(body, plugin) {
+        value: function newFromData(body, commentList, plugin) {
             var data = this.dataObj(body, plugin);
             return new Comment(data, plugin.playerId);
         }
@@ -6437,8 +6471,9 @@ var CommentList = function (_PlayerUIComponent) {
         var _this = _possibleConstructorReturn(this, (CommentList.__proto__ || Object.getPrototypeOf(CommentList)).call(this, playerId));
 
         _this.annotation = data.annotation;
-        _this.comments = data.comments.map(function (c) {
-            return new Comment(c, playerId);
+        _this.comments = data.comments.map(function (commentData) {
+            commentData.commentList = _this;
+            return new Comment(commentData, playerId);
         });
         _this.sortComments();
         return _this;
@@ -6490,6 +6525,15 @@ var CommentList = function (_PlayerUIComponent) {
             this.bindListEvents();
         }
 
+        // Re-render UI on state change
+
+    }, {
+        key: "reRender",
+        value: function reRender() {
+            this.teardown(false);
+            this.render();
+        }
+
         // Render new comment form
 
     }, {
@@ -6517,12 +6561,20 @@ var CommentList = function (_PlayerUIComponent) {
                 body = this.$UI.newCommentTextarea.val();
 
             if (!body) return; // empty comment - TODO add validation / err message
-
-            var comment = Comment.newFromData(body, this.plugin);
+            this.createComment(body);
+        }
+    }, {
+        key: "createComment",
+        value: function createComment(body) {
+            var comment = Comment.newFromData(body, this, this.plugin);
             this.comments.push(comment);
             this.sortComments();
-            this.closeNewComment();
-            this.render();
+
+            // Don't mutate UI if comment is being created for an inactive annotation (via API)
+            if (this.annotation.isActive) {
+                this.reRender(false);
+                this.closeNewComment();
+            }
 
             this.plugin.annotationState.stateChanged();
         }
@@ -6547,17 +6599,22 @@ var CommentList = function (_PlayerUIComponent) {
             if (this.comments.length == 1) {
                 this.annotation.teardown();
             } else {
-                var $comment = $(event.target).closest(".vac-comment"),
-                    commentId = $comment.data('id'),
-                    commentObj = this.comments.find(function (c) {
+                var commentId = this.findCommentId(event),
+                    comment = this.comments.find(function (c) {
                     return c.id == commentId;
                 }),
-                    i = this.comments.indexOf(commentObj);
+                    i = this.comments.indexOf(comment);
                 this.comments.splice(i, 1);
-                this.render();
+                this.reRender();
             }
 
             this.plugin.annotationState.stateChanged();
+        }
+    }, {
+        key: "findCommentId",
+        value: function findCommentId(event) {
+            var id = typeof event.detail.id === 'undefined' ? $(event.target).closest('.vac-comment').data('id') : event.detail.id;
+            return id;
         }
 
         // Prevents outer page scroll when at the top or bottom of CommentList UI
@@ -6620,26 +6677,21 @@ var CommentList = function (_PlayerUIComponent) {
         value: function unbindCommentFormEvents() {
             if (this.$newCommentForm) this.$newCommentForm.off("click.vac-comment");
         }
-    }, {
-        key: "removeUI",
-        value: function removeUI() {
-            this.closeNewComment();
-            if (this.$el) this.$el.remove();
-        }
 
         // Teardown CommentList UI, unbind events
 
     }, {
         key: "teardown",
         value: function teardown() {
+            var destroyComments = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
             if (this.$el) {
                 this.$el.off("click.vac-comment mousewheel.vac-comment DOMMouseScroll.vac-comment");
             }
-            this.unbindCommentFormEvents();
-
-            while (this.comments.length) {
-                this.comments.pop().teardown();
-            }
+            this.comments.forEach(function (c) {
+                return c.teardown();
+            });
+            if (destroyComments) this.comments = [];
             _get(CommentList.prototype.__proto__ || Object.getPrototypeOf(CommentList.prototype), "teardown", this).call(this);
         }
     }, {
@@ -6926,7 +6978,6 @@ var Controls = function (_PlayerUIComponent) {
 
                 // hide if the cursor is over the control bar but not hovering over the draggable marker
                 // also hide if mouse is down
-                console.log('show or hide tooltip');
                 if (withinControls && !markerHovered || _this3.$tooltip.hasClass('vac-cursor-dragging')) {
                     _this3.$tooltip.addClass(_this3.UI_CLASSES.hidden);
                 } else {
@@ -7586,6 +7637,7 @@ var EventDispatcher = function () {
                         var callback = matchingEvents[key].bind(obj);
                         _this2.registerListener(key, function (evt) {
                             if (!_this2.pluginReady) return;
+                            _this2.logCallback(key, className, evt);
                             callback(evt, obj);
                         }.bind(_this2));
                     }
@@ -7631,6 +7683,11 @@ var EventDispatcher = function () {
                 _this3.unregisterListener(type);
             });
         }
+    }, {
+        key: "logCallback",
+        value: function logCallback(eventName, className, event) {
+            Logger.log("evt-dispatch-RECEIVE", eventName + " (" + className + ")", event);
+        }
     }]);
 
     return EventDispatcher;
@@ -7648,41 +7705,41 @@ var EventDispatcher = function () {
 var EventRegistry = {
     AnnotationState: {
         openAnnotation: function openAnnotation(event, _this) {
-            Logger.log("evt-dispatch-RECEIVE", "openAnnotation (AnnotationState)", event);
             _this.openAnnotationById(event.detail.id);
         },
         closeActiveAnnotation: function closeActiveAnnotation(event, _this) {
-            Logger.log("evt-dispatch-RECEIVE", "closeActiveAnnotation (AnnotationState)", event);
             _this.clearActive();
         },
         newAnnotation: function newAnnotation(event, _this) {
-            Logger.log("evt-dispatch-RECEIVE", "newAnnotation (AnnotationState)", event);
             _this.createAndAddAnnotation(event.detail);
         },
         destroyAnnotation: function destroyAnnotation(event, _this) {
-            Logger.log("evt-dispatch-RECEIVE", "destroyAnnotation (AnnotationState)", event);
             _this.destroyAnnotationById(event.detail.id);
+        },
+        newComment: function newComment(event, _this) {
+            var annotation = _this.findAnnotation(event.detail.annotationId);
+            if (annotation) annotation.commentList.createComment(event.detail.body);
+        },
+        destroyComment: function destroyComment(event, _this) {
+            var comment = _this.findComment(event.detail.id);
+            if (comment) comment.commentList.destroyComment(event);
         }
     },
     Controls: {
         addingAnnotation: function addingAnnotation(event, _this) {
-            Logger.log("evt-dispatch-RECEIVE", "addingAnnotation (Controls)", event);
             _this.startAddNew();
         },
         cancelAddingAnnotation: function cancelAddingAnnotation(event, _this) {
-            Logger.log("evt-dispatch-RECEIVE", "cancelAddingAnnotation (Controls)", event);
             _this.cancelAddNew();
         }
     },
     PlayerButton: {
         onStateChanged: function onStateChanged(event, _this) {
-            Logger.log("evt-dispatch-RECEIVE", "onStateChanged (PlayerButton)", event);
             _this.updateNumAnnotations();
         }
     },
     Main: {
         toggleAnnotationMode: function toggleAnnotationMode(event, _this) {
-            Logger.log("evt-dispatch-RECEIVE", "toggleAnnotationMode (Main)", event);
             _this.toggleAnnotationMode();
         }
     }

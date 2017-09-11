@@ -12,11 +12,14 @@ class Comment extends PlayerUIComponent {
 
     constructor (data, playerId) {
         super(playerId);
+        this.commentList = data.commentList;
         this.id = data.id || this.componentId;
         this.meta = data.meta;
         this.body = data.body;
         this.timestamp = moment(data.meta.datetime).unix();
         this.timeSince = this.timeSince();
+
+        this.$el = $(this.render());
     }
 
     // Serialize data
@@ -28,8 +31,11 @@ class Comment extends PlayerUIComponent {
         };
     }
 
-    // Render HTML for this comment
     get HTML () {
+        return this.$el[0].outerHTML;
+    }
+
+    render () {
         return this.renderTemplate(
             templateName,
             {
@@ -47,7 +53,7 @@ class Comment extends PlayerUIComponent {
     }
 
     // Return a Comment obj given body content and plugin reference
-    static newFromData (body, plugin) {
+    static newFromData (body, commentList, plugin) {
         let data = this.dataObj(body, plugin);
         return new Comment(data, plugin.playerId);
     }

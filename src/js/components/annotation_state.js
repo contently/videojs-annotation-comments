@@ -91,7 +91,7 @@ class AnnotationState extends PlayerComponent {
 
     // Destroy an existing annotation
     destroyAnnotationById (id) {
-        let annotation = this.annotations.find((a) => a.id == id);
+        let annotation = this.findAnnotation(id);
         if (annotation) annotation.teardown();
     }
 
@@ -166,8 +166,20 @@ class AnnotationState extends PlayerComponent {
 
     // Open an annotation by ID (if it exists)
     openAnnotationById (id) {
-        let annotation = this.annotations.find((a) => a.id == id);
+        let annotation = this.findAnnotation(id);
         if (annotation) this.openAnnotation(annotation);
+    }
+
+    // Returns annotation object given ID
+    findAnnotation (id) {
+        return this.annotations.find((a) => a.id == id);
+    }
+
+    // Returns comment object given ID
+    findComment (id) {
+        let comments = this.annotations.map((a) => a.commentList.comments);
+        comments = [].concat(...comments); // flatten 2d array
+        return comments.find((c) => c.id == id);
     }
 
     // Finds the next annotation in collection and opens it
