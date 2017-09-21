@@ -158,7 +158,8 @@
   font-size: 14px;
   color: white;
   width: 150px;
-  display: none; }
+  display: none;
+  text-align: center; }
   .video-js .vac-controls i, .video-js .vac-add-controls i {
     color: #dbdcdc;
     font-size: 11px;

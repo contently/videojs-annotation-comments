@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+
+<!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Videojs Annotation Comments | A plugin for video.js to add support for timeline moment and range annotations.</title>
+<meta name="generator" content="Jekyll v3.8.3" />
+<meta property="og:title" content="Videojs Annotation Comments" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="A plugin for video.js to add support for timeline moment and range annotations." />
+<meta property="og:description" content="A plugin for video.js to add support for timeline moment and range annotations." />
+<meta property="og:site_name" content="Videojs Annotation Comments" />
+<script type="application/ld+json">
+{"name":"Videojs Annotation Comments","description":"A plugin for video.js to add support for timeline moment and range annotations.","@type":"WebSite","url":"/","headline":"Videojs Annotation Comments","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+    <meta name="description" content="A plugin for video.js to add support for timeline moment and range annotations."/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/assets/css/style.css?v=">
+
+    <link href="//vjs.zencdn.net/6.2.0/video-js.min.css" rel="stylesheet">
+    <link href="assets/css/videojs_skin.css" rel="stylesheet">
+    <link href="/build/css/annotations.css?v=" rel="stylesheet">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Videojs Annotation Comments</h1>
+      <h2 class="project-tagline">A plugin for video.js to add support for timeline moment and range annotations.</h2>
+      <a href="https://github.com/contently/videojs-annotation-comments" class="btn">View on GitHub</a>
+      
+        <a href="" class="btn">Download .zip</a>
+      
+    </section>
+
+    <section class="main-content">
+      <h3>Live Demo</h3>
+      <div class="video-container">
+        <video id="the_video" class="video-js" controls preload="auto" width="720" height="405" poster="https://s3.amazonaws.com/misc-files-bucket/arethusa-cow.jpg" data-setup="{}">
+          <source src="https://s3.amazonaws.com/misc-files-bucket/arethusa-cheese-short.mp4" type='video/mp4'>
+          <p class="vjs-no-js">
+            To view this video please enable JavaScript, and consider upgrading to a web browser that
+            <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+          </p>
+        </video>
+      </div>
+      <small>Thanks to <a target="_blank" href="https://www.instagram.com/arethusa_farm/">@arethusa_farm</a> for the video sample</small>
+      <h3>API Event Logs</h3>
+      <div class="console-container">
+        <div class="clear-console-btn">CLEAR</div>
+        <div class="console"></div>
+      </div>
+    </section>
+
+    <section class="main-content">
+      <h3 id="background">Background</h3>
+
+<p>Collaboration between videographers and clients can be tedious, with emails and phone calls that waste time trying to reference specific frames and areas of the screen. This plugin enables more efficient collaboration from the browser.</p>
+
+<p>This plugin was conceived and developed as a Hack Week project at <a href="http://www.contently.com">Contently</a> by <a href="http://www.github.com/ecaroth">Evan Carothers</a> and <a href="http://www.github.com/jackpope">Jack Pope</a>. Continuing our focus and commitment to multimedia support at Contently, the entire team productized and bulletproofed the plugin as a flexible solution to be used in our product and other open-source use cases.</p>
+
+<h3 id="goals">Goals</h3>
+
+<ul>
+  <li><strong>Efficient for videographers and clients alike</strong> - Provides useful collaboration features including annotations, comments/replies, ranged time markers, and more, with intuitive controls.</li>
+  <li><strong>SIMPLE &amp; LIGHTWEIGHT</strong> - Everything is contained within the plugin and player element. There is no need to build additional UI components. Just install VideoJS, register the plugin, setup whatever backend storage you wish, and start collaborating.</li>
+  <li><strong>EXTENSIBLE</strong> - The plugin can be integrated with existing commenting systems (as we did within Contently), and makes very few assumptions about how to store annotations. Custom events are available for communicating with external APIs, providing support for on-page interactions and data persistence. Simple CSS overrides can also allow for branding customizations with minimal effort, or completely custom UI/UX.</li>
+</ul>
+
+<h3 id="add-it-to-your-videojs-player">Add it to your VideoJS player</h3>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">player</span> <span class="o">=</span> <span class="nx">videojs</span><span class="p">(</span><span class="s1">'video-id'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">plugin</span> <span class="o">=</span> <span class="nx">player</span><span class="p">.</span><span class="nx">annotationComments</span><span class="p">({})</span>
+</code></pre></div></div>
+
+<p><a href="https://github.com/contently/videojs-annotation-comments">VideoJS Annotation Comments is documented on Github</a>.</p>
+
+<h4 id="license">License</h4>
+
+<p>This plugin is <a href="license.md">licensed</a> under the Apache License, Version 2.0, which is the same license used by Video.js</p>
+
+
+      <footer class="site-footer">
+        
+      </footer>
+    </section>
+
+    
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//vjs.zencdn.net/6.2.0/video.min.js"></script>
+    <script src="/build/videojs-annotation-comments.min.js?v="></script>
+    <script src="/assets/js/demo_annotations.js"></script>
+    <script src="/assets/js/main.js"></script>
+  </body>
+</html>

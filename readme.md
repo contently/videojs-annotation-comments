@@ -4,13 +4,15 @@
 
 ### Background
 
-This plugin was conceived and initially developed as a Hack Week project @ [Contently](http://www.contently.com) by [Evan Carothers](http://www.github.com/ecaroth) &amp; [Jack Pope](http://www.github.com/jackpope). With our continuing focus and commitment to multimedia support @ Contently, it was further productized and bulletproofed by our entire team, as a flexible solution for use in our product and other open-source use cases.
+Collaboration between videographers and clients can be tedious, with emails and phone calls that waste time trying to reference specific frames and areas of the screen. This plugin enables more efficient collaboration from the browser.
+
+This plugin was conceived and developed as a Hack Week project at [Contently](http://www.contently.com) by [Evan Carothers](http://www.github.com/ecaroth) and [Jack Pope](http://www.github.com/jackpope). Continuing our focus and commitment to multimedia support at Contently, the entire team productized and bulletproofed the plugin as a flexible solution to be used in our product and other open-source use cases.
 
 ### Goals
 
-- **USEFUL** - Provide useful collaboration features including annotations, comments/replies, ranged time markers, and more. All with intuitive controls.
+- **Efficient for videographers and clients alike** - Provides useful collaboration features including annotations, comments/replies, ranged time markers, and more, with intuitive controls.
 - **SIMPLE & LIGHTWEIGHT** - Everything is contained within the plugin and player element. There is no need to build additional UI components. Just install VideoJS, register the plugin, setup whatever backend storage you wish, and start collaborating.
-- **EXTENSIBLE** - The plugin can be integrated with existing commenting systems, and makes very few assumptions about how you store your comments/annotations. Custom events are available for communicating with external APIs, providing support for on-page interactions and data persistence. Simple CSS overrides can also allow for branding customizations with minimal effort, or completely custom UI/UX.
+- **EXTENSIBLE** - The plugin can be integrated with existing commenting systems (as we did within Contently), and makes very few assumptions about how to store annotations. Custom events are available for communicating with external APIs, providing support for on-page interactions and data persistence. Simple CSS overrides can also allow for branding customizations with minimal effort, or completely custom UI/UX.
 
 ### VideoJS Plugins
 

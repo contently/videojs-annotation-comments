@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: "en-US" }}">
+  <head>
+    <meta charset="UTF-8">
+
+{% seo %}
+    <meta name="description" content="{{ page.description | default: site.description | default: site.github.project_tagline }}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#157878">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
+
+    <link href="//vjs.zencdn.net/6.2.0/video-js.min.css" rel="stylesheet">
+    <link href="assets/css/videojs_skin.css" rel="stylesheet">
+    <link href="{{ 'build/css/annotations.css?v=' | append: site.github.build_revision | relative_url }}" rel="stylesheet">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">{{ site.title | default: site.github.repository_name }}</h1>
+      <h2 class="project-tagline">{{ site.description | default: site.github.project_tagline }}</h2>
+      <a href="{{ site.repo_link }}" class="btn">View on GitHub</a>
+      {% if site.show_downloads %}
+        <a href="{{ site.github.zip_url }}" class="btn">Download .zip</a>
+      {% endif %}
+    </section>
+
+    <section class="main-content">
+      <h3>Live Demo</h3>
+      <div class="video-container">
+        <video id="the_video" class="video-js" controls preload="auto" width="720" height="405" poster="https://s3.amazonaws.com/misc-files-bucket/arethusa-cow.jpg" data-setup="{}">
+          <source src="https://s3.amazonaws.com/misc-files-bucket/arethusa-cheese-short.mp4" type='video/mp4'>
+          <p class="vjs-no-js">
+            To view this video please enable JavaScript, and consider upgrading to a web browser that
+            <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+          </p>
+        </video>
+      </div>
+      <small>Thanks to <a target="_blank" href="https://www.instagram.com/arethusa_farm/">@arethusa_farm</a> for the video sample</small>
+      <h3>API Event Logs</h3>
+      <div class="console-container">
+        <div class="clear-console-btn">CLEAR</div>
+        <div class="console"></div>
+      </div>
+    </section>
+
+    <section class="main-content">
+      {{ content }}
+
+      <footer class="site-footer">
+        {% if site.github.is_project_page %}
+          <span class="site-footer-owner"><a href="{{ site.github.repository_url }}">{{ site.github.repository_name }}</a> is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a>.</span>
+        {% endif %}
+      </footer>
+    </section>
+
+    {% if site.google_analytics %}
+      <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', '{{ site.google_analytics }}', 'auto');
+        ga('send', 'pageview');
+      </script>
+    {% endif %}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="//vjs.zencdn.net/6.2.0/video.min.js"></script>
+    <script src="{{ 'build/videojs-annotation-comments.min.js?v=' | append: site.github.build_revision | relative_url }}"></script>
+    <script src="/assets/js/demo_annotations.js"></script>
+    <script src="/assets/js/main.js"></script>
+  </body>
+</html>
