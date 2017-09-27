@@ -1,16 +1,16 @@
-"use strict";
+'use strict';
 /*
     Component for a shape that can be drug/sized on top of the video while adding a new annotation
 */
 
-const   Shape = require("./shape").class,
-        Utils = require('./../lib/utils');
+const Shape = require('./shape').class,
+    Utils = require('./../lib/utils');
 
 class SelectableShape extends Shape {
 
     constructor (playerId) {
         super(playerId);
-        this.$parent = this.$player.find(".vac-video-cover-canvas");
+        this.$parent = this.$player.find('.vac-video-cover-canvas');
         this.bindEvents();
         this.dragging = false;
     }
@@ -18,16 +18,16 @@ class SelectableShape extends Shape {
     // Bind all needed events for drag action
     bindEvents () {
         // On mousedown initialize drag
-        this.$parent.on("mousedown.vac-selectable-shape", (e) => {
+        this.$parent.on('mousedown.vac-selectable-shape', (e) => {
             // Check a few conditions to see if we should *not* start drag
-            if( !($(e.target).hasClass('vac-video-cover-canvas')) ) return; //didn't click on overlay
-            if( $(e.target).hasClass('vac-shape') ) return; //user clicked on annotation
+            if (!($(e.target).hasClass('vac-video-cover-canvas'))) return; // didn't click on overlay
+            if ($(e.target).hasClass('vac-shape')) return; // user clicked on annotation
 
             // Remove old shape if one existed
-            if(this.$el) this.$el.remove();
+            if (this.$el) this.$el.remove();
 
             // Define default starting shape (just x/y coords of where user clicked no width/height yet)
-            let shape = {
+            const shape = {
                 x1: this.xCoordToPercent(e.pageX),
                 y1: this.YCoordToPercent(e.pageY)
             };
@@ -45,32 +45,32 @@ class SelectableShape extends Shape {
             this.dragMoved = false; // used to determine if user actually dragged or just clicked
 
             // Bind event on doc mousemove to track drag, throttled to once each 100ms
-            $(document).on(`mousemove.vac-sshape-${this.playerId}`, Utils.throttle(this.onDrag.bind(this), 100) );
+            $(document).on(`mousemove.vac-sshape-${this.playerId}`, Utils.throttle(this.onDrag.bind(this), 100));
 
             // Add drag class to cursor tooltip if available
-            if(!this.plugin.options.showControls) {
+            if (!this.plugin.options.showControls)
                 this.$player.find('.vac-cursor-tool-tip').addClass('vac-cursor-dragging');
-            }
+
         });
 
         // On mouseup, if during drag cancel drag event listeners
         $(document).on(`mouseup.vac-sshape-${this.playerId}`, (e) => {
-            if(!this.dragging) return;
+            if (!this.dragging) return;
 
             $(document).off(`mousemove.vac-sshape-${this.playerId}`);
 
-            if(!this.dragMoved){
-                //clear shape if it's just a click (and not a drag)
+            if (!this.dragMoved) {
+                // clear shape if it's just a click (and not a drag)
                 this.shape = null;
-                if(this.$el) this.$el.remove();
+                if (this.$el) this.$el.remove();
             }
 
             this.dragging = false;
 
             // Remove drag class from cursor tooltip if available
-            if(!this.plugin.options.showControls) {
+            if (!this.plugin.options.showControls)
                 this.$player.find('.vac-cursor-tool-tip').removeClass('vac-cursor-dragging');
-            }
+
         });
     }
 
@@ -81,17 +81,17 @@ class SelectableShape extends Shape {
         let xPer = this.xCoordToPercent(e.pageX),
             yPer = this.YCoordToPercent(e.pageY);
 
-        if(xPer < this.originX){
+        if (xPer < this.originX) {
             this.shape.x2 = this.originX;
             this.shape.x1 = Math.max(0, xPer);
-        }else{
+        } else {
             this.shape.x2 = Math.min(100, xPer);
             this.shape.x1 = this.originX;
         }
-        if(yPer < this.originY){
+        if (yPer < this.originY) {
             this.shape.y2 = this.originY;
             this.shape.y1 = Math.max(0, yPer);
-        }else{
+        } else {
             this.shape.y2 = Math.min(100, yPer);
             this.shape.y1 = this.originY;
         }
@@ -102,16 +102,16 @@ class SelectableShape extends Shape {
 
     // Convert pixel-based x position (relative to document) to percentage in video
     xCoordToPercent (x) {
-        x = x - this.$parent.offset().left; //pixel position
-        let max = this.$parent.innerWidth();
-        return Number(((x / max) * 100).toFixed(2)); //round to 2 decimal places
+        x = x - this.$parent.offset().left; // pixel position
+        const max = this.$parent.innerWidth();
+        return Number(((x / max) * 100).toFixed(2)); // round to 2 decimal places
     }
 
     // Convert pixel-based y position (relative to document) to percentage in video
     YCoordToPercent (y) {
-        y = y - this.$parent.offset().top; //pixel position
-        let max = this.$parent.innerHeight();
-        return Number(((y / max) * 100).toFixed(2)); //round to 2 decimal places
+        y = y - this.$parent.offset().top; // pixel position
+        const max = this.$parent.innerHeight();
+        return Number(((y / max) * 100).toFixed(2)); // round to 2 decimal places
     }
 
     // Unbind events and remove element

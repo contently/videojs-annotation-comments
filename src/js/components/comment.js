@@ -1,12 +1,12 @@
-"use strict";
+'use strict';
 /*
   Component for an invidual comment
 */
 
-const   PlayerUIComponent = require("./../lib/player_ui_component").class,
-        Utils = require("./../lib/utils"),
-        moment = require("moment"),
-        templateName = 'comment';
+const PlayerUIComponent = require('./../lib/player_ui_component').class,
+    Utils = require('./../lib/utils'),
+    moment = require('moment'),
+    templateName = 'comment';
 
 class Comment extends PlayerUIComponent {
 
@@ -39,10 +39,10 @@ class Comment extends PlayerUIComponent {
         return this.renderTemplate(
             templateName,
             {
-                id:         this.id,
-                body:       this.body,
-                meta:       this.meta,
-                timeSince:  this.timeSince
+                id: this.id,
+                body: this.body,
+                meta: this.meta,
+                timeSince: this.timeSince
             }
         );
     }
@@ -54,17 +54,17 @@ class Comment extends PlayerUIComponent {
 
     // Return a Comment obj given body content and plugin reference
     static newFromData (body, commentList, plugin) {
-        let data = this.dataObj(body, plugin);
+        const data = this.dataObj(body, plugin);
         return new Comment(data, plugin.playerId);
     }
 
     // Return an object with plugin data, timestamp, unique id, and body content
     static dataObj (body, plugin) {
         return {
-            meta:   Object.assign({
-                        datetime: moment().toISOString()
-                    }, plugin.meta),
-            id:     Utils.guid(),
+            meta: Object.assign({
+                datetime: moment().toISOString()
+            }, plugin.meta),
+            id: Utils.guid(),
             body
         };
     }

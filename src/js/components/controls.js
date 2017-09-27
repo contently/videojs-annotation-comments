@@ -1,22 +1,22 @@
-"use strict";
+'use strict';
 /*
     Component for managing annotation "control box" in upper left of video when in annotation mode,
     including all functionality to add new annotations
 */
 
-const   PlayerUIComponent = require("./../lib/player_ui_component").class,
-        Utils = require("./../lib/utils"),
-        DraggableMarker = require("./draggable_marker.js").class,
-        SelectableShape = require("./selectable_shape.js").class,
-        PlayerButton = require("./player_button").class,
-        Annotation = require("./annotation").class,
-        templateName = 'controls';
+const PlayerUIComponent = require('./../lib/player_ui_component').class,
+    Utils = require('./../lib/utils'),
+    DraggableMarker = require('./draggable_marker.js').class,
+    SelectableShape = require('./selectable_shape.js').class,
+    PlayerButton = require('./player_button').class,
+    Annotation = require('./annotation').class,
+    templateName = 'controls';
 
 // Control uses a "ui state" to determine how UI is rendered - this object is the base state, containing a
 // default value for each item in the state
 const BASE_UI_STATE = Object.freeze({
-    adding: false,          // Are we currently adding a new annotation? (step 1 of flow)
-    writingComment: false   // Are we currently writing the comment for annotation (step 2 of flow)
+    adding: false, // Are we currently adding a new annotation? (step 1 of flow)
+    writingComment: false // Are we currently writing the comment for annotation (step 2 of flow)
 });
 
 class Controls extends PlayerUIComponent {
@@ -30,30 +30,29 @@ class Controls extends PlayerUIComponent {
         this.uiState = Utils.cloneObject(BASE_UI_STATE);
         this.bindEvents(bindArrowKeys);
 
-        if(this.showControls){
+        if (this.showControls)
             // create player button in the control bar if controls are shown
             this.playerButton = new PlayerButton(this.playerId);
-        }
 
         this.render();
     }
 
     // Bind all the events we need for UI interaction
     bindEvents (bindArrowKeys) {
-        this.$player.on("click.vac-controls", ".vac-controls button", this.startAddNew.bind(this)) // Add new button click
-            .on("click.vac-controls", ".vac-annotation-nav .vac-a-next", () => this.plugin.annotationState.nextAnnotation() ) // Click 'next' on annotation nav
-            .on("click.vac-controls", ".vac-annotation-nav .vac-a-prev", () => this.plugin.annotationState.prevAnnotation() ) // Click 'prev' on annotation nav
-            .on("click.vac-controls", ".vac-video-move .vac-a-next", () => this.marker.scrubStart(1) ) // Click '+1 sec' on marker nav
-            .on("click.vac-controls", ".vac-video-move .vac-a-prev", () => this.marker.scrubStart(-1) ); // Click '-1 sec' on marker nav
+        this.$player.on('click.vac-controls', '.vac-controls button', this.startAddNew.bind(this)) // Add new button click
+            .on('click.vac-controls', '.vac-annotation-nav .vac-a-next', () => this.plugin.annotationState.nextAnnotation()) // Click 'next' on annotation nav
+            .on('click.vac-controls', '.vac-annotation-nav .vac-a-prev', () => this.plugin.annotationState.prevAnnotation()) // Click 'prev' on annotation nav
+            .on('click.vac-controls', '.vac-video-move .vac-a-next', () => this.marker.scrubStart(1)) // Click '+1 sec' on marker nav
+            .on('click.vac-controls', '.vac-video-move .vac-a-prev', () => this.marker.scrubStart(-1)); // Click '-1 sec' on marker nav
 
-        if(this.internalCommenting) {
-            this.$player.on("click.vac-controls", ".vac-add-controls button", this.writeComment.bind(this)) // 'Next' button click while adding
-                .on("click.vac-controls", ".vac-video-write-new.vac-is-annotation button", this.saveNew.bind(this)) // 'Save' button click while adding
-                .on("click.vac-controls", ".vac-add-controls a, .vac-video-write-new.vac-is-annotation a", this.cancelAddNew.bind(this)) // Cancel link click
-        }
-        if(bindArrowKeys){
+        if (this.internalCommenting)
+            this.$player.on('click.vac-controls', '.vac-add-controls button', this.writeComment.bind(this)) // 'Next' button click while adding
+                .on('click.vac-controls', '.vac-video-write-new.vac-is-annotation button', this.saveNew.bind(this)) // 'Save' button click while adding
+                .on('click.vac-controls', '.vac-add-controls a, .vac-video-write-new.vac-is-annotation a', this.cancelAddNew.bind(this)); // Cancel link click
+
+        if (bindArrowKeys)
             $(document).on(`keyup.vac-nav-${this.playerId}`, (e) => this.handleArrowKeys(e)); // Use arrow keys to navigate annotations
-        }
+
     }
 
     // Remove UI and unbind events for this and child components
@@ -61,13 +60,13 @@ class Controls extends PlayerUIComponent {
         this.clear(true);
         this.$player.off('click.vac-controls');
         $(document).off(`keyup.vac-nav-${this.playerId} mousemove.vac-tooltip-${this.playerId}`);
-        if(this.playerButton) this.playerButton.teardown();
+        if (this.playerButton) this.playerButton.teardown();
     }
 
     // Clear existing UI (resetting components if need be)
-    clear (reset=false) {
-        if(reset){
-            if(this.uiState.adding){
+    clear (reset = false) {
+        if (reset) {
+            if (this.uiState.adding) {
                 this.restoreNormalUI();
                 this.marker.teardown();
                 this.selectableShape.teardown();
@@ -82,9 +81,9 @@ class Controls extends PlayerUIComponent {
     }
 
     // Render the UI elements (based on uiState)
-    render (reset=false) {
+    render (reset = false) {
         this.clear(reset);
-        let data = Object.assign(
+        const data = Object.assign(
             {
                 rangeStr: this.marker ? Utils.humanTime(this.marker.range) : null,
                 showNav: this.plugin.annotationState.annotations.length > 1
@@ -93,15 +92,15 @@ class Controls extends PlayerUIComponent {
             { internalCommenting: this.internalCommenting, showControls: this.showControls }
         );
 
-        let $ctrls = this.renderTemplate(templateName, data);
+        const $ctrls = this.renderTemplate(templateName, data);
         this.$player.append($ctrls);
 
-        if(this.playerButton) this.playerButton.updateNumAnnotations();
+        if (this.playerButton) this.playerButton.updateNumAnnotations();
     }
 
     // User clicked to cancel in-progress add - restore to normal state
     cancelAddNew () {
-        if(!(this.uiState.adding || this.uiState.writingComment)) return;
+        if (!(this.uiState.adding || this.uiState.writingComment)) return;
         this.render(true);
         this.marker.teardown();
         this.marker = null;
@@ -109,7 +108,7 @@ class Controls extends PlayerUIComponent {
 
     // User clicked 'add' button in the controls - setup UI and marker
     startAddNew () {
-        if(!this.plugin.active) this.plugin.toggleAnnotationMode();
+        if (!this.plugin.active) this.plugin.toggleAnnotationMode();
 
         this.player.pause();
         this.setAddingUI();
@@ -117,17 +116,17 @@ class Controls extends PlayerUIComponent {
         this.render();
 
         // construct new range and create marker
-        let range = {
-            start: parseInt(this.currentTime,10),
-            stop: parseInt(this.currentTime,10)
+        const range = {
+            start: parseInt(this.currentTime, 10),
+            stop: parseInt(this.currentTime, 10)
         };
         this.marker = new DraggableMarker(this.playerId, range);
         this.selectableShape = new SelectableShape(this.playerId);
 
         // show cursor help text if controls are hidden
-        if(!this.showControls) this.bindCursorTooltip();
+        if (!this.showControls) this.bindCursorTooltip();
 
-        this.plugin.fire('enteredAddingAnnotation', { range: range });
+        this.plugin.fire('enteredAddingAnnotation', { range });
     }
 
     // User clicked 'next' action - show UI to write comment
@@ -138,10 +137,10 @@ class Controls extends PlayerUIComponent {
 
     // User clicked to save a new annotation/comment during add new flow
     saveNew () {
-        let comment = this.$UI.newCommentTextarea.val();
-        if(!comment) return; // empty comment - TODO add validation / err message
+        const comment = this.$UI.newCommentTextarea.val();
+        if (!comment) return; // empty comment - TODO add validation / err message
 
-        let a = Annotation.newFromData(this.marker.range, this.selectableShape.shape, comment, this.plugin);
+        const a = Annotation.newFromData(this.marker.range, this.selectableShape.shape, comment, this.plugin);
         this.plugin.annotationState.addNewAnnotation(a);
 
         this.cancelAddNew();
@@ -162,11 +161,11 @@ class Controls extends PlayerUIComponent {
 
     // On arrow key press, navigate to next or prev Annotation
     handleArrowKeys (e) {
-        if(!this.plugin.active) return;
-        let keyId = e.which;
+        if (!this.plugin.active) return;
+        const keyId = e.which;
 
-        if(keyId == 37) this.plugin.annotationState.prevAnnotation();
-        if(keyId == 39) this.plugin.annotationState.nextAnnotation();
+        if (keyId == 37) this.plugin.annotationState.prevAnnotation();
+        if (keyId == 39) this.plugin.annotationState.nextAnnotation();
     }
 
     // Adds help text to cursor during annotation mode
@@ -176,7 +175,7 @@ class Controls extends PlayerUIComponent {
         // Assert bounds are updated in plugin in case page was modified since creation, so tooltip math is correct
         this.plugin.setBounds(false);
         $(document).on(`mousemove.vac-tooltip-${this.playerId}`, Utils.throttle(((event) => {
-            if(!this.plugin.bounds) return;
+            if (!this.plugin.bounds) return;
 
             let x = event.pageX,
                 y = event.pageY,
@@ -186,18 +185,18 @@ class Controls extends PlayerUIComponent {
                 withinControls = !outOfBounds && y >= this.plugin.bounds.bottomWithoutControls,
                 markerHovered = this.$tooltip.hasClass('vac-marker-hover');
 
-            if(outOfBounds) {
+            if (outOfBounds) {
                 this.$tooltip.addClass(this.UI_CLASSES.hidden);
-                return
+                return;
             }
 
-            let cursorX      = x - this.plugin.bounds.left,
-                cursorY      = y - this.plugin.bounds.top,
-                margin       = 10,
-                rightEdge    = this.$player.width(),
-                bottomEdge   = this.$player.height() - this.$UI.controlBar.height(),
-                atRightEdge  = (cursorX + this.tooltipArea.width + margin*2) >= rightEdge,
-                atBottomEdge = (cursorY + this.tooltipArea.height + margin*2) >= bottomEdge;
+            let cursorX = x - this.plugin.bounds.left,
+                cursorY = y - this.plugin.bounds.top,
+                margin = 10,
+                rightEdge = this.$player.width(),
+                bottomEdge = this.$player.height() - this.$UI.controlBar.height(),
+                atRightEdge = (cursorX + this.tooltipArea.width + margin * 2) >= rightEdge,
+                atBottomEdge = (cursorY + this.tooltipArea.height + margin * 2) >= bottomEdge;
 
             // is the tooltip too close to the right or bottom edge?
             let posX = atRightEdge ? (rightEdge - this.tooltipArea.width - margin) : (cursorX + margin),
@@ -205,17 +204,16 @@ class Controls extends PlayerUIComponent {
 
             // hide if the cursor is over the control bar but not hovering over the draggable marker
             // also hide if mouse is down
-            if((withinControls && !markerHovered) || this.$tooltip.hasClass('vac-cursor-dragging')) {
+            if ((withinControls && !markerHovered) || this.$tooltip.hasClass('vac-cursor-dragging'))
                 this.$tooltip.addClass(this.UI_CLASSES.hidden);
-            } else {
+            else
                 this.$tooltip.removeClass(this.UI_CLASSES.hidden);
-            }
 
             this.$tooltip.css({
                 left: `${posX}px`,
                 top: `${posY}px`
             });
-        }).bind(this), 50));
+        }), 50));
     }
 
     get $tooltip () {

@@ -1,14 +1,14 @@
-"use strict";
+'use strict';
 /*
     Component for an annotation, which includes controlling the marker/shape, rendering a commentList, etc
 */
 
-const   PlayerUIComponent = require("./../lib/player_ui_component").class,
-        Utils = require("./../lib/utils.js"),
-        CommentList = require("./comment_list").class,
-        Marker = require("./marker").class,
-        Comment = require("./comment").class,
-        Shape = require("./shape").class;
+const PlayerUIComponent = require('./../lib/player_ui_component').class,
+    Utils = require('./../lib/utils.js'),
+    CommentList = require('./comment_list').class,
+    Marker = require('./marker').class,
+    Comment = require('./comment').class,
+    Shape = require('./shape').class;
 
 class Annotation extends PlayerUIComponent {
 
@@ -26,9 +26,9 @@ class Annotation extends PlayerUIComponent {
         this.isOpen = false;
     }
 
-    buildComments(data) {
+    buildComments (data) {
         this.commentList = new CommentList(
-            {"comments": data.comments, "annotation": this},
+            {comments: data.comments, annotation: this},
             this.playerId
         );
     }
@@ -38,17 +38,17 @@ class Annotation extends PlayerUIComponent {
         this.marker.render();
     }
 
-    buildShape() {
+    buildShape () {
         this.annotationShape = new Shape(this.playerId, this.shape);
     }
 
     // Serialize object
     get data () {
         return {
-            id:         this.id,
-            range:      this.range,
-            shape:      this.shape,
-            comments:   this.commentList.data
+            id: this.id,
+            range: this.range,
+            shape: this.shape,
+            comments: this.commentList.data
         };
     }
 
@@ -57,7 +57,7 @@ class Annotation extends PlayerUIComponent {
     }
 
     // Opens the annotation. Handles marker, commentList, shape, Annotation state, and player state
-    open (withPause=true, previewOnly=false, forceSnapToStart=false) {
+    open (withPause = true, previewOnly = false, forceSnapToStart = false) {
         this.isOpen = true;
         const snapToStart = forceSnapToStart || !Utils.isWithinRange(
             this.range.start,
@@ -65,24 +65,23 @@ class Annotation extends PlayerUIComponent {
             Math.floor(this.currentTime)
         );
 
-        let showTooltip = previewOnly && this.plugin.options.showMarkerShapeAndTooltips;
+        const showTooltip = previewOnly && this.plugin.options.showMarkerShapeAndTooltips;
         this.marker.setActive(showTooltip);
-        if(!previewOnly && this.plugin.options.showCommentList){
+        if (!previewOnly && this.plugin.options.showCommentList)
             this.commentList.render();
-        }
 
-        if(!previewOnly || (previewOnly && this.plugin.options.showMarkerShapeAndTooltips)){
+        if (!previewOnly || (previewOnly && this.plugin.options.showMarkerShapeAndTooltips)) {
             this.annotationShape.render();
 
-            if(this.shape) {
-                this.annotationShape.$el.on("click.vac-annotation", () => {
+            if (this.shape)
+                this.annotationShape.$el.on('click.vac-annotation', () => {
                     this.plugin.annotationState.openAnnotation(this, false, false, false);
                 });
-            }
+
         }
 
-        if(withPause) this.player.pause();
-        if(snapToStart) this.currentTime = this.range.start;
+        if (withPause) this.player.pause();
+        if (snapToStart) this.currentTime = this.range.start;
 
         this.plugin.fire('annotationOpened', {
             annotation: this.data,
@@ -91,48 +90,48 @@ class Annotation extends PlayerUIComponent {
     }
 
     // Closes the annotation. Handles marker, commendList, shape, and AnnotationState
-    close (clearActive=true) {
-        if(!this.isOpen) return;
+    close (clearActive = true) {
+        if (!this.isOpen) return;
         this.isOpen = false;
         this.marker.deactivate();
         this.commentList.teardown(false);
-        if(this.annotationShape.$el) this.annotationShape.$el.off("click.vac-annotation");
+        if (this.annotationShape.$el) this.annotationShape.$el.off('click.vac-annotation');
         this.annotationShape.teardown();
-        if(clearActive) this.plugin.annotationState.clearActive();
+        if (clearActive) this.plugin.annotationState.clearActive();
         this.plugin.fire('annotationClosed', this.data);
     }
 
     // For preloading an array of seconds active on initialization
     // Values used to build timeMap in AnnotationState
     buildSecondsActiveArray () {
-        let seconds = [];
-        if(!!this.range.end) {
-            for (let i = this.range.start; i <= this.range.end; i++) {
+        const seconds = [];
+        if (this.range.end)
+            for (let i = this.range.start; i <= this.range.end; i++)
                 seconds.push(i);
-            }
-        } else {
-            let start = this.range.start;
+
+        else {
+            const start = this.range.start;
             seconds.push(start);
-            if(start < this.duration) seconds.push(start+1);
+            if (start < this.duration) seconds.push(start + 1);
         }
         return seconds;
     }
 
     // Tearsdown annotation and marker, removes object from AnnotationState
-    teardown (removeFromCollection=true) {
+    teardown (removeFromCollection = true) {
         this.close(true);
         this.marker.teardown();
-        if(this.commentList) this.commentList.teardown(removeFromCollection);
-        if(removeFromCollection) this.plugin.annotationState.removeAnnotation(this);
-        if(this.annotationShape) this.annotationShape.teardown();
+        if (this.commentList) this.commentList.teardown(removeFromCollection);
+        if (removeFromCollection) this.plugin.annotationState.removeAnnotation(this);
+        if (this.annotationShape) this.annotationShape.teardown();
     }
 
     // Build a new annotation instance by passing in data for range, shape, comment, & plugin ref
-    static newFromData (range, shape, commentStr, plugin, id=null) {
-        let comment = Comment.dataObj(commentStr, plugin);
-        if(range) range = Utils.parseIntObj(range);
-        if(shape) shape = Utils.parseIntObj(shape);
-        let data = {
+    static newFromData (range, shape, commentStr, plugin, id = null) {
+        const comment = Comment.dataObj(commentStr, plugin);
+        if (range) range = Utils.parseIntObj(range);
+        if (shape) shape = Utils.parseIntObj(shape);
+        const data = {
             id,
             range,
             shape,

@@ -4,7 +4,7 @@
     Will be bound to plugin object as a message gateway between external elements and the plugin.
 */
 
-const Logger = require("./logger");
+const Logger = require('./logger');
 
 class EventDispatcher {
 
@@ -18,20 +18,20 @@ class EventDispatcher {
 
     // Use the EventRegistry to mass register events on each component initialization
     registerListenersFor (obj, className) {
-        let matchingEvents = this.eventRegistry[className];
-        if (matchingEvents) {
+        const matchingEvents = this.eventRegistry[className];
+        if (matchingEvents)
             Object.keys(matchingEvents).forEach((key) => {
                 // Don't register again if already in cached collection
                 if (!~this.registeredListeners.indexOf(key)) {
-                    let callback = matchingEvents[key].bind(obj);
+                    const callback = matchingEvents[key].bind(obj);
                     this.registerListener(key, ((evt) => {
-                        if(!this.pluginReady) return;
+                        if (!this.pluginReady) return;
                         this.logCallback(key, className, evt);
                         callback(evt, obj);
-                    }).bind(this));
+                    }));
                 }
             });
-        }
+
     }
 
     // Bind a listener to the plugin
@@ -43,24 +43,26 @@ class EventDispatcher {
     // Unbind a listener from the plugin
     unregisterListener (type) {
         this.plugin.off(type);
-        let i = this.registeredListeners.indexOf(type);
+        const i = this.registeredListeners.indexOf(type);
         this.registeredListeners.splice(i, 1);
     }
 
     // Trigger an event on the plugin
     fire (type, data) {
-        if(!this.pluginReady) return;
-        Logger.log("evt-dispatch-FIRE", type, data);
-        let evt = new CustomEvent(type, { 'detail': data });
+        if (!this.pluginReady) return;
+        Logger.log('evt-dispatch-FIRE', type, data);
+        const evt = new CustomEvent(type, { detail: data });
         this.plugin.trigger(evt);
     }
 
     teardown () {
-        this.registeredListeners.forEach((type) => { this.unregisterListener(type) });
+        this.registeredListeners.forEach((type) => {
+            this.unregisterListener(type);
+        });
     }
 
     logCallback (eventName, className, event) {
-        Logger.log("evt-dispatch-RECEIVE", `${eventName} (${className})`, event);
+        Logger.log('evt-dispatch-RECEIVE', `${eventName} (${className})`, event);
     }
 }
 
@@ -88,12 +90,12 @@ const EventRegistry = {
             _this.destroyAnnotationById(event.detail.id);
         },
         newComment: (event, _this) => {
-            let annotation = _this.findAnnotation(event.detail.annotationId);
-            if(annotation) annotation.commentList.createComment(event.detail.body);
+            const annotation = _this.findAnnotation(event.detail.annotationId);
+            if (annotation) annotation.commentList.createComment(event.detail.body);
         },
         destroyComment: (event, _this) => {
-            let comment = _this.findComment(event.detail.id);
-            if(comment) comment.commentList.destroyComment(event);
+            const comment = _this.findComment(event.detail.id);
+            if (comment) comment.commentList.destroyComment(event);
         }
     },
     Controls: {

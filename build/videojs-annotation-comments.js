@@ -5787,7 +5787,7 @@ exports["player_button"] = Handlebars.template({ "compiler": [7, ">= 4.0.0"], "m
     }, "useData": true });
 
 },{"handlebars/runtime":20}],24:[function(require,module,exports){
-"use strict";
+'use strict';
 /*
     Component for an annotation, which includes controlling the marker/shape, rendering a commentList, etc
 */
@@ -5800,12 +5800,12 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PlayerUIComponent = require("./../lib/player_ui_component").class,
-    Utils = require("./../lib/utils.js"),
-    CommentList = require("./comment_list").class,
-    Marker = require("./marker").class,
-    Comment = require("./comment").class,
-    Shape = require("./shape").class;
+var PlayerUIComponent = require('./../lib/player_ui_component').class,
+    Utils = require('./../lib/utils.js'),
+    CommentList = require('./comment_list').class,
+    Marker = require('./marker').class,
+    Comment = require('./comment').class,
+    Shape = require('./shape').class;
 
 var Annotation = function (_PlayerUIComponent) {
     _inherits(Annotation, _PlayerUIComponent);
@@ -5829,18 +5829,18 @@ var Annotation = function (_PlayerUIComponent) {
     }
 
     _createClass(Annotation, [{
-        key: "buildComments",
+        key: 'buildComments',
         value: function buildComments(data) {
-            this.commentList = new CommentList({ "comments": data.comments, "annotation": this }, this.playerId);
+            this.commentList = new CommentList({ comments: data.comments, annotation: this }, this.playerId);
         }
     }, {
-        key: "buildMarker",
+        key: 'buildMarker',
         value: function buildMarker() {
             this.marker = new Marker(this.playerId, this.range, this.commentList.comments[0]);
             this.marker.render();
         }
     }, {
-        key: "buildShape",
+        key: 'buildShape',
         value: function buildShape() {
             this.annotationShape = new Shape(this.playerId, this.shape);
         }
@@ -5848,7 +5848,7 @@ var Annotation = function (_PlayerUIComponent) {
         // Serialize object
 
     }, {
-        key: "bindEvents",
+        key: 'bindEvents',
         value: function bindEvents() {
             var _this2 = this;
 
@@ -5860,7 +5860,7 @@ var Annotation = function (_PlayerUIComponent) {
         // Opens the annotation. Handles marker, commentList, shape, Annotation state, and player state
 
     }, {
-        key: "open",
+        key: 'open',
         value: function open() {
             var withPause = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
@@ -5874,18 +5874,14 @@ var Annotation = function (_PlayerUIComponent) {
 
             var showTooltip = previewOnly && this.plugin.options.showMarkerShapeAndTooltips;
             this.marker.setActive(showTooltip);
-            if (!previewOnly && this.plugin.options.showCommentList) {
-                this.commentList.render();
-            }
+            if (!previewOnly && this.plugin.options.showCommentList) this.commentList.render();
 
             if (!previewOnly || previewOnly && this.plugin.options.showMarkerShapeAndTooltips) {
                 this.annotationShape.render();
 
-                if (this.shape) {
-                    this.annotationShape.$el.on("click.vac-annotation", function () {
-                        _this3.plugin.annotationState.openAnnotation(_this3, false, false, false);
-                    });
-                }
+                if (this.shape) this.annotationShape.$el.on('click.vac-annotation', function () {
+                    _this3.plugin.annotationState.openAnnotation(_this3, false, false, false);
+                });
             }
 
             if (withPause) this.player.pause();
@@ -5900,7 +5896,7 @@ var Annotation = function (_PlayerUIComponent) {
         // Closes the annotation. Handles marker, commendList, shape, and AnnotationState
 
     }, {
-        key: "close",
+        key: 'close',
         value: function close() {
             var clearActive = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
@@ -5908,7 +5904,7 @@ var Annotation = function (_PlayerUIComponent) {
             this.isOpen = false;
             this.marker.deactivate();
             this.commentList.teardown(false);
-            if (this.annotationShape.$el) this.annotationShape.$el.off("click.vac-annotation");
+            if (this.annotationShape.$el) this.annotationShape.$el.off('click.vac-annotation');
             this.annotationShape.teardown();
             if (clearActive) this.plugin.annotationState.clearActive();
             this.plugin.fire('annotationClosed', this.data);
@@ -5918,13 +5914,11 @@ var Annotation = function (_PlayerUIComponent) {
         // Values used to build timeMap in AnnotationState
 
     }, {
-        key: "buildSecondsActiveArray",
+        key: 'buildSecondsActiveArray',
         value: function buildSecondsActiveArray() {
             var seconds = [];
-            if (!!this.range.end) {
-                for (var i = this.range.start; i <= this.range.end; i++) {
-                    seconds.push(i);
-                }
+            if (this.range.end) for (var i = this.range.start; i <= this.range.end; i++) {
+                seconds.push(i);
             } else {
                 var start = this.range.start;
                 seconds.push(start);
@@ -5936,7 +5930,7 @@ var Annotation = function (_PlayerUIComponent) {
         // Tearsdown annotation and marker, removes object from AnnotationState
 
     }, {
-        key: "teardown",
+        key: 'teardown',
         value: function teardown() {
             var removeFromCollection = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
@@ -5950,7 +5944,7 @@ var Annotation = function (_PlayerUIComponent) {
         // Build a new annotation instance by passing in data for range, shape, comment, & plugin ref
 
     }, {
-        key: "data",
+        key: 'data',
         get: function get() {
             return {
                 id: this.id,
@@ -5960,12 +5954,12 @@ var Annotation = function (_PlayerUIComponent) {
             };
         }
     }, {
-        key: "isActive",
+        key: 'isActive',
         get: function get() {
             return this.plugin.annotationState.activeAnnotation === this;
         }
     }], [{
-        key: "newFromData",
+        key: 'newFromData',
         value: function newFromData(range, shape, commentStr, plugin) {
             var id = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
 
@@ -5990,7 +5984,7 @@ module.exports = {
 };
 
 },{"./../lib/player_ui_component":37,"./../lib/utils.js":39,"./comment":26,"./comment_list":27,"./marker":30,"./shape":33}],25:[function(require,module,exports){
-"use strict";
+'use strict';
 /*
     Component for managing the state of annotations, including showing active annotation during playback,
     toggling active states for annotations, navigating annotations forward/back, etc
@@ -6007,8 +6001,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Utils = require('./../lib/utils'),
-    PlayerComponent = require("./../lib/player_component").class,
-    Annotation = require("./annotation").class;
+    PlayerComponent = require('./../lib/player_component').class,
+    Annotation = require('./annotation').class;
 
 var AnnotationState = function (_PlayerComponent) {
     _inherits(AnnotationState, _PlayerComponent);
@@ -6028,18 +6022,18 @@ var AnnotationState = function (_PlayerComponent) {
 
 
     _createClass(AnnotationState, [{
-        key: "bindEvents",
+        key: 'bindEvents',
 
 
         // Bind events for setting liveAnnotation on video time change
         value: function bindEvents() {
-            this.player.on("timeupdate", Utils.throttle(this.setLiveAnnotation.bind(this), 100));
+            this.player.on('timeupdate', Utils.throttle(this.setLiveAnnotation.bind(this), 100));
         }
 
         // Sort annotations by range.start
 
     }, {
-        key: "sortAnnotations",
+        key: 'sortAnnotations',
         value: function sortAnnotations() {
             this._annotations.sort(function (a, b) {
                 return a.range.start < b.range.start ? -1 : a.range.start > b.range.start ? 1 : 0;
@@ -6049,7 +6043,7 @@ var AnnotationState = function (_PlayerComponent) {
         // Add a new annotation
 
     }, {
-        key: "addNewAnnotation",
+        key: 'addNewAnnotation',
         value: function addNewAnnotation(annotation) {
             this._annotations.push(annotation);
             this.openAnnotation(annotation, true, true, false, true);
@@ -6059,18 +6053,18 @@ var AnnotationState = function (_PlayerComponent) {
         // Create and add a annotation
 
     }, {
-        key: "createAndAddAnnotation",
+        key: 'createAndAddAnnotation',
         value: function createAndAddAnnotation(data) {
             this.plugin.controls.uiState.adding && this.plugin.controls.cancelAddNew();
 
-            var annotation = Annotation.newFromData(data.range, data.shape, data.commentStr || "", this.plugin, data.id);
+            var annotation = Annotation.newFromData(data.range, data.shape, data.commentStr || '', this.plugin, data.id);
             this.addNewAnnotation(annotation);
         }
 
         // Destroy an existing annotation
 
     }, {
-        key: "destroyAnnotationById",
+        key: 'destroyAnnotationById',
         value: function destroyAnnotationById(id) {
             var annotation = this.findAnnotation(id);
             if (annotation) annotation.teardown();
@@ -6079,7 +6073,7 @@ var AnnotationState = function (_PlayerComponent) {
         // Remove an annotation
 
     }, {
-        key: "removeAnnotation",
+        key: 'removeAnnotation',
         value: function removeAnnotation(annotation) {
             var id = annotation.id,
                 i = this._annotations.indexOf(annotation);
@@ -6091,7 +6085,7 @@ var AnnotationState = function (_PlayerComponent) {
         // Set the live annotation based on current video time
 
     }, {
-        key: "setLiveAnnotation",
+        key: 'setLiveAnnotation',
         value: function setLiveAnnotation() {
             if (!this.enabled) return;
             var time = Math.floor(this.currentTime);
@@ -6114,7 +6108,7 @@ var AnnotationState = function (_PlayerComponent) {
         // Get all active annotations for a time (in seconds)
 
     }, {
-        key: "activeAnnotationsForTime",
+        key: 'activeAnnotationsForTime',
         value: function activeAnnotationsForTime(time) {
             if (!this.annotations.length) return [];
             return this.annotationTimeMap[time] || [];
@@ -6127,7 +6121,7 @@ var AnnotationState = function (_PlayerComponent) {
         */
 
     }, {
-        key: "rebuildAnnotationTimeMap",
+        key: 'rebuildAnnotationTimeMap',
         value: function rebuildAnnotationTimeMap() {
             var _this2 = this;
 
@@ -6145,7 +6139,7 @@ var AnnotationState = function (_PlayerComponent) {
         // Close active annotation and remove reference in state
 
     }, {
-        key: "clearActive",
+        key: 'clearActive',
         value: function clearActive() {
             this.activeAnnotation.close(false);
             this._activeAnnotation = null;
@@ -6155,7 +6149,7 @@ var AnnotationState = function (_PlayerComponent) {
         // skipLiveCheck will short circuit setLiveAnnotation()
 
     }, {
-        key: "openAnnotation",
+        key: 'openAnnotation',
         value: function openAnnotation(annotation) {
             var skipLiveCheck = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
             var pause = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
@@ -6173,7 +6167,7 @@ var AnnotationState = function (_PlayerComponent) {
         // Open an annotation by ID (if it exists)
 
     }, {
-        key: "openAnnotationById",
+        key: 'openAnnotationById',
         value: function openAnnotationById(id) {
             var annotation = this.findAnnotation(id);
             if (annotation) this.openAnnotation(annotation);
@@ -6182,7 +6176,7 @@ var AnnotationState = function (_PlayerComponent) {
         // Returns annotation object given ID
 
     }, {
-        key: "findAnnotation",
+        key: 'findAnnotation',
         value: function findAnnotation(id) {
             return this.annotations.find(function (a) {
                 return a.id == id;
@@ -6192,7 +6186,7 @@ var AnnotationState = function (_PlayerComponent) {
         // Returns comment object given ID
 
     }, {
-        key: "findComment",
+        key: 'findComment',
         value: function findComment(id) {
             var _ref;
 
@@ -6208,7 +6202,7 @@ var AnnotationState = function (_PlayerComponent) {
         // Finds the next annotation in collection and opens it
 
     }, {
-        key: "nextAnnotation",
+        key: 'nextAnnotation',
         value: function nextAnnotation() {
             if (this._activeAnnotation) {
                 var ind = this.annotations.indexOf(this._activeAnnotation),
@@ -6218,14 +6212,13 @@ var AnnotationState = function (_PlayerComponent) {
             var time = Math.floor(this.currentTime);
             for (var i = 0; i < this.annotations.length; i++) {
                 if (this.annotations[i].range.start > time) return this.openAnnotation(this.annotations[i], true);
-            }
-            this.openAnnotation(this.annotations[0], true);
+            }this.openAnnotation(this.annotations[0], true);
         }
 
         // Finds the previous annotation in collection and opens it
 
     }, {
-        key: "prevAnnotation",
+        key: 'prevAnnotation',
         value: function prevAnnotation() {
             if (this._activeAnnotation) {
                 var ind = this.annotations.indexOf(this._activeAnnotation),
@@ -6235,15 +6228,14 @@ var AnnotationState = function (_PlayerComponent) {
             var time = Math.floor(this.currentTime);
             for (var i = this.annotations.length - 1; i >= 0; i--) {
                 if (this.annotations[i].range.start < time) return this.openAnnotation(this.annotations[i], true);
-            }
-            this.openAnnotation(this.annotations[this.annotations.length - 1], true);
+            }this.openAnnotation(this.annotations[this.annotations.length - 1], true);
         }
 
         // Use anywhere the annotation data changes
         // Cleans internal state data, updates player button, triggers configurable callback
 
     }, {
-        key: "stateChanged",
+        key: 'stateChanged',
         value: function stateChanged() {
             this.sortAnnotations();
             this.rebuildAnnotationTimeMap();
@@ -6253,7 +6245,7 @@ var AnnotationState = function (_PlayerComponent) {
         // Reset internal state properties
 
     }, {
-        key: "resetData",
+        key: 'resetData',
         value: function resetData() {
             this.annotations = [];
             this.annotationTimeMap = {};
@@ -6266,7 +6258,7 @@ var AnnotationState = function (_PlayerComponent) {
         // Remove UI and unbind events for this and child components
 
     }, {
-        key: "teardown",
+        key: 'teardown',
         value: function teardown() {
             this.annotations.forEach(function (annotation) {
                 annotation.teardown(false);
@@ -6274,7 +6266,7 @@ var AnnotationState = function (_PlayerComponent) {
             this.resetData();
         }
     }, {
-        key: "enabled",
+        key: 'enabled',
         set: function set(shouldBeEnabled) {
             this._enabled = shouldBeEnabled;
             if (!shouldBeEnabled) this.activeAnnotation.close();
@@ -6290,7 +6282,7 @@ var AnnotationState = function (_PlayerComponent) {
         // Sets _annotations w/Annoation objects from input array
 
     }, {
-        key: "annotations",
+        key: 'annotations',
         set: function set(annotationsData) {
             var _this3 = this;
 
@@ -6304,7 +6296,7 @@ var AnnotationState = function (_PlayerComponent) {
             return this._annotations;
         }
     }, {
-        key: "activeAnnotation",
+        key: 'activeAnnotation',
         set: function set() {
             var annotation = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
@@ -6320,7 +6312,7 @@ var AnnotationState = function (_PlayerComponent) {
         // Serialize data
 
     }, {
-        key: "data",
+        key: 'data',
         get: function get() {
             return this._annotations.map(function (a) {
                 return a.data;
@@ -6336,7 +6328,7 @@ module.exports = {
 };
 
 },{"./../lib/player_component":36,"./../lib/utils":39,"./annotation":24}],26:[function(require,module,exports){
-"use strict";
+'use strict';
 /*
   Component for an invidual comment
 */
@@ -6349,9 +6341,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PlayerUIComponent = require("./../lib/player_ui_component").class,
-    Utils = require("./../lib/utils"),
-    moment = require("moment"),
+var PlayerUIComponent = require('./../lib/player_ui_component').class,
+    Utils = require('./../lib/utils'),
+    moment = require('moment'),
     templateName = 'comment';
 
 var Comment = function (_PlayerUIComponent) {
@@ -6377,7 +6369,7 @@ var Comment = function (_PlayerUIComponent) {
 
 
     _createClass(Comment, [{
-        key: "render",
+        key: 'render',
         value: function render() {
             return this.renderTemplate(templateName, {
                 id: this.id,
@@ -6390,7 +6382,7 @@ var Comment = function (_PlayerUIComponent) {
         // Return time since comment timestamp
 
     }, {
-        key: "timeSince",
+        key: 'timeSince',
         value: function timeSince() {
             return moment(this.meta.datetime).fromNow();
         }
@@ -6398,7 +6390,7 @@ var Comment = function (_PlayerUIComponent) {
         // Return a Comment obj given body content and plugin reference
 
     }, {
-        key: "data",
+        key: 'data',
         get: function get() {
             return {
                 id: this.id,
@@ -6407,12 +6399,12 @@ var Comment = function (_PlayerUIComponent) {
             };
         }
     }, {
-        key: "HTML",
+        key: 'HTML',
         get: function get() {
             return this.$el[0].outerHTML;
         }
     }], [{
-        key: "newFromData",
+        key: 'newFromData',
         value: function newFromData(body, commentList, plugin) {
             var data = this.dataObj(body, plugin);
             return new Comment(data, plugin.playerId);
@@ -6421,7 +6413,7 @@ var Comment = function (_PlayerUIComponent) {
         // Return an object with plugin data, timestamp, unique id, and body content
 
     }, {
-        key: "dataObj",
+        key: 'dataObj',
         value: function dataObj(body, plugin) {
             return {
                 meta: Object.assign({
@@ -6441,7 +6433,7 @@ module.exports = {
 };
 
 },{"./../lib/player_ui_component":37,"./../lib/utils":39,"moment":22}],27:[function(require,module,exports){
-"use strict";
+'use strict';
 /*
   Component for a list of comments in a visible/active annotation
 */
@@ -6456,9 +6448,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PlayerUIComponent = require("./../lib/player_ui_component").class,
-    Utils = require("./../lib/utils"),
-    Comment = require("./comment").class,
+var PlayerUIComponent = require('./../lib/player_ui_component').class,
+    Utils = require('./../lib/utils'),
+    Comment = require('./comment').class,
     commentListTemplateName = 'comment_list',
     newCommentTemplateName = 'new_comment';
 
@@ -6483,35 +6475,35 @@ var CommentList = function (_PlayerUIComponent) {
 
 
     _createClass(CommentList, [{
-        key: "bindListEvents",
+        key: 'bindListEvents',
 
 
         // Bind all events needed for the comment list
         value: function bindListEvents() {
             var _this2 = this;
 
-            this.$el.on("click.vac-comment", ".vac-close-comment-list", function () {
+            this.$el.on('click.vac-comment', '.vac-close-comment-list', function () {
                 return _this2.annotation.close();
-            }.bind(this)) // Hide CommentList UI with close button
-            .on("click.vac-comment", ".vac-reply-btn", this.addNewComment.bind(this)) // Open new reply UI with reply button
-            .on("click.vac-comment", ".vac-delete-annotation", this.handleDeleteAnnotationClick.bind(this)) // Delete annotation with main delete button
-            .on("click.vac-comment", ".vac-delete-comment", this.destroyComment.bind(this)) // Delete comment with delete comment button
-            .on("mousewheel.vac-comment DOMMouseScroll.vac-comment", ".vac-comments-wrap", this.disablePageScroll.bind(this)); // Prevent outer page scroll when scrolling inside of the CommentList UI
+            }) // Hide CommentList UI with close button
+            .on('click.vac-comment', '.vac-reply-btn', this.addNewComment.bind(this)) // Open new reply UI with reply button
+            .on('click.vac-comment', '.vac-delete-annotation', this.handleDeleteAnnotationClick.bind(this)) // Delete annotation with main delete button
+            .on('click.vac-comment', '.vac-delete-comment', this.destroyComment.bind(this)) // Delete comment with delete comment button
+            .on('mousewheel.vac-comment DOMMouseScroll.vac-comment', '.vac-comments-wrap', this.disablePageScroll.bind(this)); // Prevent outer page scroll when scrolling inside of the CommentList UI
         }
 
         // Bind event listeners for new comments form
 
     }, {
-        key: "bindCommentFormEvents",
+        key: 'bindCommentFormEvents',
         value: function bindCommentFormEvents() {
-            this.$newCommentForm.on("click.vac-comment", ".vac-add-controls a, .vac-video-write-new.vac-is-comment a", this.closeNewComment.bind(this)) // Cancel new comment creation with cancel link
-            .on("click.vac-comment", ".vac-video-write-new.vac-is-comment button", this.saveNewComment.bind(this)); // Save new comment with save button
+            this.$newCommentForm.on('click.vac-comment', '.vac-add-controls a, .vac-video-write-new.vac-is-comment a', this.closeNewComment.bind(this)) // Cancel new comment creation with cancel link
+            .on('click.vac-comment', '.vac-video-write-new.vac-is-comment button', this.saveNewComment.bind(this)); // Save new comment with save button
         }
 
         // Render CommentList UI with all comments using template
 
     }, {
-        key: "render",
+        key: 'render',
         value: function render() {
             this.$el = $(this.renderTemplate(commentListTemplateName, {
                 commentsHTML: this.comments.map(function (c) {
@@ -6528,7 +6520,7 @@ var CommentList = function (_PlayerUIComponent) {
         // Re-render UI on state change
 
     }, {
-        key: "reRender",
+        key: 'reRender',
         value: function reRender() {
             this.teardown(false);
             this.render();
@@ -6537,10 +6529,10 @@ var CommentList = function (_PlayerUIComponent) {
         // Render new comment form
 
     }, {
-        key: "addNewComment",
+        key: 'addNewComment',
         value: function addNewComment() {
-            this.$wrap.addClass(this.UI_CLASSES.active).find(".vac-comments-wrap").scrollTop(999999);
-            var $shapebox = this.$wrap.find(".vac-add-new-shapebox"),
+            this.$wrap.addClass(this.UI_CLASSES.active).find('.vac-comments-wrap').scrollTop(999999);
+            var $shapebox = this.$wrap.find('.vac-add-new-shapebox'),
                 width = $shapebox.outerWidth(),
                 top = $shapebox.position().top + 10,
                 right = this.$wrap.outerWidth() - ($shapebox.position().left + width);
@@ -6553,7 +6545,7 @@ var CommentList = function (_PlayerUIComponent) {
         // Save comment from new comment form, update state and re-render UI
 
     }, {
-        key: "saveNewComment",
+        key: 'saveNewComment',
         value: function saveNewComment() {
             this.$wrap.removeClass(this.UI_CLASSES.active);
 
@@ -6564,7 +6556,7 @@ var CommentList = function (_PlayerUIComponent) {
             this.createComment(body);
         }
     }, {
-        key: "createComment",
+        key: 'createComment',
         value: function createComment(body) {
             var comment = Comment.newFromData(body, this, this.plugin);
             this.comments.push(comment);
@@ -6582,7 +6574,7 @@ var CommentList = function (_PlayerUIComponent) {
         // Cancel comment adding process
 
     }, {
-        key: "closeNewComment",
+        key: 'closeNewComment',
         value: function closeNewComment() {
             this.unbindCommentFormEvents();
             if (this.$wrap) this.$wrap.removeClass(this.UI_CLASSES.active);
@@ -6593,12 +6585,10 @@ var CommentList = function (_PlayerUIComponent) {
         // Update state and re-render UI
 
     }, {
-        key: "destroyComment",
+        key: 'destroyComment',
         value: function destroyComment(event) {
             var annotationId = this.annotation.id;
-            if (this.comments.length == 1) {
-                this.annotation.teardown();
-            } else {
+            if (this.comments.length == 1) this.annotation.teardown();else {
                 var commentId = this.findCommentId(event),
                     comment = this.comments.find(function (c) {
                     return c.id == commentId;
@@ -6611,7 +6601,7 @@ var CommentList = function (_PlayerUIComponent) {
             this.plugin.annotationState.stateChanged();
         }
     }, {
-        key: "findCommentId",
+        key: 'findCommentId',
         value: function findCommentId(event) {
             var id = typeof event.detail.id === 'undefined' ? $(event.target).closest('.vac-comment').data('id') : event.detail.id;
             return id;
@@ -6621,24 +6611,24 @@ var CommentList = function (_PlayerUIComponent) {
         // TODO: This might need to be fine-tuned?
 
     }, {
-        key: "disablePageScroll",
+        key: 'disablePageScroll',
         value: function disablePageScroll(event) {
             var $target = $(event.currentTarget),
                 height = $target.height(),
                 ogEvent = event.originalEvent,
                 delta = ogEvent.wheelDelta || -ogEvent.detail,
-                dir = delta < 0 ? "down" : "up",
+                dir = delta < 0 ? 'down' : 'up',
                 scrollDiff = Math.abs(event.currentTarget.scrollHeight - event.currentTarget.clientHeight);
 
             // if scrolling into top of div
-            if ($target.scrollTop() < 20 && dir == "up") {
+            if ($target.scrollTop() < 20 && dir == 'up') {
                 $target.stop();
                 $target.animate({ scrollTop: 0 }, 100);
                 event.preventDefault();
             }
 
             // if scrolling into bottom of div
-            if ($target.scrollTop() > scrollDiff - 10 && dir == "down") {
+            if ($target.scrollTop() > scrollDiff - 10 && dir == 'down') {
                 $target.stop();
                 $target.animate({ scrollTop: height + 40 }, 100);
                 event.preventDefault();
@@ -6648,7 +6638,7 @@ var CommentList = function (_PlayerUIComponent) {
         // Sort comments by timestamp
 
     }, {
-        key: "sortComments",
+        key: 'sortComments',
         value: function sortComments() {
             this.comments.sort(function (a, b) {
                 return a.timestamp < b.timestamp ? -1 : a.timestamp > b.timestamp ? 1 : 0;
@@ -6658,13 +6648,13 @@ var CommentList = function (_PlayerUIComponent) {
         // Delete the annotation
 
     }, {
-        key: "handleDeleteAnnotationClick",
+        key: 'handleDeleteAnnotationClick',
         value: function handleDeleteAnnotationClick(e) {
             var _this3 = this;
 
-            var $confirmEl = $("<a/>").addClass("vac-delete-confirm").text("CONFIRM");
-            $confirmEl.on("click.comment", function () {
-                $confirmEl.off("click.comment");
+            var $confirmEl = $('<a/>').addClass('vac-delete-confirm').text('CONFIRM');
+            $confirmEl.on('click.comment', function () {
+                $confirmEl.off('click.comment');
                 _this3.annotation.teardown();
             });
             $(e.target).replaceWith($confirmEl);
@@ -6673,29 +6663,28 @@ var CommentList = function (_PlayerUIComponent) {
         // Unbind listeners for new comments form
 
     }, {
-        key: "unbindCommentFormEvents",
+        key: 'unbindCommentFormEvents',
         value: function unbindCommentFormEvents() {
-            if (this.$newCommentForm) this.$newCommentForm.off("click.vac-comment");
+            if (this.$newCommentForm) this.$newCommentForm.off('click.vac-comment');
         }
 
         // Teardown CommentList UI, unbind events
 
     }, {
-        key: "teardown",
+        key: 'teardown',
         value: function teardown() {
             var destroyComments = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
 
-            if (this.$el) {
-                this.$el.off("click.vac-comment mousewheel.vac-comment DOMMouseScroll.vac-comment");
-            }
+            if (this.$el) this.$el.off('click.vac-comment mousewheel.vac-comment DOMMouseScroll.vac-comment');
+
             this.comments.forEach(function (c) {
                 return c.teardown();
             });
             if (destroyComments) this.comments = [];
-            _get(CommentList.prototype.__proto__ || Object.getPrototypeOf(CommentList.prototype), "teardown", this).call(this);
+            _get(CommentList.prototype.__proto__ || Object.getPrototypeOf(CommentList.prototype), 'teardown', this).call(this);
         }
     }, {
-        key: "data",
+        key: 'data',
         get: function get() {
             return this.comments.map(function (c) {
                 return c.data;
@@ -6711,7 +6700,7 @@ module.exports = {
 };
 
 },{"./../lib/player_ui_component":37,"./../lib/utils":39,"./comment":26}],28:[function(require,module,exports){
-"use strict";
+'use strict';
 /*
     Component for managing annotation "control box" in upper left of video when in annotation mode,
     including all functionality to add new annotations
@@ -6725,12 +6714,12 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PlayerUIComponent = require("./../lib/player_ui_component").class,
-    Utils = require("./../lib/utils"),
-    DraggableMarker = require("./draggable_marker.js").class,
-    SelectableShape = require("./selectable_shape.js").class,
-    PlayerButton = require("./player_button").class,
-    Annotation = require("./annotation").class,
+var PlayerUIComponent = require('./../lib/player_ui_component').class,
+    Utils = require('./../lib/utils'),
+    DraggableMarker = require('./draggable_marker.js').class,
+    SelectableShape = require('./selectable_shape.js').class,
+    PlayerButton = require('./player_button').class,
+    Annotation = require('./annotation').class,
     templateName = 'controls';
 
 // Control uses a "ui state" to determine how UI is rendered - this object is the base state, containing a
@@ -6755,10 +6744,9 @@ var Controls = function (_PlayerUIComponent) {
         _this.uiState = Utils.cloneObject(BASE_UI_STATE);
         _this.bindEvents(bindArrowKeys);
 
-        if (_this.showControls) {
+        if (_this.showControls)
             // create player button in the control bar if controls are shown
             _this.playerButton = new PlayerButton(_this.playerId);
-        }
 
         _this.render();
         return _this;
@@ -6768,51 +6756,48 @@ var Controls = function (_PlayerUIComponent) {
 
 
     _createClass(Controls, [{
-        key: "bindEvents",
+        key: 'bindEvents',
         value: function bindEvents(bindArrowKeys) {
             var _this2 = this;
 
-            this.$player.on("click.vac-controls", ".vac-controls button", this.startAddNew.bind(this)) // Add new button click
-            .on("click.vac-controls", ".vac-annotation-nav .vac-a-next", function () {
+            this.$player.on('click.vac-controls', '.vac-controls button', this.startAddNew.bind(this)) // Add new button click
+            .on('click.vac-controls', '.vac-annotation-nav .vac-a-next', function () {
                 return _this2.plugin.annotationState.nextAnnotation();
             }) // Click 'next' on annotation nav
-            .on("click.vac-controls", ".vac-annotation-nav .vac-a-prev", function () {
+            .on('click.vac-controls', '.vac-annotation-nav .vac-a-prev', function () {
                 return _this2.plugin.annotationState.prevAnnotation();
             }) // Click 'prev' on annotation nav
-            .on("click.vac-controls", ".vac-video-move .vac-a-next", function () {
+            .on('click.vac-controls', '.vac-video-move .vac-a-next', function () {
                 return _this2.marker.scrubStart(1);
             }) // Click '+1 sec' on marker nav
-            .on("click.vac-controls", ".vac-video-move .vac-a-prev", function () {
+            .on('click.vac-controls', '.vac-video-move .vac-a-prev', function () {
                 return _this2.marker.scrubStart(-1);
             }); // Click '-1 sec' on marker nav
 
-            if (this.internalCommenting) {
-                this.$player.on("click.vac-controls", ".vac-add-controls button", this.writeComment.bind(this)) // 'Next' button click while adding
-                .on("click.vac-controls", ".vac-video-write-new.vac-is-annotation button", this.saveNew.bind(this)) // 'Save' button click while adding
-                .on("click.vac-controls", ".vac-add-controls a, .vac-video-write-new.vac-is-annotation a", this.cancelAddNew.bind(this)); // Cancel link click
-            }
-            if (bindArrowKeys) {
-                $(document).on("keyup.vac-nav-" + this.playerId, function (e) {
-                    return _this2.handleArrowKeys(e);
-                }); // Use arrow keys to navigate annotations
-            }
+            if (this.internalCommenting) this.$player.on('click.vac-controls', '.vac-add-controls button', this.writeComment.bind(this)) // 'Next' button click while adding
+            .on('click.vac-controls', '.vac-video-write-new.vac-is-annotation button', this.saveNew.bind(this)) // 'Save' button click while adding
+            .on('click.vac-controls', '.vac-add-controls a, .vac-video-write-new.vac-is-annotation a', this.cancelAddNew.bind(this)); // Cancel link click
+
+            if (bindArrowKeys) $(document).on('keyup.vac-nav-' + this.playerId, function (e) {
+                return _this2.handleArrowKeys(e);
+            }); // Use arrow keys to navigate annotations
         }
 
         // Remove UI and unbind events for this and child components
 
     }, {
-        key: "teardown",
+        key: 'teardown',
         value: function teardown() {
             this.clear(true);
             this.$player.off('click.vac-controls');
-            $(document).off("keyup.vac-nav-" + this.playerId + " mousemove.vac-tooltip-" + this.playerId);
+            $(document).off('keyup.vac-nav-' + this.playerId + ' mousemove.vac-tooltip-' + this.playerId);
             if (this.playerButton) this.playerButton.teardown();
         }
 
         // Clear existing UI (resetting components if need be)
 
     }, {
-        key: "clear",
+        key: 'clear',
         value: function clear() {
             var reset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
@@ -6832,7 +6817,7 @@ var Controls = function (_PlayerUIComponent) {
         // Render the UI elements (based on uiState)
 
     }, {
-        key: "render",
+        key: 'render',
         value: function render() {
             var reset = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
@@ -6851,7 +6836,7 @@ var Controls = function (_PlayerUIComponent) {
         // User clicked to cancel in-progress add - restore to normal state
 
     }, {
-        key: "cancelAddNew",
+        key: 'cancelAddNew',
         value: function cancelAddNew() {
             if (!(this.uiState.adding || this.uiState.writingComment)) return;
             this.render(true);
@@ -6862,7 +6847,7 @@ var Controls = function (_PlayerUIComponent) {
         // User clicked 'add' button in the controls - setup UI and marker
 
     }, {
-        key: "startAddNew",
+        key: 'startAddNew',
         value: function startAddNew() {
             if (!this.plugin.active) this.plugin.toggleAnnotationMode();
 
@@ -6888,7 +6873,7 @@ var Controls = function (_PlayerUIComponent) {
         // User clicked 'next' action - show UI to write comment
 
     }, {
-        key: "writeComment",
+        key: 'writeComment',
         value: function writeComment() {
             this.uiState.writingComment = true;
             this.render();
@@ -6897,7 +6882,7 @@ var Controls = function (_PlayerUIComponent) {
         // User clicked to save a new annotation/comment during add new flow
 
     }, {
-        key: "saveNew",
+        key: 'saveNew',
         value: function saveNew() {
             var comment = this.$UI.newCommentTextarea.val();
             if (!comment) return; // empty comment - TODO add validation / err message
@@ -6911,7 +6896,7 @@ var Controls = function (_PlayerUIComponent) {
         // Change normal UI (hide markers, hide playback, etc) on init add state
 
     }, {
-        key: "setAddingUI",
+        key: 'setAddingUI',
         value: function setAddingUI() {
             this.plugin.annotationState.enabled = false;
             this.disablePlayingAndControl();
@@ -6920,17 +6905,17 @@ var Controls = function (_PlayerUIComponent) {
         // Restore normal UI after add state
 
     }, {
-        key: "restoreNormalUI",
+        key: 'restoreNormalUI',
         value: function restoreNormalUI() {
             this.plugin.annotationState.enabled = this.plugin.active;
             this.enablePlayingAndControl();
-            $(document).off("mousemove.vac-tooltip-" + this.playerId);
+            $(document).off('mousemove.vac-tooltip-' + this.playerId);
         }
 
         // On arrow key press, navigate to next or prev Annotation
 
     }, {
-        key: "handleArrowKeys",
+        key: 'handleArrowKeys',
         value: function handleArrowKeys(e) {
             if (!this.plugin.active) return;
             var keyId = e.which;
@@ -6942,7 +6927,7 @@ var Controls = function (_PlayerUIComponent) {
         // Adds help text to cursor during annotation mode
 
     }, {
-        key: "bindCursorTooltip",
+        key: 'bindCursorTooltip',
         value: function bindCursorTooltip() {
             var _this3 = this;
 
@@ -6950,7 +6935,7 @@ var Controls = function (_PlayerUIComponent) {
 
             // Assert bounds are updated in plugin in case page was modified since creation, so tooltip math is correct
             this.plugin.setBounds(false);
-            $(document).on("mousemove.vac-tooltip-" + this.playerId, Utils.throttle(function (event) {
+            $(document).on('mousemove.vac-tooltip-' + this.playerId, Utils.throttle(function (event) {
                 if (!_this3.plugin.bounds) return;
 
                 var x = event.pageX,
@@ -6978,20 +6963,16 @@ var Controls = function (_PlayerUIComponent) {
 
                 // hide if the cursor is over the control bar but not hovering over the draggable marker
                 // also hide if mouse is down
-                if (withinControls && !markerHovered || _this3.$tooltip.hasClass('vac-cursor-dragging')) {
-                    _this3.$tooltip.addClass(_this3.UI_CLASSES.hidden);
-                } else {
-                    _this3.$tooltip.removeClass(_this3.UI_CLASSES.hidden);
-                }
+                if (withinControls && !markerHovered || _this3.$tooltip.hasClass('vac-cursor-dragging')) _this3.$tooltip.addClass(_this3.UI_CLASSES.hidden);else _this3.$tooltip.removeClass(_this3.UI_CLASSES.hidden);
 
                 _this3.$tooltip.css({
-                    left: posX + "px",
-                    top: posY + "px"
+                    left: posX + 'px',
+                    top: posY + 'px'
                 });
-            }.bind(this), 50));
+            }, 50));
         }
     }, {
-        key: "$tooltip",
+        key: '$tooltip',
         get: function get() {
             this.$tooltip_ = this.$tooltip_ || this.$player.find('.vac-cursor-tool-tip');
             return this.$tooltip_;
@@ -7006,7 +6987,7 @@ module.exports = {
 };
 
 },{"./../lib/player_ui_component":37,"./../lib/utils":39,"./annotation":24,"./draggable_marker.js":29,"./player_button":31,"./selectable_shape.js":32}],29:[function(require,module,exports){
-"use strict";
+'use strict';
 /*
     Component for a timeline marker that is draggable when user clicks/drags on it, and rebuilds underlying range
     as drag occurs
@@ -7022,7 +7003,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Marker = require("./marker").class,
+var Marker = require('./marker').class,
     Utils = require('./../lib/utils'),
     markerTemplateName = 'draggable_marker';
 
@@ -7047,7 +7028,7 @@ var DraggableMarker = function (_Marker) {
 
 
     _createClass(DraggableMarker, [{
-        key: "bindMarkerEvents",
+        key: 'bindMarkerEvents',
         value: function bindMarkerEvents() {
             var _this2 = this;
 
@@ -7056,24 +7037,20 @@ var DraggableMarker = function (_Marker) {
                 e.preventDefault();
                 _this2.dragging = true;
                 // When mouse moves (with mouse down) call onDrag, throttling to once each 250 ms
-                $(document).on("mousemove.vac-dmarker-" + _this2.playerId, Utils.throttle(_this2.onDrag.bind(_this2), 250));
+                $(document).on('mousemove.vac-dmarker-' + _this2.playerId, Utils.throttle(_this2.onDrag.bind(_this2), 250));
 
                 // Add drag class to cursor tooltip if available
-                if (!_this2.plugin.options.showControls) {
-                    _this2.$player.find('.vac-cursor-tool-tip').addClass('vac-cursor-dragging').removeClass('vac-marker-hover');
-                }
+                if (!_this2.plugin.options.showControls) _this2.$player.find('.vac-cursor-tool-tip').addClass('vac-cursor-dragging').removeClass('vac-marker-hover');
             });
 
             // On mouse up end drag action and unbind mousemove event
-            $(document).on("mouseup.vac-dmarker-" + this.playerId, function (e) {
+            $(document).on('mouseup.vac-dmarker-' + this.playerId, function (e) {
                 if (!_this2.dragging) return;
-                $(document).off("mousemove.vac-dmarker-" + _this2.playerId);
+                $(document).off('mousemove.vac-dmarker-' + _this2.playerId);
                 _this2.dragging = false;
 
                 // Remove drag class and hover class from cursor tooltip if available
-                if (!_this2.plugin.options.showControls) {
-                    _this2.$player.find('.vac-cursor-tool-tip').removeClass('vac-cursor-dragging').removeClass('vac-marker-hover');
-                }
+                if (!_this2.plugin.options.showControls) _this2.$player.find('.vac-cursor-tool-tip').removeClass('vac-cursor-dragging').removeClass('vac-marker-hover');
             });
 
             // On mouse mouse enter, show cursor tooltip if controls are not shown
@@ -7085,28 +7062,25 @@ var DraggableMarker = function (_Marker) {
                 }).on('mouseleave.vac-cursor-tool-tip', function () {
                     self.$player.find('.vac-cursor-tool-tip').removeClass('vac-marker-hover');
                 });
-            };
+            }
         }
 
         // On drag action, calculate new range and re-render marker
 
     }, {
-        key: "onDrag",
+        key: 'onDrag',
         value: function onDrag(e) {
             var dragPercent = this.percentValFromXpos(e.pageX),
                 secVal = parseInt(this.duration * dragPercent);
 
-            if (secVal > this.rangePin) {
-                this.range = {
-                    start: this.rangePin,
-                    end: secVal
-                };
-            } else {
-                this.range = {
-                    start: secVal,
-                    end: this.rangePin
-                };
-            }
+            if (secVal > this.rangePin) this.range = {
+                start: this.rangePin,
+                end: secVal
+            };else this.range = {
+                start: secVal,
+                end: this.rangePin
+            };
+
             this.render();
             this.plugin.fire('addingAnnotationDataChanged', { range: this.range });
         }
@@ -7114,7 +7088,7 @@ var DraggableMarker = function (_Marker) {
         // Cal percentage (of video) position for a pixel-based X position on the document
 
     }, {
-        key: "percentValFromXpos",
+        key: 'percentValFromXpos',
         value: function percentValFromXpos(xpos) {
             var x = Math.max(0, xpos - this.$parent.offset().left),
                 // px val
@@ -7128,10 +7102,10 @@ var DraggableMarker = function (_Marker) {
         // Remove bound events on destructon
 
     }, {
-        key: "teardown",
+        key: 'teardown',
         value: function teardown() {
-            _get(DraggableMarker.prototype.__proto__ || Object.getPrototypeOf(DraggableMarker.prototype), "teardown", this).call(this);
-            $(document).off("mousemove.vac-dmarker-" + this.playerId + " mouseup.vac-dmarker-" + this.playerId);
+            _get(DraggableMarker.prototype.__proto__ || Object.getPrototypeOf(DraggableMarker.prototype), 'teardown', this).call(this);
+            $(document).off('mousemove.vac-dmarker-' + this.playerId + ' mouseup.vac-dmarker-' + this.playerId);
             this.$el.off('mouseenter.vac-cursor-tool-tip');
             this.$el.off('mouseleave.vac-cursor-tool-tip');
             this.$el.off('mousedown.vac-marker');
@@ -7140,7 +7114,7 @@ var DraggableMarker = function (_Marker) {
         // Move the video & marker start by some num seconds (pos or neg)
 
     }, {
-        key: "scrubStart",
+        key: 'scrubStart',
         value: function scrubStart(secondsChanged) {
             var newStart = this.range.start + secondsChanged;
             this.currentTime = newStart;
@@ -7161,7 +7135,7 @@ module.exports = {
 };
 
 },{"./../lib/utils":39,"./marker":30}],30:[function(require,module,exports){
-"use strict";
+'use strict';
 /*
     Component for a timeline marker with capabilities to render on timeline, including tooltip for comment
 */
@@ -7176,8 +7150,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PlayerUIComponent = require("./../lib/player_ui_component").class,
-    Utils = require("./../lib/utils"),
+var PlayerUIComponent = require('./../lib/player_ui_component').class,
+    Utils = require('./../lib/utils'),
     markerTemplateName = 'marker',
     markerWrapTemplateName = 'marker_wrap';
 
@@ -7195,9 +7169,8 @@ var Marker = function (_PlayerUIComponent) {
         _this.comment = comment;
         _this.templateName = markerTemplateName;
 
-        if (!_this.$UI.markerWrap.length) {
-            _this.$UI.timeline.append(_this.renderTemplate(markerWrapTemplateName));
-        }
+        if (!_this.$UI.markerWrap.length) _this.$UI.timeline.append(_this.renderTemplate(markerWrapTemplateName));
+
         return _this;
     }
 
@@ -7205,7 +7178,7 @@ var Marker = function (_PlayerUIComponent) {
 
 
     _createClass(Marker, [{
-        key: "setActive",
+        key: 'setActive',
         value: function setActive() {
             var showTooltip = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
@@ -7216,18 +7189,18 @@ var Marker = function (_PlayerUIComponent) {
         // Deactivate this marker
 
     }, {
-        key: "deactivate",
+        key: 'deactivate',
         value: function deactivate() {
-            this.$el.removeClass(this.UI_CLASSES.active + " vac-force-tooltip");
+            this.$el.removeClass(this.UI_CLASSES.active + ' vac-force-tooltip');
         }
 
         // Draw marker on timeline for this.range;
 
     }, {
-        key: "render",
+        key: 'render',
         value: function render() {
             // clear existing marker if this one was already rendered
-            this.$UI.timeline.find("[data-marker-id=\"" + this.componentId + "\"]").remove();
+            this.$UI.timeline.find('[data-marker-id="' + this.componentId + '"]').remove();
 
             // Bind to local instance var, add to DOM, and setup events
             this.$el = $(this.renderTemplate(this.templateName, this.markerTemplateData));
@@ -7238,31 +7211,31 @@ var Marker = function (_PlayerUIComponent) {
         // Bind needed events for this marker
 
     }, {
-        key: "bindMarkerEvents",
+        key: 'bindMarkerEvents',
         value: function bindMarkerEvents() {
             var _this2 = this;
 
             // handle dimming other markers + highlighting this one on mouseenter/leave
-            this.$el.on("mouseenter.vac-marker", function () {
-                _this2.$el.addClass('vac-hovering').closest(".vac-marker-wrap").addClass('vac-dim-all');
-            }).on("mouseleave.vac-marker", function () {
-                _this2.$el.removeClass('vac-hovering').closest(".vac-marker-wrap").removeClass('vac-dim-all');
+            this.$el.on('mouseenter.vac-marker', function () {
+                _this2.$el.addClass('vac-hovering').closest('.vac-marker-wrap').addClass('vac-dim-all');
+            }).on('mouseleave.vac-marker', function () {
+                _this2.$el.removeClass('vac-hovering').closest('.vac-marker-wrap').removeClass('vac-dim-all');
             });
         }
 
         // Build object for template
 
     }, {
-        key: "teardown",
+        key: 'teardown',
 
 
         // Unbind event listeners on teardown and remove DOM nodes
         value: function teardown() {
             this.$el.off('mouseenter.vac-marker').off('mouseleave.vac-marker').off('click.vac-marker');
-            _get(Marker.prototype.__proto__ || Object.getPrototypeOf(Marker.prototype), "teardown", this).call(this);
+            _get(Marker.prototype.__proto__ || Object.getPrototypeOf(Marker.prototype), 'teardown', this).call(this);
         }
     }, {
-        key: "markerTemplateData",
+        key: 'markerTemplateData',
         get: function get() {
             // the smaller the width, the higher the z-index so overlaps are clickable
             var left = this.range.start / this.duration * 100,
@@ -7290,7 +7263,7 @@ module.exports = {
 };
 
 },{"./../lib/player_ui_component":37,"./../lib/utils":39}],31:[function(require,module,exports){
-"use strict";
+'use strict';
 /*
     Component main 'annotation toggle' button in the player controls, including notifier for # annotations
 */
@@ -7305,8 +7278,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PlayerUIComponent = require("./../lib/player_ui_component").class,
-    templateName = "player_button";
+var PlayerUIComponent = require('./../lib/player_ui_component').class,
+    templateName = 'player_button';
 
 var PlayerButton = function (_PlayerUIComponent) {
     _inherits(PlayerButton, _PlayerUIComponent);
@@ -7330,21 +7303,21 @@ var PlayerButton = function (_PlayerUIComponent) {
 
 
     _createClass(PlayerButton, [{
-        key: "render",
+        key: 'render',
         value: function render() {
             var btn = this.player.getChild('controlBar').addChild('button', {});
-            btn.controlText("Toggle Animations");
+            btn.controlText('Toggle Animations');
             this.$el = $(btn.el());
-            this.$el.addClass('vac-player-btn').find(".vjs-icon-placeholder").html(this.renderTemplate(templateName));
+            this.$el.addClass('vac-player-btn').find('.vjs-icon-placeholder').html(this.renderTemplate(templateName));
         }
 
         // Update the number of annotations displayed in the bubble
 
     }, {
-        key: "updateNumAnnotations",
+        key: 'updateNumAnnotations',
         value: function updateNumAnnotations() {
             var num = this.plugin.annotationState.annotations.length,
-                $bubble = this.$el.find("b");
+                $bubble = this.$el.find('b');
             $bubble.text(num);
             num > 0 ? $bubble.removeClass(this.UI_CLASSES.hidden) : $bubble.addClass(this.UI_CLASSES.hidden);
         }
@@ -7352,10 +7325,10 @@ var PlayerButton = function (_PlayerUIComponent) {
         // Unbind event listeners on teardown and remove DOM nodes
 
     }, {
-        key: "teardown",
+        key: 'teardown',
         value: function teardown() {
             this.$el.off('click.vac-player-button');
-            _get(PlayerButton.prototype.__proto__ || Object.getPrototypeOf(PlayerButton.prototype), "teardown", this).call(this);
+            _get(PlayerButton.prototype.__proto__ || Object.getPrototypeOf(PlayerButton.prototype), 'teardown', this).call(this);
         }
     }]);
 
@@ -7367,7 +7340,7 @@ module.exports = {
 };
 
 },{"./../lib/player_ui_component":37}],32:[function(require,module,exports){
-"use strict";
+'use strict';
 /*
     Component for a shape that can be drug/sized on top of the video while adding a new annotation
 */
@@ -7382,7 +7355,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Shape = require("./shape").class,
+var Shape = require('./shape').class,
     Utils = require('./../lib/utils');
 
 var SelectableShape = function (_Shape) {
@@ -7393,7 +7366,7 @@ var SelectableShape = function (_Shape) {
 
         var _this = _possibleConstructorReturn(this, (SelectableShape.__proto__ || Object.getPrototypeOf(SelectableShape)).call(this, playerId));
 
-        _this.$parent = _this.$player.find(".vac-video-cover-canvas");
+        _this.$parent = _this.$player.find('.vac-video-cover-canvas');
         _this.bindEvents();
         _this.dragging = false;
         return _this;
@@ -7403,15 +7376,15 @@ var SelectableShape = function (_Shape) {
 
 
     _createClass(SelectableShape, [{
-        key: "bindEvents",
+        key: 'bindEvents',
         value: function bindEvents() {
             var _this2 = this;
 
             // On mousedown initialize drag
-            this.$parent.on("mousedown.vac-selectable-shape", function (e) {
+            this.$parent.on('mousedown.vac-selectable-shape', function (e) {
                 // Check a few conditions to see if we should *not* start drag
-                if (!$(e.target).hasClass('vac-video-cover-canvas')) return; //didn't click on overlay
-                if ($(e.target).hasClass('vac-shape')) return; //user clicked on annotation
+                if (!$(e.target).hasClass('vac-video-cover-canvas')) return; // didn't click on overlay
+                if ($(e.target).hasClass('vac-shape')) return; // user clicked on annotation
 
                 // Remove old shape if one existed
                 if (_this2.$el) _this2.$el.remove();
@@ -7435,22 +7408,20 @@ var SelectableShape = function (_Shape) {
                 _this2.dragMoved = false; // used to determine if user actually dragged or just clicked
 
                 // Bind event on doc mousemove to track drag, throttled to once each 100ms
-                $(document).on("mousemove.vac-sshape-" + _this2.playerId, Utils.throttle(_this2.onDrag.bind(_this2), 100));
+                $(document).on('mousemove.vac-sshape-' + _this2.playerId, Utils.throttle(_this2.onDrag.bind(_this2), 100));
 
                 // Add drag class to cursor tooltip if available
-                if (!_this2.plugin.options.showControls) {
-                    _this2.$player.find('.vac-cursor-tool-tip').addClass('vac-cursor-dragging');
-                }
+                if (!_this2.plugin.options.showControls) _this2.$player.find('.vac-cursor-tool-tip').addClass('vac-cursor-dragging');
             });
 
             // On mouseup, if during drag cancel drag event listeners
-            $(document).on("mouseup.vac-sshape-" + this.playerId, function (e) {
+            $(document).on('mouseup.vac-sshape-' + this.playerId, function (e) {
                 if (!_this2.dragging) return;
 
-                $(document).off("mousemove.vac-sshape-" + _this2.playerId);
+                $(document).off('mousemove.vac-sshape-' + _this2.playerId);
 
                 if (!_this2.dragMoved) {
-                    //clear shape if it's just a click (and not a drag)
+                    // clear shape if it's just a click (and not a drag)
                     _this2.shape = null;
                     if (_this2.$el) _this2.$el.remove();
                 }
@@ -7458,16 +7429,14 @@ var SelectableShape = function (_Shape) {
                 _this2.dragging = false;
 
                 // Remove drag class from cursor tooltip if available
-                if (!_this2.plugin.options.showControls) {
-                    _this2.$player.find('.vac-cursor-tool-tip').removeClass('vac-cursor-dragging');
-                }
+                if (!_this2.plugin.options.showControls) _this2.$player.find('.vac-cursor-tool-tip').removeClass('vac-cursor-dragging');
             });
         }
 
         // On each interation of drag action (mouse movement), recalc position and redraw shape
 
     }, {
-        key: "onDrag",
+        key: 'onDrag',
         value: function onDrag(e) {
             this.dragMoved = true;
 
@@ -7496,31 +7465,31 @@ var SelectableShape = function (_Shape) {
         // Convert pixel-based x position (relative to document) to percentage in video
 
     }, {
-        key: "xCoordToPercent",
+        key: 'xCoordToPercent',
         value: function xCoordToPercent(x) {
-            x = x - this.$parent.offset().left; //pixel position
+            x = x - this.$parent.offset().left; // pixel position
             var max = this.$parent.innerWidth();
-            return Number((x / max * 100).toFixed(2)); //round to 2 decimal places
+            return Number((x / max * 100).toFixed(2)); // round to 2 decimal places
         }
 
         // Convert pixel-based y position (relative to document) to percentage in video
 
     }, {
-        key: "YCoordToPercent",
+        key: 'YCoordToPercent',
         value: function YCoordToPercent(y) {
-            y = y - this.$parent.offset().top; //pixel position
+            y = y - this.$parent.offset().top; // pixel position
             var max = this.$parent.innerHeight();
-            return Number((y / max * 100).toFixed(2)); //round to 2 decimal places
+            return Number((y / max * 100).toFixed(2)); // round to 2 decimal places
         }
 
         // Unbind events and remove element
 
     }, {
-        key: "teardown",
+        key: 'teardown',
         value: function teardown() {
             this.$parent.off('mousedown.vac-selectable-shape');
-            $(document).off("mouseup.vac-sshape-" + this.playerId + " mousemove.vac-sshape-" + this.playerId);
-            _get(SelectableShape.prototype.__proto__ || Object.getPrototypeOf(SelectableShape.prototype), "teardown", this).call(this);
+            $(document).off('mouseup.vac-sshape-' + this.playerId + ' mousemove.vac-sshape-' + this.playerId);
+            _get(SelectableShape.prototype.__proto__ || Object.getPrototypeOf(SelectableShape.prototype), 'teardown', this).call(this);
         }
     }]);
 
@@ -7532,7 +7501,7 @@ module.exports = {
 };
 
 },{"./../lib/utils":39,"./shape":33}],33:[function(require,module,exports){
-"use strict";
+'use strict';
 /*
     Component for managing a shape (i.e. box drawn on the player) for an annotation
 */
@@ -7545,7 +7514,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PlayerUIComponent = require("./../lib/player_ui_component").class;
+var PlayerUIComponent = require('./../lib/player_ui_component').class;
 
 var Shape = function (_PlayerUIComponent) {
     _inherits(Shape, _PlayerUIComponent);
@@ -7566,12 +7535,12 @@ var Shape = function (_PlayerUIComponent) {
 
 
     _createClass(Shape, [{
-        key: "render",
+        key: 'render',
         value: function render() {
             if (!this.shape) return;
             if (this.$el) this.$el.remove();
 
-            this.$el = $("<div/>").addClass("vac-shape");
+            this.$el = $('<div/>').addClass('vac-shape');
             this.setDimsFromShape();
             this.$parent.append(this.$el);
         }
@@ -7579,13 +7548,13 @@ var Shape = function (_PlayerUIComponent) {
         // Set/update the dimensions of the shape based  on this.shape
 
     }, {
-        key: "setDimsFromShape",
+        key: 'setDimsFromShape',
         value: function setDimsFromShape() {
             this.$el.css({
-                left: this.shape.x1 + "%",
-                top: this.shape.y1 + "%",
-                width: this.shape.x2 - this.shape.x1 + "%",
-                height: this.shape.y2 - this.shape.y1 + "%"
+                left: this.shape.x1 + '%',
+                top: this.shape.y1 + '%',
+                width: this.shape.x2 - this.shape.x1 + '%',
+                height: this.shape.y2 - this.shape.y1 + '%'
             });
         }
     }]);
@@ -7608,7 +7577,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Logger = require("./logger");
+var Logger = require('./logger');
 
 var EventDispatcher = function () {
     function EventDispatcher(plugin) {
@@ -7625,30 +7594,28 @@ var EventDispatcher = function () {
 
 
     _createClass(EventDispatcher, [{
-        key: "registerListenersFor",
+        key: 'registerListenersFor',
         value: function registerListenersFor(obj, className) {
             var _this2 = this;
 
             var matchingEvents = this.eventRegistry[className];
-            if (matchingEvents) {
-                Object.keys(matchingEvents).forEach(function (key) {
-                    // Don't register again if already in cached collection
-                    if (!~_this2.registeredListeners.indexOf(key)) {
-                        var callback = matchingEvents[key].bind(obj);
-                        _this2.registerListener(key, function (evt) {
-                            if (!_this2.pluginReady) return;
-                            _this2.logCallback(key, className, evt);
-                            callback(evt, obj);
-                        }.bind(_this2));
-                    }
-                });
-            }
+            if (matchingEvents) Object.keys(matchingEvents).forEach(function (key) {
+                // Don't register again if already in cached collection
+                if (!~_this2.registeredListeners.indexOf(key)) {
+                    var callback = matchingEvents[key].bind(obj);
+                    _this2.registerListener(key, function (evt) {
+                        if (!_this2.pluginReady) return;
+                        _this2.logCallback(key, className, evt);
+                        callback(evt, obj);
+                    });
+                }
+            });
         }
 
         // Bind a listener to the plugin
 
     }, {
-        key: "registerListener",
+        key: 'registerListener',
         value: function registerListener(type, callback) {
             this.plugin.on(type, callback);
             this.registeredListeners.push(type);
@@ -7657,7 +7624,7 @@ var EventDispatcher = function () {
         // Unbind a listener from the plugin
 
     }, {
-        key: "unregisterListener",
+        key: 'unregisterListener',
         value: function unregisterListener(type) {
             this.plugin.off(type);
             var i = this.registeredListeners.indexOf(type);
@@ -7667,15 +7634,15 @@ var EventDispatcher = function () {
         // Trigger an event on the plugin
 
     }, {
-        key: "fire",
+        key: 'fire',
         value: function fire(type, data) {
             if (!this.pluginReady) return;
-            Logger.log("evt-dispatch-FIRE", type, data);
-            var evt = new CustomEvent(type, { 'detail': data });
+            Logger.log('evt-dispatch-FIRE', type, data);
+            var evt = new CustomEvent(type, { detail: data });
             this.plugin.trigger(evt);
         }
     }, {
-        key: "teardown",
+        key: 'teardown',
         value: function teardown() {
             var _this3 = this;
 
@@ -7684,9 +7651,9 @@ var EventDispatcher = function () {
             });
         }
     }, {
-        key: "logCallback",
+        key: 'logCallback',
         value: function logCallback(eventName, className, event) {
-            Logger.log("evt-dispatch-RECEIVE", eventName + " (" + className + ")", event);
+            Logger.log('evt-dispatch-RECEIVE', eventName + ' (' + className + ')', event);
         }
     }]);
 
@@ -7758,7 +7725,7 @@ module.exports = {
 
 // Prefix for appending to all logger messages
 
-var LOG_PREFIX = "::VAC::";
+var LOG_PREFIX = '::VAC::';
 
 // Are we in debug mode?
 function debug() {
@@ -7801,7 +7768,7 @@ module.exports.info = function () {
 };
 
 },{}],36:[function(require,module,exports){
-"use strict";
+'use strict';
 /*
     Base class all player components interit from - it includes lots of helper functions (to get reference to
     the player, the plugin, video state, etc)
@@ -7822,7 +7789,7 @@ var PlayerComponent = function () {
 
 
     _createClass(PlayerComponent, [{
-        key: "initAPI",
+        key: 'initAPI',
 
 
         // Register all events in the EventRegistry matching this className
@@ -7830,7 +7797,7 @@ var PlayerComponent = function () {
             this.plugin.eventDispatcher.registerListenersFor(obj, className);
         }
     }, {
-        key: "plugin",
+        key: 'plugin',
         get: function get() {
             return this.player.annotationComments();
         }
@@ -7838,7 +7805,7 @@ var PlayerComponent = function () {
         // attribute to get player javascript instance
 
     }, {
-        key: "player",
+        key: 'player',
         get: function get() {
             return videojs(this.playerId);
         }
@@ -7846,7 +7813,7 @@ var PlayerComponent = function () {
         // attribute to get video duration (in seconds)
 
     }, {
-        key: "duration",
+        key: 'duration',
         get: function get() {
             return this.player.duration();
         }
@@ -7854,7 +7821,7 @@ var PlayerComponent = function () {
         // attribute to get player current time
 
     }, {
-        key: "currentTime",
+        key: 'currentTime',
         get: function get() {
             return this.player.currentTime();
         }
@@ -7874,7 +7841,7 @@ module.exports = {
 };
 
 },{}],37:[function(require,module,exports){
-"use strict";
+'use strict';
 /*
     Base class all player UI components interit from - it includes lots of helper functions (to get reference to
     the player $el, various classes/helpers, template rendering, etc)
@@ -7888,7 +7855,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PlayerComponent = require("./player_component").class,
+var PlayerComponent = require('./player_component').class,
     Handlebars = require('handlebars/runtime'),
     Templates = require('./../compiled/templates'),
     Utils = require('./../lib/utils');
@@ -7907,20 +7874,20 @@ var PlayerUIComponent = function (_PlayerComponent) {
 
 
     _createClass(PlayerUIComponent, [{
-        key: "disablePlayingAndControl",
+        key: 'disablePlayingAndControl',
 
 
         // Disable play/control actions on the current player
         value: function disablePlayingAndControl() {
             this.$player.addClass('vac-disable-play');
-            //TODO - catch spacebar being hit
-            //TODO - prevent scrubbing and timeline click to seek
+            // TODO - catch spacebar being hit
+            // TODO - prevent scrubbing and timeline click to seek
         }
 
         // Enable play/control actions on the controller
 
     }, {
-        key: "enablePlayingAndControl",
+        key: 'enablePlayingAndControl',
         value: function enablePlayingAndControl() {
             this.$player.removeClass('vac-disable-play');
         }
@@ -7928,7 +7895,7 @@ var PlayerUIComponent = function (_PlayerComponent) {
         // Render a handlebars template with local data passed in via key/val in object
 
     }, {
-        key: "renderTemplate",
+        key: 'renderTemplate',
         value: function renderTemplate(templateName) {
             var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
@@ -7939,7 +7906,7 @@ var PlayerUIComponent = function (_PlayerComponent) {
         // Handle escaped breaklines in Handlebars
 
     }, {
-        key: "registerHandlebarsHelpers",
+        key: 'registerHandlebarsHelpers',
         value: function registerHandlebarsHelpers() {
             if ('breaklines' in Handlebars.helpers) return;
 
@@ -7953,17 +7920,17 @@ var PlayerUIComponent = function (_PlayerComponent) {
         // Provide basic teardown function to inherit
 
     }, {
-        key: "teardown",
+        key: 'teardown',
         value: function teardown() {
             if (this.$el) this.$el.remove();
         }
     }, {
-        key: "$UI",
+        key: '$UI',
         get: function get() {
             return Object.freeze({
-                commentsContainer: this.$player.find(".vac-comments-container"), // outer container for all comments
-                controlElements: this.$player.find(".vac-control"), // Each of multiple control elements in the control bar
-                newCommentTextarea: this.$player.find(".vac-video-write-new textarea"), // Textarea for writing a new comment
+                commentsContainer: this.$player.find('.vac-comments-container'), // outer container for all comments
+                controlElements: this.$player.find('.vac-control'), // Each of multiple control elements in the control bar
+                newCommentTextarea: this.$player.find('.vac-video-write-new textarea'), // Textarea for writing a new comment
                 timeline: this.$player.find('.vjs-progress-control'), // Timeline element
                 markerCursorHelpText: this.$player.find('.vac-cursor-help-text'), // Help text that appears with 'click/drag..' on timeline
                 controlBar: this.$player.find('.vjs-control-bar'), // Conrol bar wrapper for vjs
@@ -7975,18 +7942,18 @@ var PlayerUIComponent = function (_PlayerComponent) {
         // utility classes used in various components
 
     }, {
-        key: "UI_CLASSES",
+        key: 'UI_CLASSES',
         get: function get() {
             return Object.freeze({
-                hidden: "vac-hidden",
-                active: "vac-active"
+                hidden: 'vac-hidden',
+                active: 'vac-active'
             });
         }
 
         // attribute to get player jquery element
 
     }, {
-        key: "$player",
+        key: '$player',
         get: function get() {
             return $(this.player.el());
         }
@@ -7994,7 +7961,7 @@ var PlayerUIComponent = function (_PlayerComponent) {
         // Generate a pseudo-guid ID for this component, to use as an ID in the DOM
 
     }, {
-        key: "componentId",
+        key: 'componentId',
         get: function get() {
             this.cid_ = this.cid_ || Utils.guid();
             return this.cid_;
@@ -8099,7 +8066,7 @@ require('es6-object-assign').polyfill();
 })();
 
 },{"es6-object-assign":1,"ie-array-find-polyfill":21}],39:[function(require,module,exports){
-"use strict";
+'use strict';
 /*
     Geneal utility functions, sourced from underscore & scratch built as needed
 */
@@ -8113,7 +8080,9 @@ module.exports = {
 
     // _throttle from underscore
     throttle: function throttle(func, wait, options) {
-        var context, args, result;
+        var context = void 0,
+            args = void 0,
+            result = void 0;
         var timeout = null;
         var previous = 0;
         if (!options) options = {};
@@ -8137,9 +8106,8 @@ module.exports = {
                 previous = now;
                 result = func.apply(context, args);
                 if (!timeout) context = args = null;
-            } else if (!timeout && options.trailing !== false) {
-                timeout = setTimeout(later, remaining);
-            }
+            } else if (!timeout && options.trailing !== false) timeout = setTimeout(later, remaining);
+
             return result;
         };
     },
@@ -8147,9 +8115,7 @@ module.exports = {
     // Parse all keys of an object to int
     parseIntObj: function parseIntObj(obj) {
         Object.keys(obj).forEach(function (key) {
-            if (parseInt(obj[key])) {
-                obj[key] = parseInt(obj[key]);
-            }
+            if (parseInt(obj[key])) obj[key] = parseInt(obj[key]);
         });
         return obj;
     },
@@ -8159,11 +8125,11 @@ module.exports = {
         function readable(sec) {
             var mins = Math.floor(sec / 60),
                 secs = String(sec % 60);
-            return mins + ":" + (secs.length == 1 ? "0" : "") + secs;
+            return mins + ':' + (secs.length == 1 ? '0' : '') + secs;
         }
         var time = [readable(range.start)];
         if (range.end) time.push(readable(range.end));
-        return time.join("-");
+        return time.join('-');
     },
 
     // Pseduo-random guid generator
@@ -8203,7 +8169,7 @@ module.exports = {
 };
 
 },{}],40:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -8220,9 +8186,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
     var Plugin = videojs.getPlugin('plugin'),
         Utils = require('./lib/utils'),
-        Controls = require("./components/controls").class,
-        AnnotationState = require("./components/annotation_state").class,
-        EventDispatcher = require("./lib/event_dispatcher").class;
+        Controls = require('./components/controls').class,
+        AnnotationState = require('./components/annotation_state').class,
+        EventDispatcher = require('./lib/event_dispatcher').class;
 
     var DEFAULT_OPTIONS = Object.freeze({
         bindArrowKeys: true,
@@ -8259,15 +8225,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
             // Assign reference to this class to player for access later by components where needed
             player.annotationComments = function () {
                 return _this;
-            }.bind(_this);
+            };
 
             // Assert that components are initialized AFTER metadata + play data is loaded so we metadata/duration
             // NOTE - this check is required because player loadeddata doesn't always fire if readystate is > 3
-            if (player.readyState() >= 3) {
-                _this.postLoadDataConstructor();
-            } else {
-                player.on('loadeddata', _this.postLoadDataConstructor.bind(_this));
-            }
+            if (player.readyState() >= 3) _this.postLoadDataConstructor();else player.on('loadeddata', _this.postLoadDataConstructor.bind(_this));
+
             return _this;
         }
 
@@ -8301,21 +8264,17 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                 this.player.on('fullscreenchange', Utils.throttle(this.setBounds.bind(this), 500));
 
                 // Remove annotation features on fullscreen if showFullScreen: false
-                if (!this.options.showFullScreen) {
-                    this.player.on('fullscreenchange', function () {
-                        if (_this2.player.isFullscreen_) {
-                            _this2.preFullscreenAnnotationsEnabled = _this2.active;
-                            $(_this2.player.el()).addClass('vac-disable-fullscreen');
-                        } else {
-                            $(_this2.player.el()).removeClass('vac-disable-fullscreen');
-                        }
-                        if (_this2.preFullscreenAnnotationsEnabled) {
-                            // If we were previously in annotation mode (pre-fullscreen) or entering fullscreeen and are
-                            // in annotation mode, toggle the mode
-                            _this2.toggleAnnotationMode();
-                        }
-                    }.bind(this));
-                }
+                if (!this.options.showFullScreen) this.player.on('fullscreenchange', function () {
+                    if (_this2.player.isFullscreen_) {
+                        _this2.preFullscreenAnnotationsEnabled = _this2.active;
+                        $(_this2.player.el()).addClass('vac-disable-fullscreen');
+                    } else $(_this2.player.el()).removeClass('vac-disable-fullscreen');
+
+                    if (_this2.preFullscreenAnnotationsEnabled)
+                        // If we were previously in annotation mode (pre-fullscreen) or entering fullscreeen and are
+                        // in annotation mode, toggle the mode
+                        _this2.toggleAnnotationMode();
+                });
             }
 
             // A wrapper func to make it easier to use EventDispatcher from the client
@@ -8338,19 +8297,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                 this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
                 this.annotationState.enabled = this.active;
 
-                if (this.active) {
-                    this.fire("annotationModeEnabled");
-                } else {
-                    this.fire("annotationModeDisabled");
-                }
+                if (this.active) this.fire('annotationModeEnabled');else this.fire('annotationModeDisabled');
 
                 // Handle control component UI if showControls: true
-                if (this.options.showControls) {
-                    if (!this.active) {
-                        this.controls.clear(true);
-                    } else {
-                        this.controls.render();
-                    }
+                if (this.options.showControls) if (!this.active) {
+                    this.controls.clear(true);
+                } else {
+                    this.controls.render();
                 }
             }
 
@@ -8380,9 +8333,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
         }, {
             key: 'onReady',
             value: function onReady(callback) {
-                if (this.eventDispatcher.pluginReady) {
-                    return callback();
-                }
+                if (this.eventDispatcher.pluginReady) return callback();
+
                 this._readyCallbacks.push(callback);
             }
 
