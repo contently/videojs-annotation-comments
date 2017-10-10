@@ -6106,7 +6106,17 @@ var AnnotationState = function (_PlayerComponent) {
 
             // Set live annotation as the last match
             var liveAnnotation = this.annotations[matches[matches.length - 1]];
-            if (liveAnnotation === this.activeAnnotation) return;
+
+            // Special cases if this or another annotation is active
+            if (this.activeAnnotation.range) {
+                if (liveAnnotation === this.activeAnnotation) return;
+                // Check if the active annotation and live annotation share a start time
+                // Is that start time at the current playhead?
+                // If so, don't switch which is active.
+                var liveStart = liveAnnotation.range.start,
+                    activeStart = this.activeAnnotation.range.start;
+                if (liveStart === activeStart && liveStart === time) return;
+            }
 
             this.openAnnotation(liveAnnotation, false, false, true);
         }
