@@ -109,7 +109,7 @@ const EventRegistry = {
             _this.updateNumAnnotations();
         }
     },
-    Main: {
+    AnnotationComments: {
         toggleAnnotationMode: (event, _this) => {
             _this.toggleAnnotationMode();
         }

@@ -31,7 +31,7 @@ const ATTIBUTION = "/* Version "+PACKAGE.version+" videojs-annotation-comments (
 //compilation function for browserify/bundler/transpilation
 function compile(watch, cb){
     var bundler = watchify(
-        browserify('./src/js/main.js', { debug: true })
+        browserify('./src/js/index.js', { debug: true })
             .transform(babelify)
     );
 
@@ -39,7 +39,7 @@ function compile(watch, cb){
         bundler.bundle()
             .on('log', gutil.log)
             .on('error', gutil.log.bind(gutil.colors.red, 'Browserify Error'))
-            .pipe(source('src/js/main.js'))
+            .pipe(source('src/js/index.js'))
             .pipe(rename(FILENAME))
             .pipe(buffer())
             .pipe(sourcemaps.init({ loadMaps: true }))
