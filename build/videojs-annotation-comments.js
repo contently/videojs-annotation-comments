@@ -8374,20 +8374,16 @@ require('es6-object-assign').polyfill();
 })();
 
 // Use CustomEvent in IE
-(function () {
-    if (typeof window.CustomEvent === "function") return false;
-
-    function CustomEvent(event, params) {
+if (typeof CustomEvent !== "function") {
+    var _CustomEvent = function _CustomEvent(event, params) {
         params = params || { bubbles: false, cancelable: false, detail: undefined };
         var evt = document.createEvent('CustomEvent');
         evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
         return evt;
-    }
+    };
 
-    CustomEvent.prototype = window.Event.prototype;
-
-    window.CustomEvent = CustomEvent;
-})();
+    _CustomEvent.prototype = Event.prototype;
+};
 
 },{"es6-object-assign":1,"ie-array-find-polyfill":21}],41:[function(require,module,exports){
 "use strict";
