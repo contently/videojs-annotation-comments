@@ -11,13 +11,13 @@ const   PlayerUIComponent = require("./../lib/player_ui_component").class,
 
 class CommentList extends PlayerUIComponent {
 
-    constructor (data, playerId) {
-        super(playerId);
+    constructor (data, player) {
+        super(player);
 
         this.annotation = data.annotation;
         this.comments = data.comments.map((commentData) => {
             commentData.commentList = this;
-            return new Comment(commentData, playerId);
+            return new Comment(commentData, player);
         });
         this.sortComments();
     }

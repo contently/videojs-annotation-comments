@@ -6,8 +6,8 @@
 
 class PlayerComponent {
 
-    constructor (playerId) {
-        this.playerId = playerId;
+    constructor (player) {
+        this._player = player;
     }
 
     // attribute to get reference to the main plugin object (main.js instance)
@@ -17,7 +17,7 @@ class PlayerComponent {
 
     // attribute to get player javascript instance
     get player () {
-        return videojs(this.playerId);
+        return this._player;
     }
 
     // attribute to get video duration (in seconds)

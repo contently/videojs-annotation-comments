@@ -10,8 +10,8 @@ const   Marker = require("./marker").class,
 
 class DraggableMarker extends Marker {
 
-    constructor (playerId, range) {
-        super(playerId, range);
+    constructor (player, range) {
+        super(player, range);
         this.range = range;                       // NOTE - this shouldn't be required and is a HACK for how transpilation works in IE10
         this.templateName = markerTemplateName;   // Change template from base Marker template
         this.dragging = false;                    // Is a drag action currently occring?

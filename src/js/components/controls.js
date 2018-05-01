@@ -21,8 +21,8 @@ const BASE_UI_STATE = Object.freeze({
 
 class Controls extends PlayerUIComponent {
 
-    constructor (playerId, bindArrowKeys) {
-        super(playerId);
+    constructor (player, bindArrowKeys) {
+        super(player);
         this.initAPI(this, 'Controls');
 
         this.internalCommenting = this.plugin.options.internalCommenting;
@@ -32,7 +32,7 @@ class Controls extends PlayerUIComponent {
 
         if(this.showControls){
             // create player button in the control bar if controls are shown
-            this.playerButton = new PlayerButton(this.playerId);
+            this.playerButton = new PlayerButton(this.player);
         }
 
         this.render();
@@ -121,8 +121,8 @@ class Controls extends PlayerUIComponent {
             start: parseInt(this.currentTime,10),
             stop: parseInt(this.currentTime,10)
         };
-        this.marker = new DraggableMarker(this.playerId, range);
-        this.selectableShape = new SelectableShape(this.playerId);
+        this.marker = new DraggableMarker(this.player, range);
+        this.selectableShape = new SelectableShape(this.player);
 
         // show cursor help text if controls are hidden
         if(!this.showControls) this.bindCursorTooltip();

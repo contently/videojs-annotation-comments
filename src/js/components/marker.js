@@ -10,8 +10,8 @@ const   PlayerUIComponent = require("./../lib/player_ui_component").class,
 
 class Marker extends PlayerUIComponent {
 
-    constructor (playerId, range, comment=null) {
-        super(playerId);
+    constructor (player, range, comment=null) {
+        super(player);
         this.range = range;
         this.comment = comment;
         this.templateName = markerTemplateName;

@@ -12,8 +12,8 @@ const   PlayerUIComponent = require("./../lib/player_ui_component").class,
 
 class Annotation extends PlayerUIComponent {
 
-    constructor (data, playerId) {
-        super(playerId);
+    constructor (data, player) {
+        super(player);
         this.id = data.id || this.componentId;
         this.range = data.range;
         this.shape = data.shape;
@@ -29,17 +29,17 @@ class Annotation extends PlayerUIComponent {
     buildComments(data) {
         this.commentList = new CommentList(
             {"comments": data.comments, "annotation": this},
-            this.playerId
+            this.player
         );
     }
 
     buildMarker () {
-        this.marker = new Marker(this.playerId, this.range, this.commentList.comments[0]);
+        this.marker = new Marker(this.player, this.range, this.commentList.comments[0]);
         this.marker.render();
     }
 
     buildShape() {
-        this.annotationShape = new Shape(this.playerId, this.shape);
+        this.annotationShape = new Shape(this.player, this.shape);
     }
 
     // Serialize object
@@ -138,7 +138,7 @@ class Annotation extends PlayerUIComponent {
             shape,
             comments: [comment]
         };
-        return new Annotation(data, plugin.playerId);
+        return new Annotation(data, plugin.player);
     }
 
     get isActive () {

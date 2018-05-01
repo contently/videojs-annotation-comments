@@ -4,11 +4,7 @@
     Can be registered to a videojs instance as a plugin
 */
 
-const AnnotationComments = ({ videojs, ...props } = {}) => {
-    if (!new.target) {
-        throw new Error("Uncaught TypeError: Class constructor AnnotationComments cannot be invoked without 'new'")
-    }
-
+const AnnotationComments = (videojs) => {
     require('./lib/polyfills');
 
     const Plugin = videojs.getPlugin('plugin'),
@@ -29,7 +25,7 @@ const AnnotationComments = ({ videojs, ...props } = {}) => {
         startInAnnotationMode:      false
     });
 
-    class AnnotationComments extends SuperClass {
+    return class AnnotationComments extends Plugin {
 
         constructor (player, options) {
             options = Object.assign(Utils.cloneObject(DEFAULT_OPTIONS), options);
@@ -38,7 +34,6 @@ const AnnotationComments = ({ videojs, ...props } = {}) => {
             this.eventDispatcher = new EventDispatcher(this);
             this.eventDispatcher.registerListenersFor(this, 'AnnotationComments');
 
-            this.playerId = $(player.el()).attr('id');
             this.player = player;
             this.meta = options.meta;
             this.options = options;
@@ -60,10 +55,10 @@ const AnnotationComments = ({ videojs, ...props } = {}) => {
         // Additional init/setup after video data + metadata is available
         postLoadDataConstructor () {
             // setup initial state and render UI
-            this.annotationState = new AnnotationState(this.playerId);
+            this.annotationState = new AnnotationState(this.player);
             this.annotationState.annotations = this.options.annotationsObjects;
 
-            this.controls = new Controls(this.playerId, this.options.bindArrowKeys);
+            this.controls = new Controls(this.player, this.options.bindArrowKeys);
             this.bindEvents();
             this.setBounds(false);
             if(this.options.startInAnnotationMode) this.toggleAnnotationMode();
@@ -174,8 +169,6 @@ const AnnotationComments = ({ videojs, ...props } = {}) => {
             $(window).off('resize.vac-window-resize');
         }
     }
-
-    return new AnnotationComments(...props);
 }
 
 module.exports = { class: AnnotationComments };

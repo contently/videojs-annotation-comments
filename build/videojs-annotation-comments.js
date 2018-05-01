@@ -5734,213 +5734,214 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-require('./lib/polyfills');
+var AnnotationComments = function AnnotationComments(videojs) {
+    require('./lib/polyfills');
 
-var Plugin = videojs.getPlugin('plugin'),
-    Utils = require('./lib/utils'),
-    Controls = require("./components/controls").class,
-    AnnotationState = require("./components/annotation_state").class,
-    EventDispatcher = require("./lib/event_dispatcher").class;
+    var Plugin = videojs.getPlugin('plugin'),
+        Utils = require('./lib/utils'),
+        Controls = require("./components/controls").class,
+        AnnotationState = require("./components/annotation_state").class,
+        EventDispatcher = require("./lib/event_dispatcher").class;
 
-var DEFAULT_OPTIONS = Object.freeze({
-    bindArrowKeys: true,
-    meta: { user_id: null, user_name: null },
-    annotationsObjects: [],
-    showControls: true,
-    showCommentList: true,
-    showFullScreen: true,
-    showMarkerShapeAndTooltips: true,
-    internalCommenting: true,
-    startInAnnotationMode: false
-});
+    var DEFAULT_OPTIONS = Object.freeze({
+        bindArrowKeys: true,
+        meta: { user_id: null, user_name: null },
+        annotationsObjects: [],
+        showControls: true,
+        showCommentList: true,
+        showFullScreen: true,
+        showMarkerShapeAndTooltips: true,
+        internalCommenting: true,
+        startInAnnotationMode: false
+    });
 
-var AnnotationComments = function (_Plugin) {
-    _inherits(AnnotationComments, _Plugin);
+    return function (_Plugin) {
+        _inherits(AnnotationComments, _Plugin);
 
-    function AnnotationComments(player, options) {
-        _classCallCheck(this, AnnotationComments);
+        function AnnotationComments(player, options) {
+            _classCallCheck(this, AnnotationComments);
 
-        options = Object.assign(Utils.cloneObject(DEFAULT_OPTIONS), options);
+            options = Object.assign(Utils.cloneObject(DEFAULT_OPTIONS), options);
 
-        var _this = _possibleConstructorReturn(this, (AnnotationComments.__proto__ || Object.getPrototypeOf(AnnotationComments)).call(this, player, options));
+            var _this = _possibleConstructorReturn(this, (AnnotationComments.__proto__ || Object.getPrototypeOf(AnnotationComments)).call(this, player, options));
 
-        _this.eventDispatcher = new EventDispatcher(_this);
-        _this.eventDispatcher.registerListenersFor(_this, 'AnnotationComments');
+            _this.eventDispatcher = new EventDispatcher(_this);
+            _this.eventDispatcher.registerListenersFor(_this, 'AnnotationComments');
 
-        _this.playerId = $(player.el()).attr('id');
-        _this.player = player;
-        _this.meta = options.meta;
-        _this.options = options;
+            _this.player = player;
+            _this.meta = options.meta;
+            _this.options = options;
 
-        _this._readyCallbacks = [];
+            _this._readyCallbacks = [];
 
-        // Assign reference to this class to player for access later by components where needed
-        player.annotationComments = function () {
-            return _this;
-        }.bind(_this);
+            // Assign reference to this class to player for access later by components where needed
+            player.annotationComments = function () {
+                return _this;
+            }.bind(_this);
 
-        // Assert that components are initialized AFTER metadata + play data is loaded so we metadata/duration
-        // NOTE - this check is required because player loadeddata doesn't always fire if readystate is > 3
-        if (player.readyState() >= 3) {
-            _this.postLoadDataConstructor();
-        } else {
-            player.on('loadeddata', _this.postLoadDataConstructor.bind(_this));
-        }
-        return _this;
-    }
-
-    // Additional init/setup after video data + metadata is available
-
-
-    _createClass(AnnotationComments, [{
-        key: 'postLoadDataConstructor',
-        value: function postLoadDataConstructor() {
-            // setup initial state and render UI
-            this.annotationState = new AnnotationState(this.playerId);
-            this.annotationState.annotations = this.options.annotationsObjects;
-
-            this.controls = new Controls(this.playerId, this.options.bindArrowKeys);
-            this.bindEvents();
-            this.setBounds(false);
-            if (this.options.startInAnnotationMode) this.toggleAnnotationMode();
-
-            this.pluginReady();
-        }
-
-        // Bind needed events for interaction w/ components
-
-    }, {
-        key: 'bindEvents',
-        value: function bindEvents() {
-            var _this2 = this;
-
-            // Set player boundaries on window size change or fullscreen change
-            $(window).on('resize.vac-window-resize', Utils.throttle(this.setBounds.bind(this), 500));
-            this.player.on('fullscreenchange', Utils.throttle(this.setBounds.bind(this), 500));
-
-            // Remove annotation features on fullscreen if showFullScreen: false
-            if (!this.options.showFullScreen) {
-                this.player.on('fullscreenchange', function () {
-                    if (_this2.player.isFullscreen_) {
-                        _this2.preFullscreenAnnotationsEnabled = _this2.active;
-                        $(_this2.player.el()).addClass('vac-disable-fullscreen');
-                    } else {
-                        $(_this2.player.el()).removeClass('vac-disable-fullscreen');
-                    }
-                    if (_this2.preFullscreenAnnotationsEnabled) {
-                        // If we were previously in annotation mode (pre-fullscreen) or entering fullscreeen and are
-                        // in annotation mode, toggle the mode
-                        _this2.toggleAnnotationMode();
-                    }
-                }.bind(this));
-            }
-        }
-
-        // A wrapper func to make it easier to use EventDispatcher from the client
-        // Ex: plugin.fire(type, data);
-
-    }, {
-        key: 'fire',
-        value: function fire(type) {
-            var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-            this.eventDispatcher.fire(type, data);
-        }
-
-        // Toggle annotations mode on/off
-
-    }, {
-        key: 'toggleAnnotationMode',
-        value: function toggleAnnotationMode() {
-            this.active = !this.active;
-            this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
-            this.annotationState.enabled = this.active;
-
-            if (this.active) {
-                this.fire("annotationModeEnabled");
+            // Assert that components are initialized AFTER metadata + play data is loaded so we metadata/duration
+            // NOTE - this check is required because player loadeddata doesn't always fire if readystate is > 3
+            if (player.readyState() >= 3) {
+                _this.postLoadDataConstructor();
             } else {
-                this.fire("annotationModeDisabled");
+                player.on('loadeddata', _this.postLoadDataConstructor.bind(_this));
+            }
+            return _this;
+        }
+
+        // Additional init/setup after video data + metadata is available
+
+
+        _createClass(AnnotationComments, [{
+            key: 'postLoadDataConstructor',
+            value: function postLoadDataConstructor() {
+                // setup initial state and render UI
+                this.annotationState = new AnnotationState(this.player);
+                this.annotationState.annotations = this.options.annotationsObjects;
+
+                this.controls = new Controls(this.player, this.options.bindArrowKeys);
+                this.bindEvents();
+                this.setBounds(false);
+                if (this.options.startInAnnotationMode) this.toggleAnnotationMode();
+
+                this.pluginReady();
             }
 
-            // Handle control component UI if showControls: true
-            if (this.options.showControls) {
-                if (!this.active) {
-                    this.controls.clear(true);
-                } else {
-                    this.controls.render();
+            // Bind needed events for interaction w/ components
+
+        }, {
+            key: 'bindEvents',
+            value: function bindEvents() {
+                var _this2 = this;
+
+                // Set player boundaries on window size change or fullscreen change
+                $(window).on('resize.vac-window-resize', Utils.throttle(this.setBounds.bind(this), 500));
+                this.player.on('fullscreenchange', Utils.throttle(this.setBounds.bind(this), 500));
+
+                // Remove annotation features on fullscreen if showFullScreen: false
+                if (!this.options.showFullScreen) {
+                    this.player.on('fullscreenchange', function () {
+                        if (_this2.player.isFullscreen_) {
+                            _this2.preFullscreenAnnotationsEnabled = _this2.active;
+                            $(_this2.player.el()).addClass('vac-disable-fullscreen');
+                        } else {
+                            $(_this2.player.el()).removeClass('vac-disable-fullscreen');
+                        }
+                        if (_this2.preFullscreenAnnotationsEnabled) {
+                            // If we were previously in annotation mode (pre-fullscreen) or entering fullscreeen and are
+                            // in annotation mode, toggle the mode
+                            _this2.toggleAnnotationMode();
+                        }
+                    }.bind(this));
                 }
             }
-        }
 
-        // Set player UI boundaries
+            // A wrapper func to make it easier to use EventDispatcher from the client
+            // Ex: plugin.fire(type, data);
 
-    }, {
-        key: 'setBounds',
-        value: function setBounds() {
-            var triggerChange = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+        }, {
+            key: 'fire',
+            value: function fire(type) {
+                var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-            this.bounds = {};
-            var $player = $(this.player.el()),
-                $ctrls = $player.find('.vjs-control-bar');
-
-            this.bounds.left = $player.offset().left;
-            this.bounds.top = $player.offset().top;
-            this.bounds.right = this.bounds.left + $player.width();
-            this.bounds.bottom = this.bounds.top + $player.height();
-            this.bounds.bottomWithoutControls = this.bounds.bottom - $ctrls.height();
-
-            // fires an event when bounds have changed during resizing
-            if (triggerChange) this.fire('playerBoundsChanged', this.bounds);
-        }
-
-        // Public function to register a callback for when plugin is ready
-
-    }, {
-        key: 'onReady',
-        value: function onReady(callback) {
-            if (this.eventDispatcher.pluginReady) {
-                return callback();
+                this.eventDispatcher.fire(type, data);
             }
-            this._readyCallbacks.push(callback);
-        }
 
-        // Mark plugin as ready and fire any pending callbacks
+            // Toggle annotations mode on/off
 
-    }, {
-        key: 'pluginReady',
-        value: function pluginReady() {
-            this.eventDispatcher.pluginReady = true;
-            while (this._readyCallbacks.length) {
-                this._readyCallbacks.pop()();
+        }, {
+            key: 'toggleAnnotationMode',
+            value: function toggleAnnotationMode() {
+                this.active = !this.active;
+                this.player.toggleClass('vac-active'); // Toggle global class to player to toggle display of elements
+                this.annotationState.enabled = this.active;
+
+                if (this.active) {
+                    this.fire("annotationModeEnabled");
+                } else {
+                    this.fire("annotationModeDisabled");
+                }
+
+                // Handle control component UI if showControls: true
+                if (this.options.showControls) {
+                    if (!this.active) {
+                        this.controls.clear(true);
+                    } else {
+                        this.controls.render();
+                    }
+                }
             }
-        }
 
-        // Teardown all components, remove all listeners, and remove elements from DOM
+            // Set player UI boundaries
 
-    }, {
-        key: 'dispose',
-        value: function dispose() {
-            this.controls = this.controls.teardown();
-            this.annotationState = this.annotationState.teardown();
-            this.eventDispatcher = this.eventDispatcher.teardown();
-            this.teardown();
-            if (this.player) {
-                this.player.annotationComments = null;
-                $(this.player.el()).removeClass('vac-active');
-                $(this.player.el()).find("[class^='vac-']").remove();
+        }, {
+            key: 'setBounds',
+            value: function setBounds() {
+                var triggerChange = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+
+                this.bounds = {};
+                var $player = $(this.player.el()),
+                    $ctrls = $player.find('.vjs-control-bar');
+
+                this.bounds.left = $player.offset().left;
+                this.bounds.top = $player.offset().top;
+                this.bounds.right = this.bounds.left + $player.width();
+                this.bounds.bottom = this.bounds.top + $player.height();
+                this.bounds.bottomWithoutControls = this.bounds.bottom - $ctrls.height();
+
+                // fires an event when bounds have changed during resizing
+                if (triggerChange) this.fire('playerBoundsChanged', this.bounds);
             }
-            _get(AnnotationComments.prototype.__proto__ || Object.getPrototypeOf(AnnotationComments.prototype), 'dispose', this).call(this);
-        }
-    }, {
-        key: 'teardown',
-        value: function teardown() {
-            if (this.player) this.player.off('fullscreenchange');
-            $(window).off('resize.vac-window-resize');
-        }
-    }]);
 
-    return AnnotationComments;
-}(Plugin);
+            // Public function to register a callback for when plugin is ready
+
+        }, {
+            key: 'onReady',
+            value: function onReady(callback) {
+                if (this.eventDispatcher.pluginReady) {
+                    return callback();
+                }
+                this._readyCallbacks.push(callback);
+            }
+
+            // Mark plugin as ready and fire any pending callbacks
+
+        }, {
+            key: 'pluginReady',
+            value: function pluginReady() {
+                this.eventDispatcher.pluginReady = true;
+                while (this._readyCallbacks.length) {
+                    this._readyCallbacks.pop()();
+                }
+            }
+
+            // Teardown all components, remove all listeners, and remove elements from DOM
+
+        }, {
+            key: 'dispose',
+            value: function dispose() {
+                this.controls = this.controls.teardown();
+                this.annotationState = this.annotationState.teardown();
+                this.eventDispatcher = this.eventDispatcher.teardown();
+                this.teardown();
+                if (this.player) {
+                    this.player.annotationComments = null;
+                    $(this.player.el()).removeClass('vac-active');
+                    $(this.player.el()).find("[class^='vac-']").remove();
+                }
+                _get(AnnotationComments.prototype.__proto__ || Object.getPrototypeOf(AnnotationComments.prototype), 'dispose', this).call(this);
+            }
+        }, {
+            key: 'teardown',
+            value: function teardown() {
+                if (this.player) this.player.off('fullscreenchange');
+                $(window).off('resize.vac-window-resize');
+            }
+        }]);
+
+        return AnnotationComments;
+    }(Plugin);
+};
 
 module.exports = { class: AnnotationComments };
 
@@ -6080,10 +6081,10 @@ var PlayerUIComponent = require("./../lib/player_ui_component").class,
 var Annotation = function (_PlayerUIComponent) {
     _inherits(Annotation, _PlayerUIComponent);
 
-    function Annotation(data, playerId) {
+    function Annotation(data, player) {
         _classCallCheck(this, Annotation);
 
-        var _this = _possibleConstructorReturn(this, (Annotation.__proto__ || Object.getPrototypeOf(Annotation)).call(this, playerId));
+        var _this = _possibleConstructorReturn(this, (Annotation.__proto__ || Object.getPrototypeOf(Annotation)).call(this, player));
 
         _this.id = data.id || _this.componentId;
         _this.range = data.range;
@@ -6101,18 +6102,18 @@ var Annotation = function (_PlayerUIComponent) {
     _createClass(Annotation, [{
         key: "buildComments",
         value: function buildComments(data) {
-            this.commentList = new CommentList({ "comments": data.comments, "annotation": this }, this.playerId);
+            this.commentList = new CommentList({ "comments": data.comments, "annotation": this }, this.player);
         }
     }, {
         key: "buildMarker",
         value: function buildMarker() {
-            this.marker = new Marker(this.playerId, this.range, this.commentList.comments[0]);
+            this.marker = new Marker(this.player, this.range, this.commentList.comments[0]);
             this.marker.render();
         }
     }, {
         key: "buildShape",
         value: function buildShape() {
-            this.annotationShape = new Shape(this.playerId, this.shape);
+            this.annotationShape = new Shape(this.player, this.shape);
         }
 
         // Serialize object
@@ -6248,7 +6249,7 @@ var Annotation = function (_PlayerUIComponent) {
                 shape: shape,
                 comments: [comment]
             };
-            return new Annotation(data, plugin.playerId);
+            return new Annotation(data, plugin.player);
         }
     }]);
 
@@ -6283,10 +6284,10 @@ var Utils = require('./../lib/utils'),
 var AnnotationState = function (_PlayerComponent) {
     _inherits(AnnotationState, _PlayerComponent);
 
-    function AnnotationState(playerId) {
+    function AnnotationState(player) {
         _classCallCheck(this, AnnotationState);
 
-        var _this = _possibleConstructorReturn(this, (AnnotationState.__proto__ || Object.getPrototypeOf(AnnotationState)).call(this, playerId));
+        var _this = _possibleConstructorReturn(this, (AnnotationState.__proto__ || Object.getPrototypeOf(AnnotationState)).call(this, player));
 
         _this.initAPI(_this, 'AnnotationState');
         _this.resetData();
@@ -6575,7 +6576,7 @@ var AnnotationState = function (_PlayerComponent) {
             var _this3 = this;
 
             this._annotations = annotationsData.map(function (a) {
-                return new Annotation(a, _this3.playerId);
+                return new Annotation(a, _this3.player);
             });
             this.sortAnnotations();
             this.rebuildAnnotationTimeMap();
@@ -6637,10 +6638,10 @@ var PlayerUIComponent = require("./../lib/player_ui_component").class,
 var Comment = function (_PlayerUIComponent) {
     _inherits(Comment, _PlayerUIComponent);
 
-    function Comment(data, playerId) {
+    function Comment(data, player) {
         _classCallCheck(this, Comment);
 
-        var _this = _possibleConstructorReturn(this, (Comment.__proto__ || Object.getPrototypeOf(Comment)).call(this, playerId));
+        var _this = _possibleConstructorReturn(this, (Comment.__proto__ || Object.getPrototypeOf(Comment)).call(this, player));
 
         _this.commentList = data.commentList;
         _this.id = data.id || _this.componentId;
@@ -6695,7 +6696,7 @@ var Comment = function (_PlayerUIComponent) {
         key: "newFromData",
         value: function newFromData(body, commentList, plugin) {
             var data = this.dataObj(body, plugin);
-            return new Comment(data, plugin.playerId);
+            return new Comment(data, plugin.player);
         }
 
         // Return an object with plugin data, timestamp, unique id, and body content
@@ -6745,15 +6746,15 @@ var PlayerUIComponent = require("./../lib/player_ui_component").class,
 var CommentList = function (_PlayerUIComponent) {
     _inherits(CommentList, _PlayerUIComponent);
 
-    function CommentList(data, playerId) {
+    function CommentList(data, player) {
         _classCallCheck(this, CommentList);
 
-        var _this = _possibleConstructorReturn(this, (CommentList.__proto__ || Object.getPrototypeOf(CommentList)).call(this, playerId));
+        var _this = _possibleConstructorReturn(this, (CommentList.__proto__ || Object.getPrototypeOf(CommentList)).call(this, player));
 
         _this.annotation = data.annotation;
         _this.comments = data.comments.map(function (commentData) {
             commentData.commentList = _this;
-            return new Comment(commentData, playerId);
+            return new Comment(commentData, player);
         });
         _this.sortComments();
         return _this;
@@ -7023,10 +7024,10 @@ var BASE_UI_STATE = Object.freeze({
 var Controls = function (_PlayerUIComponent) {
     _inherits(Controls, _PlayerUIComponent);
 
-    function Controls(playerId, bindArrowKeys) {
+    function Controls(player, bindArrowKeys) {
         _classCallCheck(this, Controls);
 
-        var _this = _possibleConstructorReturn(this, (Controls.__proto__ || Object.getPrototypeOf(Controls)).call(this, playerId));
+        var _this = _possibleConstructorReturn(this, (Controls.__proto__ || Object.getPrototypeOf(Controls)).call(this, player));
 
         _this.initAPI(_this, 'Controls');
 
@@ -7037,7 +7038,7 @@ var Controls = function (_PlayerUIComponent) {
 
         if (_this.showControls) {
             // create player button in the control bar if controls are shown
-            _this.playerButton = new PlayerButton(_this.playerId);
+            _this.playerButton = new PlayerButton(_this.player);
         }
 
         _this.render();
@@ -7156,8 +7157,8 @@ var Controls = function (_PlayerUIComponent) {
                 start: parseInt(this.currentTime, 10),
                 stop: parseInt(this.currentTime, 10)
             };
-            this.marker = new DraggableMarker(this.playerId, range);
-            this.selectableShape = new SelectableShape(this.playerId);
+            this.marker = new DraggableMarker(this.player, range);
+            this.selectableShape = new SelectableShape(this.player);
 
             // show cursor help text if controls are hidden
             if (!this.showControls) this.bindCursorTooltip();
@@ -7309,10 +7310,10 @@ var Marker = require("./marker").class,
 var DraggableMarker = function (_Marker) {
     _inherits(DraggableMarker, _Marker);
 
-    function DraggableMarker(playerId, range) {
+    function DraggableMarker(player, range) {
         _classCallCheck(this, DraggableMarker);
 
-        var _this = _possibleConstructorReturn(this, (DraggableMarker.__proto__ || Object.getPrototypeOf(DraggableMarker)).call(this, playerId, range));
+        var _this = _possibleConstructorReturn(this, (DraggableMarker.__proto__ || Object.getPrototypeOf(DraggableMarker)).call(this, player, range));
 
         _this.range = range; // NOTE - this shouldn't be required and is a HACK for how transpilation works in IE10
         _this.templateName = markerTemplateName; // Change template from base Marker template
@@ -7464,12 +7465,12 @@ var PlayerUIComponent = require("./../lib/player_ui_component").class,
 var Marker = function (_PlayerUIComponent) {
     _inherits(Marker, _PlayerUIComponent);
 
-    function Marker(playerId, range) {
+    function Marker(player, range) {
         var comment = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
 
         _classCallCheck(this, Marker);
 
-        var _this = _possibleConstructorReturn(this, (Marker.__proto__ || Object.getPrototypeOf(Marker)).call(this, playerId));
+        var _this = _possibleConstructorReturn(this, (Marker.__proto__ || Object.getPrototypeOf(Marker)).call(this, player));
 
         _this.range = range;
         _this.comment = comment;
@@ -7591,10 +7592,10 @@ var PlayerUIComponent = require("./../lib/player_ui_component").class,
 var PlayerButton = function (_PlayerUIComponent) {
     _inherits(PlayerButton, _PlayerUIComponent);
 
-    function PlayerButton(playerId) {
+    function PlayerButton(player) {
         _classCallCheck(this, PlayerButton);
 
-        var _this = _possibleConstructorReturn(this, (PlayerButton.__proto__ || Object.getPrototypeOf(PlayerButton)).call(this, playerId));
+        var _this = _possibleConstructorReturn(this, (PlayerButton.__proto__ || Object.getPrototypeOf(PlayerButton)).call(this, player));
 
         _this.render();
 
@@ -7668,10 +7669,10 @@ var Shape = require("./shape").class,
 var SelectableShape = function (_Shape) {
     _inherits(SelectableShape, _Shape);
 
-    function SelectableShape(playerId) {
+    function SelectableShape(player) {
         _classCallCheck(this, SelectableShape);
 
-        var _this = _possibleConstructorReturn(this, (SelectableShape.__proto__ || Object.getPrototypeOf(SelectableShape)).call(this, playerId));
+        var _this = _possibleConstructorReturn(this, (SelectableShape.__proto__ || Object.getPrototypeOf(SelectableShape)).call(this, player));
 
         _this.$parent = _this.$player.find(".vac-video-cover-canvas");
         _this.bindEvents();
@@ -7830,12 +7831,12 @@ var PlayerUIComponent = require("./../lib/player_ui_component").class;
 var Shape = function (_PlayerUIComponent) {
     _inherits(Shape, _PlayerUIComponent);
 
-    function Shape(playerId) {
+    function Shape(player) {
         var shape = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
         _classCallCheck(this, Shape);
 
-        var _this = _possibleConstructorReturn(this, (Shape.__proto__ || Object.getPrototypeOf(Shape)).call(this, playerId));
+        var _this = _possibleConstructorReturn(this, (Shape.__proto__ || Object.getPrototypeOf(Shape)).call(this, player));
 
         _this.shape = shape;
         _this.$parent = _this.$player;
@@ -7885,7 +7886,7 @@ module.exports = {
 
 (function ($, videojs) {
     var AnnotationComments = require('./annotation_comments.js').class;
-    videojs.registerPlugin('annotationComments', AnnotationComments);
+    videojs.registerPlugin('annotationComments', AnnotationComments(videojs));
 })(jQuery, window.videojs);
 
 },{"./annotation_comments.js":23}],36:[function(require,module,exports){
@@ -8103,10 +8104,10 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var PlayerComponent = function () {
-    function PlayerComponent(playerId) {
+    function PlayerComponent(player) {
         _classCallCheck(this, PlayerComponent);
 
-        this.playerId = playerId;
+        this._player = player;
     }
 
     // attribute to get reference to the main plugin object (main.js instance)
@@ -8131,7 +8132,7 @@ var PlayerComponent = function () {
     }, {
         key: "player",
         get: function get() {
-            return videojs(this.playerId);
+            return this._player;
         }
 
         // attribute to get video duration (in seconds)
@@ -8187,10 +8188,10 @@ var PlayerComponent = require("./player_component").class,
 var PlayerUIComponent = function (_PlayerComponent) {
     _inherits(PlayerUIComponent, _PlayerComponent);
 
-    function PlayerUIComponent(playerId) {
+    function PlayerUIComponent(player) {
         _classCallCheck(this, PlayerUIComponent);
 
-        return _possibleConstructorReturn(this, (PlayerUIComponent.__proto__ || Object.getPrototypeOf(PlayerUIComponent)).call(this, playerId));
+        return _possibleConstructorReturn(this, (PlayerUIComponent.__proto__ || Object.getPrototypeOf(PlayerUIComponent)).call(this, player));
     }
 
     // helpers to get various UI components of the player quickly, keeping commonly reused class names
@@ -8280,6 +8281,14 @@ var PlayerUIComponent = function (_PlayerComponent) {
         key: "$player",
         get: function get() {
             return $(this.player.el());
+        }
+
+        // attribute to get player id from DOM
+
+    }, {
+        key: "playerId",
+        get: function get() {
+            return this.$player.attr('id');
         }
 
         // Generate a pseudo-guid ID for this component, to use as an ID in the DOM

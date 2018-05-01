@@ -7,8 +7,8 @@ const PlayerUIComponent = require("./../lib/player_ui_component").class;
 
 class Shape extends PlayerUIComponent {
 
-    constructor (playerId, shape=null) {
-        super(playerId);
+    constructor (player, shape=null) {
+        super(player);
         this.shape = shape;
         this.$parent = this.$player;
     }

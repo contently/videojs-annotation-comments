@@ -8,8 +8,8 @@ const PlayerUIComponent = require("./../lib/player_ui_component").class,
 
 class PlayerButton extends PlayerUIComponent {
 
-    constructor (playerId) {
-        super(playerId);
+    constructor (player) {
+        super(player);
         this.render();
 
         this.initAPI(this, 'PlayerButton');

@@ -8,8 +8,8 @@ const   Shape = require("./shape").class,
 
 class SelectableShape extends Shape {
 
-    constructor (playerId) {
-        super(playerId);
+    constructor (player) {
+        super(player);
         this.$parent = this.$player.find(".vac-video-cover-canvas");
         this.bindEvents();
         this.dragging = false;

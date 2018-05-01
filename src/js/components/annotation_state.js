@@ -10,8 +10,8 @@ const   Utils = require('./../lib/utils'),
 
 class AnnotationState extends PlayerComponent {
 
-    constructor (playerId) {
-        super(playerId);
+    constructor (player) {
+        super(player);
         this.initAPI(this, 'AnnotationState');
         this.resetData();
         this.bindEvents();
@@ -33,7 +33,7 @@ class AnnotationState extends PlayerComponent {
 
     // Sets _annotations w/Annoation objects from input array
     set annotations (annotationsData) {
-        this._annotations = annotationsData.map((a) => new Annotation(a, this.playerId));
+        this._annotations = annotationsData.map((a) => new Annotation(a, this.player));
         this.sortAnnotations();
         this.rebuildAnnotationTimeMap();
     }

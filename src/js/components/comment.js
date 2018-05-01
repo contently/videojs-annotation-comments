@@ -10,8 +10,8 @@ const   PlayerUIComponent = require("./../lib/player_ui_component").class,
 
 class Comment extends PlayerUIComponent {
 
-    constructor (data, playerId) {
-        super(playerId);
+    constructor (data, player) {
+        super(player);
         this.commentList = data.commentList;
         this.id = data.id || this.componentId;
         this.meta = data.meta;
@@ -55,7 +55,7 @@ class Comment extends PlayerUIComponent {
     // Return a Comment obj given body content and plugin reference
     static newFromData (body, commentList, plugin) {
         let data = this.dataObj(body, plugin);
-        return new Comment(data, plugin.playerId);
+        return new Comment(data, plugin.player);
     }
 
     // Return an object with plugin data, timestamp, unique id, and body content

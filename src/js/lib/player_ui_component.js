@@ -9,10 +9,10 @@ const PlayerComponent = require("./player_component").class,
       Templates = require('./../compiled/templates'),
       Utils = require('./../lib/utils');
 
-class PlayerUIComponent extends PlayerComponent{
+class PlayerUIComponent extends PlayerComponent {
 
-    constructor (playerId) {
-        super(playerId);
+    constructor (player) {
+        super(player);
     }
 
     // helpers to get various UI components of the player quickly, keeping commonly reused class names
@@ -41,6 +41,12 @@ class PlayerUIComponent extends PlayerComponent{
     // attribute to get player jquery element
     get $player () {
         return $(this.player.el());
+    }
+
+
+    // attribute to get player id from DOM
+    get playerId () {
+        return this.$player.attr('id');
     }
 
         // Generate a pseudo-guid ID for this component, to use as an ID in the DOM
