@@ -18,9 +18,24 @@ This plugin was conceived and initially developed as a Hack Week project @ [Cont
 
 ### Add it to your VideoJS player
 
+#### As a script from build
+
 ```javascript
-// Initialize VideoJS & Plugin
+// ...videojs & videojs-annotation-comments have been loaded in script tags...
+
 var player = videojs('video-id');
+var plugin = player.annotationComments(pluginOptions)
+```
+
+#### As a module
+
+```javascript
+import videojs from 'video.js'
+import AnnotationComments from 'videojs-annotation-comments/src/js/annotation_comments.js'
+
+videojs.registerPlugin('annotationComments', AnnotationComments.class(videojs))
+
+var player = videojs('video-id')
 var plugin = player.annotationComments(pluginOptions)
 ```
 
