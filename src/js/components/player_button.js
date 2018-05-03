@@ -3,10 +3,10 @@
     Component main 'annotation toggle' button in the player controls, including notifier for # annotations
 */
 
-const PlayerUIComponent = require("./../lib/player_ui_component").class,
+const PlayerUIComponent = require("./../lib/player_ui_component"),
       templateName = "player_button";
 
-class PlayerButton extends PlayerUIComponent {
+module.exports = class PlayerButton extends PlayerUIComponent {
 
     constructor (player) {
         super(player);
@@ -41,7 +41,3 @@ class PlayerButton extends PlayerUIComponent {
         super.teardown();
     }
 }
-
-module.exports = {
-    class: PlayerButton
-};

@@ -4,7 +4,7 @@
     the player, the plugin, video state, etc)
 */
 
-class PlayerComponent {
+module.exports = class PlayerComponent {
 
     constructor (player) {
         this._player = player;
@@ -46,7 +46,3 @@ class PlayerComponent {
         this._player = null;
     }
 }
-
-module.exports = {
-    class: PlayerComponent
-};

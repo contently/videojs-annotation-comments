@@ -3,10 +3,10 @@
     Component for a shape that can be drug/sized on top of the video while adding a new annotation
 */
 
-const   Shape = require("./shape").class,
+const   Shape = require("./shape"),
         Utils = require('./../lib/utils');
 
-class SelectableShape extends Shape {
+module.exports = class SelectableShape extends Shape {
 
     constructor (player) {
         super(player);
@@ -121,7 +121,3 @@ class SelectableShape extends Shape {
         super.teardown();
     }
 }
-
-module.exports = {
-    class: SelectableShape
-};

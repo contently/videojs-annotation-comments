@@ -4,12 +4,12 @@
     including all functionality to add new annotations
 */
 
-const   PlayerUIComponent = require("./../lib/player_ui_component").class,
+const   PlayerUIComponent = require("./../lib/player_ui_component"),
         Utils = require("./../lib/utils"),
-        DraggableMarker = require("./draggable_marker.js").class,
-        SelectableShape = require("./selectable_shape.js").class,
-        PlayerButton = require("./player_button").class,
-        Annotation = require("./annotation").class,
+        DraggableMarker = require("./draggable_marker.js"),
+        SelectableShape = require("./selectable_shape.js"),
+        PlayerButton = require("./player_button"),
+        Annotation = require("./annotation"),
         templateName = 'controls';
 
 // Control uses a "ui state" to determine how UI is rendered - this object is the base state, containing a
@@ -19,7 +19,7 @@ const BASE_UI_STATE = Object.freeze({
     writingComment: false   // Are we currently writing the comment for annotation (step 2 of flow)
 });
 
-class Controls extends PlayerUIComponent {
+module.exports = class Controls extends PlayerUIComponent {
 
     constructor (player, bindArrowKeys) {
         super(player);
@@ -224,7 +224,3 @@ class Controls extends PlayerUIComponent {
         return this.$tooltip_;
     }
 }
-
-module.exports = {
-    class: Controls
-};

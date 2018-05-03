@@ -4,12 +4,12 @@
     the player $el, various classes/helpers, template rendering, etc)
 */
 
-const PlayerComponent = require("./player_component").class,
+const PlayerComponent = require("./player_component"),
       Handlebars = require('handlebars/runtime'),
       Templates = require('./../compiled/templates'),
       Utils = require('./../lib/utils');
 
-class PlayerUIComponent extends PlayerComponent {
+module.exports = class PlayerUIComponent extends PlayerComponent {
 
     constructor (player) {
         super(player);
@@ -90,7 +90,3 @@ class PlayerUIComponent extends PlayerComponent {
         super.teardown();
     }
 }
-
-module.exports = {
-    class: PlayerUIComponent
-};

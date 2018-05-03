@@ -1,6 +1,6 @@
 'use strict';
 
-const EventDispatcher = require("../../../src/js/lib/event_dispatcher").class,
+const EventDispatcher = require("../../../src/js/lib/event_dispatcher"),
     expect = require('chai').expect;
 
 const MockedPlugin = { on: (type, callback) => {} };

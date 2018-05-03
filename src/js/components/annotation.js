@@ -3,14 +3,14 @@
     Component for an annotation, which includes controlling the marker/shape, rendering a commentList, etc
 */
 
-const   PlayerUIComponent = require("./../lib/player_ui_component").class,
+const   PlayerUIComponent = require("./../lib/player_ui_component"),
         Utils = require("./../lib/utils.js"),
-        CommentList = require("./comment_list").class,
-        Marker = require("./marker").class,
-        Comment = require("./comment").class,
-        Shape = require("./shape").class;
+        CommentList = require("./comment_list"),
+        Marker = require("./marker"),
+        Comment = require("./comment"),
+        Shape = require("./shape");
 
-class Annotation extends PlayerUIComponent {
+module.exports = class Annotation extends PlayerUIComponent {
 
     constructor (data, player) {
         super(player);
@@ -146,7 +146,3 @@ class Annotation extends PlayerUIComponent {
         return this.plugin.annotationState.activeAnnotation === this;
     }
 }
-
-module.exports = {
-    class: Annotation
-};

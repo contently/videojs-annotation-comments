@@ -5,10 +5,10 @@
 */
 
 const   Utils = require('./../lib/utils'),
-        PlayerComponent = require("./../lib/player_component").class,
-        Annotation = require("./annotation").class;
+        PlayerComponent = require("./../lib/player_component"),
+        Annotation = require("./annotation");
 
-class AnnotationState extends PlayerComponent {
+module.exports = class AnnotationState extends PlayerComponent {
 
     constructor (player) {
         super(player);
@@ -245,7 +245,3 @@ class AnnotationState extends PlayerComponent {
         super.teardown();
     }
 }
-
-module.exports = {
-    class: AnnotationState
-};

@@ -4,14 +4,14 @@
     Can be registered to a videojs instance as a plugin
 */
 
-const AnnotationComments = (videojs) => {
+module.exports = (videojs) => {
     require('./lib/polyfills');
 
     const Plugin = videojs.getPlugin('plugin'),
           Utils = require('./lib/utils'),
-          Controls = require("./components/controls").class,
-          AnnotationState = require("./components/annotation_state").class,
-          EventDispatcher = require("./lib/event_dispatcher").class;
+          Controls = require("./components/controls"),
+          AnnotationState = require("./components/annotation_state"),
+          EventDispatcher = require("./lib/event_dispatcher");
 
     const DEFAULT_OPTIONS = Object.freeze({
         bindArrowKeys:              true,
@@ -170,5 +170,3 @@ const AnnotationComments = (videojs) => {
         }
     }
 }
-
-module.exports = { class: AnnotationComments };

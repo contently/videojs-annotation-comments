@@ -33,7 +33,7 @@ var plugin = player.annotationComments(pluginOptions)
 import videojs from 'video.js'
 import AnnotationComments from 'videojs-annotation-comments/src/js/annotation_comments.js'
 
-videojs.registerPlugin('annotationComments', AnnotationComments.class(videojs))
+videojs.registerPlugin('annotationComments', AnnotationComments(videojs))
 
 var player = videojs('video-id')
 var plugin = player.annotationComments(pluginOptions)

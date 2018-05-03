@@ -5734,14 +5734,14 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var AnnotationComments = function AnnotationComments(videojs) {
+module.exports = function (videojs) {
     require('./lib/polyfills');
 
     var Plugin = videojs.getPlugin('plugin'),
         Utils = require('./lib/utils'),
-        Controls = require("./components/controls").class,
-        AnnotationState = require("./components/annotation_state").class,
-        EventDispatcher = require("./lib/event_dispatcher").class;
+        Controls = require("./components/controls"),
+        AnnotationState = require("./components/annotation_state"),
+        EventDispatcher = require("./lib/event_dispatcher");
 
     var DEFAULT_OPTIONS = Object.freeze({
         bindArrowKeys: true,
@@ -5943,8 +5943,6 @@ var AnnotationComments = function AnnotationComments(videojs) {
     }(Plugin);
 };
 
-module.exports = { class: AnnotationComments };
-
 },{"./components/annotation_state":26,"./components/controls":29,"./lib/event_dispatcher":36,"./lib/polyfills":40,"./lib/utils":41}],24:[function(require,module,exports){
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -6073,14 +6071,14 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PlayerUIComponent = require("./../lib/player_ui_component").class,
+var PlayerUIComponent = require("./../lib/player_ui_component"),
     Utils = require("./../lib/utils.js"),
-    CommentList = require("./comment_list").class,
-    Marker = require("./marker").class,
-    Comment = require("./comment").class,
-    Shape = require("./shape").class;
+    CommentList = require("./comment_list"),
+    Marker = require("./marker"),
+    Comment = require("./comment"),
+    Shape = require("./shape");
 
-var Annotation = function (_PlayerUIComponent) {
+module.exports = function (_PlayerUIComponent) {
     _inherits(Annotation, _PlayerUIComponent);
 
     function Annotation(data, player) {
@@ -6259,10 +6257,6 @@ var Annotation = function (_PlayerUIComponent) {
     return Annotation;
 }(PlayerUIComponent);
 
-module.exports = {
-    class: Annotation
-};
-
 },{"./../lib/player_ui_component":39,"./../lib/utils.js":41,"./comment":27,"./comment_list":28,"./marker":31,"./shape":34}],26:[function(require,module,exports){
 "use strict";
 /*
@@ -6283,10 +6277,10 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var Utils = require('./../lib/utils'),
-    PlayerComponent = require("./../lib/player_component").class,
-    Annotation = require("./annotation").class;
+    PlayerComponent = require("./../lib/player_component"),
+    Annotation = require("./annotation");
 
-var AnnotationState = function (_PlayerComponent) {
+module.exports = function (_PlayerComponent) {
     _inherits(AnnotationState, _PlayerComponent);
 
     function AnnotationState(player) {
@@ -6618,10 +6612,6 @@ var AnnotationState = function (_PlayerComponent) {
     return AnnotationState;
 }(PlayerComponent);
 
-module.exports = {
-    class: AnnotationState
-};
-
 },{"./../lib/player_component":38,"./../lib/utils":41,"./annotation":25}],27:[function(require,module,exports){
 "use strict";
 /*
@@ -6636,12 +6626,12 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PlayerUIComponent = require("./../lib/player_ui_component").class,
+var PlayerUIComponent = require("./../lib/player_ui_component"),
     Utils = require("./../lib/utils"),
     moment = require("moment"),
     templateName = 'comment';
 
-var Comment = function (_PlayerUIComponent) {
+module.exports = function (_PlayerUIComponent) {
     _inherits(Comment, _PlayerUIComponent);
 
     function Comment(data, player) {
@@ -6723,10 +6713,6 @@ var Comment = function (_PlayerUIComponent) {
     return Comment;
 }(PlayerUIComponent);
 
-module.exports = {
-    class: Comment
-};
-
 },{"./../lib/player_ui_component":39,"./../lib/utils":41,"moment":22}],28:[function(require,module,exports){
 "use strict";
 /*
@@ -6743,13 +6729,13 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PlayerUIComponent = require("./../lib/player_ui_component").class,
+var PlayerUIComponent = require("./../lib/player_ui_component"),
     Utils = require("./../lib/utils"),
-    Comment = require("./comment").class,
+    Comment = require("./comment"),
     commentListTemplateName = 'comment_list',
     newCommentTemplateName = 'new_comment';
 
-var CommentList = function (_PlayerUIComponent) {
+module.exports = function (_PlayerUIComponent) {
     _inherits(CommentList, _PlayerUIComponent);
 
     function CommentList(data, player) {
@@ -6993,10 +6979,6 @@ var CommentList = function (_PlayerUIComponent) {
     return CommentList;
 }(PlayerUIComponent);
 
-module.exports = {
-    class: CommentList
-};
-
 },{"./../lib/player_ui_component":39,"./../lib/utils":41,"./comment":27}],29:[function(require,module,exports){
 "use strict";
 /*
@@ -7014,12 +6996,12 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PlayerUIComponent = require("./../lib/player_ui_component").class,
+var PlayerUIComponent = require("./../lib/player_ui_component"),
     Utils = require("./../lib/utils"),
-    DraggableMarker = require("./draggable_marker.js").class,
-    SelectableShape = require("./selectable_shape.js").class,
-    PlayerButton = require("./player_button").class,
-    Annotation = require("./annotation").class,
+    DraggableMarker = require("./draggable_marker.js"),
+    SelectableShape = require("./selectable_shape.js"),
+    PlayerButton = require("./player_button"),
+    Annotation = require("./annotation"),
     templateName = 'controls';
 
 // Control uses a "ui state" to determine how UI is rendered - this object is the base state, containing a
@@ -7029,7 +7011,7 @@ var BASE_UI_STATE = Object.freeze({
     writingComment: false // Are we currently writing the comment for annotation (step 2 of flow)
 });
 
-var Controls = function (_PlayerUIComponent) {
+module.exports = function (_PlayerUIComponent) {
     _inherits(Controls, _PlayerUIComponent);
 
     function Controls(player, bindArrowKeys) {
@@ -7291,10 +7273,6 @@ var Controls = function (_PlayerUIComponent) {
     return Controls;
 }(PlayerUIComponent);
 
-module.exports = {
-    class: Controls
-};
-
 },{"./../lib/player_ui_component":39,"./../lib/utils":41,"./annotation":25,"./draggable_marker.js":30,"./player_button":32,"./selectable_shape.js":33}],30:[function(require,module,exports){
 "use strict";
 /*
@@ -7310,11 +7288,11 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Marker = require("./marker").class,
+var Marker = require("./marker"),
     Utils = require('./../lib/utils'),
     markerTemplateName = 'draggable_marker';
 
-var DraggableMarker = function (_Marker) {
+module.exports = function (_Marker) {
     _inherits(DraggableMarker, _Marker);
 
     function DraggableMarker(player, range) {
@@ -7443,10 +7421,6 @@ var DraggableMarker = function (_Marker) {
     return DraggableMarker;
 }(Marker);
 
-module.exports = {
-    class: DraggableMarker
-};
-
 },{"./../lib/utils":41,"./marker":31}],31:[function(require,module,exports){
 "use strict";
 /*
@@ -7463,12 +7437,12 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PlayerUIComponent = require("./../lib/player_ui_component").class,
+var PlayerUIComponent = require("./../lib/player_ui_component"),
     Utils = require("./../lib/utils"),
     markerTemplateName = 'marker',
     markerWrapTemplateName = 'marker_wrap';
 
-var Marker = function (_PlayerUIComponent) {
+module.exports = function (_PlayerUIComponent) {
     _inherits(Marker, _PlayerUIComponent);
 
     function Marker(player, range) {
@@ -7572,10 +7546,6 @@ var Marker = function (_PlayerUIComponent) {
     return Marker;
 }(PlayerUIComponent);
 
-module.exports = {
-    class: Marker
-};
-
 },{"./../lib/player_ui_component":39,"./../lib/utils":41}],32:[function(require,module,exports){
 "use strict";
 /*
@@ -7592,10 +7562,10 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PlayerUIComponent = require("./../lib/player_ui_component").class,
+var PlayerUIComponent = require("./../lib/player_ui_component"),
     templateName = "player_button";
 
-var PlayerButton = function (_PlayerUIComponent) {
+module.exports = function (_PlayerUIComponent) {
     _inherits(PlayerButton, _PlayerUIComponent);
 
     function PlayerButton(player) {
@@ -7649,10 +7619,6 @@ var PlayerButton = function (_PlayerUIComponent) {
     return PlayerButton;
 }(PlayerUIComponent);
 
-module.exports = {
-    class: PlayerButton
-};
-
 },{"./../lib/player_ui_component":39}],33:[function(require,module,exports){
 "use strict";
 /*
@@ -7669,10 +7635,10 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var Shape = require("./shape").class,
+var Shape = require("./shape"),
     Utils = require('./../lib/utils');
 
-var SelectableShape = function (_Shape) {
+module.exports = function (_Shape) {
     _inherits(SelectableShape, _Shape);
 
     function SelectableShape(player) {
@@ -7814,10 +7780,6 @@ var SelectableShape = function (_Shape) {
     return SelectableShape;
 }(Shape);
 
-module.exports = {
-    class: SelectableShape
-};
-
 },{"./../lib/utils":41,"./shape":34}],34:[function(require,module,exports){
 "use strict";
 /*
@@ -7832,9 +7794,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PlayerUIComponent = require("./../lib/player_ui_component").class;
+var PlayerUIComponent = require("./../lib/player_ui_component");
 
-var Shape = function (_PlayerUIComponent) {
+module.exports = function (_PlayerUIComponent) {
     _inherits(Shape, _PlayerUIComponent);
 
     function Shape(player) {
@@ -7880,10 +7842,6 @@ var Shape = function (_PlayerUIComponent) {
     return Shape;
 }(PlayerUIComponent);
 
-module.exports = {
-    class: Shape
-};
-
 },{"./../lib/player_ui_component":39}],35:[function(require,module,exports){
 "use strict";
 /*
@@ -7891,7 +7849,7 @@ module.exports = {
 */
 
 (function ($, videojs) {
-    var AnnotationComments = require('./annotation_comments.js').class;
+    var AnnotationComments = require('./annotation_comments.js');
     videojs.registerPlugin('annotationComments', AnnotationComments(videojs));
 })(jQuery, window.videojs);
 
@@ -7908,7 +7866,59 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var Logger = require("./logger");
 
-var EventDispatcher = function () {
+/*
+    A centralized collection of event callbacks organized by component and name
+    Main reference for external event api
+    These events will be bound to the plugin on initialization of their respective components
+    NOTE - 'self' as second param in each function is a workaround for transpiler not properly
+    keeping this , so we pass in instance to use as this for each fn - can't rely on bind
+    because this is rewritten from symbol registry in transpiler and it's not present
+*/
+
+var EventRegistry = {
+    AnnotationState: {
+        openAnnotation: function openAnnotation(event, _this) {
+            _this.openAnnotationById(event.detail.id);
+        },
+        closeActiveAnnotation: function closeActiveAnnotation(event, _this) {
+            _this.clearActive();
+        },
+        newAnnotation: function newAnnotation(event, _this) {
+            _this.createAndAddAnnotation(event.detail);
+        },
+        destroyAnnotation: function destroyAnnotation(event, _this) {
+            _this.destroyAnnotationById(event.detail.id);
+        },
+        newComment: function newComment(event, _this) {
+            var annotation = _this.findAnnotation(event.detail.annotationId);
+            if (annotation) annotation.commentList.createComment(event.detail.body);
+        },
+        destroyComment: function destroyComment(event, _this) {
+            var comment = _this.findComment(event.detail.id);
+            if (comment) comment.commentList.destroyComment(event);
+        }
+    },
+    Controls: {
+        addingAnnotation: function addingAnnotation(event, _this) {
+            _this.startAddNew();
+        },
+        cancelAddingAnnotation: function cancelAddingAnnotation(event, _this) {
+            _this.cancelAddNew();
+        }
+    },
+    PlayerButton: {
+        onStateChanged: function onStateChanged(event, _this) {
+            _this.updateNumAnnotations();
+        }
+    },
+    AnnotationComments: {
+        toggleAnnotationMode: function toggleAnnotationMode(event, _this) {
+            _this.toggleAnnotationMode();
+        }
+    }
+};
+
+module.exports = function () {
     function EventDispatcher(plugin) {
         _classCallCheck(this, EventDispatcher);
 
@@ -7991,63 +8001,6 @@ var EventDispatcher = function () {
     return EventDispatcher;
 }();
 
-/*
-    A centralized collection of event callbacks organized by component and name
-    Main reference for external event api
-    These events will be bound to the plugin on initialization of their respective components
-    NOTE - 'self' as second param in each function is a workaround for transpiler not properly
-    keeping this , so we pass in instance to use as this for each fn - can't rely on bind
-    because this is rewritten from symbol registry in transpiler and it's not present
-*/
-
-var EventRegistry = {
-    AnnotationState: {
-        openAnnotation: function openAnnotation(event, _this) {
-            _this.openAnnotationById(event.detail.id);
-        },
-        closeActiveAnnotation: function closeActiveAnnotation(event, _this) {
-            _this.clearActive();
-        },
-        newAnnotation: function newAnnotation(event, _this) {
-            _this.createAndAddAnnotation(event.detail);
-        },
-        destroyAnnotation: function destroyAnnotation(event, _this) {
-            _this.destroyAnnotationById(event.detail.id);
-        },
-        newComment: function newComment(event, _this) {
-            var annotation = _this.findAnnotation(event.detail.annotationId);
-            if (annotation) annotation.commentList.createComment(event.detail.body);
-        },
-        destroyComment: function destroyComment(event, _this) {
-            var comment = _this.findComment(event.detail.id);
-            if (comment) comment.commentList.destroyComment(event);
-        }
-    },
-    Controls: {
-        addingAnnotation: function addingAnnotation(event, _this) {
-            _this.startAddNew();
-        },
-        cancelAddingAnnotation: function cancelAddingAnnotation(event, _this) {
-            _this.cancelAddNew();
-        }
-    },
-    PlayerButton: {
-        onStateChanged: function onStateChanged(event, _this) {
-            _this.updateNumAnnotations();
-        }
-    },
-    AnnotationComments: {
-        toggleAnnotationMode: function toggleAnnotationMode(event, _this) {
-            _this.toggleAnnotationMode();
-        }
-    }
-};
-
-module.exports = {
-    class: EventDispatcher,
-    registry: EventRegistry
-};
-
 },{"./logger":37}],37:[function(require,module,exports){
 'use strict';
 /*
@@ -8109,7 +8062,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var PlayerComponent = function () {
+module.exports = function () {
     function PlayerComponent(player) {
         _classCallCheck(this, PlayerComponent);
 
@@ -8176,10 +8129,6 @@ var PlayerComponent = function () {
     return PlayerComponent;
 }();
 
-module.exports = {
-    class: PlayerComponent
-};
-
 },{}],39:[function(require,module,exports){
 "use strict";
 /*
@@ -8197,12 +8146,12 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var PlayerComponent = require("./player_component").class,
+var PlayerComponent = require("./player_component"),
     Handlebars = require('handlebars/runtime'),
     Templates = require('./../compiled/templates'),
     Utils = require('./../lib/utils');
 
-var PlayerUIComponent = function (_PlayerComponent) {
+module.exports = function (_PlayerComponent) {
     _inherits(PlayerUIComponent, _PlayerComponent);
 
     function PlayerUIComponent(player) {
@@ -8321,10 +8270,6 @@ var PlayerUIComponent = function (_PlayerComponent) {
 
     return PlayerUIComponent;
 }(PlayerComponent);
-
-module.exports = {
-    class: PlayerUIComponent
-};
 
 },{"./../compiled/templates":24,"./../lib/utils":41,"./player_component":38,"handlebars/runtime":20}],40:[function(require,module,exports){
 /*

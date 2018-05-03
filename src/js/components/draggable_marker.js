@@ -4,11 +4,11 @@
     as drag occurs
 */
 
-const   Marker = require("./marker").class,
+const   Marker = require("./marker"),
         Utils = require('./../lib/utils'),
         markerTemplateName = 'draggable_marker';
 
-class DraggableMarker extends Marker {
+module.exports = class DraggableMarker extends Marker {
 
     constructor (player, range) {
         super(player, range);
@@ -115,7 +115,3 @@ class DraggableMarker extends Marker {
         this.plugin.fire('addingAnnotationDataChanged', { range: this.range });
     }
 }
-
-module.exports = {
-    class: DraggableMarker
-};

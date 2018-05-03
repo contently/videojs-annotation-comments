@@ -3,12 +3,12 @@
   Component for an invidual comment
 */
 
-const   PlayerUIComponent = require("./../lib/player_ui_component").class,
+const   PlayerUIComponent = require("./../lib/player_ui_component"),
         Utils = require("./../lib/utils"),
         moment = require("moment"),
         templateName = 'comment';
 
-class Comment extends PlayerUIComponent {
+module.exports = class Comment extends PlayerUIComponent {
 
     constructor (data, player) {
         super(player);
@@ -69,7 +69,3 @@ class Comment extends PlayerUIComponent {
         };
     }
 }
-
-module.exports = {
-    class: Comment
-};

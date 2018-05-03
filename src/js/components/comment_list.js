@@ -3,13 +3,13 @@
   Component for a list of comments in a visible/active annotation
 */
 
-const   PlayerUIComponent = require("./../lib/player_ui_component").class,
+const   PlayerUIComponent = require("./../lib/player_ui_component"),
         Utils = require("./../lib/utils"),
-        Comment = require("./comment").class,
+        Comment = require("./comment"),
         commentListTemplateName = 'comment_list',
         newCommentTemplateName = 'new_comment';
 
-class CommentList extends PlayerUIComponent {
+module.exports = class CommentList extends PlayerUIComponent {
 
     constructor (data, player) {
         super(player);
@@ -191,7 +191,3 @@ class CommentList extends PlayerUIComponent {
         super.teardown();
     }
 }
-
-module.exports = {
-    class: CommentList
-};

@@ -8,7 +8,7 @@
 
 global.videojs = require('video.js');
 
-const AnnotationState = require('../../../src/js/components/annotation_state').class,
+const AnnotationState = require('../../../src/js/components/annotation_state'),
       expect = require('chai').expect;
 
 const timeMap = {
