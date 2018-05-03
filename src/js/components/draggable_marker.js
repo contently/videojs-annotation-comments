@@ -101,7 +101,6 @@ class DraggableMarker extends Marker {
         this.$el.off('mouseenter.vac-cursor-tool-tip');
         this.$el.off('mouseleave.vac-cursor-tool-tip');
         this.$el.off('mousedown.vac-marker');
-        super.teardown();
     }
 
     // Move the video & marker start by some num seconds (pos or neg)
