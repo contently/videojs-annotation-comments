@@ -87,6 +87,7 @@ class PlayerUIComponent extends PlayerComponent {
     // Provide basic teardown function to inherit
     teardown () {
         if(this.$el) this.$el.remove();
+        super.teardown();
     }
 }
 

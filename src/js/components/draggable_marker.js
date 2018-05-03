@@ -97,11 +97,11 @@ class DraggableMarker extends Marker {
 
     // Remove bound events on destructon
     teardown () {
-        super.teardown();
         $(document).off(`mousemove.vac-dmarker-${this.playerId} mouseup.vac-dmarker-${this.playerId}`);
         this.$el.off('mouseenter.vac-cursor-tool-tip');
         this.$el.off('mouseleave.vac-cursor-tool-tip');
         this.$el.off('mousedown.vac-marker');
+        super.teardown();
     }
 
     // Move the video & marker start by some num seconds (pos or neg)

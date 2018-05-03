@@ -62,6 +62,7 @@ class Controls extends PlayerUIComponent {
         this.$player.off('click.vac-controls');
         $(document).off(`keyup.vac-nav-${this.playerId} mousemove.vac-tooltip-${this.playerId}`);
         if(this.playerButton) this.playerButton.teardown();
+        super.teardown();
     }
 
     // Clear existing UI (resetting components if need be)

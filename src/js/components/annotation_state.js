@@ -242,6 +242,7 @@ class AnnotationState extends PlayerComponent {
     teardown() {
         this.annotations.forEach((annotation) => { annotation.teardown(false); });
         this.resetData();
+        super.teardown();
     }
 }
 

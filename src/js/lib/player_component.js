@@ -39,6 +39,12 @@ class PlayerComponent {
     initAPI (obj, className) {
         this.plugin.eventDispatcher.registerListenersFor(obj, className);
     }
+
+    // Nullify player reference so objects can be removed safely
+    // All components should call super.teardown() within their teardown funcs
+    teardown () {
+        this._player = null;
+    }
 }
 
 module.exports = {

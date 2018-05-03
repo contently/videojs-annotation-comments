@@ -6065,6 +6065,8 @@ exports["player_button"] = Handlebars.template({ "compiler": [7, ">= 4.0.0"], "m
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -6216,6 +6218,7 @@ var Annotation = function (_PlayerUIComponent) {
             if (this.commentList) this.commentList.teardown(removeFromCollection);
             if (removeFromCollection) this.plugin.annotationState.removeAnnotation(this);
             if (this.annotationShape) this.annotationShape.teardown();
+            _get(Annotation.prototype.__proto__ || Object.getPrototypeOf(Annotation.prototype), "teardown", this).call(this);
         }
 
         // Build a new annotation instance by passing in data for range, shape, comment, & plugin ref
@@ -6268,6 +6271,8 @@ module.exports = {
 */
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
@@ -6553,6 +6558,7 @@ var AnnotationState = function (_PlayerComponent) {
                 annotation.teardown(false);
             });
             this.resetData();
+            _get(AnnotationState.prototype.__proto__ || Object.getPrototypeOf(AnnotationState.prototype), "teardown", this).call(this);
         }
     }, {
         key: "enabled",
@@ -7000,6 +7006,8 @@ module.exports = {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -7088,6 +7096,7 @@ var Controls = function (_PlayerUIComponent) {
             this.$player.off('click.vac-controls');
             $(document).off("keyup.vac-nav-" + this.playerId + " mousemove.vac-tooltip-" + this.playerId);
             if (this.playerButton) this.playerButton.teardown();
+            _get(Controls.prototype.__proto__ || Object.getPrototypeOf(Controls.prototype), "teardown", this).call(this);
         }
 
         // Clear existing UI (resetting components if need be)
@@ -7411,11 +7420,11 @@ var DraggableMarker = function (_Marker) {
     }, {
         key: "teardown",
         value: function teardown() {
-            _get(DraggableMarker.prototype.__proto__ || Object.getPrototypeOf(DraggableMarker.prototype), "teardown", this).call(this);
             $(document).off("mousemove.vac-dmarker-" + this.playerId + " mouseup.vac-dmarker-" + this.playerId);
             this.$el.off('mouseenter.vac-cursor-tool-tip');
             this.$el.off('mouseleave.vac-cursor-tool-tip');
             this.$el.off('mousedown.vac-marker');
+            _get(DraggableMarker.prototype.__proto__ || Object.getPrototypeOf(DraggableMarker.prototype), "teardown", this).call(this);
         }
 
         // Move the video & marker start by some num seconds (pos or neg)
@@ -8121,6 +8130,15 @@ var PlayerComponent = function () {
         value: function initAPI(obj, className) {
             this.plugin.eventDispatcher.registerListenersFor(obj, className);
         }
+
+        // Nullify player reference so objects can be removed safely
+        // All components should call super.teardown() within their teardown funcs
+
+    }, {
+        key: "teardown",
+        value: function teardown() {
+            this._player = null;
+        }
     }, {
         key: "plugin",
         get: function get() {
@@ -8173,6 +8191,8 @@ module.exports = {
 */
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -8248,6 +8268,7 @@ var PlayerUIComponent = function (_PlayerComponent) {
         key: "teardown",
         value: function teardown() {
             if (this.$el) this.$el.remove();
+            _get(PlayerUIComponent.prototype.__proto__ || Object.getPrototypeOf(PlayerUIComponent.prototype), "teardown", this).call(this);
         }
     }, {
         key: "$UI",
