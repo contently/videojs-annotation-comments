@@ -41,7 +41,7 @@ function compile(watch, cb){
 
     var bundlerCjs = {
         processor: watchify(
-            browserify('./src/js/index.js', { debug: true })
+            browserify('./src/js/annotation_comments.js', { debug: true })
                 .transform(
                     babelify,
                     {

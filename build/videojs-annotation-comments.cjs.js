@@ -5943,7 +5943,7 @@ module.exports = function (videojs) {
     }(Plugin);
 };
 
-},{"./components/annotation_state":26,"./components/controls":29,"./lib/event_dispatcher":36,"./lib/polyfills":40,"./lib/utils":41}],24:[function(require,module,exports){
+},{"./components/annotation_state":26,"./components/controls":29,"./lib/event_dispatcher":35,"./lib/polyfills":39,"./lib/utils":40}],24:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -6259,7 +6259,7 @@ module.exports = function (_PlayerUIComponent) {
     return Annotation;
 }(PlayerUIComponent);
 
-},{"./../lib/player_ui_component":39,"./../lib/utils.js":41,"./comment":27,"./comment_list":28,"./marker":31,"./shape":34}],26:[function(require,module,exports){
+},{"./../lib/player_ui_component":38,"./../lib/utils.js":40,"./comment":27,"./comment_list":28,"./marker":31,"./shape":34}],26:[function(require,module,exports){
 "use strict";
 /*
     Component for managing the state of annotations, including showing active annotation during playback,
@@ -6614,7 +6614,7 @@ module.exports = function (_PlayerComponent) {
     return AnnotationState;
 }(PlayerComponent);
 
-},{"./../lib/player_component":38,"./../lib/utils":41,"./annotation":25}],27:[function(require,module,exports){
+},{"./../lib/player_component":37,"./../lib/utils":40,"./annotation":25}],27:[function(require,module,exports){
 "use strict";
 /*
   Component for an invidual comment
@@ -6715,7 +6715,7 @@ module.exports = function (_PlayerUIComponent) {
     return Comment;
 }(PlayerUIComponent);
 
-},{"./../lib/player_ui_component":39,"./../lib/utils":41,"moment":22}],28:[function(require,module,exports){
+},{"./../lib/player_ui_component":38,"./../lib/utils":40,"moment":22}],28:[function(require,module,exports){
 "use strict";
 /*
   Component for a list of comments in a visible/active annotation
@@ -6981,7 +6981,7 @@ module.exports = function (_PlayerUIComponent) {
     return CommentList;
 }(PlayerUIComponent);
 
-},{"./../lib/player_ui_component":39,"./../lib/utils":41,"./comment":27}],29:[function(require,module,exports){
+},{"./../lib/player_ui_component":38,"./../lib/utils":40,"./comment":27}],29:[function(require,module,exports){
 "use strict";
 /*
     Component for managing annotation "control box" in upper left of video when in annotation mode,
@@ -7275,7 +7275,7 @@ module.exports = function (_PlayerUIComponent) {
     return Controls;
 }(PlayerUIComponent);
 
-},{"./../lib/player_ui_component":39,"./../lib/utils":41,"./annotation":25,"./draggable_marker.js":30,"./player_button":32,"./selectable_shape.js":33}],30:[function(require,module,exports){
+},{"./../lib/player_ui_component":38,"./../lib/utils":40,"./annotation":25,"./draggable_marker.js":30,"./player_button":32,"./selectable_shape.js":33}],30:[function(require,module,exports){
 "use strict";
 /*
     Component for a timeline marker that is draggable when user clicks/drags on it, and rebuilds underlying range
@@ -7423,7 +7423,7 @@ module.exports = function (_Marker) {
     return DraggableMarker;
 }(Marker);
 
-},{"./../lib/utils":41,"./marker":31}],31:[function(require,module,exports){
+},{"./../lib/utils":40,"./marker":31}],31:[function(require,module,exports){
 "use strict";
 /*
     Component for a timeline marker with capabilities to render on timeline, including tooltip for comment
@@ -7548,7 +7548,7 @@ module.exports = function (_PlayerUIComponent) {
     return Marker;
 }(PlayerUIComponent);
 
-},{"./../lib/player_ui_component":39,"./../lib/utils":41}],32:[function(require,module,exports){
+},{"./../lib/player_ui_component":38,"./../lib/utils":40}],32:[function(require,module,exports){
 "use strict";
 /*
     Component main 'annotation toggle' button in the player controls, including notifier for # annotations
@@ -7621,7 +7621,7 @@ module.exports = function (_PlayerUIComponent) {
     return PlayerButton;
 }(PlayerUIComponent);
 
-},{"./../lib/player_ui_component":39}],33:[function(require,module,exports){
+},{"./../lib/player_ui_component":38}],33:[function(require,module,exports){
 "use strict";
 /*
     Component for a shape that can be drug/sized on top of the video while adding a new annotation
@@ -7782,7 +7782,7 @@ module.exports = function (_Shape) {
     return SelectableShape;
 }(Shape);
 
-},{"./../lib/utils":41,"./shape":34}],34:[function(require,module,exports){
+},{"./../lib/utils":40,"./shape":34}],34:[function(require,module,exports){
 "use strict";
 /*
     Component for managing a shape (i.e. box drawn on the player) for an annotation
@@ -7844,18 +7844,7 @@ module.exports = function (_PlayerUIComponent) {
     return Shape;
 }(PlayerUIComponent);
 
-},{"./../lib/player_ui_component":39}],35:[function(require,module,exports){
-"use strict";
-/*
-    Load plugin and register to global videojs
-*/
-
-(function ($, videojs) {
-    var AnnotationComments = require('./annotation_comments.js');
-    videojs.registerPlugin('annotationComments', AnnotationComments(videojs));
-})(jQuery, window.videojs);
-
-},{"./annotation_comments.js":23}],36:[function(require,module,exports){
+},{"./../lib/player_ui_component":38}],35:[function(require,module,exports){
 'use strict';
 /*
     Classes for registering and handling custom events for external interaction support.
@@ -8003,7 +7992,7 @@ module.exports = function () {
     return EventDispatcher;
 }();
 
-},{"./logger":37}],37:[function(require,module,exports){
+},{"./logger":36}],36:[function(require,module,exports){
 'use strict';
 /*
 	General logging library, checking to see if window.VAC_DEBUG is present and true to enable debugging
@@ -8053,7 +8042,7 @@ module.exports.info = function () {
     console.info.apply(null, buildArgs(args));
 };
 
-},{}],38:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 "use strict";
 /*
     Base class all player components interit from - it includes lots of helper functions (to get reference to
@@ -8131,7 +8120,7 @@ module.exports = function () {
     return PlayerComponent;
 }();
 
-},{}],39:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 "use strict";
 /*
     Base class all player UI components interit from - it includes lots of helper functions (to get reference to
@@ -8273,7 +8262,7 @@ module.exports = function (_PlayerComponent) {
     return PlayerUIComponent;
 }(PlayerComponent);
 
-},{"./../compiled/templates":24,"./../lib/utils":41,"./player_component":38,"handlebars/runtime":20}],40:[function(require,module,exports){
+},{"./../compiled/templates":24,"./../lib/utils":40,"./player_component":37,"handlebars/runtime":20}],39:[function(require,module,exports){
 'use strict';
 
 /*
@@ -8361,7 +8350,7 @@ if (typeof CustomEvent !== "function") {
     _CustomEvent.prototype = Event.prototype;
 };
 
-},{"es6-object-assign":1,"ie-array-find-polyfill":21}],41:[function(require,module,exports){
+},{"es6-object-assign":1,"ie-array-find-polyfill":21}],40:[function(require,module,exports){
 "use strict";
 /*
     Geneal utility functions, sourced from underscore & scratch built as needed
@@ -8465,6 +8454,6 @@ module.exports = {
     }
 };
 
-},{}]},{},[35])
+},{}]},{},[23])
 
 //# sourceMappingURL=videojs-annotation-comments.cjs.js.map
