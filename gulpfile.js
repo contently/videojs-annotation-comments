@@ -24,32 +24,52 @@ const gulp          = require('gulp'),
       autoprefixer  = require('gulp-autoprefixer');
 
 const FILENAME = "videojs-annotation-comments.js",
+      CJSFILENAME = "videojs-annotation-comments.cjs.js"
       PACKAGE = require('./package.json');
 
 const ATTIBUTION = "/* Version "+PACKAGE.version+" videojs-annotation-comments (https://github.com/contently/videojs-annotation-comments.git), Authored by Evan Carothers & Jack Pope */"+"\n\n";
 
 //compilation function for browserify/bundler/transpilation
 function compile(watch, cb){
-    var bundler = watchify(
-        browserify('./src/js/index.js', { debug: true })
-            .transform(babelify)
-    );
+    var bundler = {
+        processor: watchify(
+            browserify('./src/js/index.js', { debug: true })
+                .transform(babelify)
+        ),
+        filename: FILENAME
+    };
+
+    var bundlerCjs = {
+        processor: watchify(
+            browserify('./src/js/index.js', { debug: true })
+                .transform(
+                    babelify,
+                    {
+                        presets: ["es2015"],
+                        plugins: ["babel-plugin-transform-es2015-modules-simple-commonjs"]
+                    }
+                )
+        ),
+        filename: CJSFILENAME
+    };
 
     function rebundle() {
-        bundler.bundle()
+        for (b of [bundler, bundlerCjs]) {
+            b.processor.bundle()
             .on('log', gutil.log)
             .on('error', gutil.log.bind(gutil.colors.red, 'Browserify Error'))
             .pipe(source('src/js/index.js'))
-            .pipe(rename(FILENAME))
+            .pipe(rename(b.filename))
             .pipe(buffer())
             .pipe(sourcemaps.init({ loadMaps: true }))
             .pipe(sourcemaps.write('./'))
             .pipe(gulp.dest('./build'));
+        }
     }
 
     if (watch) {
         rebundle();
-        bundler.on('update', function() {
+        bundler.processor.on('update', function() {
             console.log('-> bundling...');
             rebundle();
         });
@@ -118,6 +138,15 @@ gulp.task('build', ['templates', 'sass', 'transpile'], (cb) => {
     pump([
         gulp.src('build/videojs-annotation-comments.js'),
         rename(FILENAME.replace(".js",".min.js")),
+        stripComments(),
+        uglify(),
+        insert.prepend(ATTIBUTION),
+        gulp.dest('./build')
+    ]);
+
+    pump([
+        gulp.src('build/videojs-annotation-comments.cjs.js'),
+        rename(CJSFILENAME.replace(".js",".min.js")),
         stripComments(),
         uglify(),
         insert.prepend(ATTIBUTION),
