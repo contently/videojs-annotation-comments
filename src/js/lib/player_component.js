@@ -42,7 +42,7 @@ module.exports = class PlayerComponent {
 
     // Nullify player reference so objects can be removed safely
     // All components should call super.teardown() within their teardown funcs
-    teardown () {
-        this._player = null;
+    teardown (destroy=false) {
+        if(destroy) this._player = null;
     }
 }

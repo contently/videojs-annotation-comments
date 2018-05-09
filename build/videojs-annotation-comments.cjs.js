@@ -6218,7 +6218,7 @@ module.exports = function (_PlayerUIComponent) {
             if (this.commentList) this.commentList.teardown(removeFromCollection);
             if (removeFromCollection) this.plugin.annotationState.removeAnnotation(this);
             if (this.annotationShape) this.annotationShape.teardown();
-            _get(Annotation.prototype.__proto__ || Object.getPrototypeOf(Annotation.prototype), "teardown", this).call(this);
+            if (removeFromCollection) _get(Annotation.prototype.__proto__ || Object.getPrototypeOf(Annotation.prototype), "teardown", this).call(this);
         }
 
         // Build a new annotation instance by passing in data for range, shape, comment, & plugin ref
@@ -6622,6 +6622,8 @@ module.exports = function (_PlayerComponent) {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -6672,6 +6674,13 @@ module.exports = function (_PlayerUIComponent) {
         key: "timeSince",
         value: function timeSince() {
             return moment(this.meta.datetime).fromNow();
+        }
+    }, {
+        key: "teardown",
+        value: function teardown() {
+            var destroy = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+            _get(Comment.prototype.__proto__ || Object.getPrototypeOf(Comment.prototype), "teardown", this).call(this, destroy);
         }
 
         // Return a Comment obj given body content and plugin reference
@@ -6964,7 +6973,7 @@ module.exports = function (_PlayerUIComponent) {
                 this.$el.off("click.vac-comment mousewheel.vac-comment DOMMouseScroll.vac-comment");
             }
             this.comments.forEach(function (c) {
-                return c.teardown();
+                return c.teardown(destroyComments);
             });
             if (destroyComments) this.comments = [];
             _get(CommentList.prototype.__proto__ || Object.getPrototypeOf(CommentList.prototype), "teardown", this).call(this);
@@ -8078,7 +8087,9 @@ module.exports = function () {
     }, {
         key: "teardown",
         value: function teardown() {
-            this._player = null;
+            var destroy = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+
+            if (destroy) this._player = null;
         }
     }, {
         key: "plugin",
@@ -8339,16 +8350,20 @@ require('es6-object-assign').polyfill();
 })();
 
 // Use CustomEvent in IE
-if (typeof CustomEvent !== "function") {
-    var _CustomEvent = function _CustomEvent(event, params) {
+(function () {
+    if (typeof window.CustomEvent === "function") return false;
+
+    function CustomEvent(event, params) {
         params = params || { bubbles: false, cancelable: false, detail: undefined };
         var evt = document.createEvent('CustomEvent');
         evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
         return evt;
-    };
+    }
 
-    _CustomEvent.prototype = Event.prototype;
-};
+    CustomEvent.prototype = window.Event.prototype;
+
+    window.CustomEvent = CustomEvent;
+})();
 
 },{"es6-object-assign":1,"ie-array-find-polyfill":21}],40:[function(require,module,exports){
 "use strict";

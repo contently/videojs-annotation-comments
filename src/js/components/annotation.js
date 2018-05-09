@@ -125,7 +125,7 @@ module.exports = class Annotation extends PlayerUIComponent {
         if(this.commentList) this.commentList.teardown(removeFromCollection);
         if(removeFromCollection) this.plugin.annotationState.removeAnnotation(this);
         if(this.annotationShape) this.annotationShape.teardown();
-        super.teardown()
+        if(removeFromCollection) super.teardown();
     }
 
     // Build a new annotation instance by passing in data for range, shape, comment, & plugin ref

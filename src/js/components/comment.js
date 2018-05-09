@@ -52,6 +52,10 @@ module.exports = class Comment extends PlayerUIComponent {
         return moment(this.meta.datetime).fromNow();
     }
 
+    teardown (destroy=false) {
+        super.teardown(destroy);
+    }
+
     // Return a Comment obj given body content and plugin reference
     static newFromData (body, commentList, plugin) {
         let data = this.dataObj(body, plugin);

@@ -186,7 +186,7 @@ module.exports = class CommentList extends PlayerUIComponent {
         if(this.$el) {
             this.$el.off("click.vac-comment mousewheel.vac-comment DOMMouseScroll.vac-comment");
         }
-        this.comments.forEach((c) => c.teardown());
+        this.comments.forEach((c) => c.teardown(destroyComments));
         if(destroyComments) this.comments = [];
         super.teardown();
     }
