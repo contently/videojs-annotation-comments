@@ -2,7 +2,7 @@
   "name": "videojs-annotation-comments",
   "version": "1.1.0",
   "description": "",
-  "main": "src/js/annotation_comments.js",
+  "main": "build/videojs-annotation-comments.cjs.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
