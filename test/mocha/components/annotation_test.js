@@ -2,7 +2,7 @@
 
 global.videojs = require('video.js');
 
-const Annotation = require('../../../src/js/components/annotation').class,
+const Annotation = require('../../../src/js/components/annotation'),
       expect = require('chai').expect;
 
 class MockedAnnotation extends Annotation {

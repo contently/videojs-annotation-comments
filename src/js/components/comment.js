@@ -3,15 +3,15 @@
   Component for an invidual comment
 */
 
-const   PlayerUIComponent = require("./../lib/player_ui_component").class,
+const   PlayerUIComponent = require("./../lib/player_ui_component"),
         Utils = require("./../lib/utils"),
         moment = require("moment"),
         templateName = 'comment';
 
-class Comment extends PlayerUIComponent {
+module.exports = class Comment extends PlayerUIComponent {
 
-    constructor (data, playerId) {
-        super(playerId);
+    constructor (data, player) {
+        super(player);
         this.commentList = data.commentList;
         this.id = data.id || this.componentId;
         this.meta = data.meta;
@@ -52,10 +52,14 @@ class Comment extends PlayerUIComponent {
         return moment(this.meta.datetime).fromNow();
     }
 
+    teardown (destroy=false) {
+        super.teardown(destroy);
+    }
+
     // Return a Comment obj given body content and plugin reference
     static newFromData (body, commentList, plugin) {
         let data = this.dataObj(body, plugin);
-        return new Comment(data, plugin.playerId);
+        return new Comment(data, plugin.player);
     }
 
     // Return an object with plugin data, timestamp, unique id, and body content
@@ -69,7 +73,3 @@ class Comment extends PlayerUIComponent {
         };
     }
 }
-
-module.exports = {
-    class: Comment
-};

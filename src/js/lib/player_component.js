@@ -4,10 +4,10 @@
     the player, the plugin, video state, etc)
 */
 
-class PlayerComponent {
+module.exports = class PlayerComponent {
 
-    constructor (playerId) {
-        this.playerId = playerId;
+    constructor (player) {
+        this._player = player;
     }
 
     // attribute to get reference to the main plugin object (main.js instance)
@@ -17,7 +17,7 @@ class PlayerComponent {
 
     // attribute to get player javascript instance
     get player () {
-        return videojs(this.playerId);
+        return this._player;
     }
 
     // attribute to get video duration (in seconds)
@@ -39,8 +39,10 @@ class PlayerComponent {
     initAPI (obj, className) {
         this.plugin.eventDispatcher.registerListenersFor(obj, className);
     }
-}
 
-module.exports = {
-    class: PlayerComponent
-};
+    // Nullify player reference so objects can be removed safely
+    // All components should call super.teardown() within their teardown funcs
+    teardown (destroy=false) {
+        if(destroy) this._player = null;
+    }
+}

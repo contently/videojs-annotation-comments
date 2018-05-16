@@ -3,21 +3,21 @@
   Component for a list of comments in a visible/active annotation
 */
 
-const   PlayerUIComponent = require("./../lib/player_ui_component").class,
+const   PlayerUIComponent = require("./../lib/player_ui_component"),
         Utils = require("./../lib/utils"),
-        Comment = require("./comment").class,
+        Comment = require("./comment"),
         commentListTemplateName = 'comment_list',
         newCommentTemplateName = 'new_comment';
 
-class CommentList extends PlayerUIComponent {
+module.exports = class CommentList extends PlayerUIComponent {
 
-    constructor (data, playerId) {
-        super(playerId);
+    constructor (data, player) {
+        super(player);
 
         this.annotation = data.annotation;
         this.comments = data.comments.map((commentData) => {
             commentData.commentList = this;
-            return new Comment(commentData, playerId);
+            return new Comment(commentData, player);
         });
         this.sortComments();
     }
@@ -186,12 +186,8 @@ class CommentList extends PlayerUIComponent {
         if(this.$el) {
             this.$el.off("click.vac-comment mousewheel.vac-comment DOMMouseScroll.vac-comment");
         }
-        this.comments.forEach((c) => c.teardown());
+        this.comments.forEach((c) => c.teardown(destroyComments));
         if(destroyComments) this.comments = [];
         super.teardown();
     }
 }
-
-module.exports = {
-    class: CommentList
-};

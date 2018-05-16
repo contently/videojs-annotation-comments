@@ -3,15 +3,15 @@
     Component for a timeline marker with capabilities to render on timeline, including tooltip for comment
 */
 
-const   PlayerUIComponent = require("./../lib/player_ui_component").class,
+const   PlayerUIComponent = require("./../lib/player_ui_component"),
         Utils = require("./../lib/utils"),
         markerTemplateName = 'marker',
         markerWrapTemplateName = 'marker_wrap';
 
-class Marker extends PlayerUIComponent {
+module.exports = class Marker extends PlayerUIComponent {
 
-    constructor (playerId, range, comment=null) {
-        super(playerId);
+    constructor (player, range, comment=null) {
+        super(player);
         this.range = range;
         this.comment = comment;
         this.templateName = markerTemplateName;
@@ -83,7 +83,3 @@ class Marker extends PlayerUIComponent {
         super.teardown();
     }
 }
-
-module.exports = {
-    class: Marker
-};

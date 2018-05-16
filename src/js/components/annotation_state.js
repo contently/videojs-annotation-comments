@@ -5,13 +5,13 @@
 */
 
 const   Utils = require('./../lib/utils'),
-        PlayerComponent = require("./../lib/player_component").class,
-        Annotation = require("./annotation").class;
+        PlayerComponent = require("./../lib/player_component"),
+        Annotation = require("./annotation");
 
-class AnnotationState extends PlayerComponent {
+module.exports = class AnnotationState extends PlayerComponent {
 
-    constructor (playerId) {
-        super(playerId);
+    constructor (player) {
+        super(player);
         this.initAPI(this, 'AnnotationState');
         this.resetData();
         this.bindEvents();
@@ -33,7 +33,7 @@ class AnnotationState extends PlayerComponent {
 
     // Sets _annotations w/Annoation objects from input array
     set annotations (annotationsData) {
-        this._annotations = annotationsData.map((a) => new Annotation(a, this.playerId));
+        this._annotations = annotationsData.map((a) => new Annotation(a, this.player));
         this.sortAnnotations();
         this.rebuildAnnotationTimeMap();
     }
@@ -242,9 +242,6 @@ class AnnotationState extends PlayerComponent {
     teardown() {
         this.annotations.forEach((annotation) => { annotation.teardown(false); });
         this.resetData();
+        super.teardown();
     }
 }
-
-module.exports = {
-    class: AnnotationState
-};

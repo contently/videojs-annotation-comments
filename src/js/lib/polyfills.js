@@ -4,7 +4,7 @@
 
 // Array.prototype.find() for IE10+
 require('ie-array-find-polyfill');
-// Object.assing for IE10+
+// Object.assign for IE10+
 require('es6-object-assign').polyfill();
 
 // Allow use of object.constructor.staticFunc() in IE

@@ -4,14 +4,14 @@
     as drag occurs
 */
 
-const   Marker = require("./marker").class,
+const   Marker = require("./marker"),
         Utils = require('./../lib/utils'),
         markerTemplateName = 'draggable_marker';
 
-class DraggableMarker extends Marker {
+module.exports = class DraggableMarker extends Marker {
 
-    constructor (playerId, range) {
-        super(playerId, range);
+    constructor (player, range) {
+        super(player, range);
         this.range = range;                       // NOTE - this shouldn't be required and is a HACK for how transpilation works in IE10
         this.templateName = markerTemplateName;   // Change template from base Marker template
         this.dragging = false;                    // Is a drag action currently occring?
@@ -97,11 +97,11 @@ class DraggableMarker extends Marker {
 
     // Remove bound events on destructon
     teardown () {
-        super.teardown();
         $(document).off(`mousemove.vac-dmarker-${this.playerId} mouseup.vac-dmarker-${this.playerId}`);
         this.$el.off('mouseenter.vac-cursor-tool-tip');
         this.$el.off('mouseleave.vac-cursor-tool-tip');
         this.$el.off('mousedown.vac-marker');
+        this.$el.remove();
     }
 
     // Move the video & marker start by some num seconds (pos or neg)
@@ -116,7 +116,3 @@ class DraggableMarker extends Marker {
         this.plugin.fire('addingAnnotationDataChanged', { range: this.range });
     }
 }
-
-module.exports = {
-    class: DraggableMarker
-};

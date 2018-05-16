@@ -1,15 +1,19 @@
 "use strict";
+/*
+    Main function and entry point
+    Can be registered to a videojs instance as a plugin
+*/
 
-(($, videojs) => {
+module.exports = (videojs) => {
     require('./lib/polyfills');
 
     const Plugin = videojs.getPlugin('plugin'),
           Utils = require('./lib/utils'),
-          Controls = require("./components/controls").class,
-          AnnotationState = require("./components/annotation_state").class,
-          EventDispatcher = require("./lib/event_dispatcher").class;
+          Controls = require("./components/controls"),
+          AnnotationState = require("./components/annotation_state"),
+          EventDispatcher = require("./lib/event_dispatcher");
 
-    const DEFAULT_OPTIONS =     Object.freeze({
+    const DEFAULT_OPTIONS = Object.freeze({
         bindArrowKeys:              true,
         meta:                       { user_id: null, user_name: null },
         annotationsObjects:         [],
@@ -21,16 +25,15 @@
         startInAnnotationMode:      false
     });
 
-    class Main extends Plugin {
+    return class AnnotationComments extends Plugin {
 
         constructor (player, options) {
             options = Object.assign(Utils.cloneObject(DEFAULT_OPTIONS), options);
             super(player, options);
 
             this.eventDispatcher = new EventDispatcher(this);
-            this.eventDispatcher.registerListenersFor(this, 'Main');
+            this.eventDispatcher.registerListenersFor(this, 'AnnotationComments');
 
-            this.playerId = $(player.el()).attr('id');
             this.player = player;
             this.meta = options.meta;
             this.options = options;
@@ -52,10 +55,10 @@
         // Additional init/setup after video data + metadata is available
         postLoadDataConstructor () {
             // setup initial state and render UI
-            this.annotationState = new AnnotationState(this.playerId);
+            this.annotationState = new AnnotationState(this.player);
             this.annotationState.annotations = this.options.annotationsObjects;
 
-            this.controls = new Controls(this.playerId, this.options.bindArrowKeys);
+            this.controls = new Controls(this.player, this.options.bindArrowKeys);
             this.bindEvents();
             this.setBounds(false);
             if(this.options.startInAnnotationMode) this.toggleAnnotationMode();
@@ -159,7 +162,6 @@
                 $(this.player.el()).find("[class^='vac-']").remove();
             }
             super.dispose();
-
         }
 
         teardown () {
@@ -167,7 +169,4 @@
             $(window).off('resize.vac-window-resize');
         }
     }
-
-    videojs.registerPlugin('annotationComments', Main);
-
-})(jQuery, window.videojs);
+}

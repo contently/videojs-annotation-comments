@@ -3,13 +3,13 @@
     Component for a shape that can be drug/sized on top of the video while adding a new annotation
 */
 
-const   Shape = require("./shape").class,
+const   Shape = require("./shape"),
         Utils = require('./../lib/utils');
 
-class SelectableShape extends Shape {
+module.exports = class SelectableShape extends Shape {
 
-    constructor (playerId) {
-        super(playerId);
+    constructor (player) {
+        super(player);
         this.$parent = this.$player.find(".vac-video-cover-canvas");
         this.bindEvents();
         this.dragging = false;
@@ -121,7 +121,3 @@ class SelectableShape extends Shape {
         super.teardown();
     }
 }
-
-module.exports = {
-    class: SelectableShape
-};

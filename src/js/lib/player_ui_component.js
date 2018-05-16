@@ -4,15 +4,15 @@
     the player $el, various classes/helpers, template rendering, etc)
 */
 
-const PlayerComponent = require("./player_component").class,
+const PlayerComponent = require("./player_component"),
       Handlebars = require('handlebars/runtime'),
       Templates = require('./../compiled/templates'),
       Utils = require('./../lib/utils');
 
-class PlayerUIComponent extends PlayerComponent{
+module.exports = class PlayerUIComponent extends PlayerComponent {
 
-    constructor (playerId) {
-        super(playerId);
+    constructor (player) {
+        super(player);
     }
 
     // helpers to get various UI components of the player quickly, keeping commonly reused class names
@@ -41,6 +41,12 @@ class PlayerUIComponent extends PlayerComponent{
     // attribute to get player jquery element
     get $player () {
         return $(this.player.el());
+    }
+
+
+    // attribute to get player id from DOM
+    get playerId () {
+        return this.$player.attr('id');
     }
 
         // Generate a pseudo-guid ID for this component, to use as an ID in the DOM
@@ -81,9 +87,6 @@ class PlayerUIComponent extends PlayerComponent{
     // Provide basic teardown function to inherit
     teardown () {
         if(this.$el) this.$el.remove();
+        super.teardown();
     }
 }
-
-module.exports = {
-    class: PlayerUIComponent
-};

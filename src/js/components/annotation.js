@@ -3,17 +3,17 @@
     Component for an annotation, which includes controlling the marker/shape, rendering a commentList, etc
 */
 
-const   PlayerUIComponent = require("./../lib/player_ui_component").class,
+const   PlayerUIComponent = require("./../lib/player_ui_component"),
         Utils = require("./../lib/utils.js"),
-        CommentList = require("./comment_list").class,
-        Marker = require("./marker").class,
-        Comment = require("./comment").class,
-        Shape = require("./shape").class;
+        CommentList = require("./comment_list"),
+        Marker = require("./marker"),
+        Comment = require("./comment"),
+        Shape = require("./shape");
 
-class Annotation extends PlayerUIComponent {
+module.exports = class Annotation extends PlayerUIComponent {
 
-    constructor (data, playerId) {
-        super(playerId);
+    constructor (data, player) {
+        super(player);
         this.id = data.id || this.componentId;
         this.range = data.range;
         this.shape = data.shape;
@@ -29,17 +29,17 @@ class Annotation extends PlayerUIComponent {
     buildComments(data) {
         this.commentList = new CommentList(
             {"comments": data.comments, "annotation": this},
-            this.playerId
+            this.player
         );
     }
 
     buildMarker () {
-        this.marker = new Marker(this.playerId, this.range, this.commentList.comments[0]);
+        this.marker = new Marker(this.player, this.range, this.commentList.comments[0]);
         this.marker.render();
     }
 
     buildShape() {
-        this.annotationShape = new Shape(this.playerId, this.shape);
+        this.annotationShape = new Shape(this.player, this.shape);
     }
 
     // Serialize object
@@ -125,6 +125,7 @@ class Annotation extends PlayerUIComponent {
         if(this.commentList) this.commentList.teardown(removeFromCollection);
         if(removeFromCollection) this.plugin.annotationState.removeAnnotation(this);
         if(this.annotationShape) this.annotationShape.teardown();
+        if(removeFromCollection) super.teardown();
     }
 
     // Build a new annotation instance by passing in data for range, shape, comment, & plugin ref
@@ -138,14 +139,10 @@ class Annotation extends PlayerUIComponent {
             shape,
             comments: [comment]
         };
-        return new Annotation(data, plugin.playerId);
+        return new Annotation(data, plugin.player);
     }
 
     get isActive () {
         return this.plugin.annotationState.activeAnnotation === this;
     }
 }
-
-module.exports = {
-    class: Annotation
-};
