@@ -1,0 +1,6 @@
+title: Videojs Annotation Comments
+description: A plugin for video.js to add support for timeline moment and range annotations.
+repo_link: https://github.com/contently/videojs-annotation-comments
+show_downloads: true
+google_analytics:
+theme: jekyll-theme-cayman

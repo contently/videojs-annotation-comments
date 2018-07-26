@@ -102,7 +102,8 @@ gulp.task('sass', () => {
             cascade: false
         }))
         .pipe(sourcemaps.write('.'))
-        .pipe(gulp.dest('./build/css'));
+        .pipe(gulp.dest('./build/css'))
+        .pipe(gulp.dest('./docs/build/css'));
 });
 
 gulp.task('templates:watch', () => {
@@ -150,7 +151,8 @@ gulp.task('build', ['templates', 'sass', 'transpile'], (cb) => {
         stripComments(),
         uglify(),
         insert.prepend(ATTIBUTION),
-        gulp.dest('./build')
+        gulp.dest('./build'),
+        gulp.dest('./docs/build')
     ], cb);
 });
 

@@ -1,0 +1,474 @@
+.video-js.vac-active .vjs-mouse-display, .video-js.vac-active .vjs-big-play-button {
+  display: none !important; }
+
+.video-js.vac-active .vac-marker-owrap, .video-js.vac-active .vac-control {
+  display: block; }
+
+.video-js.vac-active .vjs-control-bar {
+  z-index: 2; }
+
+.video-js.vac-active .vac-player-btn i.vac-player-icon svg {
+  fill: #00A6C2 !important; }
+
+.video-js.vac-active.vjs-has-started .vac-shape {
+  display: block; }
+
+.video-js.vac-disable-play .vjs-control {
+  cursor: default; }
+
+.video-js .vac-hidden {
+  display: none !important; }
+
+.video-js.vac-disable-fullscreen .vac-player-btn {
+  display: none; }
+
+.video-js.vac-disable-play .vac-marker {
+  display: none !important; }
+
+.video-js.vac-disable-play .vjs-play-control, .video-js.vac-disable-play .vjs-play-progress {
+  visibility: hidden !important; }
+
+.video-js .vac-button {
+  -webkit-transition: all .2s ease-in-out;
+  transition: all .2s ease-in-out;
+  margin: 10px;
+  line-height: 27px;
+  font-size: 13px;
+  padding: 0;
+  width: calc(100% - 20px);
+  text-align: center;
+  border-radius: 2px;
+  background: #00A6C2;
+  color: white;
+  display: block;
+  cursor: pointer; }
+  .video-js .vac-button:hover {
+    background-color: #10dcff; }
+
+.video-js .vac-video-cover {
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 0, 0, 0.15);
+  cursor: crosshair; }
+  .video-js .vac-video-cover .vac-video-cover-canvas {
+    width: 100%;
+    height: 100%;
+    position: relative; }
+
+.video-js .vac-video-write-new-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 11;
+  background-color: rgba(0, 0, 0, 0.7); }
+  .video-js .vac-video-write-new-wrap.vac-new-comment {
+    background-color: rgba(0, 0, 0, 0.4); }
+  .video-js .vac-video-write-new-wrap .vac-video-write-new {
+    width: 100%;
+    height: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center; }
+    .video-js .vac-video-write-new-wrap .vac-video-write-new > div {
+      width: 80%;
+      max-width: 400px;
+      border-radius: 2px;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 20px; }
+      .video-js .vac-video-write-new-wrap .vac-video-write-new > div h5 {
+        margin: 0;
+        padding: 0;
+        font-size: 15px;
+        color: #000;
+        font-weight: normal; }
+    .video-js .vac-video-write-new-wrap .vac-video-write-new .vac-comment-showbox {
+      border-radius: 1px;
+      background-color: white;
+      margin-top: 20px;
+      width: 100%;
+      border-bottom: 2px solid #ee9828; }
+      .video-js .vac-video-write-new-wrap .vac-video-write-new .vac-comment-showbox textarea {
+        border: none;
+        font-size: 13px;
+        color: #383838;
+        line-height: 16px;
+        padding: 8px;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        min-height: 110px;
+        width: 100%;
+        resize: none; }
+      .video-js .vac-video-write-new-wrap .vac-video-write-new .vac-comment-showbox > div {
+        padding: 10px;
+        -webkit-box-sizing: content-box;
+        box-sizing: content-box;
+        height: 27px; }
+        .video-js .vac-video-write-new-wrap .vac-video-write-new .vac-comment-showbox > div button {
+          float: right;
+          width: auto;
+          padding: 0 40px;
+          margin: 0; }
+        .video-js .vac-video-write-new-wrap .vac-video-write-new .vac-comment-showbox > div a {
+          float: right;
+          font-size: 12px;
+          text-decoration: underline;
+          line-height: 27px;
+          display: inline-block;
+          color: #383838;
+          cursor: pointer;
+          margin-right: 20px; }
+          .video-js .vac-video-write-new-wrap .vac-video-write-new .vac-comment-showbox > div a:hover {
+            color: #FF0000; }
+    .video-js .vac-video-write-new-wrap .vac-video-write-new.vac-is-comment {
+      display: block; }
+      .video-js .vac-video-write-new-wrap .vac-video-write-new.vac-is-comment .vac-comment-showbox {
+        position: absolute;
+        padding: 0;
+        margin: 0;
+        max-width: none; }
+
+.video-js .vac-shape {
+  position: absolute;
+  z-index: 1;
+  background-color: rgba(238, 152, 40, 0.65);
+  border: 2px dotted #ee9828;
+  display: none; }
+
+.video-js .vac-controls, .video-js .vac-add-controls {
+  z-index: 3;
+  position: absolute;
+  border-radius: 2px;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.4);
+  top: 4px;
+  left: 4px;
+  padding: 4px 0 0 0;
+  font-size: 14px;
+  color: white;
+  width: 150px;
+  display: none;
+  text-align: center; }
+  .video-js .vac-controls i, .video-js .vac-add-controls i {
+    color: #dbdcdc;
+    font-size: 11px;
+    font-style: normal;
+    display: block;
+    padding: 4px 0 0; }
+  .video-js .vac-controls button, .video-js .vac-add-controls button {
+    -webkit-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+    margin: 10px;
+    line-height: 27px;
+    font-size: 13px;
+    padding: 0;
+    width: calc(100% - 20px);
+    text-align: center;
+    border-radius: 2px;
+    background: #00A6C2;
+    color: white;
+    display: block;
+    cursor: pointer; }
+    .video-js .vac-controls button:hover, .video-js .vac-add-controls button:hover {
+      background-color: #10dcff; }
+  .video-js .vac-controls.vac-add-controls button, .video-js .vac-add-controls.vac-add-controls button {
+    background-color: #eed428;
+    color: #383838; }
+    .video-js .vac-controls.vac-add-controls button:hover, .video-js .vac-add-controls.vac-add-controls button:hover {
+      background-color: #f4e26f; }
+  .video-js .vac-controls.vac-add-controls a, .video-js .vac-add-controls.vac-add-controls a {
+    margin: 3px auto 8px;
+    text-transform: uppercase;
+    display: inline-block;
+    color: white;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 10px; }
+    .video-js .vac-controls.vac-add-controls a:hover, .video-js .vac-add-controls.vac-add-controls a:hover {
+      color: #FF0000; }
+  .video-js .vac-controls .vac-annotation-nav, .video-js .vac-controls .vac-video-move, .video-js .vac-add-controls .vac-annotation-nav, .video-js .vac-add-controls .vac-video-move {
+    margin-top: 8px;
+    width: 100%;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row; }
+    .video-js .vac-controls .vac-annotation-nav div, .video-js .vac-controls .vac-video-move div, .video-js .vac-add-controls .vac-annotation-nav div, .video-js .vac-add-controls .vac-video-move div {
+      -webkit-box-flex: 1;
+      -ms-flex: 1;
+      flex: 1;
+      background-color: rgba(0, 0, 0, 0.8);
+      text-align: center;
+      line-height: 22px;
+      color: #eed428;
+      -webkit-transition: all .2s ease-in-out;
+      transition: all .2s ease-in-out;
+      cursor: pointer;
+      font-size: 12px; }
+      .video-js .vac-controls .vac-annotation-nav div:hover, .video-js .vac-controls .vac-video-move div:hover, .video-js .vac-add-controls .vac-annotation-nav div:hover, .video-js .vac-add-controls .vac-video-move div:hover {
+        background-color: #eed428;
+        color: #000; }
+      .video-js .vac-controls .vac-annotation-nav div.vac-a-prev, .video-js .vac-controls .vac-video-move div.vac-a-prev, .video-js .vac-add-controls .vac-annotation-nav div.vac-a-prev, .video-js .vac-add-controls .vac-video-move div.vac-a-prev {
+        margin-right: 1px; }
+
+.video-js .vac-cursor-tool-tip {
+  position: absolute;
+  border-radius: 100%;
+  z-index: 999;
+  display: inline-block;
+  white-space: nowrap; }
+
+.video-js .vac-player-btn {
+  margin-right: 8px;
+  cursor: pointer; }
+  .video-js .vac-player-btn i.vac-player-icon svg {
+    fill: white;
+    -webkit-transition: fill .2s ease-in-out;
+    transition: fill .2s ease-in-out; }
+  .video-js .vac-player-btn i.vac-player-icon:hover svg {
+    fill: #5ce7ff; }
+  .video-js .vac-player-btn b {
+    position: absolute;
+    display: inline-block;
+    top: 3px;
+    right: 3px;
+    color: #FFF;
+    height: 14px;
+    line-height: 14px;
+    min-width: 14px;
+    text-align: center;
+    border-radius: 9px;
+    font-size: 10px;
+    font-weight: normal;
+    background-color: #FF0000; }
+
+.video-js .vac-marker-owrap {
+  display: none;
+  z-index: 10;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%; }
+  .video-js .vac-marker-owrap .vac-marker-wrap {
+    margin: 0 10px;
+    height: 100%;
+    position: relative;
+    -webkit-box-flex: 1;
+    -ms-flex: auto;
+    flex: auto; }
+    .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable {
+      position: absolute;
+      width: 7px;
+      margin-left: 0px;
+      height: 30px;
+      bottom: 6px;
+      background: #00A6C2;
+      border-radius: 2px;
+      cursor: pointer;
+      -webkit-transition: all .2s ease-in-out;
+      transition: all .2s ease-in-out; }
+      .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.vac-hovering, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.vac-force-tooltip, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.vac-hovering, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.vac-force-tooltip {
+        opacity: 1 !important;
+        background: #eed428;
+        height: 35px; }
+        .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.vac-hovering > div, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.vac-force-tooltip > div, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.vac-hovering > div, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.vac-force-tooltip > div {
+          display: block;
+          opacity: 1; }
+        .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.vac-hovering.vac-ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.vac-force-tooltip.vac-ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.vac-hovering.vac-ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.vac-force-tooltip.vac-ranged-marker {
+          -webkit-box-shadow: 7px 0 0 0 #eed428 inset;
+          box-shadow: 7px 0 0 0 #eed428 inset;
+          background-color: rgba(238, 212, 40, 0.65); }
+      .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.vac-active, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.vac-active {
+        background-color: #eed428; }
+        .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.vac-active.vac-ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.vac-active.vac-ranged-marker {
+          -webkit-box-shadow: 7px 0 0 0 #eed428 inset;
+          box-shadow: 7px 0 0 0 #eed428 inset;
+          background-color: rgba(238, 212, 40, 0.65); }
+      .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.vac-ranged-marker, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.vac-ranged-marker {
+        -webkit-box-shadow: 7px 0 0 0 #00A6C2 inset;
+        box-shadow: 7px 0 0 0 #00A6C2 inset;
+        background-color: rgba(0, 166, 194, 0.65); }
+      .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker.vac-marker-draggable, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable.vac-marker-draggable {
+        -webkit-box-shadow: 7px 0 0 0 #ee9828 inset;
+        box-shadow: 7px 0 0 0 #ee9828 inset;
+        background-color: rgba(238, 152, 40, 0.65);
+        cursor: ew-resize;
+        min-width: 7px !important; }
+      .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker > div, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable > div {
+        width: 100%;
+        position: relative;
+        display: none;
+        opacity: 0;
+        -webkit-transition: opacity .2s ease-in-out;
+        transition: opacity .2s ease-in-out; }
+        .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker > div span, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable > div span {
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          border-bottom: 1px solid #eed428;
+          display: block;
+          position: absolute;
+          max-width: 250px;
+          bottom: -1px;
+          line-height: 26px;
+          height: 28px;
+          overflow: hidden;
+          padding: 0 5px;
+          -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+          border-radius: 1px;
+          background: rgba(0, 0, 0, 0.8);
+          color: white;
+          font-family: Arial;
+          font-size: 12px;
+          left: 0px; }
+          .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker > div span b, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable > div span b {
+            color: #eed428;
+            display: inline-block;
+            margin-right: 5px;
+            font-weight: normal; }
+          .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker > div span.vac-right-side, .video-js .vac-marker-owrap .vac-marker-wrap .vac-marker-draggable > div span.vac-right-side {
+            left: auto;
+            right: 0px; }
+    .video-js .vac-marker-owrap .vac-marker-wrap.vac-dim-all .vac-marker {
+      height: 30px;
+      opacity: .4; }
+      .video-js .vac-marker-owrap .vac-marker-wrap.vac-dim-all .vac-marker.vac-force-tooltip > div {
+        display: none; }
+
+.video-js .vac-comments-container {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 15%;
+  min-width: 225px;
+  z-index: 11;
+  background-color: rgba(255, 255, 255, 0.6);
+  height: calc(100% - 42px);
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transition: all .15s linear;
+  transition: all .15s linear; }
+  .video-js .vac-comments-container:hover, .video-js .vac-comments-container.vac-active {
+    width: 60%;
+    max-width: 480px; }
+    .video-js .vac-comments-container:hover .vac-comments-wrap, .video-js .vac-comments-container.vac-active .vac-comments-wrap {
+      opacity: 1; }
+    .video-js .vac-comments-container:hover.vac-active .vac-add-new-shapebox, .video-js .vac-comments-container.vac-active.vac-active .vac-add-new-shapebox {
+      display: block; }
+    .video-js .vac-comments-container:hover.vac-active .vac-reply-btn, .video-js .vac-comments-container.vac-active.vac-active .vac-reply-btn {
+      display: none; }
+  .video-js .vac-comments-container .vac-comments-wrap {
+    opacity: .9;
+    height: calc(100% - 26px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 10px;
+    border-left: 1px solid #dbdcdc; }
+    .video-js .vac-comments-container .vac-comments-wrap::-webkit-scrollbar {
+      width: 6px;
+      background-color: transparent; }
+    .video-js .vac-comments-container .vac-comments-wrap::-webkit-scrollbar-thumb {
+      border-radius: 5px;
+      -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      background-color: #383838; }
+    .video-js .vac-comments-container .vac-comments-wrap .vac-comment {
+      border-radius: 1px;
+      -webkit-box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.43);
+      box-shadow: 2px 2px 5px 0px rgba(0, 0, 0, 0.43); }
+      .video-js .vac-comments-container .vac-comments-wrap .vac-comment .vac-comment-header {
+        width: 100%;
+        padding: 2px 5px;
+        color: #FFF;
+        background-color: #383838;
+        text-align: left; }
+        .video-js .vac-comments-container .vac-comments-wrap .vac-comment .vac-comment-header:hover .vac-delete-comment {
+          display: inline; }
+        .video-js .vac-comments-container .vac-comments-wrap .vac-comment .vac-comment-header .vac-author-name, .video-js .vac-comments-container .vac-comments-wrap .vac-comment .vac-comment-header .vac-timestamp {
+          display: inline-block;
+          line-height: 16px; }
+          .video-js .vac-comments-container .vac-comments-wrap .vac-comment .vac-comment-header .vac-author-name.vac-author-name, .video-js .vac-comments-container .vac-comments-wrap .vac-comment .vac-comment-header .vac-timestamp.vac-author-name {
+            font-weight: bold;
+            text-align: left;
+            font-size: 11px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis; }
+          .video-js .vac-comments-container .vac-comments-wrap .vac-comment .vac-comment-header .vac-author-name.vac-timestamp, .video-js .vac-comments-container .vac-comments-wrap .vac-comment .vac-comment-header .vac-timestamp.vac-timestamp {
+            float: right;
+            text-align: right;
+            font-size: 10px; }
+        .video-js .vac-comments-container .vac-comments-wrap .vac-comment .vac-comment-header .vac-delete-comment {
+          display: none;
+          cursor: pointer;
+          color: #FF0000; }
+      .video-js .vac-comments-container .vac-comments-wrap .vac-comment .vac-comment-body {
+        width: 100%;
+        padding: 8px;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+        background-color: #fff;
+        color: #000;
+        font-size: 13px;
+        line-height: 16px;
+        text-align: left;
+        border-bottom-left-radius: 2px;
+        border-bottom-right-radius: 2px;
+        border-bottom: 1px solid white; }
+    .video-js .vac-comments-container .vac-comments-wrap .vac-reply-btn {
+      margin: 10px 0 0 0;
+      width: 100%; }
+    .video-js .vac-comments-container .vac-comments-wrap .vac-add-new-shapebox {
+      margin: 10px 0 0 0;
+      border-radius: 2px;
+      height: 157px;
+      padding: 0;
+      color: orange;
+      display: none; }
+  .video-js .vac-comments-container .vac-comments-control-bar {
+    height: 26px;
+    border-bottom: 1px solid #eed428;
+    line-height: 26px;
+    padding: 0 10px;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    background: #000; }
+    .video-js .vac-comments-container .vac-comments-control-bar .vac-range, .video-js .vac-comments-container .vac-comments-control-bar .vac-control-buttons {
+      display: inline-block;
+      width: 49%; }
+      .video-js .vac-comments-container .vac-comments-control-bar .vac-range.vac-range, .video-js .vac-comments-container .vac-comments-control-bar .vac-control-buttons.vac-range {
+        float: left;
+        text-align: left;
+        color: #eed428; }
+        .video-js .vac-comments-container .vac-comments-control-bar .vac-range.vac-range b, .video-js .vac-comments-container .vac-comments-control-bar .vac-control-buttons.vac-range b {
+          color: white; }
+    .video-js .vac-comments-container .vac-comments-control-bar .vac-control-buttons {
+      float: right;
+      text-align: right;
+      font-size: 10px; }
+      .video-js .vac-comments-container .vac-comments-control-bar .vac-control-buttons a {
+        margin: 0 4px;
+        cursor: pointer;
+        color: red; }
+        .video-js .vac-comments-container .vac-comments-control-bar .vac-control-buttons a.vac-close-comment-list {
+          color: white; }
+        .video-js .vac-comments-container .vac-comments-control-bar .vac-control-buttons a:hover {
+          text-decoration: underline; }
