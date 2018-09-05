@@ -1,6 +1,6 @@
 {
   "name": "videojs-annotation-comments",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "",
   "main": "build/videojs-annotation-comments.cjs.js",
   "scripts": {
@@ -41,7 +41,7 @@
     "gulp-wrap": "^0.13.0",
     "handlebars": "^4.0.11",
     "ie-array-find-polyfill": "^1.1.0",
-    "jshint": "^2.9.2",
+    "jshint": "^2.9.6",
     "jshint-stylish": "~2.0.1",
     "mocha": "^3.5.3",
     "moment": "^2.22.1",
