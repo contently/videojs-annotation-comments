@@ -4,7 +4,7 @@
   "description": "",
   "main": "build/videojs-annotation-comments.cjs.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/gulp/bin/gulp.js test"
   },
   "author": "Evan Carothers (@ecaroth) & Jack Pope (@jackpope)",
   "copyright": "Copyright Contently, Inc. <https://www.contently.com/>",
