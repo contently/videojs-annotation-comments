@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/contently/videojs-annotation-comments/tree/master.svg?style=svg)](https://circleci.com/gh/contently/videojs-annotation-comments/tree/master)
+
 # AnnotationComments : Collaborate in your VideoJS player
 
 ![AnnotationComments Screenshot1](test/screenshot.png)
