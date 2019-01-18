@@ -27,8 +27,6 @@ const FILENAME = "videojs-annotation-comments.js",
       CJSFILENAME = "videojs-annotation-comments.cjs.js"
       PACKAGE = require('./package.json');
 
-const ATTIBUTION = "/* Version "+PACKAGE.version+" videojs-annotation-comments (https://github.com/contently/videojs-annotation-comments.git), Authored by Evan Carothers & Jack Pope */"+"\n\n";
-
 //compilation function for browserify/bundler/transpilation
 function compile(watch, cb){
     var bundler = {
@@ -141,7 +139,6 @@ gulp.task('build', ['templates', 'sass', 'transpile'], (cb) => {
         rename(FILENAME.replace(".js",".min.js")),
         stripComments(),
         uglify(),
-        insert.prepend(ATTIBUTION),
         gulp.dest('./build')
     ]);
 
@@ -150,7 +147,6 @@ gulp.task('build', ['templates', 'sass', 'transpile'], (cb) => {
         rename(CJSFILENAME.replace(".js",".min.js")),
         stripComments(),
         uglify(),
-        insert.prepend(ATTIBUTION),
         gulp.dest('./build'),
         gulp.dest('./docs/build')
     ], cb);
