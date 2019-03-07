@@ -1,7 +1,8 @@
 {
   "name": "@contently/videojs-annotation-comments",
   "version": "1.1.1",
-  "description": "",
+  "description": "A plugin for video.js to add support for timeline moment/range comments and annotations",
+  "repository": "git@github.com:contently/videojs-annotation-comments.git",
   "main": "build/videojs-annotation-comments.cjs.js",
   "scripts": {
     "test": "./node_modules/gulp/bin/gulp.js test"
@@ -16,7 +17,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-es2015-script": "^1.1.0",
     "babelify": "^7.3.0",
-    "browserify": "^14.5.0",
+    "browserify": "^16.2.3",
     "chai": "^4.1.2",
     "es6-object-assign": "^1.1.0",
     "gulp": "^3.9.1",
