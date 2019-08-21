@@ -201,14 +201,13 @@ plugin.on('annotationModeDisabled', (event) => {
 
  ### Develop and Build
 
- We're using [npm](https://www.npmjs.com/) for package management and [gulp](https://github.com/gulpjs/gulp) as our build system.
+ We're using [yarn](https://yarnpkg.com/en/) for package management and [gulp](https://github.com/gulpjs/gulp) as our build system.
 
  The fastest way to get started:
 - Clone the repo
-- Run `npm install`
-- Run `npm install -g gulp`
-- Run `gulp build`
-- Run `gulp watch`
+- Run `yarn install`
+- Run `yarn build`
+- Run `yarn watch`
 - Visit `http://localhost:3004/test.html` to see the magic happen.
 
  #### Templates

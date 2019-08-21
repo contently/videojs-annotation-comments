@@ -5,7 +5,9 @@
   "repository": "git@github.com:contently/videojs-annotation-comments.git",
   "main": "build/videojs-annotation-comments.cjs.js",
   "scripts": {
-    "test": "./node_modules/gulp/bin/gulp.js test"
+    "test": "gulp test",
+    "watch": "gulp watch",
+    "build": "gulp build"
   },
   "author": "Evan Carothers (@ecaroth) & Jack Pope (@jackpope)",
   "copyright": "Copyright Contently, Inc. <https://www.contently.com/>",
