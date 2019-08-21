@@ -13,14 +13,14 @@
   "copyright": "Copyright Contently, Inc. <https://www.contently.com/>",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@semantic-release/changelog": "^3.0.2",
+    "@semantic-release/changelog": "^3.0.4",
     "babel-core": "^6.26.3",
     "babel-plugin-transform-es2015-modules-simple-commonjs": "^0.3.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-es2015-script": "^1.1.0",
     "babelify": "^7.3.0",
     "browserify": "^16.2.3",
-    "chai": "^4.1.2",
+    "chai": "^4.2.0",
     "es6-object-assign": "^1.1.0",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^4.1.0",
@@ -47,15 +47,18 @@
     "ie-array-find-polyfill": "^1.1.0",
     "jshint": "^2.9.6",
     "jshint-stylish": "~2.0.1",
-    "mocha": "^4.0.0",
-    "moment": "^2.22.1",
+    "mocha": "^6.2.0",
+    "moment": "^2.24.0",
     "pump": "^1.0.3",
-    "semantic-release": "^15.13.3",
-    "underscore": "^1.9.0",
-    "video.js": "^6.9.0",
+    "semantic-release": "^15.13.21",
+    "underscore": "^1.9.1",
+    "video.js": "^7.6.0",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^1.1.2",
     "watchify": "^3.11.0"
+  },
+  "peerDependencies": {
+    "video.js": "^7"
   },
   "babel": {
     "presets": [
