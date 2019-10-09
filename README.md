@@ -208,9 +208,8 @@ plugin.on('annotationModeDisabled', (event) => {
  The fastest way to get started:
 - Clone the repo
 - Run `npm install`
-- Run `npm install -g gulp`
-- Run `gulp build`
-- Run `gulp watch`
+- Run `npm run build`
+- Run `npm run watch`
 - Visit `http://localhost:3004/test.html` to see the magic happen.
 
  #### Templates

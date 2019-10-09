@@ -1,5 +1,3 @@
 {
-  "presets": [
-    [ "es2015-script" ]
-  ]
+  "plugins": ["@babel/present-env", { "targets": { "ie": "11" } }]
 }

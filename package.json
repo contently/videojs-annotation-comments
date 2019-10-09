@@ -5,12 +5,16 @@
   "repository": "git@github.com:contently/videojs-annotation-comments.git",
   "main": "build/videojs-annotation-comments.cjs.js",
   "scripts": {
-    "test": "./node_modules/gulp/bin/gulp.js test"
+    "build": "gulp build",
+    "watch": "gulp watch",
+    "test": "gulp test"
   },
   "author": "Evan Carothers (@ecaroth) & Jack Pope (@jackpope)",
   "copyright": "Copyright Contently, Inc. <https://www.contently.com/>",
   "license": "Apache-2.0",
   "devDependencies": {
+    "@babel/core": "^7.6.2",
+    "@babel/preset-env": "^7.6.3",
     "@semantic-release/changelog": "^3.0.2",
     "babel-core": "^6.26.3",
     "babel-plugin-transform-es2015-modules-simple-commonjs": "^0.3.0",
@@ -48,17 +52,14 @@
     "mocha": "^4.0.0",
     "moment": "^2.22.1",
     "pump": "^1.0.3",
+    "rollup": "^1.23.1",
+    "rollup-plugin-babel": "^4.3.3",
     "semantic-release": "^15.13.3",
     "underscore": "^1.9.0",
     "video.js": "^6.9.0",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^1.1.2",
     "watchify": "^3.11.0"
-  },
-  "babel": {
-    "presets": [
-      "es2015"
-    ]
   },
   "release": {
     "branch": "master",

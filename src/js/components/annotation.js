@@ -1,148 +1,144 @@
-"use strict";
+'use strict';
 /*
     Component for an annotation, which includes controlling the marker/shape, rendering a commentList, etc
 */
 
-const   PlayerUIComponent = require("./../lib/player_ui_component"),
-        Utils = require("./../lib/utils.js"),
-        CommentList = require("./comment_list"),
-        Marker = require("./marker"),
-        Comment = require("./comment"),
-        Shape = require("./shape");
+import PlayerUIComponent from '../lib/player_ui_component';
+import Utils from '../lib/utils';
+import CommentList from './comment_list';
+import Marker from './marker';
+import Comment from './comment';
+import Shape from './shape';
 
-module.exports = class Annotation extends PlayerUIComponent {
+export default class Annotation extends PlayerUIComponent {
+  constructor(data, player) {
+    super(player);
+    this.id = data.id || this.componentId;
+    this.range = data.range;
+    this.shape = data.shape;
+    this.secondsActive = this.buildSecondsActiveArray();
+    this.buildComments(data);
+    this.buildMarker();
+    this.buildShape();
+    this.bindEvents();
 
-    constructor (data, player) {
-        super(player);
-        this.id = data.id || this.componentId;
-        this.range = data.range;
-        this.shape = data.shape;
-        this.secondsActive = this.buildSecondsActiveArray();
-        this.buildComments(data);
-        this.buildMarker();
-        this.buildShape();
-        this.bindEvents();
+    this.isOpen = false;
+  }
 
-        this.isOpen = false;
+  buildComments(data) {
+    this.commentList = new CommentList({ comments: data.comments, annotation: this }, this.player);
+  }
+
+  buildMarker() {
+    this.marker = new Marker(this.player, this.range, this.commentList.comments[0]);
+    this.marker.render();
+  }
+
+  buildShape() {
+    this.annotationShape = new Shape(this.player, this.shape);
+  }
+
+  // Serialize object
+  get data() {
+    return {
+      id: this.id,
+      range: this.range,
+      shape: this.shape,
+      comments: this.commentList.data
+    };
+  }
+
+  bindEvents() {
+    this.marker.$el.on('click.vac-marker', e =>
+      this.plugin.annotationState.openAnnotation(this, true)
+    );
+  }
+
+  // Opens the annotation. Handles marker, commentList, shape, Annotation state, and player state
+  open(withPause = true, previewOnly = false, forceSnapToStart = false) {
+    this.isOpen = true;
+    const snapToStart =
+      forceSnapToStart ||
+      !Utils.isWithinRange(this.range.start, this.range.end, Math.floor(this.currentTime));
+
+    let showTooltip = previewOnly && this.plugin.options.showMarkerShapeAndTooltips;
+    this.marker.setActive(showTooltip);
+    if (!previewOnly && this.plugin.options.showCommentList) {
+      this.commentList.render();
     }
 
-    buildComments(data) {
-        this.commentList = new CommentList(
-            {"comments": data.comments, "annotation": this},
-            this.player
-        );
-    }
+    if (!previewOnly || (previewOnly && this.plugin.options.showMarkerShapeAndTooltips)) {
+      this.annotationShape.render();
 
-    buildMarker () {
-        this.marker = new Marker(this.player, this.range, this.commentList.comments[0]);
-        this.marker.render();
-    }
-
-    buildShape() {
-        this.annotationShape = new Shape(this.player, this.shape);
-    }
-
-    // Serialize object
-    get data () {
-        return {
-            id:         this.id,
-            range:      this.range,
-            shape:      this.shape,
-            comments:   this.commentList.data
-        };
-    }
-
-    bindEvents () {
-        this.marker.$el.on('click.vac-marker', (e) => this.plugin.annotationState.openAnnotation(this, true));
-    }
-
-    // Opens the annotation. Handles marker, commentList, shape, Annotation state, and player state
-    open (withPause=true, previewOnly=false, forceSnapToStart=false) {
-        this.isOpen = true;
-        const snapToStart = forceSnapToStart || !Utils.isWithinRange(
-            this.range.start,
-            this.range.end,
-            Math.floor(this.currentTime)
-        );
-
-        let showTooltip = previewOnly && this.plugin.options.showMarkerShapeAndTooltips;
-        this.marker.setActive(showTooltip);
-        if(!previewOnly && this.plugin.options.showCommentList){
-            this.commentList.render();
-        }
-
-        if(!previewOnly || (previewOnly && this.plugin.options.showMarkerShapeAndTooltips)){
-            this.annotationShape.render();
-
-            if(this.shape) {
-                this.annotationShape.$el.on("click.vac-annotation", () => {
-                    this.plugin.annotationState.openAnnotation(this, false, false, false);
-                });
-            }
-        }
-
-        if(withPause) this.player.pause();
-        if(snapToStart) this.currentTime = this.range.start;
-
-        this.plugin.fire('annotationOpened', {
-            annotation: this.data,
-            triggered_by_timeline: previewOnly
+      if (this.shape) {
+        this.annotationShape.$el.on('click.vac-annotation', () => {
+          this.plugin.annotationState.openAnnotation(this, false, false, false);
         });
+      }
     }
 
-    // Closes the annotation. Handles marker, commendList, shape, and AnnotationState
-    close (clearActive=true) {
-        if(!this.isOpen) return;
-        this.isOpen = false;
-        this.marker.deactivate();
-        this.commentList.teardown(false);
-        if(this.annotationShape.$el) this.annotationShape.$el.off("click.vac-annotation");
-        this.annotationShape.teardown();
-        if(clearActive) this.plugin.annotationState.clearActive();
-        this.plugin.fire('annotationClosed', this.data);
-    }
+    if (withPause) this.player.pause();
+    if (snapToStart) this.currentTime = this.range.start;
 
-    // For preloading an array of seconds active on initialization
-    // Values used to build timeMap in AnnotationState
-    buildSecondsActiveArray () {
-        let seconds = [];
-        if(!!this.range.end) {
-            for (let i = this.range.start; i <= this.range.end; i++) {
-                seconds.push(i);
-            }
-        } else {
-            let start = this.range.start;
-            seconds.push(start);
-            if(start < this.duration) seconds.push(start+1);
-        }
-        return seconds;
-    }
+    this.plugin.fire('annotationOpened', {
+      annotation: this.data,
+      triggered_by_timeline: previewOnly
+    });
+  }
 
-    // Tearsdown annotation and marker, removes object from AnnotationState
-    teardown (removeFromCollection=true) {
-        this.close(true);
-        this.marker.teardown();
-        if(this.commentList) this.commentList.teardown(removeFromCollection);
-        if(removeFromCollection) this.plugin.annotationState.removeAnnotation(this);
-        if(this.annotationShape) this.annotationShape.teardown();
-        if(removeFromCollection) super.teardown();
-    }
+  // Closes the annotation. Handles marker, commendList, shape, and AnnotationState
+  close(clearActive = true) {
+    if (!this.isOpen) return;
+    this.isOpen = false;
+    this.marker.deactivate();
+    this.commentList.teardown(false);
+    if (this.annotationShape.$el) this.annotationShape.$el.off('click.vac-annotation');
+    this.annotationShape.teardown();
+    if (clearActive) this.plugin.annotationState.clearActive();
+    this.plugin.fire('annotationClosed', this.data);
+  }
 
-    // Build a new annotation instance by passing in data for range, shape, comment, & plugin ref
-    static newFromData (range, shape, commentStr, plugin, id=null) {
-        let comment = Comment.dataObj(commentStr, plugin);
-        if(range) range = Utils.parseIntObj(range);
-        if(shape) shape = Utils.parseIntObj(shape);
-        let data = {
-            id,
-            range,
-            shape,
-            comments: [comment]
-        };
-        return new Annotation(data, plugin.player);
+  // For preloading an array of seconds active on initialization
+  // Values used to build timeMap in AnnotationState
+  buildSecondsActiveArray() {
+    let seconds = [];
+    if (!!this.range.end) {
+      for (let i = this.range.start; i <= this.range.end; i++) {
+        seconds.push(i);
+      }
+    } else {
+      let start = this.range.start;
+      seconds.push(start);
+      if (start < this.duration) seconds.push(start + 1);
     }
+    return seconds;
+  }
 
-    get isActive () {
-        return this.plugin.annotationState.activeAnnotation === this;
-    }
+  // Tearsdown annotation and marker, removes object from AnnotationState
+  teardown(removeFromCollection = true) {
+    this.close(true);
+    this.marker.teardown();
+    if (this.commentList) this.commentList.teardown(removeFromCollection);
+    if (removeFromCollection) this.plugin.annotationState.removeAnnotation(this);
+    if (this.annotationShape) this.annotationShape.teardown();
+    if (removeFromCollection) super.teardown();
+  }
+
+  // Build a new annotation instance by passing in data for range, shape, comment, & plugin ref
+  static newFromData(range, shape, commentStr, plugin, id = null) {
+    let comment = Comment.dataObj(commentStr, plugin);
+    if (range) range = Utils.parseIntObj(range);
+    if (shape) shape = Utils.parseIntObj(shape);
+    let data = {
+      id,
+      range,
+      shape,
+      comments: [comment]
+    };
+    return new Annotation(data, plugin.player);
+  }
+
+  get isActive() {
+    return this.plugin.annotationState.activeAnnotation === this;
+  }
 }
