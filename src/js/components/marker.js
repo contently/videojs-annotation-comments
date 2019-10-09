@@ -4,19 +4,17 @@
 
 import PlayerUIComponent from '../lib/player_ui_component';
 import Utils from '../lib/utils';
-
-const markerTemplateName = 'marker';
-const markerWrapTemplateName = 'marker_wrap';
+import MarkerTemplate from '../../templates/marker.hbs';
+import MarkerWrapTemplate from '../../templates/marker_wrap.hbs';
 
 export default class Marker extends PlayerUIComponent {
   constructor(player, range, comment = null) {
     super(player);
     this.range = range;
     this.comment = comment;
-    this.templateName = markerTemplateName;
 
     if (!this.$UI.markerWrap.length) {
-      this.$UI.timeline.append(this.renderTemplate(markerWrapTemplateName));
+      this.$UI.timeline.append(MarkerWrapTemplate());
     }
   }
 
@@ -37,7 +35,7 @@ export default class Marker extends PlayerUIComponent {
     this.$UI.timeline.find(`[data-marker-id="${this.componentId}"]`).remove();
 
     // Bind to local instance var, add to DOM, and setup events
-    this.$el = $(this.renderTemplate(this.templateName, this.markerTemplateData));
+    this.$el = $(MarkerTemplate(this.markerTemplateData));
     this.$UI.markerWrap.append(this.$el);
     this.bindMarkerEvents();
   }

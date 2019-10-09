@@ -4,8 +4,6 @@
 */
 
 import PlayerComponent from './player_component';
-import Handlebars from 'handlebars/runtime';
-import * as Templates from '../compiled/templates';
 import Utils from '../lib/utils';
 
 export default class PlayerUIComponent extends PlayerComponent {
@@ -62,23 +60,6 @@ export default class PlayerUIComponent extends PlayerComponent {
   // Enable play/control actions on the controller
   enablePlayingAndControl() {
     this.$player.removeClass('vac-disable-play');
-  }
-
-  // Render a handlebars template with local data passed in via key/val in object
-  renderTemplate(templateName, options = {}) {
-    this.registerHandlebarsHelpers();
-    return Templates[templateName](options);
-  }
-
-  // Handle escaped breaklines in Handlebars
-  registerHandlebarsHelpers() {
-    if ('breaklines' in Handlebars.helpers) return;
-
-    Handlebars.registerHelper('breaklines', text => {
-      text = Handlebars.Utils.escapeExpression(text);
-      text = text.replace(/(\r\n|\n|\r)/gm, '<br>');
-      return new Handlebars.SafeString(text);
-    });
   }
 
   // Provide basic teardown function to inherit

@@ -1,25 +1,11 @@
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('ie-array-find-polyfill'), require('es6-object-assign'), require('handlebars/runtime'), require('moment')) :
-	typeof define === 'function' && define.amd ? define(['ie-array-find-polyfill', 'es6-object-assign', 'handlebars/runtime', 'moment'], factory) :
-	(global = global || self, factory(null, global.es6ObjectAssign, global.Handlebars$1, global.moment));
-}(this, function (ieArrayFindPolyfill, es6ObjectAssign, Handlebars$1, moment) { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(require('ie-array-find-polyfill'), require('es6-object-assign'), require('handlebars'), require('moment')) :
+	typeof define === 'function' && define.amd ? define(['ie-array-find-polyfill', 'es6-object-assign', 'handlebars', 'moment'], factory) :
+	(global = global || self, factory(null, global.es6ObjectAssign, global.Handlebars, global.moment));
+}(this, function (ieArrayFindPolyfill, es6ObjectAssign, Handlebars, moment) { 'use strict';
 
-	Handlebars$1 = Handlebars$1 && Handlebars$1.hasOwnProperty('default') ? Handlebars$1['default'] : Handlebars$1;
+	Handlebars = Handlebars && Handlebars.hasOwnProperty('default') ? Handlebars['default'] : Handlebars;
 	moment = moment && moment.hasOwnProperty('default') ? moment['default'] : moment;
-
-	function _typeof(obj) {
-	  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-	    _typeof = function (obj) {
-	      return typeof obj;
-	    };
-	  } else {
-	    _typeof = function (obj) {
-	      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-	    };
-	  }
-
-	  return _typeof(obj);
-	}
 
 	function _classCallCheck(instance, Constructor) {
 	  if (!(instance instanceof Constructor)) {
@@ -391,313 +377,6 @@
 	  return PlayerComponent;
 	}();
 
-	var Handlebars = require("handlebars/runtime");
-
-	exports["comment"] = Handlebars.template({
-	  "compiler": [8, ">= 4.3.0"],
-	  "main": function main(container, depth0, helpers, partials, data) {
-	    var stack1,
-	        helper,
-	        alias1 = container.propertyIsEnumerable,
-	        alias2 = depth0 != null ? depth0 : container.nullContext || {},
-	        alias3 = container.hooks.helperMissing,
-	        alias4 = "function",
-	        alias5 = container.escapeExpression;
-	    return "<div class=\"vac-comment\" data-id=\"" + alias5((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias3, _typeof(helper) === alias4 ? helper.call(alias2, {
-	      "name": "id",
-	      "hash": {},
-	      "data": data
-	    }) : helper)) + "\">\n  <div class=\"vac-comment-header\">\n    <div class=\"vac-author-name\">" + alias5(container.lambda((stack1 = depth0 != null ? depth0.meta : depth0) != null ? stack1.user_name : stack1, depth0)) + "</div>\n    <div class=\"vac-timestamp\">" + alias5((helper = (helper = helpers.timeSince || (depth0 != null ? depth0.timeSince : depth0)) != null ? helper : alias3, _typeof(helper) === alias4 ? helper.call(alias2, {
-	      "name": "timeSince",
-	      "hash": {},
-	      "data": data
-	    }) : helper)) + "\n      <span class=\"vac-delete-comment\">&nbsp;&nbsp;X</span>\n    </div>\n  </div>\n  <div class=\"vac-comment-body\">\n    " + alias5((helpers.breaklines || depth0 && depth0.breaklines || alias3).call(alias2, depth0 != null ? depth0.body : depth0, {
-	      "name": "breaklines",
-	      "hash": {},
-	      "data": data
-	    })) + "\n  </div>\n</div>\n";
-	  },
-	  "useData": true
-	});
-	exports["comment_list"] = Handlebars.template({
-	  "1": function _(container, depth0, helpers, partials, data, blockParams) {
-	    var stack1;
-	    return "      " + ((stack1 = container.lambda(blockParams[0][0], depth0)) != null ? stack1 : "") + "\n";
-	  },
-	  "compiler": [8, ">= 4.3.0"],
-	  "main": function main(container, depth0, helpers, partials, data, blockParams) {
-	    var stack1,
-	        helper,
-	        alias1 = container.propertyIsEnumerable,
-	        alias2 = depth0 != null ? depth0 : container.nullContext || {};
-	    return "<div class=\"vac-comments-container\">\n  <div class=\"vac-comments-wrap\">\n" + ((stack1 = helpers.each.call(alias2, depth0 != null ? depth0.commentsHTML : depth0, {
-	      "name": "each",
-	      "hash": {},
-	      "fn": container.program(1, data, 1, blockParams),
-	      "inverse": container.noop,
-	      "data": data,
-	      "blockParams": blockParams
-	    })) != null ? stack1 : "") + "    <div class=\"vac-reply-btn vac-button\">ADD REPLY</div>\n    <div class=\"vac-add-new-shapebox\"></div>\n  </div>\n  <div class=\"vac-comments-control-bar\">\n    <div class=\"vac-range\"><b>@</b> " + container.escapeExpression((helper = (helper = helpers.rangeStr || (depth0 != null ? depth0.rangeStr : depth0)) != null ? helper : container.hooks.helperMissing, typeof helper === "function" ? helper.call(alias2, {
-	      "name": "rangeStr",
-	      "hash": {},
-	      "data": data,
-	      "blockParams": blockParams
-	    }) : helper)) + "</div>\n    <div class=\"vac-control-buttons\">\n      <a class=\"vac-delete-annotation\">DELETE</a> | <a class=\"vac-close-comment-list\">CLOSE</a>\n    </div>\n  </div>\n</div>\n";
-	  },
-	  "useData": true,
-	  "useBlockParams": true
-	});
-	exports["controls"] = Handlebars.template({
-	  "1": function _(container, depth0, helpers, partials, data) {
-	    var stack1,
-	        alias1 = container.propertyIsEnumerable;
-	    return (stack1 = helpers["if"].call(depth0 != null ? depth0 : container.nullContext || {}, depth0 != null ? depth0.showControls : depth0, {
-	      "name": "if",
-	      "hash": {},
-	      "fn": container.program(2, data, 0),
-	      "inverse": container.noop,
-	      "data": data
-	    })) != null ? stack1 : "";
-	  },
-	  "2": function _(container, depth0, helpers, partials, data) {
-	    var stack1,
-	        alias1 = container.propertyIsEnumerable;
-	    return "        <div class=\"vac-controls vac-control\">\n            <button class=\"vac-button\">+ NEW</button>\n" + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : container.nullContext || {}, depth0 != null ? depth0.showNav : depth0, {
-	      "name": "if",
-	      "hash": {},
-	      "fn": container.program(3, data, 0),
-	      "inverse": container.noop,
-	      "data": data
-	    })) != null ? stack1 : "") + "        </div>\n";
-	  },
-	  "3": function _(container, depth0, helpers, partials, data) {
-	    return "                <div class=\"vac-annotation-nav\">\n                    <div class=\"vac-a-prev\">Prev</div>\n                    <div class=\"vac-a-next\">Next</div>\n                </div>\n";
-	  },
-	  "5": function _(container, depth0, helpers, partials, data) {
-	    var stack1,
-	        alias1 = container.propertyIsEnumerable,
-	        alias2 = depth0 != null ? depth0 : container.nullContext || {};
-	    return "    <div class=\"vac-video-cover vac-control\">\n        <div class=\"vac-video-cover-canvas\">\n            <div class=\"vac-cursor-tool-tip vac-hidden\">Click and drag to select</div>\n        </div>\n    </div>\n" + ((stack1 = helpers["if"].call(alias2, depth0 != null ? depth0.showControls : depth0, {
-	      "name": "if",
-	      "hash": {},
-	      "fn": container.program(6, data, 0),
-	      "inverse": container.noop,
-	      "data": data
-	    })) != null ? stack1 : "") + "\n" + ((stack1 = helpers["if"].call(alias2, depth0 != null ? depth0.writingComment : depth0, {
-	      "name": "if",
-	      "hash": {},
-	      "fn": container.program(9, data, 0),
-	      "inverse": container.noop,
-	      "data": data
-	    })) != null ? stack1 : "");
-	  },
-	  "6": function _(container, depth0, helpers, partials, data) {
-	    var stack1,
-	        alias1 = container.propertyIsEnumerable;
-	    return "        <div class=\"vac-add-controls vac-control\">\n            <i>Select shape + range</i>\n" + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : container.nullContext || {}, depth0 != null ? depth0.internalCommenting : depth0, {
-	      "name": "if",
-	      "hash": {},
-	      "fn": container.program(7, data, 0),
-	      "inverse": container.noop,
-	      "data": data
-	    })) != null ? stack1 : "") + "            <div class=\"vac-video-move\">\n                <div class=\"vac-a-prev\">-1 sec</div>\n                <div class=\"vac-a-next\">+1 sec</div>\n            </div>\n        </div>\n";
-	  },
-	  "7": function _(container, depth0, helpers, partials, data) {
-	    return "                <button class=\"vac-button\">CONTINUE</button>\n                <a>cancel</a>\n";
-	  },
-	  "9": function _(container, depth0, helpers, partials, data) {
-	    var helper,
-	        alias1 = container.propertyIsEnumerable;
-	    return "        <div class=\"vac-video-write-new-wrap vac-control\">\n            <div class=\"vac-video-write-new vac-is-annotation\">\n                <div>\n                    <h5><b>New Annotation</b> @ " + container.escapeExpression((helper = (helper = helpers.rangeStr || (depth0 != null ? depth0.rangeStr : depth0)) != null ? helper : container.hooks.helperMissing, typeof helper === "function" ? helper.call(depth0 != null ? depth0 : container.nullContext || {}, {
-	      "name": "rangeStr",
-	      "hash": {},
-	      "data": data
-	    }) : helper)) + "</h5>\n                    <div class=\"vac-comment-showbox\">\n                        <textarea placeholder=\"Enter comment...\"></textarea>\n                        <div>\n                            <button class=\"vac-button\">SAVE</button>\n                            <a>Cancel</a>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n";
-	  },
-	  "compiler": [8, ">= 4.3.0"],
-	  "main": function main(container, depth0, helpers, partials, data) {
-	    var stack1,
-	        alias1 = container.propertyIsEnumerable,
-	        alias2 = depth0 != null ? depth0 : container.nullContext || {};
-	    return ((stack1 = helpers.unless.call(alias2, depth0 != null ? depth0.adding : depth0, {
-	      "name": "unless",
-	      "hash": {},
-	      "fn": container.program(1, data, 0),
-	      "inverse": container.noop,
-	      "data": data
-	    })) != null ? stack1 : "") + "\n" + ((stack1 = helpers["if"].call(alias2, depth0 != null ? depth0.adding : depth0, {
-	      "name": "if",
-	      "hash": {},
-	      "fn": container.program(5, data, 0),
-	      "inverse": container.noop,
-	      "data": data
-	    })) != null ? stack1 : "");
-	  },
-	  "useData": true
-	});
-	exports["draggable_marker"] = Handlebars.template({
-	  "compiler": [8, ">= 4.3.0"],
-	  "main": function main(container, depth0, helpers, partials, data) {
-	    var helper,
-	        alias1 = container.propertyIsEnumerable,
-	        alias2 = depth0 != null ? depth0 : container.nullContext || {},
-	        alias3 = container.hooks.helperMissing,
-	        alias4 = "function",
-	        alias5 = container.escapeExpression;
-	    return "<div data-marker-id=\"" + alias5((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias3, _typeof(helper) === alias4 ? helper.call(alias2, {
-	      "name": "id",
-	      "hash": {},
-	      "data": data
-	    }) : helper)) + "\" class=\"vac-marker-draggable vac-ranged-marker\" style=\"left: " + alias5((helper = (helper = helpers.left || (depth0 != null ? depth0.left : depth0)) != null ? helper : alias3, _typeof(helper) === alias4 ? helper.call(alias2, {
-	      "name": "left",
-	      "hash": {},
-	      "data": data
-	    }) : helper)) + "; width:" + alias5((helper = (helper = helpers.width || (depth0 != null ? depth0.width : depth0)) != null ? helper : alias3, _typeof(helper) === alias4 ? helper.call(alias2, {
-	      "name": "width",
-	      "hash": {},
-	      "data": data
-	    }) : helper)) + ";\">\n</div>\n";
-	  },
-	  "useData": true
-	});
-	exports["marker"] = Handlebars.template({
-	  "1": function _(container, depth0, helpers, partials, data) {
-	    return "vac-ranged-marker";
-	  },
-	  "3": function _(container, depth0, helpers, partials, data) {
-	    var helper,
-	        alias1 = container.propertyIsEnumerable;
-	    return "width:" + container.escapeExpression((helper = (helper = helpers.width || (depth0 != null ? depth0.width : depth0)) != null ? helper : container.hooks.helperMissing, typeof helper === "function" ? helper.call(depth0 != null ? depth0 : container.nullContext || {}, {
-	      "name": "width",
-	      "hash": {},
-	      "data": data
-	    }) : helper)) + ";";
-	  },
-	  "5": function _(container, depth0, helpers, partials, data) {
-	    var stack1,
-	        alias1 = container.propertyIsEnumerable;
-	    return (stack1 = helpers["if"].call(depth0 != null ? depth0 : container.nullContext || {}, depth0 != null ? depth0.tooltipBody : depth0, {
-	      "name": "if",
-	      "hash": {},
-	      "fn": container.program(6, data, 0),
-	      "inverse": container.noop,
-	      "data": data
-	    })) != null ? stack1 : "";
-	  },
-	  "6": function _(container, depth0, helpers, partials, data) {
-	    var stack1,
-	        helper,
-	        alias1 = container.propertyIsEnumerable,
-	        alias2 = depth0 != null ? depth0 : container.nullContext || {},
-	        alias3 = container.hooks.helperMissing,
-	        alias4 = "function",
-	        alias5 = container.escapeExpression;
-	    return "            <div>\n                <span class=\"vac-tooltip " + ((stack1 = helpers["if"].call(alias2, depth0 != null ? depth0.tooltipRight : depth0, {
-	      "name": "if",
-	      "hash": {},
-	      "fn": container.program(7, data, 0),
-	      "inverse": container.noop,
-	      "data": data
-	    })) != null ? stack1 : "") + "\">\n                    <b>" + alias5((helper = (helper = helpers.tooltipTime || (depth0 != null ? depth0.tooltipTime : depth0)) != null ? helper : alias3, _typeof(helper) === alias4 ? helper.call(alias2, {
-	      "name": "tooltipTime",
-	      "hash": {},
-	      "data": data
-	    }) : helper)) + "</b> - " + alias5((helper = (helper = helpers.tooltipBody || (depth0 != null ? depth0.tooltipBody : depth0)) != null ? helper : alias3, _typeof(helper) === alias4 ? helper.call(alias2, {
-	      "name": "tooltipBody",
-	      "hash": {},
-	      "data": data
-	    }) : helper)) + "\n                </span>\n            </div>\n";
-	  },
-	  "7": function _(container, depth0, helpers, partials, data) {
-	    return "vac-right-side";
-	  },
-	  "compiler": [8, ">= 4.3.0"],
-	  "main": function main(container, depth0, helpers, partials, data) {
-	    var stack1,
-	        helper,
-	        alias1 = container.propertyIsEnumerable,
-	        alias2 = depth0 != null ? depth0 : container.nullContext || {},
-	        alias3 = container.hooks.helperMissing,
-	        alias4 = "function",
-	        alias5 = container.escapeExpression;
-	    return "<div data-marker-id=\"" + alias5((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias3, _typeof(helper) === alias4 ? helper.call(alias2, {
-	      "name": "id",
-	      "hash": {},
-	      "data": data
-	    }) : helper)) + "\" class=\"vac-marker " + ((stack1 = helpers["if"].call(alias2, depth0 != null ? depth0.rangeShow : depth0, {
-	      "name": "if",
-	      "hash": {},
-	      "fn": container.program(1, data, 0),
-	      "inverse": container.noop,
-	      "data": data
-	    })) != null ? stack1 : "") + "\" style=\"left: " + alias5((helper = (helper = helpers.left || (depth0 != null ? depth0.left : depth0)) != null ? helper : alias3, _typeof(helper) === alias4 ? helper.call(alias2, {
-	      "name": "left",
-	      "hash": {},
-	      "data": data
-	    }) : helper)) + "; " + ((stack1 = helpers["if"].call(alias2, depth0 != null ? depth0.rangeShow : depth0, {
-	      "name": "if",
-	      "hash": {},
-	      "fn": container.program(3, data, 0),
-	      "inverse": container.noop,
-	      "data": data
-	    })) != null ? stack1 : "") + " z-index: " + alias5((helper = (helper = helpers.zIndex || (depth0 != null ? depth0.zIndex : depth0)) != null ? helper : alias3, _typeof(helper) === alias4 ? helper.call(alias2, {
-	      "name": "zIndex",
-	      "hash": {},
-	      "data": data
-	    }) : helper)) + "\">\n" + ((stack1 = helpers["if"].call(alias2, depth0 != null ? depth0.showTooltip : depth0, {
-	      "name": "if",
-	      "hash": {},
-	      "fn": container.program(5, data, 0),
-	      "inverse": container.noop,
-	      "data": data
-	    })) != null ? stack1 : "") + "</div>\n";
-	  },
-	  "useData": true
-	});
-	exports["marker_wrap"] = Handlebars.template({
-	  "compiler": [8, ">= 4.3.0"],
-	  "main": function main(container, depth0, helpers, partials, data) {
-	    return "<div class=\"vac-marker-owrap\">\n	<div class=\"vac-marker-wrap\"></div>\n</div>";
-	  },
-	  "useData": true
-	});
-	exports["new_comment"] = Handlebars.template({
-	  "compiler": [8, ">= 4.3.0"],
-	  "main": function main(container, depth0, helpers, partials, data) {
-	    var helper,
-	        alias1 = container.propertyIsEnumerable,
-	        alias2 = depth0 != null ? depth0 : container.nullContext || {},
-	        alias3 = container.hooks.helperMissing,
-	        alias4 = "function",
-	        alias5 = container.escapeExpression;
-	    return "<div class=\"vac-video-write-new-wrap vac-new-comment\">\n  <div class=\"vac-video-write-new vac-is-comment\">\n    <div class=\"vac-comment-showbox\" style=\"width:" + alias5((helper = (helper = helpers.width || (depth0 != null ? depth0.width : depth0)) != null ? helper : alias3, _typeof(helper) === alias4 ? helper.call(alias2, {
-	      "name": "width",
-	      "hash": {},
-	      "data": data
-	    }) : helper)) + "px;top:" + alias5((helper = (helper = helpers.top || (depth0 != null ? depth0.top : depth0)) != null ? helper : alias3, _typeof(helper) === alias4 ? helper.call(alias2, {
-	      "name": "top",
-	      "hash": {},
-	      "data": data
-	    }) : helper)) + "px;right:" + alias5((helper = (helper = helpers.right || (depth0 != null ? depth0.right : depth0)) != null ? helper : alias3, _typeof(helper) === alias4 ? helper.call(alias2, {
-	      "name": "right",
-	      "hash": {},
-	      "data": data
-	    }) : helper)) + "px\">\n      <textarea placeholder=\"Enter comment...\"></textarea>\n      <div>\n        <button class=\"vac-button\">SAVE</button>\n        <a>Cancel</a>\n      </div>\n    </div>\n</div>\n";
-	  },
-	  "useData": true
-	});
-	exports["player_button"] = Handlebars.template({
-	  "compiler": [8, ">= 4.3.0"],
-	  "main": function main(container, depth0, helpers, partials, data) {
-	    return "<b></b>\n<i class=\"vac-player-icon\">\n	<svg height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\">\n	    <path d=\"M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z\"/>\n	    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>\n	</svg>\n</i>";
-	  },
-	  "useData": true
-	});
-
-	var Templates = /*#__PURE__*/Object.freeze({
-		__proto__: null
-	});
-
 	var PlayerUIComponent =
 	/*#__PURE__*/
 	function (_PlayerComponent) {
@@ -723,25 +402,6 @@
 	    key: "enablePlayingAndControl",
 	    value: function enablePlayingAndControl() {
 	      this.$player.removeClass('vac-disable-play');
-	    } // Render a handlebars template with local data passed in via key/val in object
-
-	  }, {
-	    key: "renderTemplate",
-	    value: function renderTemplate(templateName) {
-	      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-	      this.registerHandlebarsHelpers();
-	      return Templates[templateName](options);
-	    } // Handle escaped breaklines in Handlebars
-
-	  }, {
-	    key: "registerHandlebarsHelpers",
-	    value: function registerHandlebarsHelpers() {
-	      if ('breaklines' in Handlebars$1.helpers) return;
-	      Handlebars$1.registerHelper('breaklines', function (text) {
-	        text = Handlebars$1.Utils.escapeExpression(text);
-	        text = text.replace(/(\r\n|\n|\r)/gm, '<br>');
-	        return new Handlebars$1.SafeString(text);
-	      });
 	    } // Provide basic teardown function to inherit
 
 	  }, {
@@ -806,8 +466,59 @@
 	  return PlayerUIComponent;
 	}(PlayerComponent);
 
-	var markerTemplateName = 'marker';
-	var markerWrapTemplateName = 'marker_wrap';
+	var Template = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
+	    return "vac-ranged-marker";
+	},"3":function(container,depth0,helpers,partials,data) {
+	    var helper, alias1=container.propertyIsEnumerable;
+
+	  return "width:"
+	    + container.escapeExpression(((helper = (helper = helpers.width || (depth0 != null ? depth0.width : depth0)) != null ? helper : container.hooks.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"width","hash":{},"data":data}) : helper)))
+	    + ";";
+	},"5":function(container,depth0,helpers,partials,data) {
+	    var stack1, alias1=container.propertyIsEnumerable;
+
+	  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.tooltipBody : depth0),{"name":"if","hash":{},"fn":container.program(6, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
+	},"6":function(container,depth0,helpers,partials,data) {
+	    var stack1, helper, alias1=container.propertyIsEnumerable, alias2=depth0 != null ? depth0 : (container.nullContext || {}), alias3=container.hooks.helperMissing, alias4="function", alias5=container.escapeExpression;
+
+	  return "            <div>\n                <span class=\"vac-tooltip "
+	    + ((stack1 = helpers["if"].call(alias2,(depth0 != null ? depth0.tooltipRight : depth0),{"name":"if","hash":{},"fn":container.program(7, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+	    + "\">\n                    <b>"
+	    + alias5(((helper = (helper = helpers.tooltipTime || (depth0 != null ? depth0.tooltipTime : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(alias2,{"name":"tooltipTime","hash":{},"data":data}) : helper)))
+	    + "</b> - "
+	    + alias5(((helper = (helper = helpers.tooltipBody || (depth0 != null ? depth0.tooltipBody : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(alias2,{"name":"tooltipBody","hash":{},"data":data}) : helper)))
+	    + "\n                </span>\n            </div>\n";
+	},"7":function(container,depth0,helpers,partials,data) {
+	    return "vac-right-side";
+	},"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
+	    var stack1, helper, alias1=container.propertyIsEnumerable, alias2=depth0 != null ? depth0 : (container.nullContext || {}), alias3=container.hooks.helperMissing, alias4="function", alias5=container.escapeExpression;
+
+	  return "<div data-marker-id=\""
+	    + alias5(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(alias2,{"name":"id","hash":{},"data":data}) : helper)))
+	    + "\" class=\"vac-marker "
+	    + ((stack1 = helpers["if"].call(alias2,(depth0 != null ? depth0.rangeShow : depth0),{"name":"if","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+	    + "\" style=\"left: "
+	    + alias5(((helper = (helper = helpers.left || (depth0 != null ? depth0.left : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(alias2,{"name":"left","hash":{},"data":data}) : helper)))
+	    + "; "
+	    + ((stack1 = helpers["if"].call(alias2,(depth0 != null ? depth0.rangeShow : depth0),{"name":"if","hash":{},"fn":container.program(3, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+	    + " z-index: "
+	    + alias5(((helper = (helper = helpers.zIndex || (depth0 != null ? depth0.zIndex : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(alias2,{"name":"zIndex","hash":{},"data":data}) : helper)))
+	    + "\">\n"
+	    + ((stack1 = helpers["if"].call(alias2,(depth0 != null ? depth0.showTooltip : depth0),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+	    + "</div>\n";
+	},"useData":true});
+	function MarkerTemplate(data, options, asString) {
+	  var html = Template(data, options);
+	  return (asString || true) ? html : $(html);
+	}
+
+	var Template$1 = Handlebars.template({"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
+	    return "<div class=\"vac-marker-owrap\">\n	<div class=\"vac-marker-wrap\"></div>\n</div>";
+	},"useData":true});
+	function MarkerWrapTemplate(data, options, asString) {
+	  var html = Template$1(data, options);
+	  return (asString || true) ? html : $(html);
+	}
 
 	var Marker =
 	/*#__PURE__*/
@@ -824,10 +535,9 @@
 	    _this = _possibleConstructorReturn(this, _getPrototypeOf(Marker).call(this, player));
 	    _this.range = range;
 	    _this.comment = comment;
-	    _this.templateName = markerTemplateName;
 
 	    if (!_this.$UI.markerWrap.length) {
-	      _this.$UI.timeline.append(_this.renderTemplate(markerWrapTemplateName));
+	      _this.$UI.timeline.append(MarkerWrapTemplate());
 	    }
 
 	    return _this;
@@ -854,7 +564,7 @@
 	      // clear existing marker if this one was already rendered
 	      this.$UI.timeline.find("[data-marker-id=\"".concat(this.componentId, "\"]")).remove(); // Bind to local instance var, add to DOM, and setup events
 
-	      this.$el = $(this.renderTemplate(this.templateName, this.markerTemplateData));
+	      this.$el = $(MarkerTemplate(this.markerTemplateData));
 	      this.$UI.markerWrap.append(this.$el);
 	      this.bindMarkerEvents();
 	    } // Bind needed events for this marker
@@ -904,7 +614,21 @@
 	  return Marker;
 	}(PlayerUIComponent);
 
-	var markerTemplateName$1 = 'draggable_marker';
+	var Template$2 = Handlebars.template({"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
+	    var helper, alias1=container.propertyIsEnumerable, alias2=depth0 != null ? depth0 : (container.nullContext || {}), alias3=container.hooks.helperMissing, alias4="function", alias5=container.escapeExpression;
+
+	  return "<div data-marker-id=\""
+	    + alias5(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(alias2,{"name":"id","hash":{},"data":data}) : helper)))
+	    + "\" class=\"vac-marker-draggable vac-ranged-marker\" style=\"left: "
+	    + alias5(((helper = (helper = helpers.left || (depth0 != null ? depth0.left : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(alias2,{"name":"left","hash":{},"data":data}) : helper)))
+	    + "; width:"
+	    + alias5(((helper = (helper = helpers.width || (depth0 != null ? depth0.width : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(alias2,{"name":"width","hash":{},"data":data}) : helper)))
+	    + ";\">\n</div>\n";
+	},"useData":true});
+	function MarkerTemplate$1(data, options, asString) {
+	  var html = Template$2(data, options);
+	  return (asString || true) ? html : $(html);
+	}
 
 	var DraggableMarker =
 	/*#__PURE__*/
@@ -918,8 +642,6 @@
 
 	    _this = _possibleConstructorReturn(this, _getPrototypeOf(DraggableMarker).call(this, player, range));
 	    _this.range = range; // NOTE - this shouldn't be required and is a HACK for how transpilation works in IE10
-
-	    _this.templateName = markerTemplateName$1; // Change template from base Marker template
 
 	    _this.dragging = false; // Is a drag action currently occring?
 
@@ -969,6 +691,16 @@
 	          self.$player.find('.vac-cursor-tool-tip').removeClass('vac-marker-hover');
 	        });
 	      }
+	    }
+	  }, {
+	    key: "render",
+	    value: function render() {
+	      // clear existing marker if this one was already rendered
+	      this.$UI.timeline.find("[data-marker-id=\"".concat(this.componentId, "\"]")).remove(); // Bind to local instance var, add to DOM, and setup events
+
+	      this.$el = $(MarkerTemplate$1(this.markerTemplateData));
+	      this.$UI.markerWrap.append(this.$el);
+	      this.bindMarkerEvents();
 	    } // On drag action, calculate new range and re-render marker
 
 	  }, {
@@ -1216,7 +948,13 @@
 	  return SelectableShape;
 	}(Shape);
 
-	var templateName = 'player_button';
+	var Template$3 = Handlebars.template({"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
+	    return "<b></b>\n<i class=\"vac-player-icon\">\n	<svg height=\"24\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\">\n	    <path d=\"M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z\"/>\n	    <path d=\"M0 0h24v24H0z\" fill=\"none\"/>\n	</svg>\n</i>";
+	},"useData":true});
+	function PlayerButtonTemplate(data, options, asString) {
+	  var html = Template$3(data, options);
+	  return (asString || true) ? html : $(html);
+	}
 
 	var PlayerButton =
 	/*#__PURE__*/
@@ -1248,7 +986,7 @@
 	      var btn = this.player.getChild('controlBar').addChild('button', {});
 	      btn.controlText('Toggle Animations');
 	      this.$el = $(btn.el());
-	      this.$el.addClass('vac-player-btn').find('.vjs-icon-placeholder').html(this.renderTemplate(templateName));
+	      this.$el.addClass('vac-player-btn').find('.vjs-icon-placeholder').html(PlayerButtonTemplate());
 	    } // Update the number of annotations displayed in the bubble
 
 	  }, {
@@ -1272,7 +1010,23 @@
 	  return PlayerButton;
 	}(PlayerUIComponent);
 
-	var templateName$1 = 'comment';
+	var Template$4 = Handlebars.template({"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
+	    var stack1, helper, alias1=container.propertyIsEnumerable, alias2=depth0 != null ? depth0 : (container.nullContext || {}), alias3=container.hooks.helperMissing, alias4="function", alias5=container.escapeExpression;
+
+	  return "<div class=\"vac-comment\" data-id=\""
+	    + alias5(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(alias2,{"name":"id","hash":{},"data":data}) : helper)))
+	    + "\">\n  <div class=\"vac-comment-header\">\n    <div class=\"vac-author-name\">"
+	    + alias5(container.lambda(((stack1 = (depth0 != null ? depth0.meta : depth0)) != null ? stack1.user_name : stack1), depth0))
+	    + "</div>\n    <div class=\"vac-timestamp\">"
+	    + alias5(((helper = (helper = helpers.timeSince || (depth0 != null ? depth0.timeSince : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(alias2,{"name":"timeSince","hash":{},"data":data}) : helper)))
+	    + "\n      <span class=\"vac-delete-comment\">&nbsp;&nbsp;X</span>\n    </div>\n  </div>\n  <div class=\"vac-comment-body\">\n    "
+	    + alias5((helpers.breaklines||(depth0 && depth0.breaklines)||alias3).call(alias2,(depth0 != null ? depth0.body : depth0),{"name":"breaklines","hash":{},"data":data}))
+	    + "\n  </div>\n</div>\n";
+	},"useData":true});
+	function CommentTemplate(data, options, asString) {
+	  var html = Template$4(data, options);
+	  return (asString || true) ? html : $(html);
+	}
 
 	var Comment =
 	/*#__PURE__*/
@@ -1299,7 +1053,7 @@
 	  _createClass(Comment, [{
 	    key: "render",
 	    value: function render() {
-	      return this.renderTemplate(templateName$1, {
+	      return CommentTemplate({
 	        id: this.id,
 	        body: this.body,
 	        meta: this.meta,
@@ -1357,8 +1111,41 @@
 	  return Comment;
 	}(PlayerUIComponent);
 
-	var commentListTemplateName = 'comment_list';
-	var newCommentTemplateName = 'new_comment';
+	var Template$5 = Handlebars.template({"1":function(container,depth0,helpers,partials,data,blockParams) {
+	    var stack1;
+
+	  return "      "
+	    + ((stack1 = container.lambda(blockParams[0][0], depth0)) != null ? stack1 : "")
+	    + "\n";
+	},"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data,blockParams) {
+	    var stack1, helper, alias1=container.propertyIsEnumerable, alias2=depth0 != null ? depth0 : (container.nullContext || {});
+
+	  return "<div class=\"vac-comments-container\">\n  <div class=\"vac-comments-wrap\">\n"
+	    + ((stack1 = helpers.each.call(alias2,(depth0 != null ? depth0.commentsHTML : depth0),{"name":"each","hash":{},"fn":container.program(1, data, 1, blockParams),"inverse":container.noop,"data":data,"blockParams":blockParams})) != null ? stack1 : "")
+	    + "    <div class=\"vac-reply-btn vac-button\">ADD REPLY</div>\n    <div class=\"vac-add-new-shapebox\"></div>\n  </div>\n  <div class=\"vac-comments-control-bar\">\n    <div class=\"vac-range\"><b>@</b> "
+	    + container.escapeExpression(((helper = (helper = helpers.rangeStr || (depth0 != null ? depth0.rangeStr : depth0)) != null ? helper : container.hooks.helperMissing),(typeof helper === "function" ? helper.call(alias2,{"name":"rangeStr","hash":{},"data":data,"blockParams":blockParams}) : helper)))
+	    + "</div>\n    <div class=\"vac-control-buttons\">\n      <a class=\"vac-delete-annotation\">DELETE</a> | <a class=\"vac-close-comment-list\">CLOSE</a>\n    </div>\n  </div>\n</div>\n";
+	},"useData":true,"useBlockParams":true});
+	function CommentListTemplate(data, options, asString) {
+	  var html = Template$5(data, options);
+	  return (asString || true) ? html : $(html);
+	}
+
+	var Template$6 = Handlebars.template({"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
+	    var helper, alias1=container.propertyIsEnumerable, alias2=depth0 != null ? depth0 : (container.nullContext || {}), alias3=container.hooks.helperMissing, alias4="function", alias5=container.escapeExpression;
+
+	  return "<div class=\"vac-video-write-new-wrap vac-new-comment\">\n  <div class=\"vac-video-write-new vac-is-comment\">\n    <div class=\"vac-comment-showbox\" style=\"width:"
+	    + alias5(((helper = (helper = helpers.width || (depth0 != null ? depth0.width : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(alias2,{"name":"width","hash":{},"data":data}) : helper)))
+	    + "px;top:"
+	    + alias5(((helper = (helper = helpers.top || (depth0 != null ? depth0.top : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(alias2,{"name":"top","hash":{},"data":data}) : helper)))
+	    + "px;right:"
+	    + alias5(((helper = (helper = helpers.right || (depth0 != null ? depth0.right : depth0)) != null ? helper : alias3),(typeof helper === alias4 ? helper.call(alias2,{"name":"right","hash":{},"data":data}) : helper)))
+	    + "px\">\n      <textarea placeholder=\"Enter comment...\"></textarea>\n      <div>\n        <button class=\"vac-button\">SAVE</button>\n        <a>Cancel</a>\n      </div>\n    </div>\n</div>\n";
+	},"useData":true});
+	function NewCommentTemplate(data, options, asString) {
+	  var html = Template$6(data, options);
+	  return (asString || true) ? html : $(html);
+	}
 
 	var CommentList =
 	/*#__PURE__*/
@@ -1408,7 +1195,7 @@
 	  }, {
 	    key: "render",
 	    value: function render() {
-	      this.$el = $(this.renderTemplate(commentListTemplateName, {
+	      this.$el = $(CommentListTemplate({
 	        commentsHTML: this.comments.map(function (c) {
 	          return c.HTML;
 	        }),
@@ -1434,7 +1221,7 @@
 	          width = $shapebox.outerWidth(),
 	          top = $shapebox.position().top + 10,
 	          right = this.$wrap.outerWidth() - ($shapebox.position().left + width);
-	      this.$newCommentForm = $(this.renderTemplate(newCommentTemplateName, {
+	      this.$newCommentForm = $(NewCommentTemplate({
 	        width: width,
 	        top: top,
 	        right: right
@@ -1760,7 +1547,51 @@
 	  return Annotation;
 	}(PlayerUIComponent);
 
-	var templateName$2 = 'controls'; // Control uses a "ui state" to determine how UI is rendered - this object is the base state, containing a
+	var Template$7 = Handlebars.template({"1":function(container,depth0,helpers,partials,data) {
+	    var stack1, alias1=container.propertyIsEnumerable;
+
+	  return ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.showControls : depth0),{"name":"if","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
+	},"2":function(container,depth0,helpers,partials,data) {
+	    var stack1, alias1=container.propertyIsEnumerable;
+
+	  return "        <div class=\"vac-controls vac-control\">\n            <button class=\"vac-button\">+ NEW</button>\n"
+	    + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.showNav : depth0),{"name":"if","hash":{},"fn":container.program(3, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+	    + "        </div>\n";
+	},"3":function(container,depth0,helpers,partials,data) {
+	    return "                <div class=\"vac-annotation-nav\">\n                    <div class=\"vac-a-prev\">Prev</div>\n                    <div class=\"vac-a-next\">Next</div>\n                </div>\n";
+	},"5":function(container,depth0,helpers,partials,data) {
+	    var stack1, alias1=container.propertyIsEnumerable, alias2=depth0 != null ? depth0 : (container.nullContext || {});
+
+	  return "    <div class=\"vac-video-cover vac-control\">\n        <div class=\"vac-video-cover-canvas\">\n            <div class=\"vac-cursor-tool-tip vac-hidden\">Click and drag to select</div>\n        </div>\n    </div>\n"
+	    + ((stack1 = helpers["if"].call(alias2,(depth0 != null ? depth0.showControls : depth0),{"name":"if","hash":{},"fn":container.program(6, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+	    + "\n"
+	    + ((stack1 = helpers["if"].call(alias2,(depth0 != null ? depth0.writingComment : depth0),{"name":"if","hash":{},"fn":container.program(9, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
+	},"6":function(container,depth0,helpers,partials,data) {
+	    var stack1, alias1=container.propertyIsEnumerable;
+
+	  return "        <div class=\"vac-add-controls vac-control\">\n            <i>Select shape + range</i>\n"
+	    + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.internalCommenting : depth0),{"name":"if","hash":{},"fn":container.program(7, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+	    + "            <div class=\"vac-video-move\">\n                <div class=\"vac-a-prev\">-1 sec</div>\n                <div class=\"vac-a-next\">+1 sec</div>\n            </div>\n        </div>\n";
+	},"7":function(container,depth0,helpers,partials,data) {
+	    return "                <button class=\"vac-button\">CONTINUE</button>\n                <a>cancel</a>\n";
+	},"9":function(container,depth0,helpers,partials,data) {
+	    var helper, alias1=container.propertyIsEnumerable;
+
+	  return "        <div class=\"vac-video-write-new-wrap vac-control\">\n            <div class=\"vac-video-write-new vac-is-annotation\">\n                <div>\n                    <h5><b>New Annotation</b> @ "
+	    + container.escapeExpression(((helper = (helper = helpers.rangeStr || (depth0 != null ? depth0.rangeStr : depth0)) != null ? helper : container.hooks.helperMissing),(typeof helper === "function" ? helper.call(depth0 != null ? depth0 : (container.nullContext || {}),{"name":"rangeStr","hash":{},"data":data}) : helper)))
+	    + "</h5>\n                    <div class=\"vac-comment-showbox\">\n                        <textarea placeholder=\"Enter comment...\"></textarea>\n                        <div>\n                            <button class=\"vac-button\">SAVE</button>\n                            <a>Cancel</a>\n                        </div>\n                    </div>\n                </div>\n            </div>\n        </div>\n";
+	},"compiler":[8,">= 4.3.0"],"main":function(container,depth0,helpers,partials,data) {
+	    var stack1, alias1=container.propertyIsEnumerable, alias2=depth0 != null ? depth0 : (container.nullContext || {});
+
+	  return ((stack1 = helpers.unless.call(alias2,(depth0 != null ? depth0.adding : depth0),{"name":"unless","hash":{},"fn":container.program(1, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+	    + "\n"
+	    + ((stack1 = helpers["if"].call(alias2,(depth0 != null ? depth0.adding : depth0),{"name":"if","hash":{},"fn":container.program(5, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "");
+	},"useData":true});
+	function ControlsTemplate(data, options, asString) {
+	  var html = Template$7(data, options);
+	  return (asString || true) ? html : $(html);
+	}
+
 	// default value for each item in the state
 
 	var BASE_UI_STATE = Object.freeze({
@@ -1876,7 +1707,7 @@
 	        internalCommenting: this.internalCommenting,
 	        showControls: this.showControls
 	      });
-	      var $ctrls = this.renderTemplate(templateName$2, data);
+	      var $ctrls = ControlsTemplate(data);
 	      this.$player.append($ctrls);
 	      if (this.playerButton) this.playerButton.updateNumAnnotations();
 	    } // User clicked to cancel in-progress add - restore to normal state

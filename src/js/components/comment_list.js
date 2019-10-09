@@ -1,4 +1,3 @@
-'use strict';
 /*
   Component for a list of comments in a visible/active annotation
 */
@@ -6,9 +5,8 @@
 import PlayerUIComponent from '../lib/player_ui_component';
 import Utils from '../lib/utils';
 import Comment from './comment';
-
-const commentListTemplateName = 'comment_list';
-const newCommentTemplateName = 'new_comment';
+import CommentListTemplate from '../../templates/comment_list.hbs';
+import NewCommentTemplate from '../../templates/new_comment.hbs';
 
 export default class CommentList extends PlayerUIComponent {
   constructor(data, player) {
@@ -67,7 +65,7 @@ export default class CommentList extends PlayerUIComponent {
   // Render CommentList UI with all comments using template
   render() {
     this.$el = $(
-      this.renderTemplate(commentListTemplateName, {
+      CommentListTemplate({
         commentsHTML: this.comments.map(c => c.HTML),
         rangeStr: Utils.humanTime(this.annotation.range)
       })
@@ -95,7 +93,7 @@ export default class CommentList extends PlayerUIComponent {
       top = $shapebox.position().top + 10,
       right = this.$wrap.outerWidth() - ($shapebox.position().left + width);
 
-    this.$newCommentForm = $(this.renderTemplate(newCommentTemplateName, { width, top, right }));
+    this.$newCommentForm = $(NewCommentTemplate({ width, top, right }));
     this.bindCommentFormEvents();
     this.$player.append(this.$newCommentForm);
   }

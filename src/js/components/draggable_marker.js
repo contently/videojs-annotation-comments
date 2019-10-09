@@ -5,14 +5,12 @@
 
 import Marker from './marker';
 import Utils from '../lib/utils';
-
-const markerTemplateName = 'draggable_marker';
+import MarkerTemplate from '../../templates/draggable_marker.hbs';
 
 export default class DraggableMarker extends Marker {
   constructor(player, range) {
     super(player, range);
     this.range = range; // NOTE - this shouldn't be required and is a HACK for how transpilation works in IE10
-    this.templateName = markerTemplateName; // Change template from base Marker template
     this.dragging = false; // Is a drag action currently occring?
     this.rangePin = range.start; // What's the original pinned timeline point when marker was added
     this.render();
@@ -67,6 +65,16 @@ export default class DraggableMarker extends Marker {
           self.$player.find('.vac-cursor-tool-tip').removeClass('vac-marker-hover');
         });
     }
+  }
+
+  render() {
+    // clear existing marker if this one was already rendered
+    this.$UI.timeline.find(`[data-marker-id="${this.componentId}"]`).remove();
+
+    // Bind to local instance var, add to DOM, and setup events
+    this.$el = $(MarkerTemplate(this.markerTemplateData));
+    this.$UI.markerWrap.append(this.$el);
+    this.bindMarkerEvents();
   }
 
   // On drag action, calculate new range and re-render marker

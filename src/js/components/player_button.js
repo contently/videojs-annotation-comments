@@ -3,8 +3,7 @@
 */
 
 import PlayerUIComponent from '../lib/player_ui_component';
-
-const templateName = 'player_button';
+import PlayerButtonTemplate from '../../templates/player_button.hbs';
 
 export default class PlayerButton extends PlayerUIComponent {
   constructor(player) {
@@ -26,7 +25,7 @@ export default class PlayerButton extends PlayerUIComponent {
     this.$el
       .addClass('vac-player-btn')
       .find('.vjs-icon-placeholder')
-      .html(this.renderTemplate(templateName));
+      .html(PlayerButtonTemplate());
   }
 
   // Update the number of annotations displayed in the bubble

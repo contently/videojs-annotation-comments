@@ -6,8 +6,7 @@
 import PlayerUIComponent from '../lib/player_ui_component';
 import Utils from '../lib/utils';
 import moment from 'moment';
-
-const templateName = 'comment';
+import CommentTemplate from '../../templates/comment.hbs';
 
 export default class Comment extends PlayerUIComponent {
   constructor(data, player) {
@@ -36,7 +35,7 @@ export default class Comment extends PlayerUIComponent {
   }
 
   render() {
-    return this.renderTemplate(templateName, {
+    return CommentTemplate({
       id: this.id,
       body: this.body,
       meta: this.meta,

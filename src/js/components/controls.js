@@ -9,8 +9,7 @@ import DraggableMarker from './draggable_marker';
 import SelectableShape from './selectable_shape';
 import PlayerButton from './player_button';
 import Annotation from './annotation';
-
-const templateName = 'controls';
+import ControlsTemplate from '../../templates/controls.hbs';
 
 // Control uses a "ui state" to determine how UI is rendered - this object is the base state, containing a
 // default value for each item in the state
@@ -108,7 +107,7 @@ export default class Controls extends PlayerUIComponent {
       { internalCommenting: this.internalCommenting, showControls: this.showControls }
     );
 
-    let $ctrls = this.renderTemplate(templateName, data);
+    let $ctrls = ControlsTemplate(data);
     this.$player.append($ctrls);
 
     if (this.playerButton) this.playerButton.updateNumAnnotations();
