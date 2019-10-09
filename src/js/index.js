@@ -1,3 +1,4 @@
+import '../css/annotations.scss';
 import AnnotationComments from './annotation_comments';
 /*
     Load plugin and register to global videojs
