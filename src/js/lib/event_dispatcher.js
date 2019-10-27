@@ -5,6 +5,7 @@
 */
 
 const Logger = require("./logger");
+const mitt = require("mitt");
 
 /*
     A centralized collection of event callbacks organized by component and name
@@ -60,12 +61,12 @@ const EventRegistry = {
 
 module.exports = class EventDispatcher {
 
-    constructor (plugin) {
-        this.plugin = plugin;
+    constructor () {
         this.pluginReady = false;
         this.pendingEvts = [];
         this.registeredListeners = [];
         this.eventRegistry = EventRegistry;
+        this.eventEmitter = mitt();
     }
 
     // Use the EventRegistry to mass register events on each component initialization
@@ -86,25 +87,24 @@ module.exports = class EventDispatcher {
         }
     }
 
-    // Bind a listener to the plugin
+    // Bind a listener
     registerListener (type, callback) {
-        this.plugin.on(type, callback);
+        this.eventEmitter.on(type, callback);
         this.registeredListeners.push(type);
     }
 
-    // Unbind a listener from the plugin
+    // Unbind a listener
     unregisterListener (type) {
-        this.plugin.off(type);
+        this.eventEmitter.off(type);
         let i = this.registeredListeners.indexOf(type);
         this.registeredListeners.splice(i, 1);
     }
 
-    // Trigger an event on the plugin
+    // Trigger an event
     fire (type, data) {
         if(!this.pluginReady) return;
         Logger.log("evt-dispatch-FIRE", type, data);
-        let evt = new CustomEvent(type, { 'detail': data });
-        this.plugin.trigger(evt);
+        this.eventEmitter.emit(type, { detail: data });
     }
 
     teardown () {

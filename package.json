@@ -19,7 +19,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-es2015-script": "^1.1.0",
     "babelify": "^7.3.0",
-    "browserify": "^16.2.3",
+    "browserify": "^16.5.0",
     "chai": "^4.2.0",
     "es6-object-assign": "^1.1.0",
     "gulp": "^3.9.1",
@@ -34,7 +34,7 @@
     "gulp-insert": "^0.5.0",
     "gulp-jshint": "^2.1.0",
     "gulp-mocha": "^4.3.1",
-    "gulp-rename": "^1.2.2",
+    "gulp-rename": "^1.4.0",
     "gulp-replace": "^0.5.4",
     "gulp-sass": "^3.2.1",
     "gulp-sourcemaps": "^2.6.4",
@@ -58,6 +58,7 @@
     "watchify": "^3.11.0"
   },
   "peerDependencies": {
+    "jquery": "^3",
     "video.js": "^7"
   },
   "babel": {
@@ -74,5 +75,8 @@
       "@semantic-release/npm",
       "@semantic-release/github"
     ]
+  },
+  "dependencies": {
+    "mitt": "^1.2.0"
   }
 }

@@ -31,7 +31,7 @@ module.exports = (videojs) => {
             options = Object.assign(Utils.cloneObject(DEFAULT_OPTIONS), options);
             super(player, options);
 
-            this.eventDispatcher = new EventDispatcher(this);
+            this.eventDispatcher = new EventDispatcher();
             this.eventDispatcher.registerListenersFor(this, 'AnnotationComments');
 
             this.player = player;

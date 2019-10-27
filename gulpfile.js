@@ -23,41 +23,50 @@ const gulp = require("gulp"),
   declare = require("gulp-declare"),
   autoprefixer = require("gulp-autoprefixer");
 
-const FILENAME = "videojs-annotation-comments.js",
-  CJSFILENAME = "videojs-annotation-comments.cjs.js",
-  PACKAGE = require("./package.json");
+const FILENAME = "videojs-annotation-comments.js";
+const CJSFILENAME = "videojs-annotation-comments.cjs.js";
+const PACKAGE = require("./package.json");
 
 //compilation function for browserify/bundler/transpilation
 function compile(watch, cb) {
-  var bundler = {
-    processor: watchify(
-      browserify("./src/js/index.js", { debug: true }).transform(babelify)
-    ),
+  var bundlerDefault = {
+    entry: "./src/js/index.js",
+    browserifyOptions: { debug: true },
+    transformOptions: {},
     filename: FILENAME
   };
 
   var bundlerCjs = {
-    processor: watchify(
-      browserify("./src/js/annotation_comments.js", {
-        debug: true,
-        standalone: "AnnotationComments"
-      }).transform(babelify, {
-        presets: ["es2015"],
-        plugins: ["babel-plugin-transform-es2015-modules-simple-commonjs"]
-      })
-    ),
+    entry: "./src/js/annotation_comments.js",
+    browserifyOptions: {
+      debug: true,
+      standalone: "AnnotationComments"
+    },
+    transformOptions: {
+      presets: ["es2015"],
+      plugins: ["babel-plugin-transform-es2015-modules-simple-commonjs"]
+    },
     filename: CJSFILENAME
   };
 
-  function rebundle() {
-    for (b of [bundler, bundlerCjs]) {
-      b.processor
+  function buildStream(bundler) {
+    return browserify(bundler.entry, bundler.browserifyOptions).transform(
+      babelify,
+      bundler.transformOptions
+    );
+  }
+
+  function rebundle(bundlers) {
+    for (b of bundlers) {
+      var browserifyStream = watch ? watchify(buildStream(b)) : buildStream(b);
+
+      browserifyStream
         .bundle()
         .on("log", gutil.log)
         .on("error", gutil.log.bind(gutil.colors.red, "Browserify Error"))
         .pipe(source("src/js/index.js"))
-        .pipe(rename(b.filename))
         .pipe(buffer())
+        .pipe(rename(b.filename))
         .pipe(sourcemaps.init({ loadMaps: true }))
         .pipe(sourcemaps.write("./"))
         .pipe(gulp.dest("./build"));
@@ -65,28 +74,15 @@ function compile(watch, cb) {
   }
 
   if (watch) {
-    rebundle();
-    bundler.processor.on("update", function() {
+    rebundle([bundlerDefault]);
+    buildStream(bundlerDefault).on("update", function() {
       console.log("-> bundling...");
-      rebundle();
+      rebundle([bundlerDefault]);
     });
   } else {
-    rebundle();
+    rebundle([bundlerDefault, bundlerCjs]);
     cb();
   }
-}
-
-// Get bundler from bundlify
-function getBundler(path, options) {
-  var bundler = browserify(path, {
-    debug: options.debug,
-    cache: {},
-    packageCache: {}
-  });
-  bundler.transform(babelify, { presets: ["es2015"] });
-  bundler.on("log", gutil.log);
-  bundler.on("error", gutil.log.bind(gutil.colors.red, "Browserify Error"));
-  return bundler;
 }
 
 gulp.task("dev_webserver", () => {
@@ -117,6 +113,10 @@ gulp.task("templates:watch", () => {
 
 gulp.task("sass:watch", () => {
   gulp.watch("./src/css/**/*.scss", ["sass"]);
+});
+
+gulp.task("transpile:watch", () => {
+  gulp.watch("./src/js/**/*", ["transpile"]);
 });
 
 gulp.task("templates", () => {
@@ -192,12 +192,10 @@ gulp.task("lint", function() {
 gulp.task("transpile", cb => compile(false, cb));
 gulp.task("bundle_watch", cb => compile(true, cb));
 gulp.task("watch", [
-  "bundle_watch",
   "dev_webserver",
-  "sass",
-  "sass:watch",
-  "templates",
   "templates:watch",
+  "sass:watch",
+  "transpile:watch",
   "tdd"
 ]);
 gulp.task("default", ["watch"]);
