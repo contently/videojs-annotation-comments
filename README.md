@@ -72,28 +72,30 @@ const pluginOptions = {
  To initialize the plugin with the `annotationsObjects` collection, use the following structure:
 ```javascript
 const annotationsObjects = [
-    id: 1,
-    range: {
-        start: 10,
-        end: 15
-    },
-    shape: {
-        x1: 23.47,
-        y1: 9.88,
-        x2: 60.83,
-        y2: 44.2
-    },
-    comments: [
-        {
-            id: 1,
-            meta: {
-                datetime: '2017-03-28T19:17:32.238Z',
-                user_id: 1,
-                user_name: 'Jack Pope'
-            },
-            body: 'The first comment!'
-        }
-    ]
+    {
+      id: 1,
+     range: {
+         start: 10,
+         end: 15
+     },
+     shape: {
+         x1: 23.47,
+         y1: 9.88,
+         x2: 60.83,
+         y2: 44.2
+     },
+     comments: [
+         {
+             id: 1,
+             meta: {
+                 datetime: '2017-03-28T19:17:32.238Z',
+                 user_id: 1,
+                 user_name: 'Jack Pope'
+             },
+             body: 'The first comment!'
+         }
+     ]
+    }
 ];
 ```
 
