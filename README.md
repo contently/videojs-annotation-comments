@@ -106,7 +106,7 @@ const annotationsObjects = [{
  ```javascript
 plugin.onReady(() => {
     // do stuff with the plugin, such as fire events or setup listeners
-}));
+});
 ```
 
  ##### Supported Externally Fired Events:
