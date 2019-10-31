@@ -71,7 +71,7 @@ const pluginOptions = {
 
  To initialize the plugin with the `annotationsObjects` collection, use the following structure:
 ```javascript
-const annotationsObjects = [
+const annotationsObjects = [{
     id: 1,
     range: {
         start: 10,
@@ -83,18 +83,16 @@ const annotationsObjects = [
         x2: 60.83,
         y2: 44.2
     },
-    comments: [
-        {
-            id: 1,
-            meta: {
-                datetime: '2017-03-28T19:17:32.238Z',
-                user_id: 1,
-                user_name: 'Jack Pope'
-            },
-            body: 'The first comment!'
-        }
-    ]
-];
+    comments: [{
+        id: 1,
+        meta: {
+            datetime: '2017-03-28T19:17:32.238Z',
+            user_id: 1,
+            user_name: 'Jack Pope'
+        },
+        body: 'The first comment!'
+    }]
+}];
 ```
 
  ### Programmatic Control
@@ -108,7 +106,7 @@ const annotationsObjects = [
  ```javascript
 plugin.onReady(() => {
     // do stuff with the plugin, such as fire events or setup listeners
-}));
+});
 ```
 
  ##### Supported Externally Fired Events:
@@ -129,7 +127,7 @@ plugin.fire('newAnnotation', {
         x2: null,
         y1: null,
         y2: null
-    }
+    },
     commentStr: "This is my comment."
 });
  // destroyAnnotation : Removes an annotation and it's marker within the player given comment data
