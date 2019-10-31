@@ -96,6 +96,11 @@ module.exports = (videojs) => {
             this.eventDispatcher.fire(type, data);
         }
 
+        // A wrapper func to make it easier to listen to API events from the client
+        registerListener (type, callback) {
+            this.eventDispatcher.registerListener(type, callback, false);
+        }
+
         // Toggle annotations mode on/off
         toggleAnnotationMode() {
             this.active = !this.active;

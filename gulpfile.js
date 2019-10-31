@@ -56,7 +56,7 @@ function compile(watch, cb) {
     );
   }
 
-  function rebundle(bundlers) {
+  function rebundle(bundlers, watch) {
     for (b of bundlers) {
       var browserifyStream = watch ? watchify(buildStream(b)) : buildStream(b);
 
@@ -74,13 +74,13 @@ function compile(watch, cb) {
   }
 
   if (watch) {
-    rebundle([bundlerDefault]);
+    rebundle([bundlerDefault], true);
     buildStream(bundlerDefault).on("update", function() {
       console.log("-> bundling...");
       rebundle([bundlerDefault]);
     });
   } else {
-    rebundle([bundlerDefault, bundlerCjs]);
+    rebundle([bundlerDefault, bundlerCjs], false);
     cb();
   }
 }

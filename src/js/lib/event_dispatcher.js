@@ -67,6 +67,7 @@ module.exports = class EventDispatcher {
         this.registeredListeners = [];
         this.eventRegistry = EventRegistry;
         this.eventEmitter = mitt();
+        this.eventEmitter.on('*', (type, event) => console.log('CATCHALL', type, event))
     }
 
     // Use the EventRegistry to mass register events on each component initialization
@@ -88,9 +89,11 @@ module.exports = class EventDispatcher {
     }
 
     // Bind a listener
-    registerListener (type, callback) {
+    // Register internal listeners to make sure callbacks are not duped as modules are reloaded
+    // register = false for consumer usage with more flexibility
+    registerListener (type, callback, register = true) {
         this.eventEmitter.on(type, callback);
-        this.registeredListeners.push(type);
+        if (register) this.registeredListeners.push(type);
     }
 
     // Unbind a listener
