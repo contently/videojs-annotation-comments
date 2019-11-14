@@ -1,50 +1,68 @@
 [![CircleCI](https://circleci.com/gh/contently/videojs-annotation-comments/tree/master.svg?style=svg)](https://circleci.com/gh/contently/videojs-annotation-comments/tree/master)
 
- # AnnotationComments : Collaborate in your VideoJS player
+# AnnotationComments : Collaborate in your VideoJS player
 
- ![AnnotationComments Screenshot1](test/screenshot.png)
+![AnnotationComments Screenshot1](test/screenshot.png)
 
- ### Background
+>## Upgrading v1 -> v2
+>Please note that the event based API has changed. In version 1, you can subscribe to plugin events with `pluginInstance.on()`. In version 2, the same functionality is available with `pluginInstance.registerListener()`. The following docs are for the latest version.
 
- Collaboration between videographers and clients can be tedious, with emails and phone calls that waste time trying to reference specific frames and areas of the screen. This plugin enables more efficient collaboration from the browser.
+## About
 
- This plugin was conceived and developed as a Hack Week project at [Contently](http://www.contently.com) by [Evan Carothers](http://www.github.com/ecaroth) and [Jack Pope](http://www.github.com/jackpope). Continuing our focus and commitment to multimedia support at Contently, the entire team productized and bulletproofed the plugin as a flexible solution to be used in our product and other open-source use cases.
+### Background
+
+Collaboration between videographers and clients can be tedious, with emails and phone calls that waste time trying to reference specific frames and areas of the screen. This plugin enables more efficient collaboration from the browser.
+
+This plugin was conceived and developed as a Hack Week project at [Contently](http://www.contently.com) by [Evan Carothers](http://www.github.com/ecaroth) and [Jack Pope](http://www.github.com/jackpope). Continuing our focus and commitment to multimedia support at Contently, the entire team productized and bulletproofed the plugin as a flexible solution to be used in our product and other open-source use cases.
 
  ### Goals
 
- - **Efficient for videographers and clients alike** - Provides useful collaboration features including annotations, comments/replies, ranged time markers, and more, with intuitive controls.
+- **Efficient for videographers and clients alike** - Provides useful collaboration features including annotations, comments/replies, ranged time markers, and more, with intuitive controls.
 - **SIMPLE & LIGHTWEIGHT** - Everything is contained within the plugin and player element. There is no need to build additional UI components. Just install VideoJS, register the plugin, setup whatever backend storage you wish, and start collaborating.
 - **EXTENSIBLE** - The plugin can be integrated with existing commenting systems (as we did within Contently), and makes very few assumptions about how to store annotations. Custom events are available for communicating with external APIs, providing support for on-page interactions and data persistence. Simple CSS overrides can also allow for branding customizations with minimal effort, or completely custom UI/UX.
 
- ### VideoJS Plugins
+### VideoJS Plugins
 
- [VideoJS](http://videojs.com/) is a popular open-source HTML5 video player library used by 400k+ sites. As of v6, there is an extendable plugin architecture which was used to create this plugin. This plugin is built and tested against [VideoJS v 6.2.0](https://www.npmjs.com/package/video.js/)
+[VideoJS](http://videojs.com/) is a popular open-source HTML5 video player library used by 400k+ sites. As of v6, there is an extendable plugin architecture which was used to create this plugin. This plugin is built and tested against [VideoJS v7](https://www.npmjs.com/package/video.js/)
 
- ### Add it to your VideoJS player
+## Use it!
 
- #### As a script from build
+### Install
 
- ```javascript
+```
+yarn add @contently/videojs-annotation-comments
+```
+
+OR
+
+```
+npm install @contently/videojs-annotation-comments
+```
+### Add it to your VideoJS player
+
+#### As a script from build
+
+```javascript
 // ...videojs & videojs-annotation-comments have been loaded in script tags...
- var player = videojs('video-id');
+var player = videojs('video-id');
 var plugin = player.annotationComments(pluginOptions)
 ```
 
- #### As a module
+#### As a module
 
- ```javascript
+```javascript
 import videojs from 'video.js'
-import AnnotationComments from 'videojs-annotation-comments'
+import AnnotationComments from '@contently/videojs-annotation-comments'
  videojs.registerPlugin('annotationComments', AnnotationComments(videojs))
  var player = videojs('video-id')
 var plugin = player.annotationComments(pluginOptions)
 ```
 
- ### Plugin options / configuration
+### Plugin options / configuration
 
- When initializing the plugin, you can pass in an options array to override default options. Any excluded options are set to their default values, listed below:
+When initializing the plugin, you can pass in an options array to override default options. Any excluded options are set to their default values, listed below:
 
- ```javascript
+```javascript
 const pluginOptions = {
     // Collection of annotation data to initialize
     annotationsObjects: [],
@@ -67,9 +85,9 @@ const pluginOptions = {
 };
 ```
 
- ### Annotation Data Structure
+### Annotation Data Structure
 
- To initialize the plugin with the `annotationsObjects` collection, use the following structure:
+To initialize the plugin with the `annotationsObjects` collection, use the following structure:
 ```javascript
 const annotationsObjects = [{
     id: 1,
@@ -95,25 +113,25 @@ const annotationsObjects = [{
 }];
 ```
 
- ### Programmatic Control
+### Programmatic Control
 
- If you'd like to drive the plugin or render plugin data through external UI elements, you can configure the plugin to hide the internal components and pass data through custom events. There are two kinds of AnnotationComments API events, _externally fired_ and _internally fired_.
+If you'd like to drive the plugin or render plugin data through external UI elements, you can configure the plugin to hide the internal components and pass data through custom events. There are two kinds of AnnotationComments API events, _externally fired_ and _internally fired_.
 
- ##### Waiting for Plugin Ready
+#### Waiting for Plugin Ready
 
- Before triggering any events on the plugin, you must wait for it to be ready. You can use the `onReady` function on the plugin:
+Before triggering any events on the plugin, you must wait for it to be ready. You can use the `onReady` function on the plugin:
 
- ```javascript
-plugin.onReady(() => {
+```javascript
+plugin.registerListenerReady(() => {
     // do stuff with the plugin, such as fire events or setup listeners
 });
 ```
 
- ##### Supported Externally Fired Events:
+#### Supported Externally Fired Events:
 
  These events are external actions that can be called from your scripts to trigger events within the plugin:
 
- ```javascript
+```javascript
 // openAnnotation : Opens an annotation within the player given an ID
 plugin.fire('openAnnotation', { id: myAnnotationId });
  // closeActiveAnnotation : Closes any active annotation
@@ -144,12 +162,12 @@ plugin.fire('cancelAddingAnnotation');
 plugin.fire('toggleAnnotations');
 ```
 
- ##### Supported Internally Fired Events:
-These are events that are triggered from within the running plugin and can be listened for by binding to `plugin.on` within your scripts:
+#### Supported Internally Fired Events:
+These are events that are triggered from within the running plugin and can be listened for by binding to `plugin.registerListener` within your scripts:
 
  ```javascript
 // annotationOpened : Fired whenever an annotation is opened
-plugin.on('annotationOpened', (event) => {
+plugin.registerListener('annotationOpened', (event) => {
     // event.detail =
     // {
     //      annotation: (object) annotation data in format {id:.., comments:..., range:..., shape:...},
@@ -157,98 +175,98 @@ plugin.on('annotationOpened', (event) => {
     // }
 });
  // annotationClosed : Fired whenever an annotation is closed
-plugin.on('annotationClosed', (event) => {
+plugin.registerListener('annotationClosed', (event) => {
     // event.detail = annotation (object) in format {id:.., comments:..., range:..., shape:...}
 });
  // addingAnnotationDataChanged : Fired from adding annotation state if:
 //  1. the marker is dragged
 //  2. the start of the marker is moved via control buttons
 //  3. the shape is dragged
-plugin.on('addingAnnotationDataChanged', (event) => {
+plugin.registerListener('addingAnnotationDataChanged', (event) => {
     var newRange = event.detail.range; // returns range data if range was changed
     var newShape = event.detail.shape; // returns shape data if shape was changed
     // do something with the data
 });
  // annotationDeleted : Fired when an annotation has been deleted via the UI
-plugin.on('annotationDeleted', (event) => {
+plugin.registerListener('annotationDeleted', (event) => {
     // annotationId = event.detail
 });
  // enteredAnnotationMode : Fired when the plugin enters adding annotation mode
 // includes initial range data
-plugin.on('enteredAddingAnnotation', (event) => {
+plugin.registerListener('enteredAddingAnnotation', (event) => {
     var startTime = event.detail.range.start;
     // do something when adding annotation state begins
 });
  // onStateChanged: Fired when plugin state has changed (annotation added, removed, etc)
 // This is a way to watch global plugin state, as an alternative to watching various annotation events
-plugin.on('onStateChanged', (event) => {
+plugin.registerListener('onStateChanged', (event) => {
     // event.detail = annotation state data
 });
  // playerBoundsChanged : Fired when the player boundaries change due to window resize or fullscreen mode
-plugin.on('playerBoundsChanged', (event) => {
+plugin.registerListener('playerBoundsChanged', (event) => {
     var bounds = event.detail;
     // do something with the new boundaries
 });
  // Entering annotation mode (annotation icon was clicked when previously 'off')
-plugin.on('annotationModeEnabled', (event) => {
+plugin.registerListener('annotationModeEnabled', (event) => {
     // do something
 });
  // Exiting annotation mode (annotation icon was clicked when previously 'on')
-plugin.on('annotationModeDisabled', (event) => {
+plugin.registerListener('annotationModeDisabled', (event) => {
     // do something
 });
 ```
 
- ### Develop and Build
+## Develop and Build
 
- We're using [yarn](https://yarnpkg.com/en/) for package management and [gulp](https://github.com/gulpjs/gulp) as our build system.
+We're using [yarn](https://yarnpkg.com/en/) for package management and [gulp](https://github.com/gulpjs/gulp) as our build system.
 
- The fastest way to get started:
+The fastest way to get started:
 - Clone the repo
 - Run `yarn install`
 - Run `yarn build`
 - Run `yarn watch`
 - Visit `http://localhost:3004/test.html` to see the magic happen.
 
- #### Templates
+### Templates
 
  We're using the [Handlebars](http://handlebarsjs.com/) templating library to render various components within the plugin. For performance, the templates are pre-compiled into a JS file within the development environment. That way we only need to require the Handlebars runtime, saving nearly 100kb from the minified build! ⚡️
 
- The `gulp templates` task is used to precompile every template to `/src/js/compiled/templates.js`. This file should _not_ be modified directly, but rather the templates themselves in `/src/templates` should be modified if changes are needed. The templates task will run automatically within `gulp watch`.
+The `gulp templates` task is used to precompile every template to `/src/js/compiled/templates.js`. This file should _not_ be modified directly, but rather the templates themselves in `/src/templates` should be modified if changes are needed. The templates task will run automatically within `gulp watch`.
 
 
- #### UI / CSS Customization
+### UI / CSS Customization
 
- The plugin uses SASS and all styles are defined in [annotaitons.scss](src/css/annotations.scss). There is extenssive commenting on classes and styles in the file. The plugin uses a deep level of specificity to prevent styles from polluting elements on the page, and all classes are prefixed with `vac-` to prevent classname collisions in the global namespace.
+The plugin uses SASS and all styles are defined in [annotaitons.scss](src/css/annotations.scss). There is extenssive commenting on classes and styles in the file. The plugin uses a deep level of specificity to prevent styles from polluting elements on the page, and all classes are prefixed with `vac-` to prevent classname collisions in the global namespace.
 
- You can extend/modify colors and elements quite easily by writing an overrides stylesheet to address the specific elements that you wish to modify. You can also change the variable colors in the stylesheet and compile yourself for more customization.
+You can extend/modify colors and elements quite easily by writing an overrides stylesheet to address the specific elements that you wish to modify. You can also change the variable colors in the stylesheet and compile yourself for more customization.
 
- _NOTE_ - our gulp build tasks use an auto-prefixer to make the styles work cross-browser, so be sure to run that yourself if you compile the SASS files with changes.
+_NOTE_ - our gulp build tasks use an auto-prefixer to make the styles work cross-browser, so be sure to run that yourself if you compile the SASS files with changes.
 
- #### Testing
+### Testing
 
- ##### Feature tests
+#### Feature tests
 
- Feature tests are currently browser-based and run by visiting `http://localhost:3004/mocha/features/index.html`. Feature tests can be added as files in the `/test/mocha/features/` directory and then included within the `index.html` file as a external scripts.
+Feature tests are currently browser-based and run by visiting `http://localhost:3004/mocha/features/index.html`. Feature tests can be added as files in the `/test/mocha/features/` directory and then included within the `index.html` file as a external scripts.
 
- ##### Unit tests
+#### Unit tests
 
- Unit tests are run through the `gulp test` task. If the `tdd` task is included in `gulp watch`, the tests will run with every change to the test files. Each module should have a corresponding unit test file within the `/test/mocha/modules` directory.
+Unit tests are run through the `gulp test` task. If the `tdd` task is included in `gulp watch`, the tests will run with every change to the test files. Each module should have a corresponding unit test file within the `/test/mocha/modules` directory.
 
- #### Gulp commands
+### Gulp commands
 
- `gulp watch`: Fires up webserver @ `http://localhost:3004/test.html`, watches for any file changes in `/src`, including js, css (scss), and templates (.hbs), repackages, and transpiles to an unminified file in `/build` on change.
+`gulp watch`: Fires up webserver @ `http://localhost:3004/test.html`, watches for any file changes in `/src`, including js, css (scss), and templates (.hbs), repackages, and transpiles to an unminified file in `/build` on change.
 
- `gulp transpile`: Transpiles modules/files to build file in `/build` with JS maps
+`gulp transpile`: Transpiles modules/files to build file in `/build` with JS maps
 
- `gulp build`: Runs transpilation, browserify, sass, then minifies to distribution filename in `/build` with attribution
+`gulp build`: Runs transpilation, browserify, sass, then minifies to distribution filename in `/build` with attribution
 
- `gulp templates`: Uses Handlebars to pre-compile templates into a javascript file. See Templates section above.
+`gulp templates`: Uses Handlebars to pre-compile templates into a javascript file. See Templates section above.
 
- `gulp test`: Runs the mocha unit tests within the `/test/mocha/modules/` directory.
+`gulp test`: Runs the mocha unit tests within the `/test/mocha/modules/` directory.
 
- `gulp lint`: Runs jshint linter on javascript files in `/src`
+`gulp lint`: Runs jshint linter on javascript files in `/src`
 
- #### License
+### License
 
- This plugin is [licensed](license.md) under the Apache License, Version 2.0, which is the same license used by Video.js
+This plugin is [licensed](license.md) under the Apache License, Version 2.0, which is the same license used by Video.js

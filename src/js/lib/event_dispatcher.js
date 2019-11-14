@@ -67,7 +67,6 @@ module.exports = class EventDispatcher {
         this.registeredListeners = [];
         this.eventRegistry = EventRegistry;
         this.eventEmitter = mitt();
-        this.eventEmitter.on('*', (type, event) => console.log('CATCHALL', type, event))
     }
 
     // Use the EventRegistry to mass register events on each component initialization

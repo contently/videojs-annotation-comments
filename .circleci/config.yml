@@ -51,6 +51,7 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
+      - run: yarn build
       - run: npx semantic-release
 
 workflows:
