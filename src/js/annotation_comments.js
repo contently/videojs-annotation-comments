@@ -31,7 +31,7 @@ module.exports = (videojs) => {
             options = Object.assign(Utils.cloneObject(DEFAULT_OPTIONS), options);
             super(player, options);
 
-            this.eventDispatcher = new EventDispatcher();
+            this.eventDispatcher = new EventDispatcher(this);
             this.eventDispatcher.registerListenersFor(this, 'AnnotationComments');
 
             this.player = player;
@@ -94,11 +94,6 @@ module.exports = (videojs) => {
         // Ex: plugin.fire(type, data);
         fire (type, data={}) {
             this.eventDispatcher.fire(type, data);
-        }
-
-        // A wrapper func to make it easier to listen to API events from the client
-        registerListener (type, callback) {
-            this.eventDispatcher.registerListener(type, callback, false);
         }
 
         // Toggle annotations mode on/off

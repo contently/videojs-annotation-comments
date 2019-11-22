@@ -270,23 +270,23 @@
 				plugin.fire("destroyComment", {id: id});
 			});
 
-			plugin.registerListener("annotationOpened", function(event) {
+			plugin.on("annotationOpened", function(event) {
 				var id = event.detail.annotation.id;
 				$("#annotation-opened-id").html(id);
 			});
 
-			plugin.registerListener("addingAnnotationDataChanged", function(event) {
+			plugin.on("addingAnnotationDataChanged", function(event) {
 				console.log(event.detail);
 			});
 
-			plugin.registerListener("enteredAddingAnnotation", function(event) {
+			plugin.on("enteredAddingAnnotation", function(event) {
 				var range = event.detail.range;
 				console.log("Starting add annotation process");
 				$("#new-annotation-form").removeClass("hidden");
 				$("#new-annotation-range-start").val(range.start);
 			});
 
-			plugin.registerListener("addingAnnotationDataChanged", function(event) {
+			plugin.on("addingAnnotationDataChanged", function(event) {
 				if(event.detail.shape) {
 					$("#new-annotation-shape-x1").val(event.detail.shape.x1);
 					$("#new-annotation-shape-x2").val(event.detail.shape.x2);
