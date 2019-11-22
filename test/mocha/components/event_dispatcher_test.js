@@ -3,7 +3,6 @@
 const EventDispatcher = require("../../../src/js/lib/event_dispatcher"),
     expect = require('chai').expect;
 
-const MockedPlugin = { on: (type, callback) => {} };
 const MockedEventRegistry = {
     ClassOne: {
         myFirstEvent: () => {},
@@ -18,15 +17,14 @@ describe('EventDispatcher', () => {
 
     describe('constructor', () => {
         it('creates an EventDispatcher instance w a listener cache and a plugin reference', () => {
-            let eventDispatcher = new EventDispatcher(MockedPlugin);
-            expect(eventDispatcher.plugin).to.deep.equal(MockedPlugin);
+            let eventDispatcher = new EventDispatcher();
             expect(eventDispatcher.registeredListeners).to.be.an("array").that.is.empty;
         });
     });
 
     describe('registerListener', () => {
         it('caches the type as a registered listener', () => {
-            let eventDispatcher = new EventDispatcher(MockedPlugin);
+            let eventDispatcher = new EventDispatcher();
             eventDispatcher.registerListener('my-type', (changeMe) => { changeMe = 'changed' });
             expect(eventDispatcher.registeredListeners).to.include('my-type');
         });
@@ -34,7 +32,7 @@ describe('EventDispatcher', () => {
 
     describe('registerListenersFor', () => {
         it('iterates through the registry and registers listeners based on object type', () => {
-            let eventDispatcher = new EventDispatcher(MockedPlugin);
+            let eventDispatcher = new EventDispatcher();
             eventDispatcher.eventRegistry = MockedEventRegistry;
 
             eventDispatcher.registerListenersFor({}, 'ClassOne');
@@ -47,7 +45,7 @@ describe('EventDispatcher', () => {
         });
 
         it('does not create duplicate event listeners', () => {
-            let eventDispatcher = new EventDispatcher(MockedPlugin);
+            let eventDispatcher = new EventDispatcher();
             eventDispatcher.eventRegistry = MockedEventRegistry;
 
             eventDispatcher.registerListenersFor({}, 'ClassOne');
