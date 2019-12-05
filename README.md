@@ -122,7 +122,7 @@ If you'd like to drive the plugin or render plugin data through external UI elem
 Before triggering any events on the plugin, you must wait for it to be ready. You can use the `onReady` function on the plugin:
 
 ```javascript
-plugin.registerListenerReady(() => {
+plugin.onReady(() => {
     // do stuff with the plugin, such as fire events or setup listeners
 });
 ```
@@ -159,7 +159,7 @@ plugin.fire('addingAnnotation');
  // cancelAddingAnnotation : Plugin exits the adding annotation state
 plugin.fire('cancelAddingAnnotation');
  // toggleAnnotationMode : toggle annotation mode to alternative on/off value
-plugin.fire('toggleAnnotations');
+plugin.fire('toggleAnnotationMode');
 ```
 
 #### Supported Internally Fired Events:
