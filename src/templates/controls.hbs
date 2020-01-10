@@ -1,51 +1,51 @@
 {{#unless adding}}
-    {{#if showControls}}
-        <div class="vac-controls vac-control">
-            <button class="vac-button">+ NEW</button>
-            {{#if showNav}}
-                <div class="vac-annotation-nav">
-                    <div class="vac-a-prev">Prev</div>
-                    <div class="vac-a-next">Next</div>
-                </div>
-            {{/if}}
-        </div>
+{{#if showControls}}
+<div class="vac-controls vac-control">
+    <button class="vac-button">+ NEW</button>
+    {{#if showNav}}
+    <div class="vac-annotation-nav">
+        <div class="vac-a-prev">Prev</div>
+        <div class="vac-a-next">Next</div>
+    </div>
     {{/if}}
+</div>
+{{/if}}
 {{/unless}}
 
 {{#if adding}}
-    <div class="vac-video-cover vac-control">
-        <div class="vac-video-cover-canvas">
-            <div class="vac-cursor-tool-tip vac-hidden">Click and drag to select</div>
-        </div>
+<div class="vac-video-cover vac-control">
+    <div class="vac-video-cover-canvas">
+        <div class="vac-cursor-tool-tip vac-hidden">Click and drag to select</div>
     </div>
-    {{#if showControls}}
-        <div class="vac-add-controls vac-control">
-            <i>Select shape + range</i>
-            {{#if internalCommenting}}
-                <button class="vac-button">CONTINUE</button>
-                <a>cancel</a>
-            {{/if}}
-            <div class="vac-video-move">
-                <div class="vac-a-prev">-1 sec</div>
-                <div class="vac-a-next">+1 sec</div>
-            </div>
-        </div>
+</div>
+{{#if showControls}}
+<div class="vac-add-controls vac-control">
+    <i>Select shape + range</i>
+    {{#if internalCommenting}}
+    <button class="vac-button">CONTINUE</button>
+    <a>cancel</a>
     {{/if}}
+    <div class="vac-video-move">
+        <div class="vac-a-prev">-1 sec</div>
+        <div class="vac-a-next">+1 sec</div>
+    </div>
+</div>
+{{/if}}
 
-    {{#if writingComment}}
-        <div class="vac-video-write-new-wrap vac-control">
-            <div class="vac-video-write-new vac-is-annotation">
+{{#if writingComment}}
+<div class="vac-video-write-new-wrap vac-control">
+    <div class="vac-video-write-new vac-is-annotation">
+        <div>
+            <h5><b>New Annotation</b> @ {{rangeStr}}</h5>
+            <div class="vac-comment-showbox">
+                <textarea placeholder="Enter comment..."></textarea>
                 <div>
-                    <h5><b>New Annotation</b> @ {{rangeStr}}</h5>
-                    <div class="vac-comment-showbox">
-                        <textarea placeholder="Enter comment..."></textarea>
-                        <div>
-                            <button class="vac-button">SAVE</button>
-                            <a>Cancel</a>
-                        </div>
-                    </div>
+                    <button class="vac-button">SAVE</button>
+                    <a>Cancel</a>
                 </div>
             </div>
         </div>
-    {{/if}}
+    </div>
+</div>
+{{/if}}
 {{/if}}
