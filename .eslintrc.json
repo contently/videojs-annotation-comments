@@ -1,0 +1,22 @@
+{
+  "parser": "babel-eslint",
+  "extends": ["airbnb-base", "prettier"],
+  "plugins": ["import", "prettier"],
+  "env": {
+    "browser": true
+  },
+  "rules": {
+    "comma-dangle": ["error", "never"],
+    "no-underscore-dangle": "off",
+    "no-inner-declarations": "off"
+  },
+  "globals": {
+    "describe": true,
+    "beforeEach": true,
+    "beforeAll": true,
+    "afterEach": true,
+    "it": true,
+    "expect": true,
+    "$": true
+  }
+}

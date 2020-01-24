@@ -1,43 +1,42 @@
-<!DOCTYPE HTML>
-<HTML>
-	<HEAD>
-		<title>VAC Feature Tests</title>
-		<link href="/video.js/dist/video-js.css" rel="stylesheet">
-		<link href="./../../assets/videojs_skin.css" rel="stylesheet">
-		<link href="./../../assets/page.css" rel="stylesheet">
-		<link href="./../../css/annotations.css" rel="stylesheet">
-        <link rel="stylesheet" href="/mocha/mocha.css">
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>VAC Feature Tests</title>
+    <link href="/video.js/dist/video-js.css" rel="stylesheet" />
+    <link href="./../../assets/videojs_skin.css" rel="stylesheet" />
+    <link href="./../../assets/page.css" rel="stylesheet" />
+    <link href="./../../css/annotations.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/mocha/mocha.css" />
+  </head>
+  <body>
+    <!-- Loaded libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="/video.js/dist/video.min.js"></script>
+    <script src="/videojs-annotation-comments.js"></script>
 
-	</HEAD>
-	<BODY>
-		<!-- Loaded libraries -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-		<script src="/video.js/dist/video.min.js"></script>
-		<script src="/videojs-annotation-comments.js"></script>
+    <!-- Test UI -->
+    <div id="mocha"></div>
+    <div id="mocha-video-container"></div>
 
-		<!-- Test UI -->
-    	<div id="mocha"></div>
-		<div id="mocha-video-container"></div>
+    <!-- Setup Mocha and Chai -->
+    <script src="/mocha/mocha.js"></script>
+    <script src="/chai/chai.js"></script>
+    <script>
+      window.VAC_DEBUG = true;
+      mocha.ui('bdd');
+      mocha.reporter('html');
+    </script>
+    <script src="./helper_data.js"></script>
+    <script src="./helpers.js"></script>
 
-		<!-- Setup Mocha and Chai -->
-        <script src="/mocha/mocha.js"></script>
-        <script src="/chai/chai.js"></script>
-        <script>
-        	window.VAC_DEBUG = true;
-            mocha.ui('bdd');
-            mocha.reporter('html');
-        </script>
-		<script src="./helper_data.js"></script>
-		<script src="./helpers.js"></script>
+    <!-- Add feature test files here -->
+    <script src="./init_test.js"></script>
+    <script src="./api_test.js"></script>
+    <script src="./annotations/create_annotations.js"></script>
 
-		<!-- Add feature test files here -->
-        <script src="./init_test.js"></script>
-		<script src="./api_test.js"></script>
-		<script src="./annotations/create_annotations.js"></script>
-
-		<!-- Run all describe function calls on the global scope! -->
-        <script>
-            mocha.run();
-        </script>
-	</BODY>
-</HTML>
+    <!-- Run all describe function calls on the global scope! -->
+    <script>
+      mocha.run();
+    </script>
+  </body>
+</html>

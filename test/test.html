@@ -1,184 +1,216 @@
-<!DOCTYPE HTML>
-<HTML>
-	<HEAD>
-		<title>VideoJS Annotated Comments Test Page</title>
-		<link href="/video.js/dist/video-js.css" rel="stylesheet">
-		<link href="assets/videojs_skin.css" rel="stylesheet">
-		<link href="assets/page.css" rel="stylesheet">
-		<link href="css/annotations.css" rel="stylesheet">
-		<script>
-			function guid() {
-		      function s4() {
-		        return Math.floor((1 + Math.random()) * 0x10000)
-		          .toString(16)
-		          .substring(1);
-		      }
-		      return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-		        s4() + '-' + s4() + s4() + s4();
-		    }
-			var annotations = [
-				{
-					"id": guid(),
-					"range": {
-						"start": 55, "end": 60
-					},
-					"shape": {
-						"x1":23.47,"y1":9.88,"x2":60.83,"y2":44.2
-					},
-					"comments":[
-						{
-							"id":guid(),
-							"meta":{
-								"datetime": "2017-03-28T19:17:32.238Z",
-								"user_id":1,
-								"user_name": "Jack Pope"
-							},
-							"body": "Is the \"Stories API\" the only API we want to highlight here? It makes the system feel a little limited, even though we have robust functionality and multiple APIs"
-						}
-					]
-				},
-				{
-					"range": {
-						"start":65,"stop":null
-					},
-					"shape": {
-						"x1":0.97,"y1":65.19,"x2":36.25,"y2":97.28
-					},
-					"comments": [
-						{
-							"id": "2854a682-ffdf-78a4-796d-22abb6d9cac3",
-							"meta": {
-								"datetime":"2017-03-28T19:18:25.485Z",
-								"user_id":2,
-								"user_name": "Evan Carothers"
-							},
-						"body": "Can we replace this logo with Microsoft?"
-						},
-						{
-							id: guid(),
-							meta: {
-								"datetime":"2017-03-29T00:18:25.485Z",
-								user_id: 1,
-								user_name: "Jack Pope"
-							},
-							body: "Great idea Evan, that's a SUPER recognizable brand!\n\nAny other major company brands we are missing in this shot?"
-						}
-					]
-				},
-				{
-					"range": {
-						"start":100,"end":null
-					},
-					"shape": null,
-					"comments": [
-						{
-							"id": "e0b9787b-fbe7-f1e9-5134-d0eb69a783aa",
-							"meta": {
-								"datetime": "2017-03-28T19:21:41.351Z",
-								"user_id":1,
-								"user_name": "Jack Pope"
-							},
-							"body": "Can we have a music change for this final section that transitions towards the final frame? Some sweet heavy rock 80s ballad?"
-						}
-					]
-				},
-				{
-					"range": {
-						"start":21,"end":61
-					},
-					"shape": null,
-					"comments": [
-						{
-							"id": "e0b9787b-fbe7-f1e9-5134-d0eb69a783aa",
-							"meta": {
-								"datetime": "2017-03-28T19:21:41.351Z",
-								"user_id": 2,
-								"user_name": "Evan Carothers"
-							},
-							"body": "The music is a little loud through this section and distracts from the content and narration a bit - can we tone 'er down a couple nocks here?"
-						}
-					]
-				}
-			];
-		</script>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>VideoJS Annotated Comments Test Page</title>
+    <link href="/video.js/dist/video-js.css" rel="stylesheet" />
+    <link href="assets/videojs_skin.css" rel="stylesheet" />
+    <link href="assets/page.css" rel="stylesheet" />
+    <link href="css/annotations.css" rel="stylesheet" />
+    <script>
+      function guid() {
+        function s4() {
+          return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+        }
+        return (
+          s4() +
+          s4() +
+          "-" +
+          s4() +
+          "-" +
+          s4() +
+          "-" +
+          s4() +
+          "-" +
+          s4() +
+          s4() +
+          s4()
+        );
+      }
+      var annotations = [
+        {
+          id: guid(),
+          range: {
+            start: 55,
+            end: 60
+          },
+          shape: {
+            x1: 23.47,
+            y1: 9.88,
+            x2: 60.83,
+            y2: 44.2
+          },
+          comments: [
+            {
+              id: guid(),
+              meta: {
+                datetime: "2017-03-28T19:17:32.238Z",
+                user_id: 1,
+                user_name: "Jack Pope"
+              },
+              body:
+                'Is the "Stories API" the only API we want to highlight here? It makes the system feel a little limited, even though we have robust functionality and multiple APIs'
+            }
+          ]
+        },
+        {
+          range: {
+            start: 65,
+            stop: null
+          },
+          shape: {
+            x1: 0.97,
+            y1: 65.19,
+            x2: 36.25,
+            y2: 97.28
+          },
+          comments: [
+            {
+              id: "2854a682-ffdf-78a4-796d-22abb6d9cac3",
+              meta: {
+                datetime: "2017-03-28T19:18:25.485Z",
+                user_id: 2,
+                user_name: "Evan Carothers"
+              },
+              body: "Can we replace this logo with Microsoft?"
+            },
+            {
+              id: guid(),
+              meta: {
+                datetime: "2017-03-29T00:18:25.485Z",
+                user_id: 1,
+                user_name: "Jack Pope"
+              },
+              body:
+                "Great idea Evan, that's a SUPER recognizable brand!\n\nAny other major company brands we are missing in this shot?"
+            }
+          ]
+        },
+        {
+          range: {
+            start: 100,
+            end: null
+          },
+          shape: null,
+          comments: [
+            {
+              id: "e0b9787b-fbe7-f1e9-5134-d0eb69a783aa",
+              meta: {
+                datetime: "2017-03-28T19:21:41.351Z",
+                user_id: 1,
+                user_name: "Jack Pope"
+              },
+              body:
+                "Can we have a music change for this final section that transitions towards the final frame? Some sweet heavy rock 80s ballad?"
+            }
+          ]
+        },
+        {
+          range: {
+            start: 21,
+            end: 61
+          },
+          shape: null,
+          comments: [
+            {
+              id: "e0b9787b-fbe7-f1e9-5134-d0eb69a783aa",
+              meta: {
+                datetime: "2017-03-28T19:21:41.351Z",
+                user_id: 2,
+                user_name: "Evan Carothers"
+              },
+              body:
+                "The music is a little loud through this section and distracts from the content and narration a bit - can we tone 'er down a couple nocks here?"
+            }
+          ]
+        }
+      ];
+    </script>
+  </head>
+  <body>
+    <div id="video_wrap">
+      <div>
+        <button onclick="ADD()" style="margin-top:20px">+ ADD VIDEO</button>
+      </div>
+    </div>
 
-	</HEAD>
-	<BODY>
-		<div id="video_wrap">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="/video.js/dist/video.min.js"></script>
+    <script src="/videojs-annotation-comments.js"></script>
+    <script>
+      //window.VAC_DEBUG = true;
 
-			<div><button onclick="ADD()" style="margin-top:20px">+ ADD VIDEO</button></div>
-		</div>
+      var videos = [],
+        playerOptions = { controlBar: { volumePanel: { inline: false } } },
+        pluginOptions = {
+          annotationsObjects: annotations,
+          bindArrowKeys: true,
+          meta: {
+            user_id: 2,
+            user_name: "John Smith"
+          },
+          showControls: true,
+          showCommentList: true,
+          showFullScreen: true,
+          startInAnnotationMode: false,
+          showMarkerShapeAndTooltips: true
+        };
 
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-		<script src="/video.js/dist/video.min.js"></script>
-		<script src="/videojs-annotation-comments.js"></script>
-		<script>
-			//window.VAC_DEBUG = true;
+      function ADD() {
+        var id = new Date().getTime();
 
-			var videos = [],
-				playerOptions = { controlBar: { volumePanel: { inline: false } } },
-				pluginOptions = {
-					annotationsObjects: annotations,
-					bindArrowKeys: true,
-					meta: {
-						user_id: 2,
-						user_name: "John Smith"
-					},
-					showControls: true,
-					showCommentList: true,
- 					showFullScreen: true,
-					startInAnnotationMode: false,
-					showMarkerShapeAndTooltips: true
-				}
+        var html = '<div id="wrap-' + id + '" class="vwrap">';
+        html +=
+          '<video id="vid-' +
+          id +
+          '" class="video-js" controls preload="auto" width="720" height="405" data-setup="{}">';
+        html +=
+          '<source src="contently-platform-overview.mp4" type="video/mp4"></video>';
+        html +=
+          '<div><button onclick="REMOVE(' +
+          id +
+          ')">- REMOVE VIDEO</button></div>';
+        html += "</div>";
 
-			function ADD(){
-				var id = (new Date().getTime());
+        var $lastVid = $(".vwrap:last");
+        if ($lastVid.length) {
+          $lastVid.after(html);
+        } else {
+          $("#video_wrap").prepend(html);
+        }
 
-				var html = '<div id="wrap-'+id+'" class="vwrap">';
-				html += '<video id="vid-'+id+'" class="video-js" controls preload="auto" width="720" height="405" data-setup="{}">'
-		    	html += '<source src="contently-platform-overview.mp4" type="video/mp4"></video>';
-		    	html += '<div><button onclick="REMOVE('+id+')">- REMOVE VIDEO</button></div>'
-		    	html += '</div>';
+        var player = window.videojs("vid-" + id, playerOptions);
 
-		    	var $lastVid = $(".vwrap:last");
-		    	if($lastVid.length){
-		    		$lastVid.after(html);
-		    	}else{
-		    		$("#video_wrap").prepend(html);
-		    	}
+        player.ready(function() {
+          var plugin = player.annotationComments(pluginOptions);
 
-		    	var player = window.videojs('vid-'+id, playerOptions);
+          plugin.onReady(function() {
+            console.log("PLUGIN IS READY!", id);
+          });
+          player.muted(true);
 
-		    	player.ready(function(){
-		    		var plugin = player.annotationComments(pluginOptions);
+          videos.push({
+            id: id,
+            player: player,
+            plugin: plugin
+          });
+          console.log("::ADDING:: ", videos[videos.length - 1]);
+        });
+      }
 
-					plugin.onReady(function(){
-						console.log("PLUGIN IS READY!", id);
-					});
-			    	player.muted(true);
+      function REMOVE(id) {
+        var video = videos.find(function(v) {
+          return v.id == id;
+        });
+        console.log("::REMOVING:: ", video);
+        video.plugin = video.plugin.dispose();
+        video.player.dispose();
+        $("#wrap-" + video.id).remove();
+      }
 
-			    	videos.push({
-			    		id: id,
-			    		player: player,
-			    		plugin: plugin
-			    	});
-			    	console.log("::ADDING:: ", videos[videos.length-1]);
-		    	});
-			}
-
-			function REMOVE(id){
-				var video = videos.find(function(v){
-					return v.id == id;
-				})
-				console.log("::REMOVING:: ", video);
-				video.plugin = video.plugin.dispose();
-				video.player.dispose();
-				$('#wrap-'+video.id).remove();
-			}
-
-			// Add initial video
-			ADD();
-
-		</script>
-	</BODY>
-</HTML>
+      // Add initial video
+      ADD();
+    </script>
+  </body>
+</html>

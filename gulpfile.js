@@ -1,42 +1,38 @@
-const gulp = require("gulp"),
-  sourcemaps = require("gulp-sourcemaps"),
-  source = require("vinyl-source-stream"),
-  buffer = require("vinyl-buffer"),
-  browserify = require("browserify"),
-  watchify = require("watchify"),
-  insert = require("gulp-insert"),
-  babelify = require("babelify"),
-  stripComments = require("gulp-strip-comments"),
-  rename = require("gulp-rename"),
-  webserver = require("gulp-webserver"),
-  uglify = require("gulp-uglify"),
-  gutil = require("gulp-util"),
-  sass = require("gulp-sass"),
-  debug = require("gulp-debug"),
-  pump = require("pump"),
-  mocha = require("gulp-mocha"),
-  jshint = require("gulp-jshint"),
-  stylish = require("jshint-stylish"),
-  handlebars = require("gulp-handlebars"),
-  wrap = require("gulp-wrap"),
-  concat = require("gulp-concat"),
-  declare = require("gulp-declare"),
-  autoprefixer = require("gulp-autoprefixer");
+const gulp = require("gulp");
+const sourcemaps = require("gulp-sourcemaps");
+const source = require("vinyl-source-stream");
+const buffer = require("vinyl-buffer");
+const browserify = require("browserify");
+const watchify = require("watchify");
+const babelify = require("babelify");
+const stripComments = require("gulp-strip-comments");
+const rename = require("gulp-rename");
+const webserver = require("gulp-webserver");
+const uglify = require("gulp-uglify");
+const gutil = require("gulp-util");
+const sass = require("gulp-sass");
+const pump = require("pump");
+const mocha = require("gulp-mocha");
+const handlebars = require("gulp-handlebars");
+const wrap = require("gulp-wrap");
+const concat = require("gulp-concat");
+const declare = require("gulp-declare");
+const autoprefixer = require("gulp-autoprefixer");
 
 const FILENAME = "videojs-annotation-comments.js";
 const CJSFILENAME = "videojs-annotation-comments.cjs.js";
 const PACKAGE = require("./package.json");
 
-//compilation function for browserify/bundler/transpilation
+// compilation function for browserify/bundler/transpilation
 function compile(watch, cb) {
-  var bundlerDefault = {
+  const bundlerDefault = {
     entry: "./src/js/index.js",
     browserifyOptions: { debug: true },
     transformOptions: {},
     filename: FILENAME
   };
 
-  var bundlerCjs = {
+  const bundlerCjs = {
     entry: "./src/js/annotation_comments.js",
     browserifyOptions: {
       debug: true,
@@ -57,8 +53,10 @@ function compile(watch, cb) {
   }
 
   function rebundle(bundlers, watch) {
-    for (b of bundlers) {
-      var browserifyStream = watch ? watchify(buildStream(b)) : buildStream(b);
+    bundlers.forEach(b => {
+      const browserifyStream = watch
+        ? watchify(buildStream(b))
+        : buildStream(b);
 
       browserifyStream
         .bundle()
@@ -70,7 +68,7 @@ function compile(watch, cb) {
         .pipe(sourcemaps.init({ loadMaps: true }))
         .pipe(sourcemaps.write("./"))
         .pipe(gulp.dest("./build"));
-    }
+    });
   }
 
   if (watch) {
@@ -180,13 +178,6 @@ gulp.task("tdd", function() {
     ["src/**/*.js", "src/**/.hbs", "test/mocha/components/*.js"],
     ["test"]
   );
-});
-
-gulp.task("lint", function() {
-  return gulp
-    .src("./src/*/*.js")
-    .pipe(jshint(".jshintrc"))
-    .pipe(jshint.reporter(stylish));
 });
 
 gulp.task("transpile", cb => compile(false, cb));
