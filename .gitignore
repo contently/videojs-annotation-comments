@@ -1,3 +1,4 @@
 node_modules
 docs/.sass-cache
 build
+yarn-error.log
