@@ -146,7 +146,8 @@ gulp.task('build', ['templates', 'sass', 'transpile'], (cb) => {
     rename(FILENAME.replace('.js', '.min.js')),
     stripComments(),
     uglify(),
-    gulp.dest('./build')
+    gulp.dest('./build'),
+    gulp.dest('./docs/build')
   ]);
 
   pump(
