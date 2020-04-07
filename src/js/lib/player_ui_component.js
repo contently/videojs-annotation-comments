@@ -5,14 +5,10 @@
 
 const Handlebars = require('handlebars/runtime');
 const PlayerComponent = require('./player_component');
-const Templates = require('./../compiled/templates');
-const Utils = require('./../lib/utils');
+const { templates } = require('../compiled/templates');
+const Utils = require('./utils');
 
 module.exports = class PlayerUIComponent extends PlayerComponent {
-  constructor(player) {
-    super(player);
-  }
-
   // helpers to get various UI components of the player quickly, keeping commonly reused class names
   // consolidated in case of need to change in the future (and for quick access)
   get $UI() {
@@ -29,6 +25,7 @@ module.exports = class PlayerUIComponent extends PlayerComponent {
   }
 
   // utility classes used in various components
+  // eslint-disable-next-line class-methods-use-this
   get UI_CLASSES() {
     return Object.freeze({
       hidden: 'vac-hidden',
@@ -67,14 +64,15 @@ module.exports = class PlayerUIComponent extends PlayerComponent {
   // Render a handlebars template with local data passed in via key/val in object
   renderTemplate(templateName, options = {}) {
     this.registerHandlebarsHelpers();
-    return Templates[templateName](options);
+    return templates[templateName](options);
   }
 
   // Handle escaped breaklines in Handlebars
+  // eslint-disable-next-line class-methods-use-this
   registerHandlebarsHelpers() {
     if ('breaklines' in Handlebars.helpers) return;
 
-    Handlebars.registerHelper('breaklines', text => {
+    Handlebars.registerHelper('breaklines', (text) => {
       text = Handlebars.Utils.escapeExpression(text);
       text = text.replace(/(\r\n|\n|\r)/gm, '<br>');
       return new Handlebars.SafeString(text);

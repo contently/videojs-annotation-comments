@@ -29,20 +29,20 @@ function compile(watch, cb) {
     entry: './src/js/index.js',
     browserifyOptions: { debug: true },
     transformOptions: {},
-    filename: FILENAME,
+    filename: FILENAME
   };
 
   const bundlerCjs = {
     entry: './src/js/annotation_comments.js',
     browserifyOptions: {
       debug: true,
-      standalone: 'AnnotationComments',
+      standalone: 'AnnotationComments'
     },
     transformOptions: {
       presets: ['es2015'],
-      plugins: ['babel-plugin-transform-es2015-modules-simple-commonjs'],
+      plugins: ['babel-plugin-transform-es2015-modules-simple-commonjs']
     },
-    filename: CJSFILENAME,
+    filename: CJSFILENAME
   };
 
   function buildStream(bundler) {
@@ -93,7 +93,7 @@ gulp.task('sass', () => {
     .pipe(
       autoprefixer({
         browsers: ['defaults', 'not ie <= 9'],
-        cascade: false,
+        cascade: false
       })
     )
     .pipe(sourcemaps.write('.'))
@@ -118,7 +118,7 @@ gulp.task('templates', () => {
     .src('./src/templates/**/*.hbs')
     .pipe(
       handlebars({
-        handlebars: require('handlebars'),
+        handlebars: require('handlebars')
       })
     )
     .pipe(wrap('Handlebars.template(<%= contents %>)'))
@@ -126,12 +126,13 @@ gulp.task('templates', () => {
       declare({
         root: 'exports',
         noRedeclare: true, // Avoid duplicate declarations
+        namespace: 'templates',
         processName: function (filePath) {
           // Allow nesting based on path using gulp-declare's processNameByPath()
           // You can remove this option completely if you aren't using nested folders
           // Drop the templates/ folder from the namespace path by removing it from the filePath
           return declare.processNameByPath(filePath.replace('src/templates/', ''));
-        },
+        }
       })
     )
     .pipe(concat('templates.js'))
@@ -145,7 +146,7 @@ gulp.task('build', ['templates', 'sass', 'transpile'], (cb) => {
     rename(FILENAME.replace('.js', '.min.js')),
     stripComments(),
     uglify(),
-    gulp.dest('./build'),
+    gulp.dest('./build')
   ]);
 
   pump(
@@ -155,7 +156,7 @@ gulp.task('build', ['templates', 'sass', 'transpile'], (cb) => {
       stripComments(),
       uglify(),
       gulp.dest('./build'),
-      gulp.dest('./docs/build'),
+      gulp.dest('./docs/build')
     ],
     cb
   );
