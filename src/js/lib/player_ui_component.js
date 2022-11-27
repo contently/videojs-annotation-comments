@@ -13,14 +13,14 @@ module.exports = class PlayerUIComponent extends PlayerComponent {
   // consolidated in case of need to change in the future (and for quick access)
   get $UI() {
     return Object.freeze({
-      commentsContainer: this.$player.find('.vac-comments-container'), // outer container for all comments
-      controlElements: this.$player.find('.vac-control'), // Each of multiple control elements in the control bar
-      newCommentTextarea: this.$player.find('.vac-video-write-new textarea'), // Textarea for writing a new comment
-      timeline: this.$player.find('.vjs-progress-control'), // Timeline element
-      markerCursorHelpText: this.$player.find('.vac-cursor-help-text'), // Help text that appears with 'click/drag..' on timeline
-      controlBar: this.$player.find('.vjs-control-bar'), // Conrol bar wrapper for vjs
-      markerWrap: this.$player.find('.vac-marker-wrap'), // wrapper element to place markers in on timeline
-      coverCanvas: this.$player.find('.vac-video-cover-canvas') // Player cover during adding annotation state
+      commentsContainer: this.$player.querySelector('.vac-comments-container'), // outer container for all comments
+      controlElements: this.$player.querySelector('.vac-control'), // Each of multiple control elements in the control bar
+      newCommentTextarea: this.$player.querySelector('.vac-video-write-new textarea'), // Textarea for writing a new comment
+      timeline: this.$player.querySelector('.vjs-progress-control'), // Timeline element
+      markerCursorHelpText: this.$player.querySelector('.vac-cursor-help-text'), // Help text that appears with 'click/drag..' on timeline
+      controlBar: this.$player.querySelector('.vjs-control-bar'), // Conrol bar wrapper for vjs
+      markerWrap: this.$player.querySelector('.vac-marker-wrap'), // wrapper element to place markers in on timeline
+      coverCanvas: this.$player.querySelector('.vac-video-cover-canvas') // Player cover during adding annotation state
     });
   }
 
@@ -35,12 +35,12 @@ module.exports = class PlayerUIComponent extends PlayerComponent {
 
   // attribute to get player jquery element
   get $player() {
-    return $(this.player.el());
+    return this.player.el();
   }
 
   // attribute to get player id from DOM
   get playerId() {
-    return this.$player.attr('id');
+    return this.$player.id;
   }
 
   // Generate a pseudo-guid ID for this component, to use as an ID in the DOM
@@ -51,14 +51,14 @@ module.exports = class PlayerUIComponent extends PlayerComponent {
 
   // Disable play/control actions on the current player
   disablePlayingAndControl() {
-    this.$player.addClass('vac-disable-play');
+    this.$player.classList.add('vac-disable-play');
     // TODO - catch spacebar being hit
     // TODO - prevent scrubbing and timeline click to seek
   }
 
   // Enable play/control actions on the controller
   enablePlayingAndControl() {
-    this.$player.removeClass('vac-disable-play');
+    this.$player.classList.remove('vac-disable-play');
   }
 
   // Render a handlebars template with local data passed in via key/val in object

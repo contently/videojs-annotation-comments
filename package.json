@@ -1,6 +1,6 @@
 {
   "name": "@contently/videojs-annotation-comments",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A plugin for video.js to add support for timeline moment/range comments and annotations",
   "repository": "git@github.com:contently/videojs-annotation-comments.git",
   "main": "build/videojs-annotation-comments.cjs.js",
@@ -13,7 +13,8 @@
     "integration": "echo open in chrome: http://localhost:3004/mocha/features/index.html",
     "watch": "gulp watch",
     "build": "gulp build",
-    "lint": "eslint ./src"
+    "lint": "eslint ./src",
+    "publish": "npm publish --registry https://npm-registry.prod.contently.systems"
   },
   "author": "Evan Carothers (@ecaroth) & Jack Pope (@jackpope)",
   "copyright": "Copyright Contently, Inc. <https://www.contently.com/>",
