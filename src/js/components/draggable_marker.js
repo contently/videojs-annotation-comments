@@ -17,41 +17,45 @@ module.exports = class DraggableMarker extends Marker {
     this.rangePin = range.start; // What's the original pinned timeline point when marker was added
     this.render();
     this.$parent = this.$UI.markerWrap; // Set parent as marker wrap
+    console.warn('### this.$el is: ', this.$el);
   }
 
   // Bind needed evnets for UI interaction
   bindMarkerEvents() {
     // On mouse down init drag
-    this.$el.on('mousedown.vac-marker', e => {
+    this.$el.addEventListener('mousedown', e => {
       e.preventDefault();
       this.dragging = true;
       // When mouse moves (with mouse down) call onDrag, throttling to once each 250 ms
-      $(document).on(
-        `mousemove.vac-dmarker-${this.playerId}`,
+      document.addEventListener(`mousemove`,
         Utils.throttle(this.onDrag.bind(this), 250)
       );
 
       // Add drag class to cursor tooltip if available
       if (!this.plugin.options.showControls) {
         this.$player
-          .find('.vac-cursor-tool-tip')
-          .addClass('vac-cursor-dragging')
-          .removeClass('vac-marker-hover');
+          .querySelector('.vac-cursor-tool-tip')
+          .classList.add('vac-cursor-dragging');
+        this.$player
+          .querySelector('.vac-cursor-tool-tip')
+          .classList.remove('vac-marker-hover');
       }
     });
 
     // On mouse up end drag action and unbind mousemove event
-    $(document).on(`mouseup.vac-dmarker-${this.playerId}`, e => {
+    document.addEventListener(`mouseup`, e => {
       if (!this.dragging) return;
-      $(document).off(`mousemove.vac-dmarker-${this.playerId}`);
+      document.removeEventListener(`mousemove`);
       this.dragging = false;
 
       // Remove drag class and hover class from cursor tooltip if available
       if (!this.plugin.options.showControls) {
         this.$player
-          .find('.vac-cursor-tool-tip')
-          .removeClass('vac-cursor-dragging')
-          .removeClass('vac-marker-hover');
+          .querySelector('.vac-cursor-tool-tip')
+          .classList.remove('vac-cursor-dragging');
+        this.$player
+          .querySelector('.vac-cursor-tool-tip')
+          .classList.remove('vac-marker-hover');
       }
     });
 
@@ -60,11 +64,14 @@ module.exports = class DraggableMarker extends Marker {
     if (!this.plugin.options.showControls) {
       const self = this;
       self.$el
-        .on('mouseenter.vac-cursor-tool-tip', () => {
-          self.$player.find('.vac-cursor-tool-tip').addClass('vac-marker-hover');
-        })
-        .on('mouseleave.vac-cursor-tool-tip', () => {
-          self.$player.find('.vac-cursor-tool-tip').removeClass('vac-marker-hover');
+        .addEventListener('mouseenter', () => {
+          self.$player.querySelector('.vac-cursor-tool-tip')
+            .classList.add('vac-marker-hover');
+        });
+      self.$el
+        .addEventListener('mouseleave', () => {
+          self.$player.querySelector('.vac-cursor-tool-tip')
+            .classList.remove('vac-marker-hover');
         });
     }
   }

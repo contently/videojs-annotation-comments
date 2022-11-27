@@ -102,8 +102,10 @@ module.exports = class EventDispatcher {
 
   // Trigger an event
   fire(type, data) {
+    console.warn('firing event: pluginReady is: ', this.pluginReady);
     if (!this.pluginReady) return;
     Logger.log('evt-dispatch-FIRE', type, data);
+    console.warn('type is: ', type);
     this.eventEmitter.emit(type, { detail: data });
   }
 

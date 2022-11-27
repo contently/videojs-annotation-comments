@@ -13,30 +13,27 @@ module.exports = class PlayerButton extends PlayerUIComponent {
 
     this.initAPI(this, 'PlayerButton');
 
-    this.$el.on('click.vac-player-button', () => {
-      this.plugin.toggleAnnotationMode();
-    });
+    this.$el.querySelectorAll('.vac-player-button').forEach(el => el.addEventListener('click', () => this.plugin.toggleAnnotationMode()));
   }
 
   // Add button to player
   render() {
     const btn = this.player.getChild('controlBar').addChild('button', {});
     btn.controlText('Toggle Animations');
-    this.$el = $(btn.el());
-    this.$el
-      .addClass('vac-player-btn')
-      .find('.vjs-icon-placeholder')
-      .html(this.renderTemplate(templateName));
+    this.$el = btn.el();
+    this.$el.classList.add('vac-player-btn');
+    const placeholder = this.$el.querySelector('.vjs-icon-placeholder')
+    placeholder.outerHTML = this.renderTemplate(templateName);
   }
 
   // Update the number of annotations displayed in the bubble
   updateNumAnnotations() {
     const num = this.plugin.annotationState.annotations.length;
-    const $bubble = this.$el.find('b');
-    $bubble.text(num);
+    const $bubble = this.$el.querySelector('b');
+    $bubble.innerHTML.match(num);
     num > 0
-      ? $bubble.removeClass(this.UI_CLASSES.hidden)
-      : $bubble.addClass(this.UI_CLASSES.hidden);
+      ? $bubble.classList.remove(this.UI_CLASSES.hidden)
+      : $bubble.classList.add(this.UI_CLASSES.hidden);
   }
 
   // Unbind event listeners on teardown and remove DOM nodes
