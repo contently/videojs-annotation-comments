@@ -14,9 +14,14 @@ module.exports = class Marker extends PlayerUIComponent {
     this.range = range;
     this.comment = comment;
     this.templateName = markerTemplateName;
+    console.warn('this $UI is: ', this.$UI);
 
-    if (!this.$UI.markerWrap.length) {
-      this.$UI.timeline.append(this.renderTemplate(markerWrapTemplateName));
+    if (!this.$UI.markerWrap || !this.$UI.markerWrap.length) {
+      console.warn('adding...');
+      const frag = document.createRange().createContextualFragment(
+        this.renderTemplate(markerWrapTemplateName)
+      );
+      this.$UI.timeline.append(frag);
     }
   }
 
@@ -34,29 +39,28 @@ module.exports = class Marker extends PlayerUIComponent {
   // Draw marker on timeline for this.range;
   render() {
     // clear existing marker if this one was already rendered
-    this.$UI.timeline.find(`[data-marker-id="${this.componentId}"]`).remove();
+    const existingMarker = this.$UI.timeline.querySelector(`[data-marker-id="${this.componentId}"]`);
+    if (existingMarker) existingMarker.remove();
 
     // Bind to local instance var, add to DOM, and setup events
-    this.$el = $(this.renderTemplate(this.templateName, this.markerTemplateData));
+
+    const marker = this.renderTemplate(this.templateName, this.markerTemplateData);
+    this.$el = document.createRange().createContextualFragment(marker);
     this.$UI.markerWrap.append(this.$el);
+    console.warn('marker $el is: ', this.$el);
     this.bindMarkerEvents();
   }
 
   // Bind needed events for this marker
   bindMarkerEvents() {
     // handle dimming other markers + highlighting this one on mouseenter/leave
-    this.$el
-      .on('mouseenter.vac-marker', () => {
-        this.$el
-          .addClass('vac-hovering')
-          .closest('.vac-marker-wrap')
-          .addClass('vac-dim-all');
-      })
-      .on('mouseleave.vac-marker', () => {
-        this.$el
-          .removeClass('vac-hovering')
-          .closest('.vac-marker-wrap')
-          .removeClass('vac-dim-all');
+    this.$el.addEventListener('mouseenter', () => {
+        this.$el.classList.add('vac-hovering');
+        this.$el.closest('.vac-marker-wrap').classList.add('vac-dim-all');
+      });
+    this.$el.addEventListener('mouseleave', () => {
+        this.$el.classList.remove('vac-hovering');
+        this.$el.closest('.vac-marker-wrap').classList.remove('vac-dim-all');
       });
   }
 

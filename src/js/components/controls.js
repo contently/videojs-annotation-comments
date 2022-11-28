@@ -39,33 +39,48 @@ module.exports = class Controls extends PlayerUIComponent {
 
   // Bind all the events we need for UI interaction
   bindEvents(bindArrowKeys) {
-    this.$player
-      .on('click.vac-controls', '.vac-controls button', this.startAddNew.bind(this)) // Add new button click
-      .on('click.vac-controls', '.vac-annotation-nav .vac-a-next', () =>
-        this.plugin.annotationState.nextAnnotation()
-      ) // Click 'next' on annotation nav
-      .on('click.vac-controls', '.vac-annotation-nav .vac-a-prev', () =>
-        this.plugin.annotationState.prevAnnotation()
-      ) // Click 'prev' on annotation nav
-      .on('click.vac-controls', '.vac-video-move .vac-a-next', () => this.marker.scrubStart(1)) // Click '+1 sec' on marker nav
-      .on('click.vac-controls', '.vac-video-move .vac-a-prev', () => this.marker.scrubStart(-1)); // Click '-1 sec' on marker nav
+    // Add new button click
+    this.$player.querySelectorAll('.vac-controls button')
+      .forEach(el => el.addEventListener('click', this.startAddNew.bind(this)));
+
+    // Click 'next' on annotation nav
+    this.$player.querySelectorAll('.vac-controls .vac-annotation-nav .vac-a-next')
+      .forEach(el => el.addEventListener('click', () =>
+      this.plugin.annotationState.nextAnnotation()));
+
+    // Click 'prev' on annotation nav
+    this.$player.querySelectorAll('.vac-controls .vac-annotation-nav .vac-a-prev')
+      .forEach(el => el.addEventListener('click', () =>
+      this.plugin.annotationState.prevAnnotation()));
+
+    // Click '+1 sec' on marker nav
+    this.$player.querySelectorAll('.vac-controls .vac-annotation-move .vac-a-next')
+      .forEach(el => el.addEventListener('click', () =>
+      this.marker.scrubStart(1)));
+
+    // Click '-1 sec' on marker nav
+    this.$player.querySelectorAll('.vac-controls .vac-annotation-move .vac-a-next')
+      .forEach(el => el.addEventListener('click', () =>
+      this.marker.scrubStart(-1)));
 
     if (this.internalCommenting) {
-      this.$player
-        .on('click.vac-controls', '.vac-add-controls button', this.writeComment.bind(this)) // 'Next' button click while adding
-        .on(
-          'click.vac-controls',
-          '.vac-video-write-new.vac-is-annotation button',
-          this.saveNew.bind(this)
-        ) // 'Save' button click while adding
-        .on(
-          'click.vac-controls',
-          '.vac-add-controls a, .vac-video-write-new.vac-is-annotation a',
-          this.cancelAddNew.bind(this)
-        ); // Cancel link click
+      // 'Next' button click while adding
+      this.$player.querySelectorAll('.vac-controls button')
+        .forEach(el => el.addEventListener('click', this.writeComment.bind(this)));
+
+      // 'Save' button click while adding
+      this.$player.querySelectorAll('.vac-controls .vac-video-write-new.vac-is-annotation button')
+        .forEach(el => el.addEventListener('click', this.saveNew.bind(this)));
+
+      // Cancel link click
+      this.$player.querySelectorAll('.vac-controls .vac-add-controls a, .vac-video-write-new.vac-is-annotation') 
+        .forEach(el => el.addEventListener('click', this.cancelAddNew.bind(this)));
     }
+
+    // Use arrow keys to navigate annotations
     if (bindArrowKeys) {
-      $(document).on(`keyup.vac-nav-${this.playerId}`, e => this.handleArrowKeys(e)); // Use arrow keys to navigate annotations
+      document.querySelectorAll(`vac-nav-${this.playerId}`)
+        .forEach(el => el.addEventListener('keyup', e => this.handleArrowKeys(e)));
     }
   }
 
@@ -87,13 +102,13 @@ module.exports = class Controls extends PlayerUIComponent {
         this.selectableShape.teardown();
       }
       this.uiState = Utils.cloneObject(BASE_UI_STATE);
-      this.$player
-        .find('.vac-video-cover-canvas')
-        .off('mousedown.vac-cursor-tooltip')
-        .off('mouseup.vac-cursor-tooltip');
+      const canvas = this.$player.querySelector('.vac-video-cover-canvas');
+      console.warn('canvas is: ', canvas);
+        // .off('mousedown.vac-cursor-tooltip')
+        // .off('mouseup.vac-cursor-tooltip');
     }
     this.$tooltip_ = null;
-    this.$UI.controlElements.remove();
+    this.$UI.controlElements && this.$UI.controlElements.remove();
   }
 
   // Render the UI elements (based on uiState)
@@ -108,7 +123,10 @@ module.exports = class Controls extends PlayerUIComponent {
     };
 
     const $ctrls = this.renderTemplate(templateName, data);
-    this.$player.append($ctrls);
+    const frag = document.createRange().createContextualFragment($ctrls);
+    console.warn('## frag is: ', frag);
+    console.warn('$ctrls is: ', $ctrls);
+    this.$player.appendChild(frag);
 
     if (this.playerButton) this.playerButton.updateNumAnnotations();
   }
@@ -176,7 +194,7 @@ module.exports = class Controls extends PlayerUIComponent {
   restoreNormalUI() {
     this.plugin.annotationState.enabled = this.plugin.active;
     this.enablePlayingAndControl();
-    $(document).off(`mousemove.vac-tooltip-${this.playerId}`);
+    // $(document).off(`mousemove.vac-tooltip-${this.playerId}`);
   }
 
   // On arrow key press, navigate to next or prev Annotation
