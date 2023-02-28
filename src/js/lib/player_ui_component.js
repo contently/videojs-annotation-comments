@@ -2,7 +2,7 @@
     Base class all player UI components interit from - it includes lots of helper functions (to get reference to
     the player $el, various classes/helpers, template rendering, etc)
 */
-
+const $ = require('jquery');
 const Handlebars = require('handlebars/runtime');
 const PlayerComponent = require('./player_component');
 const { templates } = require('../compiled/templates');

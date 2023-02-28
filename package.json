@@ -1,6 +1,6 @@
 {
   "name": "@contently/videojs-annotation-comments",
-  "version": "2.0.1",
+  "version": "2.1.1",
   "description": "A plugin for video.js to add support for timeline moment/range comments and annotations",
   "repository": "git@github.com:contently/videojs-annotation-comments.git",
   "main": "build/videojs-annotation-comments.cjs.js",
@@ -23,8 +23,8 @@
     "@semantic-release/git": "^7.0.18",
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.1.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-es2015-modules-simple-commonjs": "^0.3.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-es2015-script": "^1.1.0",
     "babelify": "^7.3.0",
@@ -100,6 +100,7 @@
     ]
   },
   "dependencies": {
+    "jquery": "^3.6.3",
     "mitt": "^1.2.0"
   }
 }

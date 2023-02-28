@@ -3,6 +3,7 @@
 */
 
 const moment = require('moment');
+const $ = require('jquery');
 const PlayerUIComponent = require('./../lib/player_ui_component');
 const Utils = require('./../lib/utils');
 

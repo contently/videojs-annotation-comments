@@ -2,6 +2,7 @@
     Component for managing a shape (i.e. box drawn on the player) for an annotation
 */
 
+const $ = require('jquery');
 const PlayerUIComponent = require('./../lib/player_ui_component');
 
 module.exports = class Shape extends PlayerUIComponent {

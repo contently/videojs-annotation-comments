@@ -3,6 +3,8 @@
     Can be registered to a videojs instance as a plugin
 */
 
+const $ = require('jquery');
+
 module.exports = videojs => {
   require('./lib/polyfills');
 

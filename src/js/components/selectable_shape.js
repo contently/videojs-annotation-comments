@@ -2,6 +2,7 @@
     Component for a shape that can be drug/sized on top of the video while adding a new annotation
 */
 
+const $ = require('jquery');
 const Shape = require('./shape');
 const Utils = require('./../lib/utils');
 
