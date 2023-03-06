@@ -3,6 +3,7 @@
     including all functionality to add new annotations
 */
 
+const $ = require('jquery');
 const PlayerUIComponent = require('./../lib/player_ui_component');
 const Utils = require('./../lib/utils');
 const DraggableMarker = require('./draggable_marker.js');

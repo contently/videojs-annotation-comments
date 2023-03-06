@@ -2,6 +2,7 @@
     Component for a timeline marker with capabilities to render on timeline, including tooltip for comment
 */
 
+const $ = require('jquery');
 const PlayerUIComponent = require('./../lib/player_ui_component');
 const Utils = require('./../lib/utils');
 

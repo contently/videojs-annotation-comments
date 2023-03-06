@@ -3,6 +3,7 @@
     as drag occurs
 */
 
+const $ = require('jquery');
 const Marker = require('./marker');
 const Utils = require('./../lib/utils');
 

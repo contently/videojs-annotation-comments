@@ -2,6 +2,7 @@
     Component main 'annotation toggle' button in the player controls, including notifier for # annotations
 */
 
+const $ = require('jquery');
 const PlayerUIComponent = require('./../lib/player_ui_component');
 
 const templateName = 'player_button';
